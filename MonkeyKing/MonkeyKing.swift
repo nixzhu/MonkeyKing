@@ -22,7 +22,7 @@ public class MonkeyKing {
         var isAppInstalled: Bool {
             switch self {
             case .WeChat:
-                return canOpenURL(NSURL(string: "weixin://")!) // now work for iOS 9
+                return canOpenURL(NSURL(string: "weixin://")!)
             }
         }
     }
@@ -31,9 +31,9 @@ public class MonkeyKing {
 
     public class func registerAccount(account: Account) {
 
-        //if account.isAppInstalled {
+        if account.isAppInstalled {
             sharedMonkeyKing.accounts.append(account)
-        //}
+        }
     }
 
     public class func handleOpenURL(URL: NSURL) -> Bool {
@@ -143,9 +143,7 @@ public class MonkeyKing {
                     return
                 }
                 
-                if UIApplication.sharedApplication().openURL(URL) {
-                    finish(true)
-                } else {
+                if !UIApplication.sharedApplication().openURL(URL) {
                     finish(false)
                 }
             }
