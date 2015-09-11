@@ -14,12 +14,26 @@ public class MonkeyKing {
 
     public enum Account {
         case WeChat(appID: String)
+
+        func canOpenURL(URL: NSURL) -> Bool {
+            return UIApplication.sharedApplication().canOpenURL(URL)
+        }
+
+        var isAppInstalled: Bool {
+            switch self {
+            case .WeChat:
+                return canOpenURL(NSURL(string: "weixin://")!) // now work for iOS 9
+            }
+        }
     }
 
     var accounts = [Account]()
 
-    public class func registerAccount(account: Account)  {
-        sharedMonkeyKing.accounts.append(account)
+    public class func registerAccount(account: Account) {
+
+        //if account.isAppInstalled {
+            sharedMonkeyKing.accounts.append(account)
+        //}
     }
 
     public class func handleOpenURL(URL: NSURL) -> Bool {
@@ -48,7 +62,6 @@ public class MonkeyKing {
                     self.media = media
                 }
             }
-
             case Session(Info)
             case Timeline(Info)
 
@@ -130,7 +143,11 @@ public class MonkeyKing {
                     return
                 }
                 
-                UIApplication.sharedApplication().openURL(URL)
+                if UIApplication.sharedApplication().openURL(URL) {
+                    finish(true)
+                } else {
+                    finish(false)
+                }
             }
         }
     }

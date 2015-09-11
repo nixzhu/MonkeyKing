@@ -23,7 +23,7 @@ class ViewController: UIViewController {
         let message = MonkeyKing.Message.WeChat(.Session(info))
 
         MonkeyKing.shareMessage(message) { success in
-            print("success \(success)")
+            print("success: \(success)")
         }
     }
 
@@ -39,7 +39,7 @@ class ViewController: UIViewController {
         let message = MonkeyKing.Message.WeChat(.Timeline(info))
 
         MonkeyKing.shareMessage(message) { success in
-            print("success \(success)")
+            print("success: \(success)")
         }
     }
 }
