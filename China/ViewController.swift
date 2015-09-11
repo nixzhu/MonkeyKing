@@ -48,8 +48,8 @@ class ViewController: UIViewController {
         let shareURL = NSURL(string: "http://www.apple.com/cn")!
 
         let info = MonkeyKing.Message.WeChatType.Info(
-            title: "Session",
-            description: "Hello Session",
+            title: "New iPhones",
+            description: "Order begin at 3 PM tomorrow.",
             thumbnail: UIImage(named: "rabbit"),
             media: .URL(shareURL)
         )
@@ -63,7 +63,7 @@ class ViewController: UIViewController {
             canPerform: sessionMessage.canBeDelivered,
             perform: {
                 MonkeyKing.shareMessage(sessionMessage) { success in
-                    print("success: \(success)")
+                    print("Session success: \(success)")
                 }
             }
         )
@@ -77,7 +77,7 @@ class ViewController: UIViewController {
             canPerform: timelineMessage.canBeDelivered,
             perform: {
                 MonkeyKing.shareMessage(timelineMessage) { success in
-                    print("success: \(success)")
+                    print("Timeline success: \(success)")
                 }
             }
         )

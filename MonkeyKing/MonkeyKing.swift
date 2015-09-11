@@ -37,6 +37,34 @@ public class MonkeyKing {
     }
 
     public class func handleOpenURL(URL: NSURL) -> Bool {
+
+        if URL.scheme.hasPrefix("wx") {
+
+            guard let data = UIPasteboard.generalPasteboard().dataForPasteboardType("content") else {
+                return false
+            }
+
+            if let dic = try? NSPropertyListSerialization.propertyListWithData(data, options: .Immutable, format: nil) {
+
+                for case let .WeChat(appID) in sharedMonkeyKing.accounts {
+
+                    if let dic = dic[appID] as? NSDictionary {
+
+                        if let result = dic["result"]?.integerValue {
+
+                            let success = (result == 0)
+
+                            sharedMonkeyKing.latestFinish?(success)
+
+                            return success
+                        }
+                    }
+                }
+            }
+        }
+
+        // TODO: handel others' URL
+
         return false
     }
 
@@ -101,7 +129,11 @@ public class MonkeyKing {
 
     public typealias Finish = Bool -> Void
 
+    var latestFinish: Finish?
+
     public class func shareMessage(message: Message, finish: Finish) {
+
+        sharedMonkeyKing.latestFinish = finish
 
         switch message {
 
