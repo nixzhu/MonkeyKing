@@ -29,8 +29,28 @@ public class MonkeyKing {
     public enum Message {
 
         public enum WeChatType {
-            case Session
-            case Timeline
+
+            public struct Info {
+                let title: String?
+                let description: String?
+                let thumbnail: UIImage?
+
+                public enum Media {
+                    case URL(NSURL)
+                    case Image(UIImage)
+                }
+                let media: Media
+
+                public init(title: String?, description: String?, thumbnail: UIImage?, media: Media) {
+                    self.title = title
+                    self.description = description
+                    self.thumbnail = thumbnail
+                    self.media = media
+                }
+            }
+
+            case Session(Info)
+            case Timeline(Info)
 
             var scene: String {
                 switch self {
@@ -54,7 +74,7 @@ public class MonkeyKing {
 
             for case let .WeChat(appID) in sharedMonkeyKing.accounts {
 
-                var info: [String: String] = [
+                var weChatMessageInfo: [String: String] = [
                     "result": "1",
                     "returnFromApp": "0",
                     "scene": type.scene,
@@ -63,19 +83,37 @@ public class MonkeyKing {
                 ]
 
                 switch type {
-                case .Session:
 
-                    info["title"] = "Hello"
-                    info["mediaUrl"] = "http://baidu.com"
-                    info["objectType"] = "5"
+                case .Session(let info):
 
-                case .Timeline:
+                    if let title = info.title {
+                        weChatMessageInfo["title"] = title
+                    }
+
+                    if let description = info.description {
+                        weChatMessageInfo["description"] = description
+                    }
+
+                    switch info.media {
+
+                    case .URL(let URL):
+                        weChatMessageInfo["objectType"] = "5"
+                        weChatMessageInfo["mediaUrl"] = URL.absoluteString
+
+                    case .Image(let image):
+                        break
+                    }
+
+                    weChatMessageInfo["mediaUrl"] = "http://baidu.com"
+                    weChatMessageInfo["objectType"] = "5"
+
+                case .Timeline(let info):
                     break
                 }
 
-                let dic = [appID: info]
+                let weChatMessage = [appID: weChatMessageInfo]
 
-                guard let data = try? NSPropertyListSerialization.dataWithPropertyList(dic, format: NSPropertyListFormat.BinaryFormat_v1_0, options: NSPropertyListWriteOptions(0)) else {
+                guard let data = try? NSPropertyListSerialization.dataWithPropertyList(weChatMessage, format: NSPropertyListFormat.BinaryFormat_v1_0, options: NSPropertyListWriteOptions(0)) else {
                     return
                 }
 
