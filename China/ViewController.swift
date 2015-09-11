@@ -16,7 +16,7 @@ class ViewController: UIViewController {
         let info = MonkeyKing.Message.WeChatType.Info(
             title: "Session",
             description: "Hello Session",
-            thumbnail: nil,
+            thumbnail: UIImage(named: "rabbit"),
             media: .URL(NSURL(string: "http://baidu.com")!)
         )
 

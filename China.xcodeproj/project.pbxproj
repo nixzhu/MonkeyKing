@@ -450,6 +450,7 @@
 				50FBA6D91BA2BBE900E69BB3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

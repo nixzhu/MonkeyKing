@@ -101,6 +101,10 @@ public class MonkeyKing {
                     weChatMessageInfo["description"] = description
                 }
 
+                if let thumbnailImage = info.thumbnail {
+                    weChatMessageInfo["thumbData"] = UIImageJPEGRepresentation(thumbnailImage, 0.7)!
+                }
+
                 switch info.media {
 
                 case .URL(let URL):
