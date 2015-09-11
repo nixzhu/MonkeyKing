@@ -118,7 +118,7 @@ public class MonkeyKing {
 
                 let weChatMessage = [appID: weChatMessageInfo]
 
-                guard let data = try? NSPropertyListSerialization.dataWithPropertyList(weChatMessage, format: NSPropertyListFormat.BinaryFormat_v1_0, options: NSPropertyListWriteOptions(0)) else {
+                guard let data = try? NSPropertyListSerialization.dataWithPropertyList(weChatMessage, format: .BinaryFormat_v1_0, options: 0) else {
                     return
                 }
 
