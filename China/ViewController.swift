@@ -54,21 +54,35 @@ class ViewController: UIViewController {
             media: .URL(shareURL)
         )
 
-        let message = MonkeyKing.Message.WeChat(.Session(info))
+        let sessionMessage = MonkeyKing.Message.WeChat(.Session(info))
 
         let weChatSessionActivity = AnyActivity(
             type: "com.nixWork.China.WeChat.Session",
             title: NSLocalizedString("WeChat Session", comment: ""),
             image: UIImage(named: "wechat_session")!,
-            canPerform: message.canBeDelivered,
+            canPerform: sessionMessage.canBeDelivered,
             perform: {
-                MonkeyKing.shareMessage(message) { success in
+                MonkeyKing.shareMessage(sessionMessage) { success in
                     print("success: \(success)")
                 }
             }
         )
 
-        let activityViewController = UIActivityViewController(activityItems: [shareURL], applicationActivities: [weChatSessionActivity])
+        let timelineMessage = MonkeyKing.Message.WeChat(.Timeline(info))
+
+        let weChatTimelineActivity = AnyActivity(
+            type: "com.nixWork.China.WeChat.Timeline",
+            title: NSLocalizedString("WeChat Timeline", comment: ""),
+            image: UIImage(named: "wechat_timeline")!,
+            canPerform: timelineMessage.canBeDelivered,
+            perform: {
+                MonkeyKing.shareMessage(timelineMessage) { success in
+                    print("success: \(success)")
+                }
+            }
+        )
+
+        let activityViewController = UIActivityViewController(activityItems: [shareURL], applicationActivities: [weChatSessionActivity, weChatTimelineActivity])
 
         presentViewController(activityViewController, animated: true, completion: nil)
     }
