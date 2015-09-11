@@ -33,12 +33,22 @@
                                     <action selector="shareToWeChatTimeline:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gsB-pW-gCP"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oVi-NI-LY5">
+                                <rect key="frame" x="253" y="405" width="95" height="30"/>
+                                <animations/>
+                                <state key="normal" title="System Share"/>
+                                <connections>
+                                    <action selector="systemShare:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kH6-Tg-DfW"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="wOV-Cj-OZI" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="9BD-97-KhW"/>
                             <constraint firstItem="gS0-c6-rje" firstAttribute="top" secondItem="wOV-Cj-OZI" secondAttribute="bottom" constant="30" id="JPE-Wa-tjA"/>
+                            <constraint firstItem="oVi-NI-LY5" firstAttribute="top" secondItem="gS0-c6-rje" secondAttribute="bottom" constant="30" id="NoC-FL-SzL"/>
+                            <constraint firstItem="oVi-NI-LY5" firstAttribute="centerX" secondItem="gS0-c6-rje" secondAttribute="centerX" id="Nvu-5E-DuN"/>
                             <constraint firstItem="gS0-c6-rje" firstAttribute="centerX" secondItem="wOV-Cj-OZI" secondAttribute="centerX" id="djy-jn-jJH"/>
                             <constraint firstItem="wOV-Cj-OZI" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="gG1-gL-g8t"/>
                         </constraints>

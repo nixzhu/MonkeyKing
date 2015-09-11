@@ -19,7 +19,7 @@ public class MonkeyKing {
             return UIApplication.sharedApplication().canOpenURL(URL)
         }
 
-        var isAppInstalled: Bool {
+        public var isAppInstalled: Bool {
             switch self {
             case .WeChat:
                 return canOpenURL(NSURL(string: "weixin://")!)
@@ -84,6 +84,19 @@ public class MonkeyKing {
             }
         }
         case WeChat(WeChatType)
+
+        public var canBeDelivered: Bool {
+            switch self {
+            case .WeChat:
+                for account in sharedMonkeyKing.accounts {
+                    if case .WeChat = account {
+                        return account.isAppInstalled
+                    }
+                }
+
+                return false
+            }
+        }
     }
 
     public typealias Finish = Bool -> Void

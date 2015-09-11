@@ -16,6 +16,7 @@
 		50FBA6D61BA2BBE900E69BB3 /* MonkeyKing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FBA6CF1BA2BBE900E69BB3 /* MonkeyKing.framework */; };
 		50FBA6D71BA2BBE900E69BB3 /* MonkeyKing.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 50FBA6CF1BA2BBE900E69BB3 /* MonkeyKing.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		50FBA6DD1BA2BC0A00E69BB3 /* MonkeyKing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6DC1BA2BC0A00E69BB3 /* MonkeyKing.swift */; settings = {ASSET_TAGS = (); }; };
+		50FBA6DF1BA3079D00E69BB3 /* AnyActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6DE1BA3079D00E69BB3 /* AnyActivity.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,7 @@
 		50FBA6D11BA2BBE900E69BB3 /* MonkeyKing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MonkeyKing.h; sourceTree = "<group>"; };
 		50FBA6D31BA2BBE900E69BB3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50FBA6DC1BA2BC0A00E69BB3 /* MonkeyKing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeyKing.swift; sourceTree = "<group>"; };
+		50FBA6DE1BA3079D00E69BB3 /* AnyActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyActivity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +113,7 @@
 			children = (
 				50FBA6D11BA2BBE900E69BB3 /* MonkeyKing.h */,
 				50FBA6DC1BA2BC0A00E69BB3 /* MonkeyKing.swift */,
+				50FBA6DE1BA3079D00E69BB3 /* AnyActivity.swift */,
 				50FBA6D31BA2BBE900E69BB3 /* Info.plist */,
 			);
 			path = MonkeyKing;
@@ -239,6 +242,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				50FBA6DD1BA2BC0A00E69BB3 /* MonkeyKing.swift in Sources */,
+				50FBA6DF1BA3079D00E69BB3 /* AnyActivity.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
