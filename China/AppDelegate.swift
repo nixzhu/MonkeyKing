@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 
-        MonkeyKing.registerAccount(.WeChat(appID: "wxd930ea5d5a258f4f"))
+        //MonkeyKing.registerAccount(.WeChat(appID: "wxd930ea5d5a258f4f"))
 
         return true
     }

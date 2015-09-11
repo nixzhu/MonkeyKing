@@ -13,6 +13,8 @@ class ViewController: UIViewController {
 
     @IBAction func shareToWeChatSession(sender: UIButton) {
 
+        MonkeyKing.registerAccount(.WeChat(appID: "wxd930ea5d5a258f4f"))
+
         let info = MonkeyKing.Message.WeChatType.Info(
             title: "Session",
             description: "Hello Session",
@@ -29,6 +31,8 @@ class ViewController: UIViewController {
 
     @IBAction func shareToWeChatTimeline(sender: UIButton) {
 
+        MonkeyKing.registerAccount(.WeChat(appID: "wxd930ea5d5a258f4f"))
+
         let info = MonkeyKing.Message.WeChatType.Info(
             title: "Timeline",
             description: "Hello Timeline",
@@ -44,6 +48,8 @@ class ViewController: UIViewController {
     }
 
     @IBAction func systemShare(sender: UIButton) {
+
+        MonkeyKing.registerAccount(.WeChat(appID: "wxd930ea5d5a258f4f"))
 
         let shareURL = NSURL(string: "http://www.apple.com/cn")!
 

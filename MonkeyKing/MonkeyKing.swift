@@ -8,11 +8,15 @@
 
 import UIKit
 
+public func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
+    return lhs.appID == rhs.appID
+}
+
 public class MonkeyKing {
 
     static let sharedMonkeyKing = MonkeyKing()
 
-    public enum Account {
+    public enum Account: Hashable {
         case WeChat(appID: String)
 
         func canOpenURL(URL: NSURL) -> Bool {
@@ -25,14 +29,25 @@ public class MonkeyKing {
                 return canOpenURL(NSURL(string: "weixin://")!)
             }
         }
+
+        public var appID: String {
+            switch self {
+            case .WeChat(let appID):
+                return appID
+            }
+        }
+
+        public var hashValue: Int {
+            return appID.hashValue
+        }
     }
 
-    var accounts = [Account]()
+    var accountSet = Set<Account>()
 
     public class func registerAccount(account: Account) {
 
         if account.isAppInstalled {
-            sharedMonkeyKing.accounts.append(account)
+            sharedMonkeyKing.accountSet.insert(account)
         }
     }
 
@@ -46,7 +61,7 @@ public class MonkeyKing {
 
             if let dic = try? NSPropertyListSerialization.propertyListWithData(data, options: .Immutable, format: nil) {
 
-                for case let .WeChat(appID) in sharedMonkeyKing.accounts {
+                for case let .WeChat(appID) in sharedMonkeyKing.accountSet {
 
                     if let dic = dic[appID] as? NSDictionary {
 
@@ -116,7 +131,7 @@ public class MonkeyKing {
         public var canBeDelivered: Bool {
             switch self {
             case .WeChat:
-                for account in sharedMonkeyKing.accounts {
+                for account in sharedMonkeyKing.accountSet {
                     if case .WeChat = account {
                         return account.isAppInstalled
                     }
@@ -144,7 +159,7 @@ public class MonkeyKing {
 
         case .WeChat(let type):
 
-            for case let .WeChat(appID) in sharedMonkeyKing.accounts {
+            for case let .WeChat(appID) in sharedMonkeyKing.accountSet {
 
                 var weChatMessageInfo: [String: AnyObject] = [
                     "result": "1",
