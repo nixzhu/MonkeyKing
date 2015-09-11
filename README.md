@@ -170,6 +170,10 @@ For more information about how to use Carthage, please see its [project page](ht
 
 NIX [@nixzhu](https://twitter.com/nixzhu)
 
+## Credits
+
+WeChat logos from [WeChat-Logo](https://github.com/RayPS/WeChat-Logo) by Ray.
+
 ## License
 
 MonkeyKing is available under the MIT license. See the LICENSE file for more info.
