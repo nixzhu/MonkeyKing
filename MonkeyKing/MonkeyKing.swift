@@ -60,6 +60,15 @@ public class MonkeyKing {
                     return "1"
                 }
             }
+
+            var info: Info {
+                switch self {
+                case .Session(let info):
+                    return info
+                case .Timeline(let info):
+                    return info
+                }
+            }
         }
         case WeChat(WeChatType)
     }
@@ -82,32 +91,23 @@ public class MonkeyKing {
                     "command": "1010",
                 ]
 
-                switch type {
+                let info = type.info
 
-                case .Session(let info):
+                if let title = info.title {
+                    weChatMessageInfo["title"] = title
+                }
 
-                    if let title = info.title {
-                        weChatMessageInfo["title"] = title
-                    }
+                if let description = info.description {
+                    weChatMessageInfo["description"] = description
+                }
 
-                    if let description = info.description {
-                        weChatMessageInfo["description"] = description
-                    }
+                switch info.media {
 
-                    switch info.media {
-
-                    case .URL(let URL):
-                        weChatMessageInfo["objectType"] = "5"
-                        weChatMessageInfo["mediaUrl"] = URL.absoluteString
-
-                    case .Image(let image):
-                        break
-                    }
-
-                    weChatMessageInfo["mediaUrl"] = "http://baidu.com"
+                case .URL(let URL):
                     weChatMessageInfo["objectType"] = "5"
+                    weChatMessageInfo["mediaUrl"] = URL.absoluteString
 
-                case .Timeline(let info):
+                case .Image(let image):
                     break
                 }
 

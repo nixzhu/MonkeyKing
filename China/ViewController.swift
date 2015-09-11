@@ -14,13 +14,29 @@ class ViewController: UIViewController {
     @IBAction func shareToWeChatSession(sender: UIButton) {
 
         let info = MonkeyKing.Message.WeChatType.Info(
-            title: "Test",
-            description: "Hello World",
+            title: "Session",
+            description: "Hello Session",
             thumbnail: nil,
             media: .URL(NSURL(string: "http://baidu.com")!)
         )
 
         let message = MonkeyKing.Message.WeChat(.Session(info))
+
+        MonkeyKing.shareMessage(message) { success in
+            print("success \(success)")
+        }
+    }
+
+    @IBAction func shareToWeChatTimeline(sender: UIButton) {
+
+        let info = MonkeyKing.Message.WeChatType.Info(
+            title: "Timeline",
+            description: "Hello Timeline",
+            thumbnail: nil,
+            media: .URL(NSURL(string: "http://baidu.com")!)
+        )
+
+        let message = MonkeyKing.Message.WeChat(.Timeline(info))
 
         MonkeyKing.shareMessage(message) { success in
             print("success \(success)")
