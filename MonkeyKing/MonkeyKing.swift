@@ -85,7 +85,7 @@ public class MonkeyKing {
 
     public enum Message {
 
-        public enum WeChatType {
+        public enum WeChatSubtype {
 
             public struct Info {
                 let title: String?
@@ -126,7 +126,7 @@ public class MonkeyKing {
                 }
             }
         }
-        case WeChat(WeChatType)
+        case WeChat(WeChatSubtype)
 
         public var canBeDelivered: Bool {
             switch self {

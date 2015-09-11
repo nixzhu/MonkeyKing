@@ -15,7 +15,7 @@ class ViewController: UIViewController {
 
         MonkeyKing.registerAccount(.WeChat(appID: "wxd930ea5d5a258f4f"))
 
-        let info = MonkeyKing.Message.WeChatType.Info(
+        let info = MonkeyKing.Message.WeChatSubtype.Info(
             title: "Session",
             description: "Hello Session",
             thumbnail: UIImage(named: "rabbit"),
@@ -33,7 +33,7 @@ class ViewController: UIViewController {
 
         MonkeyKing.registerAccount(.WeChat(appID: "wxd930ea5d5a258f4f"))
 
-        let info = MonkeyKing.Message.WeChatType.Info(
+        let info = MonkeyKing.Message.WeChatSubtype.Info(
             title: "Timeline",
             description: "Hello Timeline",
             thumbnail: nil,
@@ -53,7 +53,7 @@ class ViewController: UIViewController {
 
         let shareURL = NSURL(string: "http://www.apple.com/cn")!
 
-        let info = MonkeyKing.Message.WeChatType.Info(
+        let info = MonkeyKing.Message.WeChatSubtype.Info(
             title: "New iPhones",
             description: "Order begin at 3 PM tomorrow.",
             thumbnail: UIImage(named: "rabbit"),
