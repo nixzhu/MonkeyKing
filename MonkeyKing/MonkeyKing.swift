@@ -83,7 +83,7 @@ public class MonkeyKing {
 
             for case let .WeChat(appID) in sharedMonkeyKing.accounts {
 
-                var weChatMessageInfo: [String: String] = [
+                var weChatMessageInfo: [String: AnyObject] = [
                     "result": "1",
                     "returnFromApp": "0",
                     "scene": type.scene,
@@ -108,7 +108,8 @@ public class MonkeyKing {
                     weChatMessageInfo["mediaUrl"] = URL.absoluteString
 
                 case .Image(let image):
-                    break
+                    weChatMessageInfo["objectType"] = "2"
+                    weChatMessageInfo["fileData"] = UIImageJPEGRepresentation(image, 1)!
                 }
 
                 let weChatMessage = [appID: weChatMessageInfo]

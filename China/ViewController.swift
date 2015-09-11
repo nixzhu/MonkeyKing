@@ -33,7 +33,7 @@ class ViewController: UIViewController {
             title: "Timeline",
             description: "Hello Timeline",
             thumbnail: nil,
-            media: .URL(NSURL(string: "http://baidu.com")!)
+            media: .Image(UIImage(named: "rabbit")!)
         )
 
         let message = MonkeyKing.Message.WeChat(.Timeline(info))
