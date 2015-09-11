@@ -133,6 +133,11 @@ public class MonkeyKing {
 
     public class func shareMessage(message: Message, finish: Finish) {
 
+        guard message.canBeDelivered else {
+            finish(false)
+            return
+        }
+
         sharedMonkeyKing.latestFinish = finish
 
         switch message {
