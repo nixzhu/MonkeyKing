@@ -17,7 +17,7 @@ class ViewController: UIViewController {
             title: "Session",
             description: "Hello Session",
             thumbnail: UIImage(named: "rabbit"),
-            media: .URL(NSURL(string: "http://baidu.com")!)
+            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
         )
 
         let message = MonkeyKing.Message.WeChat(.Session(info))
