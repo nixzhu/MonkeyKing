@@ -87,26 +87,13 @@ public class MonkeyKing {
 
         public enum WeChatSubtype {
 
-            public struct Info {
-                let title: String?
-                let description: String?
-                let thumbnail: UIImage?
-
-                public enum Media {
-                    case URL(NSURL)
-                    case Image(UIImage)
-                }
-                let media: Media
-
-                public init(title: String?, description: String?, thumbnail: UIImage?, media: Media) {
-                    self.title = title
-                    self.description = description
-                    self.thumbnail = thumbnail
-                    self.media = media
-                }
+            public enum Media {
+                case URL(NSURL)
+                case Image(UIImage)
             }
-            case Session(Info)
-            case Timeline(Info)
+            public typealias Info = (title: String?, description: String?, thumbnail: UIImage?, media: Media)
+            case Session(info: Info)
+            case Timeline(info: Info)
 
             var scene: String {
                 switch self {

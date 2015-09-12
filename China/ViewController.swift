@@ -9,20 +9,20 @@
 import UIKit
 import MonkeyKing
 
+let weChatAppID = "wxd930ea5d5a258f4f"
+
 class ViewController: UIViewController {
 
     @IBAction func shareToWeChatSession(sender: UIButton) {
 
-        MonkeyKing.registerAccount(.WeChat(appID: "wxd930ea5d5a258f4f"))
+        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID))
 
-        let info = MonkeyKing.Message.WeChatSubtype.Info(
+        let message = MonkeyKing.Message.WeChat(.Session(info: (
             title: "Session",
             description: "Hello Session",
             thumbnail: UIImage(named: "rabbit"),
             media: .URL(NSURL(string: "http://www.apple.com/cn")!)
-        )
-
-        let message = MonkeyKing.Message.WeChat(.Session(info))
+        )))
 
         MonkeyKing.shareMessage(message) { success in
             print("success: \(success)")
@@ -31,16 +31,14 @@ class ViewController: UIViewController {
 
     @IBAction func shareToWeChatTimeline(sender: UIButton) {
 
-        MonkeyKing.registerAccount(.WeChat(appID: "wxd930ea5d5a258f4f"))
+        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID))
 
-        let info = MonkeyKing.Message.WeChatSubtype.Info(
+        let message = MonkeyKing.Message.WeChat(.Timeline(info: (
             title: "Timeline",
             description: "Hello Timeline",
             thumbnail: nil,
             media: .Image(UIImage(named: "rabbit")!)
-        )
-
-        let message = MonkeyKing.Message.WeChat(.Timeline(info))
+        )))
 
         MonkeyKing.shareMessage(message) { success in
             print("success: \(success)")
@@ -49,7 +47,7 @@ class ViewController: UIViewController {
 
     @IBAction func systemShare(sender: UIButton) {
 
-        MonkeyKing.registerAccount(.WeChat(appID: "wxd930ea5d5a258f4f"))
+        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID))
 
         let shareURL = NSURL(string: "http://www.apple.com/cn")!
 
@@ -60,7 +58,7 @@ class ViewController: UIViewController {
             media: .URL(shareURL)
         )
 
-        let sessionMessage = MonkeyKing.Message.WeChat(.Session(info))
+        let sessionMessage = MonkeyKing.Message.WeChat(.Session(info: info))
 
         let weChatSessionActivity = AnyActivity(
             type: "com.nixWork.China.WeChat.Session",
@@ -74,7 +72,7 @@ class ViewController: UIViewController {
             }
         )
 
-        let timelineMessage = MonkeyKing.Message.WeChat(.Timeline(info))
+        let timelineMessage = MonkeyKing.Message.WeChat(.Timeline(info: info))
 
         let weChatTimelineActivity = AnyActivity(
             type: "com.nixWork.China.WeChat.Timeline",
