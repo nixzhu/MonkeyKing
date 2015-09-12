@@ -255,36 +255,54 @@ public class MonkeyKing {
                 qqSchemeURLString+="&version=1&cflag=\(type.scene)"
                 qqSchemeURLString+="&callback_type=scheme&generalpastboard=1"
                 qqSchemeURLString+="&callback_name=\(callbackName)"
+
+                if let encodedTitle = type.info.title?.base64AndURLEncodedString {
+                    qqSchemeURLString += "&title=\(encodedTitle)"
+                }
+
+                if let encodedDescription = type.info.description?.base64AndURLEncodedString {
+                    qqSchemeURLString += "&objectlocation=pasteboard&description=\(encodedDescription)"
+                }
+
                 qqSchemeURLString+="&src_type=app&shareType=0&file_type="
 
                 switch type.info.media {
                 case .URL(let URL):
 
-                    let dic = ["previewimagedata": UIImageJPEGRepresentation(type.info.thumbnail!, 1)!]
-
-                    let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
-
-                    UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
+                    if let thumbnail = type.info.thumbnail, thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
+                        let dic = ["previewimagedata": thumbnailData]
+                        let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
+                        UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
+                    }
 
                     qqSchemeURLString += "news"
-                    qqSchemeURLString += "&title=\(type.info.title!.base64EncodedString!.urlEncodedString!)"
-                    qqSchemeURLString += "&url=\(URL.absoluteString.base64EncodedString!.urlEncodedString!)"
-                    qqSchemeURLString += "&objectlocation=pasteboard&description=\(type.info.description!.base64EncodedString!.urlEncodedString!)"
+
+                    guard let encodedURLString = URL.absoluteString.base64AndURLEncodedString else {
+                        finish(false)
+                        return
+                    }
+
+                    qqSchemeURLString += "&url=\(encodedURLString)"
 
                 case .Image(let image):
 
-                    let imageData = UIImageJPEGRepresentation(image, 1)!
-                    let dic = [
+                    guard let imageData = UIImageJPEGRepresentation(image, 1) else {
+                        finish(false)
+                        return
+                    }
+
+                    var dic = [
                         "file_data": imageData,
-                        "previewimagedata": type.info.thumbnail ?? imageData
                     ]
+                    if let thumbnail = type.info.thumbnail, thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
+                        dic["previewimagedata"] = thumbnailData
+                    }
+
                     let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
 
                     UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
 
                     qqSchemeURLString += "img"
-                    qqSchemeURLString += "&title=\(type.info.title!.base64EncodedString!.urlEncodedString!)"
-                    qqSchemeURLString += "&objectlocation=pasteboard&description=\(type.info.description!.base64EncodedString!.urlEncodedString!)"
                 }
 
                 print(qqSchemeURLString)
@@ -316,6 +334,10 @@ extension String {
 
     var urlEncodedString: String? {
         return stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLHostAllowedCharacterSet())
+    }
+
+    var base64AndURLEncodedString: String? {
+        return base64EncodedString?.urlEncodedString
     }
 }
 
