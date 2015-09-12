@@ -245,46 +245,49 @@ public class MonkeyKing {
 
         case .QQ(let type):
 
-            let callbackName = String(format: "QQ%02llx", ("1103194207" as NSString).longLongValue)
+            for case let .QQ(appID) in sharedMonkeyKing.accountSet {
 
-            print(NSBundle.mainBundle().displayName!)
+                let callbackName = String(format: "QQ%02llx", (appID as NSString).longLongValue)
 
-            var qqSchemeURLString = "mqqapi://share/to_fri?thirdAppDisplayName=\(NSBundle.mainBundle().displayName!.base64EncodedString!)"
+                print(NSBundle.mainBundle().displayName!)
+
+                var qqSchemeURLString = "mqqapi://share/to_fri?thirdAppDisplayName=\(NSBundle.mainBundle().displayName!.base64EncodedString!)"
                 qqSchemeURLString+="&version=1&cflag=\(type.scene)"
                 qqSchemeURLString+="&callback_type=scheme&generalpastboard=1"
                 qqSchemeURLString+="&callback_name=\(callbackName)"
                 qqSchemeURLString+="&src_type=app&shareType=0&file_type="
 
-            switch type.info.media {
-            case .URL(let URL):
-//                weChatMessageInfo["objectType"] = "5"
-//                weChatMessageInfo["mediaUrl"] = URL.absoluteString
-                break
+                switch type.info.media {
+                case .URL(let URL):
+                    //weChatMessageInfo["objectType"] = "5"
+                    //weChatMessageInfo["mediaUrl"] = URL.absoluteString
+                    break
 
-            case .Image(let image):
+                case .Image(let image):
 
-                let imageData = UIImageJPEGRepresentation(image, 1)!
-                let dic = [
-                    "file_data": imageData,
-                    "previewimagedata": type.info.thumbnail ?? imageData
-                ]
-                let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
+                    let imageData = UIImageJPEGRepresentation(image, 1)!
+                    let dic = [
+                        "file_data": imageData,
+                        "previewimagedata": type.info.thumbnail ?? imageData
+                    ]
+                    let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
 
-                UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
+                    UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
 
-                qqSchemeURLString += "img"
-                qqSchemeURLString += "&title=\(type.info.title!.base64EncodedString!)"
-                qqSchemeURLString += "&objectlocation=pasteboard&description=\(type.info.description!.base64EncodedString!)"
-            }
+                    qqSchemeURLString += "img"
+                    qqSchemeURLString += "&title=\(type.info.title!.base64EncodedString!)"
+                    qqSchemeURLString += "&objectlocation=pasteboard&description=\(type.info.description!.base64EncodedString!)"
+                }
 
-            print(qqSchemeURLString)
-
-            guard let URL = NSURL(string: qqSchemeURLString) else {
-                return
-            }
-
-            if !UIApplication.sharedApplication().openURL(URL) {
-                finish(false)
+                print(qqSchemeURLString)
+                
+                guard let URL = NSURL(string: qqSchemeURLString) else {
+                    return
+                }
+                
+                if !UIApplication.sharedApplication().openURL(URL) {
+                    finish(false)
+                }
             }
         }
     }
