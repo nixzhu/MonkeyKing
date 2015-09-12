@@ -251,10 +251,16 @@ public class MonkeyKing {
 
                 print(NSBundle.mainBundle().displayName!)
 
-                var qqSchemeURLString = "mqqapi://share/to_fri?thirdAppDisplayName=\(NSBundle.mainBundle().displayName!.base64EncodedString!)"
-                qqSchemeURLString+="&version=1&cflag=\(type.scene)"
-                qqSchemeURLString+="&callback_type=scheme&generalpastboard=1"
-                qqSchemeURLString+="&callback_name=\(callbackName)"
+                var qqSchemeURLString = "mqqapi://share/to_fri?"
+                if let encodedAppDisplayName = NSBundle.mainBundle().displayName?.base64EncodedString {
+                    qqSchemeURLString += "thirdAppDisplayName=" + encodedAppDisplayName
+                } else {
+                    qqSchemeURLString += "thirdAppDisplayName=" + "nixApp" // Should not be there
+                }
+
+                qqSchemeURLString += "&version=1&cflag=\(type.scene)"
+                qqSchemeURLString += "&callback_type=scheme&generalpastboard=1"
+                qqSchemeURLString += "&callback_name=\(callbackName)"
 
                 if let encodedTitle = type.info.title?.base64AndURLEncodedString {
                     qqSchemeURLString += "&title=\(encodedTitle)"
@@ -267,6 +273,7 @@ public class MonkeyKing {
                 qqSchemeURLString+="&src_type=app&shareType=0&file_type="
 
                 switch type.info.media {
+
                 case .URL(let URL):
 
                     if let thumbnail = type.info.thumbnail, thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
@@ -304,8 +311,6 @@ public class MonkeyKing {
 
                     qqSchemeURLString += "img"
                 }
-
-                print(qqSchemeURLString)
                 
                 guard let URL = NSURL(string: qqSchemeURLString) else {
                     return
@@ -322,7 +327,18 @@ public class MonkeyKing {
 extension NSBundle {
 
     var displayName: String? {
-        return infoDictionary?["CFBundleIdentifier"] as? String
+
+        if let info = infoDictionary {
+
+            if let localizedDisplayName = info["CFBundleDisplayName"] as? String {
+                return localizedDisplayName
+
+            } else {
+                return info["CFBundleName"] as? String
+            }
+        }
+
+        return nil
     }
 }
 
