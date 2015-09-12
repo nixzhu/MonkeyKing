@@ -259,9 +259,17 @@ public class MonkeyKing {
 
                 switch type.info.media {
                 case .URL(let URL):
-                    //weChatMessageInfo["objectType"] = "5"
-                    //weChatMessageInfo["mediaUrl"] = URL.absoluteString
-                    break
+
+                    let dic = ["previewimagedata": UIImageJPEGRepresentation(type.info.thumbnail!, 1)!]
+
+                    let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
+
+                    UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
+
+                    qqSchemeURLString += "news"
+                    qqSchemeURLString += "&title=\(type.info.title!.base64EncodedString!.urlEncodedString!)"
+                    qqSchemeURLString += "&url=\(URL.absoluteString.base64EncodedString!.urlEncodedString!)"
+                    qqSchemeURLString += "&objectlocation=pasteboard&description=\(type.info.description!.base64EncodedString!.urlEncodedString!)"
 
                 case .Image(let image):
 
@@ -275,8 +283,8 @@ public class MonkeyKing {
                     UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
 
                     qqSchemeURLString += "img"
-                    qqSchemeURLString += "&title=\(type.info.title!.base64EncodedString!)"
-                    qqSchemeURLString += "&objectlocation=pasteboard&description=\(type.info.description!.base64EncodedString!)"
+                    qqSchemeURLString += "&title=\(type.info.title!.base64EncodedString!.urlEncodedString!)"
+                    qqSchemeURLString += "&objectlocation=pasteboard&description=\(type.info.description!.base64EncodedString!.urlEncodedString!)"
                 }
 
                 print(qqSchemeURLString)
@@ -304,6 +312,10 @@ extension String {
 
     var base64EncodedString: String? {
         return dataUsingEncoding(NSUTF8StringEncoding)?.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
+    }
+
+    var urlEncodedString: String? {
+        return stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLHostAllowedCharacterSet())
     }
 }
 

@@ -96,11 +96,22 @@ class ViewController: UIViewController {
 
         MonkeyKing.registerAccount(.QQ(appID: qqAppID))
 
-        let message = MonkeyKing.Message.QQ(.Friends(info: (
+//        let message = MonkeyKing.Message.QQ(.Friends(info: (
+//            title: "friends",
+//            description: "helloworld",
+//            thumbnail: nil,
+//            media: .Image(UIImage(named: "rabbit")!)
+//        )))
+//
+//        MonkeyKing.shareMessage(message) { success in
+//            print("success: \(success)")
+//        }
+
+        let message = MonkeyKing.Message.QQ(.QZone(info: (
             title: "friends",
             description: "helloworld",
-            thumbnail: nil,
-            media: .Image(UIImage(named: "rabbit")!)
+            thumbnail: UIImage(named: "rabbit")!,
+            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
         )))
 
         MonkeyKing.shareMessage(message) { success in
