@@ -17,7 +17,9 @@ public class MonkeyKing {
     static let sharedMonkeyKing = MonkeyKing()
 
     public enum Account: Hashable {
+
         case WeChat(appID: String)
+        case QQ(appID: String)
 
         func canOpenURL(URL: NSURL) -> Bool {
             return UIApplication.sharedApplication().canOpenURL(URL)
@@ -27,12 +29,16 @@ public class MonkeyKing {
             switch self {
             case .WeChat:
                 return canOpenURL(NSURL(string: "weixin://")!)
+            case .QQ:
+                return canOpenURL(NSURL(string: "mqqapi://")!)
             }
         }
 
         public var appID: String {
             switch self {
             case .WeChat(let appID):
+                return appID
+            case .QQ(let appID):
                 return appID
             }
         }
@@ -117,11 +123,46 @@ public class MonkeyKing {
         }
         case WeChat(WeChatSubtype)
 
+        public enum QQSubtype {
+            case Friends(info: Info)
+            case QZone(info: Info)
+
+            var scene: Int {
+                switch self {
+                case .Friends:
+                    return 0
+                case .QZone:
+                    return 1
+                }
+            }
+
+            var info: Info {
+                switch self {
+                case .Friends(let info):
+                    return info
+                case .QZone(let info):
+                    return info
+                }
+            }
+        }
+        case QQ(QQSubtype)
+
         public var canBeDelivered: Bool {
+
             switch self {
+
             case .WeChat:
                 for account in sharedMonkeyKing.accountSet {
                     if case .WeChat = account {
+                        return account.isAppInstalled
+                    }
+                }
+
+                return false
+
+            case .QQ:
+                for account in sharedMonkeyKing.accountSet {
+                    if case .QQ = account {
                         return account.isAppInstalled
                     }
                 }
@@ -201,7 +242,65 @@ public class MonkeyKing {
                     finish(false)
                 }
             }
+
+        case .QQ(let type):
+
+            let callbackName = String(format: "QQ%02llx", ("1103194207" as NSString).longLongValue)
+
+            print(NSBundle.mainBundle().displayName!)
+
+            var qqSchemeURLString = "mqqapi://share/to_fri?thirdAppDisplayName=\(NSBundle.mainBundle().displayName!.base64EncodedString!)"
+                qqSchemeURLString+="&version=1&cflag=\(type.scene)"
+                qqSchemeURLString+="&callback_type=scheme&generalpastboard=1"
+                qqSchemeURLString+="&callback_name=\(callbackName)"
+                qqSchemeURLString+="&src_type=app&shareType=0&file_type="
+
+            switch type.info.media {
+            case .URL(let URL):
+//                weChatMessageInfo["objectType"] = "5"
+//                weChatMessageInfo["mediaUrl"] = URL.absoluteString
+                break
+
+            case .Image(let image):
+
+                let imageData = UIImageJPEGRepresentation(image, 1)!
+                let dic = [
+                    "file_data": imageData,
+                    "previewimagedata": type.info.thumbnail ?? imageData
+                ]
+                let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
+
+                UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
+
+                qqSchemeURLString += "img"
+                qqSchemeURLString += "&title=\(type.info.title!.base64EncodedString!)"
+                qqSchemeURLString += "&objectlocation=pasteboard&description=\(type.info.description!.base64EncodedString!)"
+            }
+
+            print(qqSchemeURLString)
+
+            guard let URL = NSURL(string: qqSchemeURLString) else {
+                return
+            }
+
+            if !UIApplication.sharedApplication().openURL(URL) {
+                finish(false)
+            }
         }
+    }
+}
+
+extension NSBundle {
+
+    var displayName: String? {
+        return infoDictionary?["CFBundleIdentifier"] as? String
+    }
+}
+
+extension String {
+
+    var base64EncodedString: String? {
+        return dataUsingEncoding(NSUTF8StringEncoding)?.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
     }
 }
 

@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -41,14 +42,24 @@
                                     <action selector="systemShare:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kH6-Tg-DfW"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="64n-dS-lG8">
+                                <rect key="frame" x="523" y="550" width="69" height="30"/>
+                                <animations/>
+                                <state key="normal" title="QQ Image"/>
+                                <connections>
+                                    <action selector="shareToQQFriends:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dOf-SE-UL0"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="wOV-Cj-OZI" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="9BD-97-KhW"/>
+                            <constraint firstItem="64n-dS-lG8" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="Gy6-WT-Daa"/>
                             <constraint firstItem="gS0-c6-rje" firstAttribute="top" secondItem="wOV-Cj-OZI" secondAttribute="bottom" constant="30" id="JPE-Wa-tjA"/>
                             <constraint firstItem="oVi-NI-LY5" firstAttribute="top" secondItem="gS0-c6-rje" secondAttribute="bottom" constant="30" id="NoC-FL-SzL"/>
                             <constraint firstItem="oVi-NI-LY5" firstAttribute="centerX" secondItem="gS0-c6-rje" secondAttribute="centerX" id="Nvu-5E-DuN"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="64n-dS-lG8" secondAttribute="bottom" constant="20" id="UWQ-X1-vpi"/>
                             <constraint firstItem="gS0-c6-rje" firstAttribute="centerX" secondItem="wOV-Cj-OZI" secondAttribute="centerX" id="djy-jn-jJH"/>
                             <constraint firstItem="wOV-Cj-OZI" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="gG1-gL-g8t"/>
                         </constraints>

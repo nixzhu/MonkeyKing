@@ -10,6 +10,7 @@ import UIKit
 import MonkeyKing
 
 let weChatAppID = "wxd930ea5d5a258f4f"
+let qqAppID = "1103194207"
 
 class ViewController: UIViewController {
 
@@ -90,5 +91,22 @@ class ViewController: UIViewController {
 
         presentViewController(activityViewController, animated: true, completion: nil)
     }
+
+    @IBAction func shareToQQFriends(sender: UIButton) {
+
+        MonkeyKing.registerAccount(.QQ(appID: qqAppID))
+
+        let message = MonkeyKing.Message.QQ(.Friends(info: (
+            title: "friends",
+            description: "helloworld",
+            thumbnail: nil,
+            media: .Image(UIImage(named: "rabbit")!)
+        )))
+
+        MonkeyKing.shareMessage(message) { success in
+            print("success: \(success)")
+        }
+    }
+
 }
 
