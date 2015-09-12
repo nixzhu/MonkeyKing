@@ -83,15 +83,17 @@ public class MonkeyKing {
         return false
     }
 
+    public enum Media {
+        case URL(NSURL)
+        case Image(UIImage)
+    }
+
+    public typealias Info = (title: String?, description: String?, thumbnail: UIImage?, media: Media)
+
     public enum Message {
 
         public enum WeChatSubtype {
 
-            public enum Media {
-                case URL(NSURL)
-                case Image(UIImage)
-            }
-            public typealias Info = (title: String?, description: String?, thumbnail: UIImage?, media: Media)
             case Session(info: Info)
             case Timeline(info: Info)
 

@@ -49,11 +49,11 @@ class ViewController: UIViewController {
 
         MonkeyKing.registerAccount(.WeChat(appID: weChatAppID))
 
-        let shareURL = NSURL(string: "http://www.apple.com/cn")!
+        let shareURL = NSURL(string: "http://www.apple.com/cn/iphone/compare/")!
 
-        let info = MonkeyKing.Message.WeChatSubtype.Info(
-            title: "New iPhones",
-            description: "Order begin at 3 PM tomorrow.",
+        let info = MonkeyKing.Info(
+            title: "iPhone Compare",
+            description: "iPhone 机型比较",
             thumbnail: UIImage(named: "rabbit"),
             media: .URL(shareURL)
         )
