@@ -59,9 +59,6 @@ public class MonkeyKing {
 
     public class func handleOpenURL(URL: NSURL) -> Bool {
 
-        print("handleOpenURL: \(URL)")
-        print("URL.scheme: \(URL.scheme)")
-
         if URL.scheme.hasPrefix("wx") {
 
             guard let data = UIPasteboard.generalPasteboard().dataForPasteboardType("content") else {
@@ -88,23 +85,7 @@ public class MonkeyKing {
 
         } else if URL.scheme.hasPrefix("tencent") {
 
-            var info = [String: String]()
-
-            if let querys = URL.query?.componentsSeparatedByString("&") {
-                for query in querys {
-                    let keyValuePair = query.componentsSeparatedByString("=")
-                    if keyValuePair.count == 2 {
-                        let key = keyValuePair[0]
-                        let value = keyValuePair[1]
-
-                        info[key] = value
-                    }
-                }
-            }
-
-            print(info)
-
-            guard let error = info["error"] else {
+            guard let error = URL.queryInfo["error"] else {
                 return false
             }
 
@@ -113,24 +94,6 @@ public class MonkeyKing {
             sharedMonkeyKing.latestFinish?(success)
 
             return success
-
-            /*
-            guard let data = UIPasteboard.generalPasteboard().dataForPasteboardType("com.tencent." + URL.scheme) else {
-                return false
-            }
-
-            if let dic = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? NSDictionary {
-
-                guard let result = dic["ret"]?.integerValue else {
-                    return false
-                }
-
-                let success = (result == 0)
-
-                sharedMonkeyKing.latestFinish?(success)
-
-                return success
-            }*/
         }
 
         return false
@@ -369,7 +332,9 @@ public class MonkeyKing {
     }
 }
 
-extension NSBundle {
+// MARK: Extensions
+
+private extension NSBundle {
 
     var displayName: String? {
 
@@ -387,7 +352,7 @@ extension NSBundle {
     }
 }
 
-extension String {
+private extension String {
 
     var base64EncodedString: String? {
         return dataUsingEncoding(NSUTF8StringEncoding)?.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
@@ -399,6 +364,28 @@ extension String {
 
     var base64AndURLEncodedString: String? {
         return base64EncodedString?.urlEncodedString
+    }
+}
+
+private extension NSURL {
+
+    var queryInfo: [String: String] {
+
+        var info = [String: String]()
+
+        if let querys = query?.componentsSeparatedByString("&") {
+            for query in querys {
+                let keyValuePair = query.componentsSeparatedByString("=")
+                if keyValuePair.count == 2 {
+                    let key = keyValuePair[0]
+                    let value = keyValuePair[1]
+
+                    info[key] = value
+                }
+            }
+        }
+        
+        return info
     }
 }
 
