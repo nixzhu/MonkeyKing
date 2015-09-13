@@ -15,11 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-
-
-        let s = String(format: "QQ%02llx", ("1103194207" as NSString).longLongValue)
-        print(s)
-
         return true
     }
 

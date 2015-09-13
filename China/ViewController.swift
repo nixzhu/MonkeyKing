@@ -14,7 +14,7 @@ let qqAppID = "1103194207"
 
 class ViewController: UIViewController {
 
-    @IBAction func shareToWeChatSession(sender: UIButton) {
+    @IBAction func shareURLToWeChatSession(sender: UIButton) {
 
         MonkeyKing.registerAccount(.WeChat(appID: weChatAppID))
 
@@ -26,11 +26,11 @@ class ViewController: UIViewController {
         )))
 
         MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+            print("shareURLToWeChatSession success: \(success)")
         }
     }
 
-    @IBAction func shareToWeChatTimeline(sender: UIButton) {
+    @IBAction func shareImageToWeChatTimeline(sender: UIButton) {
 
         MonkeyKing.registerAccount(.WeChat(appID: weChatAppID))
 
@@ -42,7 +42,39 @@ class ViewController: UIViewController {
         )))
 
         MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+            print("shareImageToWeChatTimeline success: \(success)")
+        }
+    }
+
+    @IBAction func shareURLToQQFriends(sender: UIButton) {
+
+        MonkeyKing.registerAccount(.QQ(appID: qqAppID))
+
+        let message = MonkeyKing.Message.QQ(.Friends(info: (
+            title: "friends",
+            description: "helloworld",
+            thumbnail: UIImage(named: "rabbit")!,
+            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
+        )))
+
+        MonkeyKing.shareMessage(message) { success in
+            print("shareURLToQQFriends success: \(success)")
+        }
+    }
+
+    @IBAction func shareImageToQQZone(sender: UIButton) {
+
+        MonkeyKing.registerAccount(.QQ(appID: qqAppID))
+
+        let message = MonkeyKing.Message.QQ(.QZone(info: (
+            title: "friends",
+            description: "helloworld",
+            thumbnail: UIImage(named: "rabbit")!,
+            media: .Image(UIImage(named: "rabbit")!)
+        )))
+
+        MonkeyKing.shareMessage(message) { success in
+            print("shareImageToQQZone success: \(success)")
         }
     }
 
@@ -68,7 +100,7 @@ class ViewController: UIViewController {
             canPerform: sessionMessage.canBeDelivered,
             perform: {
                 MonkeyKing.shareMessage(sessionMessage) { success in
-                    print("Session success: \(success)")
+                    print("systemShare WeChat Session success: \(success)")
                 }
             }
         )
@@ -82,7 +114,7 @@ class ViewController: UIViewController {
             canPerform: timelineMessage.canBeDelivered,
             perform: {
                 MonkeyKing.shareMessage(timelineMessage) { success in
-                    print("Timeline success: \(success)")
+                    print("systemShare WeChat Timeline success: \(success)")
                 }
             }
         )
@@ -91,33 +123,5 @@ class ViewController: UIViewController {
 
         presentViewController(activityViewController, animated: true, completion: nil)
     }
-
-    @IBAction func shareToQQFriends(sender: UIButton) {
-
-        MonkeyKing.registerAccount(.QQ(appID: qqAppID))
-
-        let message = MonkeyKing.Message.QQ(.Friends(info: (
-            title: "friends",
-            description: "helloworld",
-            thumbnail: UIImage(named: "rabbit")!,
-            media: .Image(UIImage(named: "rabbit")!)
-        )))
-
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
-        }
-
-//        let message = MonkeyKing.Message.QQ(.Friends(info: (
-//            title: "friends",
-//            description: "helloworld",
-//            thumbnail: UIImage(named: "rabbit")!,
-//            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
-//        )))
-//
-//        MonkeyKing.shareMessage(message) { success in
-//            print("success: \(success)")
-//        }
-    }
-
 }
 

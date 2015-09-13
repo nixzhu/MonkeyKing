@@ -249,8 +249,6 @@ public class MonkeyKing {
 
                 let callbackName = String(format: "QQ%02llx", (appID as NSString).longLongValue)
 
-                print(NSBundle.mainBundle().displayName!)
-
                 var qqSchemeURLString = "mqqapi://share/to_fri?"
                 if let encodedAppDisplayName = NSBundle.mainBundle().displayName?.base64EncodedString {
                     qqSchemeURLString += "thirdAppDisplayName=" + encodedAppDisplayName
