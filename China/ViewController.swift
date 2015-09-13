@@ -96,29 +96,17 @@ class ViewController: UIViewController {
 
         let weChatSessionMessage = MonkeyKing.Message.WeChat(.Session(info: info))
 
-        let weChatSessionActivity = AnyActivity(
-            type: "com.nixWork.China.WeChat.Session",
-            title: NSLocalizedString("WeChat Session", comment: ""),
-            image: UIImage(named: "wechat_session")!,
-            message: weChatSessionMessage,
-            finish: { success in
-                print("systemShare WeChat Session success: \(success)")
-            }
-        )
+        let weChatSessionActivity = WeChatActivity(type: .Session, message: weChatSessionMessage, finish: { success in
+            print("systemShare WeChat Session success: \(success)")
+        })
 
         // WeChat Timeline
 
         let weChatTimelineMessage = MonkeyKing.Message.WeChat(.Timeline(info: info))
 
-        let weChatTimelineActivity = AnyActivity(
-            type: "com.nixWork.China.WeChat.Timeline",
-            title: NSLocalizedString("WeChat Timeline", comment: ""),
-            image: UIImage(named: "wechat_timeline")!,
-            message: weChatTimelineMessage,
-            finish: { success in
-                print("systemShare WeChat Timeline success: \(success)")
-            }
-        )
+        let weChatTimelineActivity = WeChatActivity(type: .Timeline, message: weChatTimelineMessage, finish: { success in
+            print("systemShare WeChat Timeline success: \(success)")
+        })
 
         // QQ Friends
 

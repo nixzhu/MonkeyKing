@@ -17,6 +17,7 @@
 		50FBA6D71BA2BBE900E69BB3 /* MonkeyKing.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 50FBA6CF1BA2BBE900E69BB3 /* MonkeyKing.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		50FBA6DD1BA2BC0A00E69BB3 /* MonkeyKing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6DC1BA2BC0A00E69BB3 /* MonkeyKing.swift */; settings = {ASSET_TAGS = (); }; };
 		50FBA6DF1BA3079D00E69BB3 /* AnyActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6DE1BA3079D00E69BB3 /* AnyActivity.swift */; settings = {ASSET_TAGS = (); }; };
+		50FBA6E11BA56E1C00E69BB3 /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,7 @@
 		50FBA6D31BA2BBE900E69BB3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50FBA6DC1BA2BC0A00E69BB3 /* MonkeyKing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeyKing.swift; sourceTree = "<group>"; };
 		50FBA6DE1BA3079D00E69BB3 /* AnyActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyActivity.swift; sourceTree = "<group>"; };
+		50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeChatActivity.swift; path = Activities/WeChatActivity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 			children = (
 				50FBA6B81BA2AFAE00E69BB3 /* AppDelegate.swift */,
 				50FBA6BA1BA2AFAE00E69BB3 /* ViewController.swift */,
+				50FBA6E21BA56E2200E69BB3 /* Activities */,
 				50FBA6BC1BA2AFAE00E69BB3 /* Main.storyboard */,
 				50FBA6BF1BA2AFAE00E69BB3 /* Assets.xcassets */,
 				50FBA6C11BA2AFAE00E69BB3 /* LaunchScreen.storyboard */,
@@ -117,6 +120,14 @@
 				50FBA6D31BA2BBE900E69BB3 /* Info.plist */,
 			);
 			path = MonkeyKing;
+			sourceTree = "<group>";
+		};
+		50FBA6E21BA56E2200E69BB3 /* Activities */ = {
+			isa = PBXGroup;
+			children = (
+				50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */,
+			);
+			name = Activities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -232,6 +243,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50FBA6E11BA56E1C00E69BB3 /* WeChatActivity.swift in Sources */,
 				50FBA6BB1BA2AFAE00E69BB3 /* ViewController.swift in Sources */,
 				50FBA6B91BA2AFAE00E69BB3 /* AppDelegate.swift in Sources */,
 			);
