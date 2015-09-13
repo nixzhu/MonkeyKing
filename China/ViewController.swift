@@ -100,11 +100,9 @@ class ViewController: UIViewController {
             type: "com.nixWork.China.WeChat.Session",
             title: NSLocalizedString("WeChat Session", comment: ""),
             image: UIImage(named: "wechat_session")!,
-            canPerform: weChatSessionMessage.canBeDelivered,
-            perform: {
-                MonkeyKing.shareMessage(weChatSessionMessage) { success in
-                    print("systemShare WeChat Session success: \(success)")
-                }
+            message: weChatSessionMessage,
+            finish: { success in
+                print("systemShare WeChat Session success: \(success)")
             }
         )
 
@@ -116,11 +114,9 @@ class ViewController: UIViewController {
             type: "com.nixWork.China.WeChat.Timeline",
             title: NSLocalizedString("WeChat Timeline", comment: ""),
             image: UIImage(named: "wechat_timeline")!,
-            canPerform: weChatTimelineMessage.canBeDelivered,
-            perform: {
-                MonkeyKing.shareMessage(weChatTimelineMessage) { success in
-                    print("systemShare WeChat Timeline success: \(success)")
-                }
+            message: weChatTimelineMessage,
+            finish: { success in
+                print("systemShare WeChat Timeline success: \(success)")
             }
         )
 
@@ -132,11 +128,9 @@ class ViewController: UIViewController {
             type: "com.nixWork.China.QQ.Friends",
             title: NSLocalizedString("QQ Friends", comment: ""),
             image: UIImage(named: "wechat_session")!,//UIImage(named: "qq_friends")!, // TODO:
-            canPerform: qqFriendsMessage.canBeDelivered,
-            perform: {
-                MonkeyKing.shareMessage(qqFriendsMessage) { success in
-                    print("systemShare QQ Friends success: \(success)")
-                }
+            message: qqFriendsMessage,
+            finish: { success in
+                print("systemShare QQ Friends success: \(success)")
             }
         )
 
@@ -148,11 +142,9 @@ class ViewController: UIViewController {
             type: "com.nixWork.China.QQ.Zone",
             title: NSLocalizedString("QQ Zone", comment: ""),
             image: UIImage(named: "wechat_timeline")!,//UIImage(named: "qq_zone")!, // TODO:
-            canPerform: qqZoneMessage.canBeDelivered,
-            perform: {
-                MonkeyKing.shareMessage(qqZoneMessage) { success in
-                    print("systemShare QQ Zone success: \(success)")
-                }
+            message: qqZoneMessage,
+            finish: { success in
+                print("systemShare QQ Zone success: \(success)")
             }
         )
 

@@ -14,17 +14,17 @@ public class AnyActivity: UIActivity {
     let title: String
     let image: UIImage
 
-    let canPerform: Bool
-    let perform: () -> Void
+    let message: MonkeyKing.Message
+    let finish: MonkeyKing.Finish
 
-    public init(type: String, title: String, image: UIImage, canPerform: Bool, perform: () -> Void) {
+    public init(type: String, title: String, image: UIImage, message: MonkeyKing.Message, finish: MonkeyKing.Finish) {
 
         self.type = type
         self.title = title
         self.image = image
 
-        self.canPerform = canPerform
-        self.perform = perform
+        self.message = message
+        self.finish = finish
 
         super.init()
     }
@@ -46,11 +46,11 @@ public class AnyActivity: UIActivity {
     }
 
     override public func canPerformWithActivityItems(activityItems: [AnyObject]) -> Bool {
-        return canPerform
+        return message.canBeDelivered
     }
 
     override public func performActivity() {
-        perform()
+        MonkeyKing.shareMessage(message, finish: finish)
         activityDidFinish(true)
     }
 }
