@@ -125,13 +125,13 @@ public class MonkeyKing {
 
         public enum QQSubtype {
             case Friends(info: Info)
-            case QZone(info: Info)
+            case Zone(info: Info)
 
             var scene: Int {
                 switch self {
                 case .Friends:
                     return 0
-                case .QZone:
+                case .Zone:
                     return 1
                 }
             }
@@ -140,7 +140,7 @@ public class MonkeyKing {
                 switch self {
                 case .Friends(let info):
                     return info
-                case .QZone(let info):
+                case .Zone(let info):
                     return info
                 }
             }

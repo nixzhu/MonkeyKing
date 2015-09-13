@@ -42,9 +42,9 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T3B-ji-RIo">
-                                <rect key="frame" x="210" y="412" width="180" height="30"/>
+                                <rect key="frame" x="216" y="412" width="169" height="30"/>
                                 <animations/>
-                                <state key="normal" title="Share Image to QQ QZone"/>
+                                <state key="normal" title="Share Image to QQ Zone"/>
                                 <connections>
                                     <action selector="shareImageToQQZone:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gbN-zn-u9k"/>
                                 </connections>

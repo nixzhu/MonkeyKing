@@ -51,7 +51,7 @@ class ViewController: UIViewController {
         MonkeyKing.registerAccount(.QQ(appID: qqAppID))
 
         let message = MonkeyKing.Message.QQ(.Friends(info: (
-            title: "friends",
+            title: "Friends",
             description: "helloworld",
             thumbnail: UIImage(named: "rabbit")!,
             media: .URL(NSURL(string: "http://www.apple.com/cn")!)
@@ -66,8 +66,8 @@ class ViewController: UIViewController {
 
         MonkeyKing.registerAccount(.QQ(appID: qqAppID))
 
-        let message = MonkeyKing.Message.QQ(.QZone(info: (
-            title: "friends",
+        let message = MonkeyKing.Message.QQ(.Zone(info: (
+            title: "Zone",
             description: "helloworld",
             thumbnail: UIImage(named: "rabbit")!,
             media: .Image(UIImage(named: "rabbit")!)
