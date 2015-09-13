@@ -81,6 +81,7 @@ class ViewController: UIViewController {
     @IBAction func systemShare(sender: UIButton) {
 
         MonkeyKing.registerAccount(.WeChat(appID: weChatAppID))
+        MonkeyKing.registerAccount(.QQ(appID: qqAppID))
 
         let shareURL = NSURL(string: "http://www.apple.com/cn/iphone/compare/")!
 
@@ -91,35 +92,71 @@ class ViewController: UIViewController {
             media: .URL(shareURL)
         )
 
-        let sessionMessage = MonkeyKing.Message.WeChat(.Session(info: info))
+        // WeChat Session
+
+        let weChatSessionMessage = MonkeyKing.Message.WeChat(.Session(info: info))
 
         let weChatSessionActivity = AnyActivity(
             type: "com.nixWork.China.WeChat.Session",
             title: NSLocalizedString("WeChat Session", comment: ""),
             image: UIImage(named: "wechat_session")!,
-            canPerform: sessionMessage.canBeDelivered,
+            canPerform: weChatSessionMessage.canBeDelivered,
             perform: {
-                MonkeyKing.shareMessage(sessionMessage) { success in
+                MonkeyKing.shareMessage(weChatSessionMessage) { success in
                     print("systemShare WeChat Session success: \(success)")
                 }
             }
         )
 
-        let timelineMessage = MonkeyKing.Message.WeChat(.Timeline(info: info))
+        // WeChat Timeline
+
+        let weChatTimelineMessage = MonkeyKing.Message.WeChat(.Timeline(info: info))
 
         let weChatTimelineActivity = AnyActivity(
             type: "com.nixWork.China.WeChat.Timeline",
             title: NSLocalizedString("WeChat Timeline", comment: ""),
             image: UIImage(named: "wechat_timeline")!,
-            canPerform: timelineMessage.canBeDelivered,
+            canPerform: weChatTimelineMessage.canBeDelivered,
             perform: {
-                MonkeyKing.shareMessage(timelineMessage) { success in
+                MonkeyKing.shareMessage(weChatTimelineMessage) { success in
                     print("systemShare WeChat Timeline success: \(success)")
                 }
             }
         )
 
-        let activityViewController = UIActivityViewController(activityItems: [shareURL], applicationActivities: [weChatSessionActivity, weChatTimelineActivity])
+        // QQ Friends
+
+        let qqFriendsMessage = MonkeyKing.Message.QQ(.Friends(info: info))
+
+        let qqFriendsActivity = AnyActivity(
+            type: "com.nixWork.China.QQ.Friends",
+            title: NSLocalizedString("QQ Friends", comment: ""),
+            image: UIImage(named: "wechat_session")!,//UIImage(named: "qq_friends")!, // TODO:
+            canPerform: qqFriendsMessage.canBeDelivered,
+            perform: {
+                MonkeyKing.shareMessage(qqFriendsMessage) { success in
+                    print("systemShare QQ Friends success: \(success)")
+                }
+            }
+        )
+
+        // QQ Zone
+
+        let qqZoneMessage = MonkeyKing.Message.QQ(.Zone(info: info))
+
+        let qqZoneActivity = AnyActivity(
+            type: "com.nixWork.China.QQ.Zone",
+            title: NSLocalizedString("QQ Zone", comment: ""),
+            image: UIImage(named: "wechat_timeline")!,//UIImage(named: "qq_zone")!, // TODO:
+            canPerform: qqZoneMessage.canBeDelivered,
+            perform: {
+                MonkeyKing.shareMessage(qqZoneMessage) { success in
+                    print("systemShare QQ Zone success: \(success)")
+                }
+            }
+        )
+
+        let activityViewController = UIActivityViewController(activityItems: [shareURL], applicationActivities: [weChatSessionActivity, weChatTimelineActivity, qqFriendsActivity, qqZoneActivity])
 
         presentViewController(activityViewController, animated: true, completion: nil)
     }
