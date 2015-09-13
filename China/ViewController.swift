@@ -80,9 +80,6 @@ class ViewController: UIViewController {
 
     @IBAction func systemShare(sender: UIButton) {
 
-        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID))
-        MonkeyKing.registerAccount(.QQ(appID: qqAppID))
-
         let shareURL = NSURL(string: "http://www.apple.com/cn/iphone/compare/")!
 
         let info = MonkeyKing.Info(
@@ -112,29 +109,17 @@ class ViewController: UIViewController {
 
         let qqFriendsMessage = MonkeyKing.Message.QQ(.Friends(info: info))
 
-        let qqFriendsActivity = AnyActivity(
-            type: "com.nixWork.China.QQ.Friends",
-            title: NSLocalizedString("QQ Friends", comment: ""),
-            image: UIImage(named: "wechat_session")!,//UIImage(named: "qq_friends")!, // TODO:
-            message: qqFriendsMessage,
-            finish: { success in
-                print("systemShare QQ Friends success: \(success)")
-            }
-        )
+        let qqFriendsActivity = QQActivity(type: .Friends, message: qqFriendsMessage, finish: { success in
+            print("systemShare QQ Friends success: \(success)")
+        })
 
         // QQ Zone
 
         let qqZoneMessage = MonkeyKing.Message.QQ(.Zone(info: info))
 
-        let qqZoneActivity = AnyActivity(
-            type: "com.nixWork.China.QQ.Zone",
-            title: NSLocalizedString("QQ Zone", comment: ""),
-            image: UIImage(named: "wechat_timeline")!,//UIImage(named: "qq_zone")!, // TODO:
-            message: qqZoneMessage,
-            finish: { success in
-                print("systemShare QQ Zone success: \(success)")
-            }
-        )
+        let qqZoneActivity = QQActivity(type: .Zone, message: qqZoneMessage, finish: { success in
+            print("systemShare QQ Zone success: \(success)")
+        })
 
         let activityViewController = UIActivityViewController(activityItems: [shareURL], applicationActivities: [weChatSessionActivity, weChatTimelineActivity, qqFriendsActivity, qqZoneActivity])
 

@@ -18,6 +18,7 @@
 		50FBA6DD1BA2BC0A00E69BB3 /* MonkeyKing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6DC1BA2BC0A00E69BB3 /* MonkeyKing.swift */; settings = {ASSET_TAGS = (); }; };
 		50FBA6DF1BA3079D00E69BB3 /* AnyActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6DE1BA3079D00E69BB3 /* AnyActivity.swift */; settings = {ASSET_TAGS = (); }; };
 		50FBA6E11BA56E1C00E69BB3 /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */; settings = {ASSET_TAGS = (); }; };
+		50FBA6E41BA570CD00E69BB3 /* QQActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,7 @@
 		50FBA6DC1BA2BC0A00E69BB3 /* MonkeyKing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeyKing.swift; sourceTree = "<group>"; };
 		50FBA6DE1BA3079D00E69BB3 /* AnyActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyActivity.swift; sourceTree = "<group>"; };
 		50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeChatActivity.swift; path = Activities/WeChatActivity.swift; sourceTree = "<group>"; };
+		50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QQActivity.swift; path = Activities/QQActivity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */,
+				50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */,
 			);
 			name = Activities;
 			sourceTree = "<group>";
@@ -245,6 +248,7 @@
 			files = (
 				50FBA6E11BA56E1C00E69BB3 /* WeChatActivity.swift in Sources */,
 				50FBA6BB1BA2AFAE00E69BB3 /* ViewController.swift in Sources */,
+				50FBA6E41BA570CD00E69BB3 /* QQActivity.swift in Sources */,
 				50FBA6B91BA2AFAE00E69BB3 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
