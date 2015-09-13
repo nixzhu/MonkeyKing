@@ -7,7 +7,7 @@
 
 MonkeyKing help you post message to Chinese Social Network, without third party SDKs.
 
-MonkeyKing use the same analysis process of [openshare](https://github.com/100apps/openshare), but now only support share URL and Image to WeChat.
+MonkeyKing use the same analysis process of [openshare](https://github.com/100apps/openshare), but now only support share URL and Image to **WeChat** or **QQ**.
 
 ## Requirements
 
@@ -39,21 +39,19 @@ Share to WeChat (微信)：
 2. Prepare you message and share it:
 
 	```swift
-    @IBAction func shareToWeChatSession(sender: UIButton) {
-    
-        MonkeyKing.registerAccount(.WeChat(appID: "wxd930ea5d5a258f4f"))
+    @IBAction func shareURLToWeChatSession(sender: UIButton) {
 
-        let info = MonkeyKing.Message.WeChatSubtype.Info(
+        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID))
+
+        let message = MonkeyKing.Message.WeChat(.Session(info: (
             title: "Session",
             description: "Hello Session",
             thumbnail: UIImage(named: "rabbit"),
             media: .URL(NSURL(string: "http://www.apple.com/cn")!)
-        )
-
-        let message = MonkeyKing.Message.WeChat(.Session(info))
+        )))
 
         MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+            print("shareURLToWeChatSession success: \(success)")
         }
     }
 	```
@@ -74,7 +72,7 @@ Share to WeChat (微信)：
 	
 It's done!
 
-If you don't want to registerAccount before share, do it in AppDelegate like follow:
+If you don't want to register account before share each time, do it in AppDelegate like follow:
 	
 ```swift
 func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -114,7 +112,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 use_frameworks!
 
-pod 'MonkeyKing', '~> 0.0.1'
+pod 'MonkeyKing', '~> 0.0.2'
 ```
 
 Then, run the following command:
@@ -139,7 +137,7 @@ $ brew install carthage
 To integrate MonkeyKing into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "nixzhu/MonkeyKing" >= 0.0.1
+github "nixzhu/MonkeyKing" >= 0.0.2
 ```
 
 Then, run the following command to build the MonkeyKing framework:

@@ -1,12 +1,12 @@
 Pod::Spec.new do |s|
 
   s.name        = "MonkeyKing"
-  s.version     = "0.0.1"
+  s.version     = "0.0.2"
   s.summary     = "MonkeyKing help you post message to Chinese Social Network."
 
   s.description = <<-DESC
-                   You just want to share some information to WeChat, ...
-                   Why use the buggy third party SDKs?
+                   You just want to share some information to WeChat, QQ, ...
+                   Why use their buggy SDKs?
                    DESC
 
   s.homepage    = "https://github.com/nixzhu/MonkeyKing"
