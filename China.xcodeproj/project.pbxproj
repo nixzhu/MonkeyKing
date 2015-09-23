@@ -366,7 +366,7 @@
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = China/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nixWork.China;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ifanr.AS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -378,7 +378,7 @@
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = China/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nixWork.China;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ifanr.AS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

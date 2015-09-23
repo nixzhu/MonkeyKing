@@ -20,7 +20,7 @@ public class MonkeyKing {
 
         case WeChat(appID: String, appKey: String)
         case QQ(appID: String)
-        case Weibo(appID: String)
+        case Weibo(appID: String, redirectURL: String)
 
         func canOpenURL(URL: NSURL?) -> Bool {
             guard let URL = URL else {
@@ -46,7 +46,7 @@ public class MonkeyKing {
                 return appID
             case .QQ(let appID):
                 return appID
-            case .Weibo(let appID):
+            case .Weibo(let appID, _):
                 return appID
             }
         }
@@ -70,14 +70,16 @@ public class MonkeyKing {
         if URL.scheme.hasPrefix("wx") {
 
             // WeChat OAuth
-            if let stateRange = URL.absoluteString.rangeOfString("&state=Weixinauth"),
-                let codeRange = URL.absoluteString.rangeOfString("?code=") {
+            if let stateRange = URL.absoluteString.rangeOfString("&state=Weixinauth") {
+                if let codeRange = URL.absoluteString.rangeOfString("?code=") {
                     //login succcess
                     let code = URL.absoluteString.substringToIndex(stateRange.startIndex).substringFromIndex(codeRange.endIndex)
                     fetchUserInfoByCode(code: code) { (userInfo, response, error) -> Void in
                         sharedMonkeyKing.oauthCompletionHandler?(userInfo, response, error)
                     }
                     return true
+                }
+                return false
             }
 
             // WeChat Share
@@ -104,8 +106,9 @@ public class MonkeyKing {
             }
         }
 
+        // QQ Share
         if URL.scheme.hasPrefix("QQ") {
-            // QQ Share
+
             guard let error = URL.queryInfo["error"] else {
                 return false
             }
@@ -117,8 +120,9 @@ public class MonkeyKing {
             return success
         }
 
+        // QQ OAuth
         if URL.scheme.hasPrefix("tencent") {
-            // QQ OAuth
+
             for case let .QQ(appID) in sharedMonkeyKing.accountSet {
 
                 var userInfoDictionary: NSDictionary?
@@ -130,15 +134,15 @@ public class MonkeyKing {
 
                 guard let data = UIPasteboard.generalPasteboard().dataForPasteboardType("com.tencent.tencent\(appID)"),
                     let dic = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? NSDictionary else {
-                        error = NSError(domain: "OAuth Error", code: 0, userInfo: nil)
+                        error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
                         return false
                 }
 
                 guard let result = dic["ret"]?.integerValue where result != 0 else {
                     if let errorDomatin = dic["user_cancelled"] as? String where errorDomatin == "YES" {
-                        error = NSError(domain: "User Cancelled", code: -1, userInfo: nil)
+                        error = NSError(domain: "User Cancelled", code: -2, userInfo: nil)
                     } else {
-                        error = NSError(domain: "OAuth Error", code: 0, userInfo: nil)
+                        error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
                     }
                     return false
                 }
@@ -149,6 +153,63 @@ public class MonkeyKing {
             }
         }
 
+        // Weibo
+        if URL.scheme.hasPrefix("wb") {
+            guard let items = UIPasteboard.generalPasteboard().items as? [[String: AnyObject]] else {
+                return false
+            }
+            var results = [String: AnyObject]()
+
+            for item in items {
+                for (key, value) in item {
+                    if let valueData = value as? NSData where key == "transferObject" {
+                        results[key] = NSKeyedUnarchiver.unarchiveObjectWithData(valueData)
+                    }
+                }
+            }
+
+            guard let responseData = results["transferObject"] as? [String: AnyObject],
+                    let type = responseData["__class"] as? String else {
+                        return false
+            }
+
+            guard let statusCode = responseData["statusCode"] as? Int else {
+                return false
+            }
+
+            switch type {
+
+                // Weibo OAuth
+                case "WBAuthorizeResponse":
+
+                    var userInfoDictionary: NSDictionary?
+                    var error: NSError?
+
+                    defer {
+                        sharedMonkeyKing.oauthCompletionHandler?(responseData, nil, error)
+                    }
+
+                    userInfoDictionary = responseData
+
+                    if statusCode != 0 {
+                        error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
+                        return false
+                    }
+                    return true
+
+                // Weibo Share
+                case "WBSendMessageToWeiboResponse":
+
+                    let success = (statusCode == 0)
+                    sharedMonkeyKing.latestFinish?(success)
+
+                    return success
+
+                default:
+                    break
+            }
+
+        }
 
         return false
     }
@@ -342,8 +403,6 @@ public class MonkeyKing {
 
                 let callbackName = String(format: "QQ%02llx", (appID as NSString).longLongValue)
 
-                print(NSBundle.mainBundle().displayName!)
-
                 var qqSchemeURLString = "mqqapi://share/to_fri?"
                 if let encodedAppDisplayName = NSBundle.mainBundle().displayName?.base64EncodedString {
                     qqSchemeURLString += "thirdAppDisplayName=" + encodedAppDisplayName
@@ -415,7 +474,7 @@ public class MonkeyKing {
             }
 
         case .Weibo(let type):
-            for case let .Weibo(appID) in sharedMonkeyKing.accountSet {
+            for case let .Weibo(appID, _) in sharedMonkeyKing.accountSet {
 
                 var messageInfo: [String: AnyObject] = ["__class": "WBMessageObject"]
                 let info = type.info
@@ -497,11 +556,13 @@ extension MonkeyKing {
 
         switch account {
 
-            case .WeChat(let appID):
+            case .WeChat(let appID, _):
+
                 let scope = "snsapi_userinfo"
                 openURL("weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth")
 
             case .QQ(let appID):
+
                 let scope = ""
                 let appName = NSBundle.mainBundle().displayName ?? "nixApp"
                 let dic = ["app_id": appID,
@@ -520,7 +581,20 @@ extension MonkeyKing {
 
                 openURL("mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1")
 
-            case .Weibo(let appID):
+            case .Weibo(let appID, let redirectURL):
+
+                let scope = "all"
+                let uuIDString = CFUUIDCreateString(nil, CFUUIDCreate(nil))
+                let authData = [
+                    ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(["__class": "WBAuthorizeRequest", "redirectURI": redirectURL, "requestID":uuIDString, "scope": scope])
+                    ],
+                    ["userInfo": NSKeyedArchiver.archivedDataWithRootObject(["mykey": "as you like", "SSO_From": "SendMessageToWeiboViewController"])],
+                    ["app": NSKeyedArchiver.archivedDataWithRootObject(["appKey": appID, "bundleID": NSBundle.mainBundle().bundleID ?? "", "name": NSBundle.mainBundle().displayName ?? ""])]
+                ]
+
+                UIPasteboard.generalPasteboard().items = authData
+                openURL("weibosdk://request?id=\(uuIDString)&sdkversion=003013000")
+
                 break
         }
     }

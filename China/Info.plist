@@ -47,7 +47,7 @@
 			<string>Weibo</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>402180334</string>
+				<string>wb402180334</string>
 			</array>
 		</dict>
 	</array>

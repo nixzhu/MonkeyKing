@@ -18,8 +18,12 @@ let weiboID = "402180334"
 class ViewController: UIViewController {
 
     @IBAction func shareToWeiBo(sender: UIButton) {
-        let account = MonkeyKing.Account.Weibo(appID: weiboID)
+        let account = MonkeyKing.Account.Weibo(appID: weiboID, redirectURL: "http://openshare.gfzj.us/")
         MonkeyKing.registerAccount(account)
+
+        MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
+            print(dictionary)
+        }
 
         //        let message = MonkeyKing.Message.Weibo(.Default(info: (
         //            title: "Timeline",
@@ -28,16 +32,16 @@ class ViewController: UIViewController {
         //            media: .Image(UIImage(named: "rabbit")!)
         //        )))
 
-        let message = MonkeyKing.Message.Weibo(.Default(info: (
-            title: "News",
-            description: "Hello Apple",
-            thumbnail: UIImage(named: "rabbit"),
-            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
-        )))
-
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
-        }
+//        let message = MonkeyKing.Message.Weibo(.Default(info: (
+//            title: "News",
+//            description: "Hello Apple",
+//            thumbnail: UIImage(named: "rabbit"),
+//            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
+//        )))
+//
+//        MonkeyKing.shareMessage(message) { success in
+//            print("success: \(success)")
+//        }
 
         //        MonkeyKing.oauth(account) { (dictionary, response, error) -> Void in
         //            print(dictionary)
