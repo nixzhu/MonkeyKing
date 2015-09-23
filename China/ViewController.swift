@@ -9,18 +9,28 @@
 import UIKit
 import MonkeyKing
 
-let weChatAppID = "wxd930ea5d5a258f4f"
+let weChatAppID = "wxd36e72964d9dce92"
+let weChatAppKey = "731d7d3da7461a89f382baabef2e2c4d"
+
 let qqAppID = "1103194207"
+let weiboID = "402180334"
 
 class ViewController: UIViewController {
 
-    @IBAction func shareToWeChatSession(sender: UIButton) {
+    @IBAction func shareToWeiBo(sender: UIButton) {
+        let account = MonkeyKing.Account.Weibo(appID: weiboID)
+        MonkeyKing.registerAccount(account)
 
-        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID))
+        //        let message = MonkeyKing.Message.Weibo(.Default(info: (
+        //            title: "Timeline",
+        //            description: "Hello Timeline",
+        //            thumbnail: nil,
+        //            media: .Image(UIImage(named: "rabbit")!)
+        //        )))
 
-        let message = MonkeyKing.Message.WeChat(.Session(info: (
-            title: "Session",
-            description: "Hello Session",
+        let message = MonkeyKing.Message.Weibo(.Default(info: (
+            title: "News",
+            description: "Hello Apple",
             thumbnail: UIImage(named: "rabbit"),
             media: .URL(NSURL(string: "http://www.apple.com/cn")!)
         )))
@@ -28,11 +38,38 @@ class ViewController: UIViewController {
         MonkeyKing.shareMessage(message) { success in
             print("success: \(success)")
         }
+
+        //        MonkeyKing.oauth(account) { (dictionary, response, error) -> Void in
+        //            print(dictionary)
+        //        }
+    }
+
+
+    @IBAction func shareToWeChatSession(sender: UIButton) {
+
+        let account = MonkeyKing.Account.WeChat(appID: weChatAppID, appKey: weChatAppKey)
+        MonkeyKing.registerAccount(account)
+        MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
+            print(dictionary)
+        }
+
+        //        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID))
+        //
+        //        let message = MonkeyKing.Message.WeChat(.Session(info: (
+        //            title: "Session",
+        //            description: "Hello Session",
+        //            thumbnail: UIImage(named: "rabbit"),
+        //            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
+        //        )))
+
+        //        MonkeyKing.shareMessage(message) { success in
+        //            print("success: \(success)")
+        //        }
     }
 
     @IBAction func shareToWeChatTimeline(sender: UIButton) {
 
-        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID))
+        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID, appKey: weChatAppKey))
 
         let message = MonkeyKing.Message.WeChat(.Timeline(info: (
             title: "Timeline",
@@ -48,7 +85,7 @@ class ViewController: UIViewController {
 
     @IBAction func systemShare(sender: UIButton) {
 
-        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID))
+        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID, appKey: weChatAppKey))
 
         let shareURL = NSURL(string: "http://www.apple.com/cn/iphone/compare/")!
 
@@ -94,30 +131,36 @@ class ViewController: UIViewController {
 
     @IBAction func shareToQQFriends(sender: UIButton) {
 
-        MonkeyKing.registerAccount(.QQ(appID: qqAppID))
-
-        let message = MonkeyKing.Message.QQ(.Friends(info: (
-            title: "friends",
-            description: "helloworld",
-            thumbnail: UIImage(named: "rabbit")!,
-            media: .Image(UIImage(named: "rabbit")!)
-        )))
-
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        let account = MonkeyKing.Account.QQ(appID: qqAppID)
+        MonkeyKing.registerAccount(account)
+        MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
+            print(error)
         }
 
-//        let message = MonkeyKing.Message.QQ(.Friends(info: (
-//            title: "friends",
-//            description: "helloworld",
-//            thumbnail: UIImage(named: "rabbit")!,
-//            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
-//        )))
-//
-//        MonkeyKing.shareMessage(message) { success in
-//            print("success: \(success)")
-//        }
-    }
 
+        //
+        //        let message = MonkeyKing.Message.QQ(.Friends(info: (
+        //            title: "friends",
+        //            description: "helloworld",
+        //            thumbnail: UIImage(named: "rabbit")!,
+        //            media: .Image(UIImage(named: "rabbit")!)
+        //        )))
+        //
+        //        MonkeyKing.shareMessage(message) { success in
+        //            print("success: \(success)")
+        //        }
+        
+        //        let message = MonkeyKing.Message.QQ(.Friends(info: (
+        //            title: "friends",
+        //            description: "helloworld",
+        //            thumbnail: UIImage(named: "rabbit")!,
+        //            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
+        //        )))
+        //
+        //        MonkeyKing.shareMessage(message) { success in
+        //            print("success: \(success)")
+        //        }
+    }
+    
 }
 

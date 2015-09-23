@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A282b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
@@ -50,6 +50,13 @@
                                     <action selector="shareToQQFriends:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dOf-SE-UL0"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eNe-gK-SM3">
+                                <rect key="frame" x="22" y="550" width="43" height="30"/>
+                                <state key="normal" title="Weibo"/>
+                                <connections>
+                                    <action selector="shareToWeiBo:" destination="BYZ-38-t0r" eventType="touchUpInside" id="cul-WK-lHK"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -62,6 +69,8 @@
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="64n-dS-lG8" secondAttribute="bottom" constant="20" id="UWQ-X1-vpi"/>
                             <constraint firstItem="gS0-c6-rje" firstAttribute="centerX" secondItem="wOV-Cj-OZI" secondAttribute="centerX" id="djy-jn-jJH"/>
                             <constraint firstItem="wOV-Cj-OZI" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="gG1-gL-g8t"/>
+                            <constraint firstItem="eNe-gK-SM3" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="tZS-dA-LWv"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="eNe-gK-SM3" secondAttribute="bottom" constant="20" id="y0P-mA-1dq"/>
                         </constraints>
                     </view>
                 </viewController>

@@ -27,7 +27,7 @@
 			<string>WeChat</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>wxd930ea5d5a258f4f</string>
+				<string>wxd36e72964d9dce92</string>
 			</array>
 		</dict>
 		<dict>
@@ -38,6 +38,16 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>tencent1103194207</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>Weibo</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>402180334</string>
 			</array>
 		</dict>
 	</array>
