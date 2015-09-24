@@ -7,12 +7,13 @@
 //
 
 import UIKit
+import WebKit
 
 public func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
     return lhs.appID == rhs.appID
 }
 
-public class MonkeyKing {
+public class MonkeyKing: NSObject {
 
     static let sharedMonkeyKing = MonkeyKing()
 
@@ -20,7 +21,7 @@ public class MonkeyKing {
 
         case WeChat(appID: String, appKey: String)
         case QQ(appID: String)
-        case Weibo(appID: String, redirectURL: String)
+        case Weibo(appID: String, appKey: String, redirectURL: String)
 
         func canOpenURL(URL: NSURL?) -> Bool {
             guard let URL = URL else {
@@ -36,7 +37,7 @@ public class MonkeyKing {
             case .QQ:
                 return canOpenURL(NSURL(string: "mqqapi://"))
             case .Weibo:
-                return canOpenURL(NSURL(string: "weibosdk://request"))
+                return true//canOpenURL(NSURL(string: "weibosdk://request"))
             }
         }
 
@@ -46,7 +47,7 @@ public class MonkeyKing {
                 return appID
             case .QQ(let appID):
                 return appID
-            case .Weibo(let appID, _):
+            case .Weibo(let appID, _, _):
                 return appID
             }
         }
@@ -62,7 +63,11 @@ public class MonkeyKing {
 
         if account.isAppInstalled {
             sharedMonkeyKing.accountSet.insert(account)
+
+        } else if case .Weibo = account {
+            sharedMonkeyKing.accountSet.insert(account)
         }
+
     }
 
     public class func handleOpenURL(URL: NSURL) -> Bool {
@@ -74,7 +79,7 @@ public class MonkeyKing {
                 if let codeRange = URL.absoluteString.rangeOfString("?code=") {
                     //login succcess
                     let code = URL.absoluteString.substringToIndex(stateRange.startIndex).substringFromIndex(codeRange.endIndex)
-                    fetchUserInfoByCode(code: code) { (userInfo, response, error) -> Void in
+                    fetchWeChatUserInfoByCode(code: code) { (userInfo, response, error) -> Void in
                         sharedMonkeyKing.oauthCompletionHandler?(userInfo, response, error)
                     }
                     return true
@@ -474,7 +479,7 @@ public class MonkeyKing {
             }
 
         case .Weibo(let type):
-            for case let .Weibo(appID, _) in sharedMonkeyKing.accountSet {
+            for case let .Weibo(appID, _, _) in sharedMonkeyKing.accountSet {
 
                 var messageInfo: [String: AnyObject] = ["__class": "WBMessageObject"]
                 let info = type.info
@@ -541,13 +546,7 @@ extension MonkeyKing {
     public class func OAuth(account: Account, completionHandler: SerializeResponse) {
 
         guard account.isAppInstalled else {
-            var errorDomain = "App is not installed"
-            for account in sharedMonkeyKing.accountSet {
-                if case .WeChat = account {
-                    errorDomain += "WeChat "
-                }
-            }
-            let error = NSError(domain: errorDomain, code: 0, userInfo: nil)
+            let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
             completionHandler(nil, nil, error)
             return
         }
@@ -581,25 +580,56 @@ extension MonkeyKing {
 
                 openURL("mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1")
 
-            case .Weibo(let appID, let redirectURL):
+            case .Weibo(let appID, _, let redirectURL):
 
-                let scope = "all"
-                let uuIDString = CFUUIDCreateString(nil, CFUUIDCreate(nil))
-                let authData = [
-                    ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(["__class": "WBAuthorizeRequest", "redirectURI": redirectURL, "requestID":uuIDString, "scope": scope])
-                    ],
-                    ["userInfo": NSKeyedArchiver.archivedDataWithRootObject(["mykey": "as you like", "SSO_From": "SendMessageToWeiboViewController"])],
-                    ["app": NSKeyedArchiver.archivedDataWithRootObject(["appKey": appID, "bundleID": NSBundle.mainBundle().bundleID ?? "", "name": NSBundle.mainBundle().displayName ?? ""])]
-                ]
+                guard !account.canOpenURL(NSURL(string: "weibosdk://request")) else {
+                    let scope = "all"
+                    let uuIDString = CFUUIDCreateString(nil, CFUUIDCreate(nil))
+                    let authData = [
+                        ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(["__class": "WBAuthorizeRequest", "redirectURI": redirectURL, "requestID":uuIDString, "scope": scope])
+                        ],
+                        ["userInfo": NSKeyedArchiver.archivedDataWithRootObject(["mykey": "as you like", "SSO_From": "SendMessageToWeiboViewController"])],
+                        ["app": NSKeyedArchiver.archivedDataWithRootObject(["appKey": appID, "bundleID": NSBundle.mainBundle().bundleID ?? "", "name": NSBundle.mainBundle().displayName ?? ""])]
+                    ]
 
-                UIPasteboard.generalPasteboard().items = authData
-                openURL("weibosdk://request?id=\(uuIDString)&sdkversion=003013000")
+                    UIPasteboard.generalPasteboard().items = authData
+                    openURL("weibosdk://request?id=\(uuIDString)&sdkversion=003013000")
+                    return
+                }
 
-                break
+                // Web OAuth
+                let accessTokenAPI = "https://open.weibo.cn/oauth2/authorize?client_id=\(appID)&response_type=code&redirect_uri=\(redirectURL)"
+                guard let URL = NSURL(string: accessTokenAPI) else {
+                    return
+                }
+
+                let webView = WKWebView()
+                webView.frame = UIScreen.mainScreen().bounds
+                webView.frame.origin.y = UIScreen.mainScreen().bounds.height
+
+                webView.loadRequest(NSURLRequest(URL: URL))
+                webView.navigationDelegate = sharedMonkeyKing
+                webView.backgroundColor = UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 1.0)
+                webView.scrollView.frame.origin.y = 20
+                webView.scrollView.backgroundColor = webView.backgroundColor
+
+                let activityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+                activityIndicatorView.center = CGPoint(x: CGRectGetMidX(webView.bounds), y: CGRectGetMidY(webView.bounds)+30)
+                activityIndicatorView.activityIndicatorViewStyle = .Gray
+
+                webView.scrollView.addSubview(activityIndicatorView)
+                activityIndicatorView.startAnimating()
+
+                UIApplication.sharedApplication().keyWindow?.addSubview(webView)
+                UIView.animateWithDuration(0.32, delay: 0.0, options: .CurveEaseOut, animations: {
+                    webView.frame.origin.y = 0
+                }, completion: nil)
+
         }
     }
 
-    private class func fetchUserInfoByCode(code code: String, completionHandler: SerializeResponse) {
+
+    private class func fetchWeChatUserInfoByCode(code code: String, completionHandler: SerializeResponse) {
 
         var appID = ""
         var appKey = ""
@@ -618,7 +648,7 @@ extension MonkeyKing {
         }
 
         // OAuth
-        sendRequest(URL) { (OAuthJSON, response, error) -> Void in
+        sendRequest(URL, method: .GET) { (OAuthJSON, response, error) -> Void in
 
             var userInfoDictionary: NSDictionary?
 
@@ -636,7 +666,7 @@ extension MonkeyKing {
             }
 
             // fetch UserInfo
-            sendRequest(URL) { (userInfoJSON, response, error) -> Void in
+            sendRequest(URL, method: .GET) { (userInfoJSON, response, error) -> Void in
 
                 defer {
                     completionHandler(userInfoDictionary, response, error)
@@ -656,40 +686,127 @@ extension MonkeyKing {
             }
         }
     }
-    
-    private class func sendRequest(URL: NSURL, completionHandler: SerializeResponse) {
-        
-        let session = NSURLSession.sharedSession()
-        let request = NSMutableURLRequest(URL: URL)
-        request.HTTPMethod = "GET"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        
-        let task = session.dataTaskWithRequest(request) { (data, response, error) -> Void in
-            
-            var JSON: NSDictionary?
-            
-            defer {
-                completionHandler(JSON, response, error)
+
+}
+
+
+// MARK: WKNavigationDelegate
+
+extension MonkeyKing: WKNavigationDelegate {
+
+    public func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+        for subview in webView.scrollView.subviews {
+            if let activityIndicatorView = subview as? UIActivityIndicatorView {
+                activityIndicatorView.stopAnimating()
             }
-            
-            guard let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode == 200 else {
-                print("No Success HTTP Response Status Code")
-                return
-            }
-            
-            guard let validData = data,
-                let JSONData = try? NSJSONSerialization.JSONObjectWithData(validData, options: .AllowFragments) as? NSDictionary else {
-                    print("JSON could not be serialized because input data was nil.")
+        }
+
+        let HTML = "var button = document.createElement('a'); button.setAttribute('href', 'about:blank'); button.innerHTML = '关闭'; button.setAttribute('style', 'width: calc(100% - 40px); background-color: gray;display: inline-block;height: 40px;line-height: 40px;text-align: center;color: #777777;text-decoration: none;border-radius: 3px;background: linear-gradient(180deg, white, #f1f1f1);border: 1px solid #CACACA;box-shadow: 0 2px 3px #DEDEDE, inset 0 0 0 1px white;text-shadow: 0 2px 0 white;position: absolute;bottom: 0;margin: 20px 20px 40px 20px;font-size: 18px;'); document.body.appendChild(button);  document.querySelector('aside.logins').style.display = 'none';"
+
+        webView.evaluateJavaScript(HTML, completionHandler: nil)
+    }
+
+    public func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+
+        guard let URL = webView.URL else {
+            webView.stopLoading()
+            return
+        }
+
+        if URL.absoluteString.rangeOfString("about:blank") != nil {
+
+            let error = NSError(domain: "User Cancelled", code: -1, userInfo: nil)
+            webView.stopLoading()
+
+            UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseOut, animations: {
+                webView.frame.origin.y = UIScreen.mainScreen().bounds.height
+            }, completion: {_ in
+                webView.removeFromSuperview()
+                self.oauthCompletionHandler?(nil, nil, error)
+            })
+        }
+
+    }
+
+    public func webView(webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
+
+        guard let URL = webView.URL else {
+            return
+        }
+
+        for case let .Weibo(appID, appKey, redirectURL) in accountSet {
+            if URL.absoluteString.lowercaseString.hasPrefix(redirectURL) {
+
+                webView.stopLoading()
+
+                guard let code = URL.queryInfo["code"] else {
                     return
+                }
+
+                var accessTokenAPI = "https://api.weibo.com/oauth2/access_token?"
+                accessTokenAPI += "client_id=" + appID
+                accessTokenAPI += "&client_secret=" + appKey
+                accessTokenAPI += "&grant_type=authorization_code&"
+                accessTokenAPI += "redirect_uri=" + redirectURL
+                accessTokenAPI += "&code=" + code
+
+                guard let accessTokenURL = NSURL(string: accessTokenAPI) else {
+                    return
+                }
+
+                sendRequest(accessTokenURL, method: .POST) { [weak self] (userInfoJSON, response, error) -> Void in
+                    self?.oauthCompletionHandler?(userInfoJSON, response, error)
+                }
+
+                UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseOut, animations: {
+                    webView.frame.origin.y = UIScreen.mainScreen().bounds.height
+                }, completion: {_ in
+                    webView.removeFromSuperview()
+                })
             }
-            
-            JSON = JSONData
         }
         
-        task.resume()
     }
-    
+
+
+}
+
+private enum Method: String {
+    case GET = "GET"
+    case POST = "POST"
+}
+
+private func sendRequest(URL: NSURL, method: Method, completionHandler: MonkeyKing.SerializeResponse) {
+
+    let session = NSURLSession.sharedSession()
+    let request = NSMutableURLRequest(URL: URL)
+    request.HTTPMethod = method.rawValue
+    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    request.addValue("application/json", forHTTPHeaderField: "Accept")
+
+    let task = session.dataTaskWithRequest(request) { (data, response, error) -> Void in
+
+        var JSON: NSDictionary?
+
+        defer {
+            completionHandler(JSON, response, error)
+        }
+
+        guard let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode == 200 else {
+            print("No Success HTTP Response Status Code")
+            return
+        }
+
+        guard let validData = data,
+            let JSONData = try? NSJSONSerialization.JSONObjectWithData(validData, options: .AllowFragments) as? NSDictionary else {
+                print("JSON could not be serialized because input data was nil.")
+                return
+        }
+
+        JSON = JSONData
+    }
+
+    task.resume()
 }
 
 

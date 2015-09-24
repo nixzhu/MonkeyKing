@@ -12,13 +12,21 @@ import MonkeyKing
 let weChatAppID = "wxd36e72964d9dce92"
 let weChatAppKey = "731d7d3da7461a89f382baabef2e2c4d"
 
-let qqAppID = "1103194207"
-let weiboID = "402180334"
+let qqAppID = "1104881792"
+
+let weiboAppID = "504855958"
+let weiboAppKey = "f5107a6c6cd2cc76c9b261208a3b17a1"
+let weiboRedirectURL = "http://www.limon.top"
 
 class ViewController: UIViewController {
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = UIColor.greenColor()
+    }
+
     @IBAction func shareToWeiBo(sender: UIButton) {
-        let account = MonkeyKing.Account.Weibo(appID: weiboID, redirectURL: "http://openshare.gfzj.us/")
+        let account = MonkeyKing.Account.Weibo(appID: weiboAppID, appKey: weiboAppKey, redirectURL: weiboRedirectURL)
         MonkeyKing.registerAccount(account)
 
         MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
