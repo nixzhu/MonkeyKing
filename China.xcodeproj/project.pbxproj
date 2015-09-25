@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3FBCB1BB1BB58A4D00E20A28 /* SimpleNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBCB1BA1BB58A4D00E20A28 /* SimpleNetworking.swift */; settings = {ASSET_TAGS = (); }; };
 		50FBA6B91BA2AFAE00E69BB3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6B81BA2AFAE00E69BB3 /* AppDelegate.swift */; };
 		50FBA6BB1BA2AFAE00E69BB3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6BA1BA2AFAE00E69BB3 /* ViewController.swift */; };
 		50FBA6BE1BA2AFAE00E69BB3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50FBA6BC1BA2AFAE00E69BB3 /* Main.storyboard */; };
@@ -44,6 +45,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3FBCB1BA1BB58A4D00E20A28 /* SimpleNetworking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleNetworking.swift; sourceTree = "<group>"; };
 		50FBA6B51BA2AFAD00E69BB3 /* China.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = China.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50FBA6B81BA2AFAE00E69BB3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		50FBA6BA1BA2AFAE00E69BB3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 				50FBA6DC1BA2BC0A00E69BB3 /* MonkeyKing.swift */,
 				50FBA6DE1BA3079D00E69BB3 /* AnyActivity.swift */,
 				50FBA6D31BA2BBE900E69BB3 /* Info.plist */,
+				3FBCB1BA1BB58A4D00E20A28 /* SimpleNetworking.swift */,
 			);
 			path = MonkeyKing;
 			sourceTree = "<group>";
@@ -241,6 +244,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FBCB1BB1BB58A4D00E20A28 /* SimpleNetworking.swift in Sources */,
 				50FBA6DD1BA2BC0A00E69BB3 /* MonkeyKing.swift in Sources */,
 				50FBA6DF1BA3079D00E69BB3 /* AnyActivity.swift in Sources */,
 			);

@@ -1,0 +1,208 @@
+//
+//  SimpleNetworking.swift
+//  China
+//
+//  Created by catch on 15/9/25.
+//  Copyright © 2015年 nixWork. All rights reserved.
+//
+
+import Foundation
+
+public class SimpleNetworking {
+
+    static let sharedInstance = SimpleNetworking()
+
+    public enum Method: String {
+        case GET = "GET"
+        case POST = "POST"
+    }
+
+    public func request(URL: NSURL, method: Method, parameters: [String: AnyObject]? = nil, completionHandler: MonkeyKing.SerializeResponse) {
+
+        let session = NSURLSession.sharedSession()
+
+        let mutableURLRequest = NSMutableURLRequest(URL: URL)
+        mutableURLRequest.HTTPMethod = method.rawValue
+
+        let request = encode(mutableURLRequest, parameters: parameters)
+
+        let task = session.dataTaskWithRequest(request) { (data, response, error) -> Void in
+
+            var JSON: NSDictionary?
+
+            defer {
+                completionHandler(JSON, response, error)
+            }
+
+            guard let validData = data,
+                let JSONData = try? NSJSONSerialization.JSONObjectWithData(validData, options: .AllowFragments) as? NSDictionary else {
+                    print("JSON could not be serialized because input data was nil.")
+                    return
+            }
+
+            JSON = JSONData
+        }
+
+        task.resume()
+    }
+
+
+    public func upload(URL: NSURL, parameters: [String: AnyObject], completionHandler: MonkeyKing.SerializeResponse) {
+
+        let tuplue = urlRequestWithComponents(URL.absoluteString, parameters: parameters)
+
+        guard let request = tuplue.request, let data = tuplue.data else {
+            return
+        }
+
+        let session = NSURLSession.sharedSession()
+
+        let uploadTask = session.uploadTaskWithRequest(request, fromData: data) { (data, response, error) -> Void in
+            var JSON: NSDictionary?
+
+            defer {
+                completionHandler(JSON, response, error)
+            }
+
+            guard let validData = data,
+                let JSONData = try? NSJSONSerialization.JSONObjectWithData(validData, options: .AllowFragments) as? NSDictionary else {
+                    print("JSON could not be serialized because input data was nil.")
+                    return
+            }
+
+            JSON = JSONData
+        }
+        
+        uploadTask.resume()
+
+    }
+
+    private func upload(URLRequest: NSURLRequest, data: NSData, completionHandler: MonkeyKing.SerializeResponse) {
+
+        let session = NSURLSession.sharedSession()
+
+        let uploadTask = session.uploadTaskWithRequest(URLRequest, fromData: data) { (data, response, error) -> Void in
+            var JSON: NSDictionary?
+
+            defer {
+                completionHandler(JSON, response, error)
+            }
+
+            guard let validData = data,
+                let JSONData = try? NSJSONSerialization.JSONObjectWithData(validData, options: .AllowFragments) as? NSDictionary else {
+                    print("JSON could not be serialized because input data was nil.")
+                    return
+            }
+
+            JSON = JSONData
+        }
+
+        uploadTask.resume()
+
+    }
+
+
+    private func encode(URLRequest: NSMutableURLRequest, parameters: [String: AnyObject]?) -> NSURLRequest {
+        if parameters == nil {
+            return URLRequest
+        }
+
+        var mutableURLRequest: NSMutableURLRequest! = URLRequest.mutableCopy() as! NSMutableURLRequest
+        func query(parameters: [String: AnyObject]) -> String {
+            var components: [(String, String)] = []
+
+            for key in Array(parameters.keys).sort(<) {
+                let value: AnyObject! = parameters[key]
+                components += queryComponents(key, value)
+            }
+
+            return (components.map { "\($0)=\($1)" } as [String]).joinWithSeparator("&")
+        }
+
+        let method = Method(rawValue: mutableURLRequest.HTTPMethod)!
+
+        switch method {
+        case .GET:
+            if let URLComponents = NSURLComponents(URL: mutableURLRequest.URL!, resolvingAgainstBaseURL: false) {
+                URLComponents.percentEncodedQuery = (URLComponents.percentEncodedQuery != nil ? URLComponents.percentEncodedQuery! + "&" : "") + query(parameters!)
+                mutableURLRequest.URL = URLComponents.URL
+            }
+        default:
+            if mutableURLRequest.valueForHTTPHeaderField("Content-Type") == nil {
+                mutableURLRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            }
+
+            mutableURLRequest.HTTPBody = query(parameters!).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+        }
+
+        func queryComponents(key: String, _ value: AnyObject) -> [(String, String)] {
+            var components: [(String, String)] = []
+            if let dictionary = value as? [String: AnyObject] {
+                for (nestedKey, value) in dictionary {
+                    components += queryComponents("\(key)[\(nestedKey)]", value)
+                }
+            } else if let array = value as? [AnyObject] {
+                for value in array {
+                    components += queryComponents("\(key)[]", value)
+                }
+            } else {
+                components.appendContentsOf([(escape(key), escape("\(value)"))])
+            }
+            
+            return components
+        }
+        
+        func escape(string: String) -> String {
+            let legalURLCharactersToBeEscaped: CFStringRef = ":/?&=;+!@#$()',*"
+            return CFURLCreateStringByAddingPercentEscapes(nil, string, nil, legalURLCharactersToBeEscaped, CFStringBuiltInEncodings.UTF8.rawValue) as String
+        }
+        
+        return mutableURLRequest
+    }
+
+    private func urlRequestWithComponents(URLString: String, parameters: [String: AnyObject]) -> (request: NSURLRequest?, data: NSData?) {
+
+        guard let URL = NSURL(string: URLString) else {
+            return (nil, nil)
+        }
+
+        // create url request to send
+        let mutableURLRequest = NSMutableURLRequest(URL: URL)
+        mutableURLRequest.HTTPMethod = Method.POST.rawValue
+        let boundaryConstant = "NET-POST-boundary-\(arc4random())-\(arc4random())"
+        let contentType = "multipart/form-data;boundary="+boundaryConstant
+        mutableURLRequest.setValue(contentType, forHTTPHeaderField: "Content-Type")
+
+        // create upload data to send
+        let uploadData = NSMutableData()
+
+        // add parameters
+        for (key, value) in parameters {
+
+            uploadData.appendData("\r\n--\(boundaryConstant)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+
+            if let imageData = value as? NSData {
+
+                let filename = arc4random()
+                let filenameClause = "filename=\"\(filename)\""
+                let contentDispositionString = "Content-Disposition: form-data; name=\"\(key)\";\(filenameClause)\r\n"
+                let contentDispositionData = contentDispositionString.dataUsingEncoding(NSUTF8StringEncoding)
+                uploadData.appendData(contentDispositionData!)
+
+                // append content type
+                let contentTypeString = "Content-Type: image/JPEG\r\n\r\n"
+                let contentTypeData = contentTypeString.dataUsingEncoding(NSUTF8StringEncoding)
+                uploadData.appendData(contentTypeData!)
+                uploadData.appendData(imageData)
+                
+            } else{
+
+                uploadData.appendData("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n\(value)".dataUsingEncoding(NSUTF8StringEncoding)!)
+            }
+        }
+        uploadData.appendData("\r\n--\(boundaryConstant)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+
+        return (encode(mutableURLRequest, parameters: nil), uploadData)
+    }
+
+}

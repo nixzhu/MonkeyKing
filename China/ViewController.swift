@@ -9,8 +9,8 @@
 import UIKit
 import MonkeyKing
 
-let weChatAppID = "wxd36e72964d9dce92"
-let weChatAppKey = "731d7d3da7461a89f382baabef2e2c4d"
+let weChatAppID = "wx4634c56c1aed39f5"
+let weChatAppKey = "8493fd2c782dd9b1dfdd724a6847dd28"
 
 let qqAppID = "1104881792"
 
@@ -29,16 +29,16 @@ class ViewController: UIViewController {
         let account = MonkeyKing.Account.Weibo(appID: weiboAppID, appKey: weiboAppKey, redirectURL: weiboRedirectURL)
         MonkeyKing.registerAccount(account)
 
-        MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
-            print(dictionary)
-        }
+//        MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
+//            print(dictionary)
+//        }
 
-        //        let message = MonkeyKing.Message.Weibo(.Default(info: (
-        //            title: "Timeline",
-        //            description: "Hello Timeline",
-        //            thumbnail: nil,
-        //            media: .Image(UIImage(named: "rabbit")!)
-        //        )))
+        let message = MonkeyKing.Message.Weibo(.Default(info: (
+            title: "Timeline",
+            description: "Hello Timeline",
+            thumbnail: nil,
+            media: .Image(UIImage(named: "rabbit")!)
+        ), accessToken: "2.00qTjiwB0CG1KY8c0539cea8yRYRkC"))
 
 //        let message = MonkeyKing.Message.Weibo(.Default(info: (
 //            title: "News",
@@ -46,10 +46,10 @@ class ViewController: UIViewController {
 //            thumbnail: UIImage(named: "rabbit"),
 //            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
 //        )))
-//
-//        MonkeyKing.shareMessage(message) { success in
-//            print("success: \(success)")
-//        }
+
+        MonkeyKing.shareMessage(message) { success in
+            print("success: \(success)")
+        }
 
         //        MonkeyKing.oauth(account) { (dictionary, response, error) -> Void in
         //            print(dictionary)

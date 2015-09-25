@@ -23,13 +23,6 @@ public class MonkeyKing: NSObject {
         case QQ(appID: String)
         case Weibo(appID: String, appKey: String, redirectURL: String)
 
-        func canOpenURL(URL: NSURL?) -> Bool {
-            guard let URL = URL else {
-                return false
-            }
-            return UIApplication.sharedApplication().canOpenURL(URL)
-        }
-
         public var isAppInstalled: Bool {
             switch self {
             case .WeChat:
@@ -222,6 +215,7 @@ public class MonkeyKing: NSObject {
     public enum Media {
         case URL(NSURL)
         case Image(UIImage)
+//        case Text(String)
     }
 
     public typealias Info = (title: String?, description: String?, thumbnail: UIImage?, media: Media)
@@ -278,13 +272,20 @@ public class MonkeyKing: NSObject {
         case QQ(QQSubtype)
 
         public enum WeiboSubtype {
-            case Default(info: Info)
+            case Default(info: Info, accessToken: String?)
 
             var info: Info {
                 switch self {
-                case .Default(let info):
-                    return info
-                }
+                    case .Default(let info, _):
+                        return info
+                    }
+            }
+
+            var accessToken: String? {
+                switch self {
+                    case .Default(_, let accessToken):
+                        return accessToken
+                    }
             }
         }
         case Weibo(WeiboSubtype)
@@ -323,13 +324,6 @@ public class MonkeyKing: NSObject {
     var latestFinish: Finish?
 
     private var oauthCompletionHandler: SerializeResponse?
-
-    private class func openURL(URLString: String) {
-        guard let URL = NSURL(string: URLString) else {
-            return
-        }
-        UIApplication.sharedApplication().openURL(URL)
-    }
 
     public class func shareMessage(message: Message, finish: Finish) {
 
@@ -469,11 +463,7 @@ public class MonkeyKing: NSObject {
                     qqSchemeURLString += "img"
                 }
 
-                guard let URL = NSURL(string: qqSchemeURLString) else {
-                    return
-                }
-
-                if !UIApplication.sharedApplication().openURL(URL) {
+                if !openURL(URLString: qqSchemeURLString) {
                     finish(false)
                 }
             }
@@ -481,56 +471,116 @@ public class MonkeyKing: NSObject {
         case .Weibo(let type):
             for case let .Weibo(appID, _, _) in sharedMonkeyKing.accountSet {
 
-                var messageInfo: [String: AnyObject] = ["__class": "WBMessageObject"]
-                let info = type.info
+                guard !canOpenURL(NSURL(string: "weibosdk://request")) else {
 
-                switch type.info.media {
-                case .URL(let URL):
+                    var messageInfo: [String: AnyObject] = ["__class": "WBMessageObject"]
+                    let info = type.info
 
-                    var mediaObject: [String: AnyObject] = [
-                        "__class": "WBWebpageObject",
-                        "objectID": "identifier1"
+                    switch info.media {
+                    case .URL(let URL):
+
+                        var mediaObject: [String: AnyObject] = [
+                            "__class": "WBWebpageObject",
+                            "objectID": "identifier1"
+                        ]
+
+                        if let title = info.title {
+                            mediaObject["title"] = title
+                        }
+
+                        if let description = info.description {
+                            messageInfo["text"] = description
+                        }
+
+                        if let thumbnailImage = info.thumbnail,
+                            let thumbnailData = UIImageJPEGRepresentation(thumbnailImage, 0.7) {
+                                mediaObject["thumbnailData"] = thumbnailData
+                        }
+
+                        mediaObject["webpageUrl"] = URL.absoluteString
+
+                        messageInfo["mediaObject"] = mediaObject
+
+                    case .Image(let image):
+
+                        if let title = info.title {
+                            messageInfo["text"] = title
+                        }
+
+                        if let imageData = UIImageJPEGRepresentation(image, 1.0) {
+                            messageInfo["imageObject"] = ["imageData": imageData]
+                        }
+                    }
+
+                    let uuIDString = CFUUIDCreateString(nil, CFUUIDCreate(nil))
+                    let dict = ["__class" : "WBSendMessageToWeiboRequest", "message": messageInfo, "requestID" :uuIDString]
+
+                    let messageData: [AnyObject] = [
+                        ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(dict)],
+                        ["userInfo": NSKeyedArchiver.archivedDataWithRootObject([])],
+                        ["app": NSKeyedArchiver.archivedDataWithRootObject(["appKey": appID, "bundleID": NSBundle.mainBundle().bundleID ?? ""])]
                     ]
+                    
+                    UIPasteboard.generalPasteboard().items = messageData
 
-                    if let title = info.title {
-                        mediaObject["title"] = title
+                    if !openURL(URLString: "weibosdk://request?id=\(uuIDString)&sdkversion=003013000") {
+                        finish(false)
                     }
 
-                    if let description = info.description {
-                        messageInfo["text"] = description
-                    }
-
-                    if let thumbnailImage = info.thumbnail,
-                        let thumbnailData = UIImageJPEGRepresentation(thumbnailImage, 0.7) {
-                            mediaObject["thumbnailData"] = thumbnailData
-                    }
-
-                    mediaObject["webpageUrl"] = URL.absoluteString
-
-                    messageInfo["mediaObject"] = mediaObject
-
-                case .Image(let image):
-
-                    if let title = info.title {
-                        messageInfo["text"] = title
-                    }
-
-                    if let imageData = UIImageJPEGRepresentation(image, 1.0) {
-                        messageInfo["imageObject"] = ["imageData": imageData]
-                    }
+                    return
                 }
 
-                let uuIDString = CFUUIDCreateString(nil, CFUUIDCreate(nil))
-                let dict = ["__class" : "WBSendMessageToWeiboRequest", "message": messageInfo, "requestID" :uuIDString]
+                let info = type.info
+                var parameters = [String: AnyObject]()
 
-                let messageData: [AnyObject] = [
-                    ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(dict)],
-                    ["userInfo": NSKeyedArchiver.archivedDataWithRootObject([])],
-                    ["app": NSKeyedArchiver.archivedDataWithRootObject(["appKey": appID, "bundleID": NSBundle.mainBundle().bundleID ?? ""])]
-                ]
+                guard let accessToken = type.accessToken else {
+                    print("accessToken nil")
+                    return
+                }
 
-                UIPasteboard.generalPasteboard().items = messageData
-                openURL("weibosdk://request?id=\(uuIDString)&sdkversion=003013000")
+                parameters["access_token"] = accessToken
+
+                var statusText = ""
+
+                if let title = info.title {
+                    statusText += title
+                }
+
+                if let description = info.description {
+                    statusText += description
+                }
+
+                switch info.media {
+                    case .URL(let URL):
+
+                        statusText += URL.absoluteString
+                        parameters["status"] = statusText
+
+                        let URLString = "https://api.weibo.com/2/statuses/update.json"
+                        sendRequest(URLString, method: .POST, parameters: parameters) { (JSON, response, error) -> Void in
+                            print(JSON)
+                        }
+
+                    case .Image(let image):
+
+                        guard let imageData = UIImageJPEGRepresentation(image, 0.7) else {
+                            return
+                        }
+
+                        parameters["status"] = statusText
+                        parameters["pic"] = imageData
+
+                        let URLString = "https://upload.api.weibo.com/2/statuses/upload.json"
+                        guard let URL = NSURL(string: URLString) else {
+                            return
+                        }
+
+                        SimpleNetworking.sharedInstance.upload(URL, parameters: parameters) { (JSON, response, error) -> Void in
+                            print(JSON)
+                        }
+                }
+
+
             }
 
         }
@@ -558,7 +608,7 @@ extension MonkeyKing {
             case .WeChat(let appID, _):
 
                 let scope = "snsapi_userinfo"
-                openURL("weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth")
+                openURL(URLString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth")
 
             case .QQ(let appID):
 
@@ -578,11 +628,11 @@ extension MonkeyKing {
                 let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
                 UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.tencent\(appID)")
 
-                openURL("mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1")
+                openURL(URLString: "mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1")
 
             case .Weibo(let appID, _, let redirectURL):
 
-                guard !account.canOpenURL(NSURL(string: "weibosdk://request")) else {
+                guard !canOpenURL(NSURL(string: "weibosdk://request")) else {
                     let scope = "all"
                     let uuIDString = CFUUIDCreateString(nil, CFUUIDCreate(nil))
                     let authData = [
@@ -593,7 +643,7 @@ extension MonkeyKing {
                     ]
 
                     UIPasteboard.generalPasteboard().items = authData
-                    openURL("weibosdk://request?id=\(uuIDString)&sdkversion=003013000")
+                    openURL(URLString: "weibosdk://request?id=\(uuIDString)&sdkversion=003013000")
                     return
                 }
 
@@ -643,12 +693,8 @@ extension MonkeyKing {
         accessTokenAPI += "&secret=" + appKey
         accessTokenAPI += "&code=" + code + "&grant_type=authorization_code"
 
-        guard let URL = NSURL(string: accessTokenAPI) else {
-            return
-        }
-
         // OAuth
-        sendRequest(URL, method: .GET) { (OAuthJSON, response, error) -> Void in
+        sendRequest(accessTokenAPI, method: .GET) { (OAuthJSON, response, error) -> Void in
 
             var userInfoDictionary: NSDictionary?
 
@@ -661,12 +707,9 @@ extension MonkeyKing {
             }
 
             let userInfoAPI = "https://api.weixin.qq.com/sns/userinfo?access_token=\(accessToken)&openid=\(openID)"
-            guard let URL = NSURL(string: userInfoAPI) else {
-                return
-            }
 
             // fetch UserInfo
-            sendRequest(URL, method: .GET) { (userInfoJSON, response, error) -> Void in
+            sendRequest(userInfoAPI, method: .GET) { (userInfoJSON, response, error) -> Void in
 
                 defer {
                     completionHandler(userInfoDictionary, response, error)
@@ -768,12 +811,17 @@ extension MonkeyKing: WKNavigationDelegate {
                 accessTokenAPI += "redirect_uri=" + redirectURL
                 accessTokenAPI += "&code=" + code
 
-                guard let accessTokenURL = NSURL(string: accessTokenAPI) else {
-                    return
-                }
+                sendRequest(accessTokenAPI, method: .POST) { [weak self] (JSON, response, error) -> Void in
+                    self?.oauthCompletionHandler?(JSON, response, error)
 
-                sendRequest(accessTokenURL, method: .POST) { [weak self] (userInfoJSON, response, error) -> Void in
-                    self?.oauthCompletionHandler?(userInfoJSON, response, error)
+                    var parameters = [String: AnyObject]()
+
+                    if let json = JSON, let accessToken = json["access_token"] as? String {
+                        print("accessToken \(accessToken)")
+                        parameters["access_token"] = accessToken
+                    } else {
+                        print("accessToken nil")
+                    }
                 }
 
                 UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseOut, animations: {
@@ -785,48 +833,31 @@ extension MonkeyKing: WKNavigationDelegate {
         }
         
     }
-
-
 }
 
-private enum Method: String {
-    case GET = "GET"
-    case POST = "POST"
-}
-
-private func sendRequest(URL: NSURL, method: Method, completionHandler: MonkeyKing.SerializeResponse) {
-
-    let session = NSURLSession.sharedSession()
-    let request = NSMutableURLRequest(URL: URL)
-    request.HTTPMethod = method.rawValue
-    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-    request.addValue("application/json", forHTTPHeaderField: "Accept")
-
-    let task = session.dataTaskWithRequest(request) { (data, response, error) -> Void in
-
-        var JSON: NSDictionary?
-
-        defer {
-            completionHandler(JSON, response, error)
-        }
-
-        guard let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode == 200 else {
-            print("No Success HTTP Response Status Code")
-            return
-        }
-
-        guard let validData = data,
-            let JSONData = try? NSJSONSerialization.JSONObjectWithData(validData, options: .AllowFragments) as? NSDictionary else {
-                print("JSON could not be serialized because input data was nil.")
-                return
-        }
-
-        JSON = JSONData
+func sendRequest(URLString: String, method: SimpleNetworking.Method, parameters: [String: AnyObject]? = nil, completionHandler: MonkeyKing.SerializeResponse) {
+    guard let URL = NSURL(string: URLString) else {
+        print("URL init Error: URLString")
+        return
     }
-
-    task.resume()
+    SimpleNetworking.sharedInstance.request(URL, method: method, parameters: parameters, completionHandler: completionHandler)
 }
 
+
+
+private func openURL(URLString URLString: String) -> Bool {
+    guard let URL = NSURL(string: URLString) else {
+        return false
+    }
+    return UIApplication.sharedApplication().openURL(URL)
+}
+
+private func canOpenURL(URL: NSURL?) -> Bool {
+    guard let URL = URL else {
+        return false
+    }
+    return UIApplication.sharedApplication().canOpenURL(URL)
+}
 
 // MARK: Private Extensions
 
