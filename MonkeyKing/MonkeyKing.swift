@@ -535,6 +535,7 @@ public class MonkeyKing: NSObject {
 
                 guard let accessToken = type.accessToken else {
                     print("accessToken nil")
+                    finish(false)
                     return
                 }
 
@@ -557,13 +558,19 @@ public class MonkeyKing: NSObject {
                         parameters["status"] = statusText
 
                         let URLString = "https://api.weibo.com/2/statuses/update.json"
-                        sendRequest(URLString, method: .POST, parameters: parameters) { (JSON, response, error) -> Void in
-                            print(JSON)
+                        sendRequest(URLString, method: .POST, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
+                            if let JSON = responseData, let _ = JSON["idstr"] as? String {
+                                finish(true)
+                            } else {
+                                print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
+                                finish(false)
+                            }
                         }
 
                     case .Image(let image):
 
                         guard let imageData = UIImageJPEGRepresentation(image, 0.7) else {
+                            finish(false)
                             return
                         }
 
@@ -572,17 +579,21 @@ public class MonkeyKing: NSObject {
 
                         let URLString = "https://upload.api.weibo.com/2/statuses/upload.json"
                         guard let URL = NSURL(string: URLString) else {
+                            finish(false)
                             return
                         }
 
-                        SimpleNetworking.sharedInstance.upload(URL, parameters: parameters) { (JSON, response, error) -> Void in
-                            print(JSON)
+                        SimpleNetworking.sharedInstance.upload(URL, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
+                            if let JSON = responseData, let _ = JSON["idstr"] as? String {
+                                finish(true)
+                            } else {
+                                print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
+                                finish(false)
+                            }
                         }
                 }
 
-
             }
-
         }
     }
 }

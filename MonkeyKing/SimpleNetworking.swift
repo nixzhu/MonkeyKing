@@ -11,6 +11,7 @@ import Foundation
 public class SimpleNetworking {
 
     static let sharedInstance = SimpleNetworking()
+    private let session = NSURLSession.sharedSession()
 
     public enum Method: String {
         case GET = "GET"
@@ -18,8 +19,6 @@ public class SimpleNetworking {
     }
 
     public func request(URL: NSURL, method: Method, parameters: [String: AnyObject]? = nil, completionHandler: MonkeyKing.SerializeResponse) {
-
-        let session = NSURLSession.sharedSession()
 
         let mutableURLRequest = NSMutableURLRequest(URL: URL)
         mutableURLRequest.HTTPMethod = method.rawValue
@@ -35,7 +34,7 @@ public class SimpleNetworking {
             }
 
             guard let validData = data,
-                let JSONData = try? NSJSONSerialization.JSONObjectWithData(validData, options: .AllowFragments) as? NSDictionary else {
+                   let JSONData = try? NSJSONSerialization.JSONObjectWithData(validData, options: .AllowFragments) as? NSDictionary else {
                     print("JSON could not be serialized because input data was nil.")
                     return
             }
@@ -49,13 +48,11 @@ public class SimpleNetworking {
 
     public func upload(URL: NSURL, parameters: [String: AnyObject], completionHandler: MonkeyKing.SerializeResponse) {
 
-        let tuplue = urlRequestWithComponents(URL.absoluteString, parameters: parameters)
+        let tuple = urlRequestWithComponents(URL.absoluteString, parameters: parameters)
 
-        guard let request = tuplue.request, let data = tuplue.data else {
+        guard let request = tuple.request, let data = tuple.data else {
             return
         }
-
-        let session = NSURLSession.sharedSession()
 
         let uploadTask = session.uploadTaskWithRequest(request, fromData: data) { (data, response, error) -> Void in
             var JSON: NSDictionary?
@@ -65,7 +62,7 @@ public class SimpleNetworking {
             }
 
             guard let validData = data,
-                let JSONData = try? NSJSONSerialization.JSONObjectWithData(validData, options: .AllowFragments) as? NSDictionary else {
+                   let JSONData = try? NSJSONSerialization.JSONObjectWithData(validData, options: .AllowFragments) as? NSDictionary else {
                     print("JSON could not be serialized because input data was nil.")
                     return
             }
@@ -74,33 +71,7 @@ public class SimpleNetworking {
         }
         
         uploadTask.resume()
-
     }
-
-    private func upload(URLRequest: NSURLRequest, data: NSData, completionHandler: MonkeyKing.SerializeResponse) {
-
-        let session = NSURLSession.sharedSession()
-
-        let uploadTask = session.uploadTaskWithRequest(URLRequest, fromData: data) { (data, response, error) -> Void in
-            var JSON: NSDictionary?
-
-            defer {
-                completionHandler(JSON, response, error)
-            }
-
-            guard let validData = data,
-                let JSONData = try? NSJSONSerialization.JSONObjectWithData(validData, options: .AllowFragments) as? NSDictionary else {
-                    print("JSON could not be serialized because input data was nil.")
-                    return
-            }
-
-            JSON = JSONData
-        }
-
-        uploadTask.resume()
-
-    }
-
 
     private func encode(URLRequest: NSMutableURLRequest, parameters: [String: AnyObject]?) -> NSURLRequest {
         if parameters == nil {
@@ -173,13 +144,16 @@ public class SimpleNetworking {
         let contentType = "multipart/form-data;boundary="+boundaryConstant
         mutableURLRequest.setValue(contentType, forHTTPHeaderField: "Content-Type")
 
-        // create upload data to send
         let uploadData = NSMutableData()
 
         // add parameters
         for (key, value) in parameters {
 
-            uploadData.appendData("\r\n--\(boundaryConstant)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+            guard let encodeBoundaryData = "\r\n--\(boundaryConstant)\r\n".dataUsingEncoding(NSUTF8StringEncoding) else {
+                return (nil, nil)
+            }
+
+            uploadData.appendData(encodeBoundaryData)
 
             if let imageData = value as? NSData {
 
@@ -191,15 +165,21 @@ public class SimpleNetworking {
 
                 // append content type
                 let contentTypeString = "Content-Type: image/JPEG\r\n\r\n"
-                let contentTypeData = contentTypeString.dataUsingEncoding(NSUTF8StringEncoding)
-                uploadData.appendData(contentTypeData!)
+                guard let contentTypeData = contentTypeString.dataUsingEncoding(NSUTF8StringEncoding) else {
+                    return (nil, nil)
+                }
+                uploadData.appendData(contentTypeData)
                 uploadData.appendData(imageData)
                 
             } else{
 
-                uploadData.appendData("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n\(value)".dataUsingEncoding(NSUTF8StringEncoding)!)
+                guard let encodeDispositionData = "Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n\(value)".dataUsingEncoding(NSUTF8StringEncoding) else {
+                    return (nil, nil)
+                }
+                uploadData.appendData(encodeDispositionData)
             }
         }
+
         uploadData.appendData("\r\n--\(boundaryConstant)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
 
         return (encode(mutableURLRequest, parameters: nil), uploadData)
