@@ -684,7 +684,7 @@ extension MonkeyKing {
                 }
 
                 // Web OAuth
-                let accessTokenAPI = "https://open.weibo.cn/oauth2/authorize?client_id=\(appID)&response_type=code&redirect_uri=\(redirectURL)"
+                let accessTokenAPI = "https://open.weibo.cn/oauth2/authorize?client_id=\(appID)&response_type=code&redirect_uri=\(redirectURL)&scope=all"
                 guard let URL = NSURL(string: accessTokenAPI) else {
                     return
                 }
