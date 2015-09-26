@@ -9,29 +9,66 @@
 import UIKit
 import MonkeyKing
 
-let weChatAppID = "wx4634c56c1aed39f5"
-let weChatAppKey = "8493fd2c782dd9b1dfdd724a6847dd28"
 
-let qqAppID = "1104881792"
+
 
 let weiboAppID = "504855958"
 let weiboAppKey = "f5107a6c6cd2cc76c9b261208a3b17a1"
 let weiboRedirectURL = "http://www.limon.top"
 
+
+extension ViewController: UITableViewDataSource, UITableViewDelegate {
+
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 4
+    }
+
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
+
+        switch indexPath.row {
+            case 0:
+                cell.textLabel!.text = "WeChat"
+            case 1:
+                cell.textLabel!.text = "Weibo"
+            case 2:
+                cell.textLabel!.text = "QQ"
+            case 3:
+                cell.textLabel!.text = "System"
+            default:
+                break
+        }
+
+        return cell
+    }
+
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        switch indexPath.row {
+            case 0:
+                performSegueWithIdentifier("WeChat", sender: nil)
+            case 1:
+                performSegueWithIdentifier("Weibo", sender: nil)
+            case 2:
+                performSegueWithIdentifier("QQ", sender: nil)
+            case 3:
+                performSegueWithIdentifier("System", sender: nil)
+            default:
+                break
+        }
+    }
+
+}
+
 class ViewController: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = UIColor.greenColor()
-    }
 
     @IBAction func shareToWeiBo(sender: UIButton) {
         let account = MonkeyKing.Account.Weibo(appID: weiboAppID, appKey: weiboAppKey, redirectURL: weiboRedirectURL)
         MonkeyKing.registerAccount(account)
 
-//        MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
-//            print(dictionary)
-//        }
+        MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
+            print(dictionary)
+        }
 
 //        let message = MonkeyKing.Message.Weibo(.Default(info: (
 //            title: "Timeline",
@@ -40,16 +77,16 @@ class ViewController: UIViewController {
 //            media: nil
 //        ), accessToken: "2.00qTjiwB0CG1KY8c0539cea8yRYRkC"))
 
-        let message = MonkeyKing.Message.Weibo(.Default(info: (
-            title: "News",
-            description: "Hello Apple",
-            thumbnail: UIImage(named: "rabbit"),
-            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
-        ), accessToken: "2.00qTjiwB0CG1KY8c0539cea8yRYRkC"))
+//        let message = MonkeyKing.Message.Weibo(.Default(info: (
+//            title: "News",
+//            description: "Hello Apple",
+//            thumbnail: UIImage(named: "rabbit"),
+//            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
+//        ), accessToken: "2.00qTjiwB0CG1KY8c0539cea8yRYRkC"))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
-        }
+//        MonkeyKing.shareMessage(message) { success in
+//            print("success: \(success)")
+//        }
 
         //        MonkeyKing.oauth(account) { (dictionary, response, error) -> Void in
         //            print(dictionary)

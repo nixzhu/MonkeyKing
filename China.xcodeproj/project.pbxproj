@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F62B3661BB6ACBB00AABD3C /* WeChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62B3651BB6ACBB00AABD3C /* WeChatViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		3F62B3681BB6ACCE00AABD3C /* WeiboViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62B3671BB6ACCE00AABD3C /* WeiboViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		3F62B36A1BB6ACD800AABD3C /* QQViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62B3691BB6ACD800AABD3C /* QQViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		3F62B36C1BB6ACE500AABD3C /* SystemShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62B36B1BB6ACE500AABD3C /* SystemShareViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		3FBCB1BB1BB58A4D00E20A28 /* SimpleNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBCB1BA1BB58A4D00E20A28 /* SimpleNetworking.swift */; settings = {ASSET_TAGS = (); }; };
 		50FBA6B91BA2AFAE00E69BB3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6B81BA2AFAE00E69BB3 /* AppDelegate.swift */; };
 		50FBA6BB1BA2AFAE00E69BB3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6BA1BA2AFAE00E69BB3 /* ViewController.swift */; };
@@ -45,6 +49,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3F62B3651BB6ACBB00AABD3C /* WeChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatViewController.swift; sourceTree = "<group>"; };
+		3F62B3671BB6ACCE00AABD3C /* WeiboViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeiboViewController.swift; sourceTree = "<group>"; };
+		3F62B3691BB6ACD800AABD3C /* QQViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QQViewController.swift; sourceTree = "<group>"; };
+		3F62B36B1BB6ACE500AABD3C /* SystemShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemShareViewController.swift; sourceTree = "<group>"; };
 		3FBCB1BA1BB58A4D00E20A28 /* SimpleNetworking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleNetworking.swift; sourceTree = "<group>"; };
 		50FBA6B51BA2AFAD00E69BB3 /* China.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = China.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50FBA6B81BA2AFAE00E69BB3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -106,6 +114,10 @@
 				50FBA6BF1BA2AFAE00E69BB3 /* Assets.xcassets */,
 				50FBA6C11BA2AFAE00E69BB3 /* LaunchScreen.storyboard */,
 				50FBA6C41BA2AFAE00E69BB3 /* Info.plist */,
+				3F62B3651BB6ACBB00AABD3C /* WeChatViewController.swift */,
+				3F62B3671BB6ACCE00AABD3C /* WeiboViewController.swift */,
+				3F62B3691BB6ACD800AABD3C /* QQViewController.swift */,
+				3F62B36B1BB6ACE500AABD3C /* SystemShareViewController.swift */,
 			);
 			path = China;
 			sourceTree = "<group>";
@@ -235,8 +247,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F62B3661BB6ACBB00AABD3C /* WeChatViewController.swift in Sources */,
+				3F62B36A1BB6ACD800AABD3C /* QQViewController.swift in Sources */,
+				3F62B3681BB6ACCE00AABD3C /* WeiboViewController.swift in Sources */,
 				50FBA6BB1BA2AFAE00E69BB3 /* ViewController.swift in Sources */,
 				50FBA6B91BA2AFAE00E69BB3 /* AppDelegate.swift in Sources */,
+				3F62B36C1BB6ACE500AABD3C /* SystemShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

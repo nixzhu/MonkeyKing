@@ -215,7 +215,6 @@ public class MonkeyKing: NSObject {
     public enum Media {
         case URL(NSURL)
         case Image(UIImage)
-//        case Text(String)
     }
 
     public typealias Info = (title: String?, description: String?, thumbnail: UIImage?, media: Media?)
@@ -359,7 +358,7 @@ public class MonkeyKing: NSObject {
                 }
 
                 if let thumbnailImage = info.thumbnail,
-                    let thumbnailData = UIImageJPEGRepresentation(thumbnailImage, 0.7) {
+                    let thumbnailData = UIImageJPEGRepresentation(thumbnailImage, 0.5) {
                         weChatMessageInfo["thumbData"] = thumbnailData
                 }
 
@@ -377,6 +376,10 @@ public class MonkeyKing: NSObject {
                                 weChatMessageInfo["fileData"] = fileImageData
                             }
                     }
+
+                } else { // Text Share
+
+                    weChatMessageInfo["command"] = "1020"
                 }
 
                 let weChatMessage = [appID: weChatMessageInfo]
