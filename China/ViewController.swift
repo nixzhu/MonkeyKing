@@ -33,19 +33,19 @@ class ViewController: UIViewController {
 //            print(dictionary)
 //        }
 
-        let message = MonkeyKing.Message.Weibo(.Default(info: (
-            title: "Timeline",
-            description: "Hello Timeline",
-            thumbnail: nil,
-            media: .Image(UIImage(named: "rabbit")!)
-        ), accessToken: "2.00qTjiwB0CG1KY8c0539cea8yRYRkC"))
-
 //        let message = MonkeyKing.Message.Weibo(.Default(info: (
-//            title: "News",
-//            description: "Hello Apple",
-//            thumbnail: UIImage(named: "rabbit"),
-//            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
-//        )))
+//            title: "Timeline",
+//            description: "Hello Timeline",
+//            thumbnail: nil,
+//            media: nil
+//        ), accessToken: "2.00qTjiwB0CG1KY8c0539cea8yRYRkC"))
+
+        let message = MonkeyKing.Message.Weibo(.Default(info: (
+            title: "News",
+            description: "Hello Apple",
+            thumbnail: UIImage(named: "rabbit"),
+            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
+        ), accessToken: "2.00qTjiwB0CG1KY8c0539cea8yRYRkC"))
 
         MonkeyKing.shareMessage(message) { success in
             print("success: \(success)")

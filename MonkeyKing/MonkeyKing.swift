@@ -218,7 +218,7 @@ public class MonkeyKing: NSObject {
 //        case Text(String)
     }
 
-    public typealias Info = (title: String?, description: String?, thumbnail: UIImage?, media: Media)
+    public typealias Info = (title: String?, description: String?, thumbnail: UIImage?, media: Media?)
 
     public enum Message {
 
@@ -363,17 +363,19 @@ public class MonkeyKing: NSObject {
                         weChatMessageInfo["thumbData"] = thumbnailData
                 }
 
-                switch info.media {
+                if let media = info.media {
+                    switch media {
 
-                case .URL(let URL):
-                    weChatMessageInfo["objectType"] = "5"
-                    weChatMessageInfo["mediaUrl"] = URL.absoluteString
+                        case .URL(let URL):
+                            weChatMessageInfo["objectType"] = "5"
+                            weChatMessageInfo["mediaUrl"] = URL.absoluteString
 
-                case .Image(let image):
-                    weChatMessageInfo["objectType"] = "2"
+                        case .Image(let image):
+                            weChatMessageInfo["objectType"] = "2"
 
-                    if let fileImageData = UIImageJPEGRepresentation(image, 1) {
-                        weChatMessageInfo["fileData"] = fileImageData
+                            if let fileImageData = UIImageJPEGRepresentation(image, 1) {
+                                weChatMessageInfo["fileData"] = fileImageData
+                            }
                     }
                 }
 
@@ -423,45 +425,48 @@ public class MonkeyKing: NSObject {
 
                 qqSchemeURLString+="&src_type=app&shareType=0&file_type="
 
-                switch type.info.media {
+                if let media = type.info.media {
+                    switch media {
 
-                case .URL(let URL):
+                    case .URL(let URL):
 
-                    if let thumbnail = type.info.thumbnail, thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
-                        let dic = ["previewimagedata": thumbnailData]
+                        if let thumbnail = type.info.thumbnail, thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
+                            let dic = ["previewimagedata": thumbnailData]
+                            let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
+                            UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
+                        }
+
+                        qqSchemeURLString += "news"
+
+                        guard let encodedURLString = URL.absoluteString.base64AndURLEncodedString else {
+                            finish(false)
+                            return
+                        }
+
+                        qqSchemeURLString += "&url=\(encodedURLString)"
+
+                    case .Image(let image):
+
+                        guard let imageData = UIImageJPEGRepresentation(image, 1) else {
+                            finish(false)
+                            return
+                        }
+
+                        var dic = [
+                            "file_data": imageData,
+                        ]
+                        if let thumbnail = type.info.thumbnail, thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
+                            dic["previewimagedata"] = thumbnailData
+                        }
+
                         let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
+
                         UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
+                        
+                        qqSchemeURLString += "img"
                     }
-
-                    qqSchemeURLString += "news"
-
-                    guard let encodedURLString = URL.absoluteString.base64AndURLEncodedString else {
-                        finish(false)
-                        return
-                    }
-
-                    qqSchemeURLString += "&url=\(encodedURLString)"
-
-                case .Image(let image):
-
-                    guard let imageData = UIImageJPEGRepresentation(image, 1) else {
-                        finish(false)
-                        return
-                    }
-
-                    var dic = [
-                        "file_data": imageData,
-                    ]
-                    if let thumbnail = type.info.thumbnail, thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
-                        dic["previewimagedata"] = thumbnailData
-                    }
-
-                    let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
-
-                    UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
-
-                    qqSchemeURLString += "img"
                 }
+
 
                 if !openURL(URLString: qqSchemeURLString) {
                     finish(false)
@@ -473,42 +478,42 @@ public class MonkeyKing: NSObject {
 
                 guard !canOpenURL(NSURL(string: "weibosdk://request")) else {
 
+                    // App Share
+
                     var messageInfo: [String: AnyObject] = ["__class": "WBMessageObject"]
                     let info = type.info
 
-                    switch info.media {
-                    case .URL(let URL):
+                    if let description = info.description {
+                        messageInfo["text"] = description
+                    }
 
-                        var mediaObject: [String: AnyObject] = [
-                            "__class": "WBWebpageObject",
-                            "objectID": "identifier1"
-                        ]
+                    if let media = info.media {
+                        switch media {
+                        case .URL(let URL):
 
-                        if let title = info.title {
-                            mediaObject["title"] = title
-                        }
+                            var mediaObject: [String: AnyObject] = [
+                                "__class": "WBWebpageObject",
+                                "objectID": "identifier1"
+                            ]
 
-                        if let description = info.description {
-                            messageInfo["text"] = description
-                        }
+                            if let title = info.title {
+                                mediaObject["title"] = title
+                            }
 
-                        if let thumbnailImage = info.thumbnail,
-                            let thumbnailData = UIImageJPEGRepresentation(thumbnailImage, 0.7) {
-                                mediaObject["thumbnailData"] = thumbnailData
-                        }
+                            if let thumbnailImage = info.thumbnail,
+                                let thumbnailData = UIImageJPEGRepresentation(thumbnailImage, 0.7) {
+                                    mediaObject["thumbnailData"] = thumbnailData
+                            }
 
-                        mediaObject["webpageUrl"] = URL.absoluteString
+                            mediaObject["webpageUrl"] = URL.absoluteString
 
-                        messageInfo["mediaObject"] = mediaObject
+                            messageInfo["mediaObject"] = mediaObject
 
-                    case .Image(let image):
+                        case .Image(let image):
 
-                        if let title = info.title {
-                            messageInfo["text"] = title
-                        }
-
-                        if let imageData = UIImageJPEGRepresentation(image, 1.0) {
-                            messageInfo["imageObject"] = ["imageData": imageData]
+                            if let imageData = UIImageJPEGRepresentation(image, 1.0) {
+                                messageInfo["imageObject"] = ["imageData": imageData]
+                            }
                         }
                     }
 
@@ -529,6 +534,8 @@ public class MonkeyKing: NSObject {
 
                     return
                 }
+
+                // Web Share
 
                 let info = type.info
                 var parameters = [String: AnyObject]()
@@ -551,21 +558,17 @@ public class MonkeyKing: NSObject {
                     statusText += description
                 }
 
-                switch info.media {
+                var mediaType = Media.URL(NSURL())
+
+                if let media = info.media {
+
+                    switch media {
+
                     case .URL(let URL):
 
                         statusText += URL.absoluteString
-                        parameters["status"] = statusText
 
-                        let URLString = "https://api.weibo.com/2/statuses/update.json"
-                        sendRequest(URLString, method: .POST, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
-                            if let JSON = responseData, let _ = JSON["idstr"] as? String {
-                                finish(true)
-                            } else {
-                                print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
-                                finish(false)
-                            }
-                        }
+                        mediaType = Media.URL(URL)
 
                     case .Image(let image):
 
@@ -574,23 +577,45 @@ public class MonkeyKing: NSObject {
                             return
                         }
 
-                        parameters["status"] = statusText
                         parameters["pic"] = imageData
+                        mediaType = Media.Image(image)
+                    }
 
-                        let URLString = "https://upload.api.weibo.com/2/statuses/upload.json"
-                        guard let URL = NSURL(string: URLString) else {
+                }
+
+                parameters["status"] = statusText
+
+                switch mediaType {
+
+                case .URL(_):
+
+                    let URLString = "https://api.weibo.com/2/statuses/update.json"
+                    sendRequest(URLString, method: .POST, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
+                        if let JSON = responseData, let _ = JSON["idstr"] as? String {
+                            finish(true)
+                        } else {
+                            print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
                             finish(false)
-                            return
                         }
+                    }
+                    
+                case .Image(_):
 
-                        SimpleNetworking.sharedInstance.upload(URL, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
-                            if let JSON = responseData, let _ = JSON["idstr"] as? String {
-                                finish(true)
-                            } else {
-                                print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
-                                finish(false)
-                            }
+                    let URLString = "https://upload.api.weibo.com/2/statuses/upload.json"
+                    guard let URL = NSURL(string: URLString) else {
+                        finish(false)
+                        return
+                    }
+
+                    SimpleNetworking.sharedInstance.upload(URL, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
+                        if let JSON = responseData, let _ = JSON["idstr"] as? String {
+                            finish(true)
+                        } else {
+                            print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
+                            finish(false)
                         }
+                    }
+
                 }
 
             }
