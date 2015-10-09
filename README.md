@@ -36,6 +36,30 @@ Share to WeChat (微信)：
 	
 	Your app check if can open WeChat will need it.
 	
+	If your App support iOS 9, you need set `NSAppTransportSecurity` in your `Info.plist`:
+	
+	
+	```xml
+	<dict>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>api.weibo.com</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSThirdPartyExceptionMinimumTLSVersion</key>
+				<string>TLSv1.0</string>
+				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+				<false/>
+			</dict>
+		</dict>
+	</dict>```
+	
+	
+	Just like thie.
+	
+	![URL Scheme for WeChat](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/NSAppTransportSecurity.png)
+	
 2. Prepare you message and share it:
 
 	```swift
