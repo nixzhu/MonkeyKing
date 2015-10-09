@@ -53,12 +53,15 @@ Share to WeChat (微信)：
 				<false/>
 			</dict>
 		</dict>
-	</dict>```
+	</dict>
+	```
 	
 	
-	Just like thie.
+	Just like this.
 	
-	![URL Scheme for WeChat](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/NSAppTransportSecurity.png)
+	![URL Scheme for WeChat](https://raw.githubusercontent.com/Limon-catch/MonkeyKing/master/images/NSAppTransportSecurity.png)
+	
+	
 	
 2. Prepare you message and share it:
 
