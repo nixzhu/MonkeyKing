@@ -877,15 +877,16 @@ extension MonkeyKing: WKNavigationDelegate {
     }
 }
 
-func sendRequest(URLString: String, method: SimpleNetworking.Method, parameters: [String: AnyObject]? = nil, completionHandler: MonkeyKing.SerializeResponse) {
+
+// MARK: Private Methods
+
+private func sendRequest(URLString: String, method: SimpleNetworking.Method, parameters: [String: AnyObject]? = nil, completionHandler: MonkeyKing.SerializeResponse) {
     guard let URL = NSURL(string: URLString) else {
         print("URL init Error: URLString")
         return
     }
     SimpleNetworking.sharedInstance.request(URL, method: method, parameters: parameters, completionHandler: completionHandler)
 }
-
-
 
 private func openURL(URLString URLString: String) -> Bool {
     guard let URL = NSURL(string: URLString) else {
@@ -900,6 +901,7 @@ private func canOpenURL(URL: NSURL?) -> Bool {
     }
     return UIApplication.sharedApplication().canOpenURL(URL)
 }
+
 
 // MARK: Private Extensions
 
