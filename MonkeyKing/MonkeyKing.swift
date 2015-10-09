@@ -136,7 +136,7 @@ public class MonkeyKing: NSObject {
                         return false
                 }
 
-                guard let result = dic["ret"]?.integerValue where result != 0 else {
+                guard let result = dic["ret"]?.integerValue where result == 0 else {
                     if let errorDomatin = dic["user_cancelled"] as? String where errorDomatin == "YES" {
                         error = NSError(domain: "User Cancelled", code: -2, userInfo: nil)
                     } else {
@@ -413,17 +413,10 @@ public class MonkeyKing: NSObject {
                 qqSchemeURLString += "&callback_type=scheme&generalpastboard=1"
                 qqSchemeURLString += "&callback_name=\(callbackName)"
 
-                if let encodedTitle = type.info.title?.base64AndURLEncodedString {
-                    qqSchemeURLString += "&title=\(encodedTitle)"
-                }
-
-                if let encodedDescription = type.info.description?.base64AndURLEncodedString {
-                    qqSchemeURLString += "&objectlocation=pasteboard&description=\(encodedDescription)"
-                }
-
-                qqSchemeURLString+="&src_type=app&shareType=0&file_type="
+                qqSchemeURLString += "&src_type=app&shareType=0&file_type="
 
                 if let media = type.info.media {
+
                     switch media {
 
                     case .URL(let URL):
@@ -463,8 +456,23 @@ public class MonkeyKing: NSObject {
                         
                         qqSchemeURLString += "img"
                     }
-                }
 
+                    if let encodedTitle = type.info.title?.base64AndURLEncodedString {
+                        qqSchemeURLString += "&title=\(encodedTitle)"
+                    }
+
+                    if let encodedDescription = type.info.description?.base64AndURLEncodedString {
+                        qqSchemeURLString += "&objectlocation=pasteboard&description=\(encodedDescription)"
+                    }
+
+                } else { // Share Text
+
+                    qqSchemeURLString += "text&file_data="
+
+                    if let encodedDescription = type.info.description?.base64AndURLEncodedString {
+                        qqSchemeURLString += "\(encodedDescription)"
+                    }
+                }
 
                 if !openURL(URLString: qqSchemeURLString) {
                     finish(false)

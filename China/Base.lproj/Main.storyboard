@@ -16,6 +16,61 @@
                     <view key="view" contentMode="scaleToFill" id="Ugc-QJ-KXn">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pFI-rc-Qus">
+                                <rect key="frame" x="133" y="213" width="56" height="30"/>
+                                <state key="normal" title="QQ URL"/>
+                                <connections>
+                                    <action selector="shareURLToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="Xp9-BO-y2B"/>
+                                    <action selector="shareURLToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="QGT-hy-fth"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yox-0f-rEK">
+                                <rect key="frame" x="126" y="113" width="69" height="30"/>
+                                <state key="normal" title="QQ Image"/>
+                                <connections>
+                                    <action selector="shareImageToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="fQx-ym-Lv9"/>
+                                    <action selector="shareImageToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="kbf-By-PuW"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R1t-qh-QzC">
+                                <rect key="frame" x="132" y="163" width="56" height="30"/>
+                                <state key="normal" title="QQ Text"/>
+                                <connections>
+                                    <action selector="shareTextToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="fqC-5N-dGE"/>
+                                    <action selector="shareTextToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="mq8-5u-5dh"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P4E-LE-cpH">
+                                <rect key="frame" x="88" y="384" width="145" height="30"/>
+                                <state key="normal" title="WeChat Session URL"/>
+                                <connections>
+                                    <action selector="shareURLToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="aqK-HC-UdW"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SwG-wK-wCn">
+                                <rect key="frame" x="88" y="334" width="145" height="30"/>
+                                <state key="normal" title="WeChat Session Text"/>
+                                <connections>
+                                    <action selector="shareTextToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="Juv-lT-v28"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cly-xf-sCw">
+                                <rect key="frame" x="139" y="455" width="43" height="30"/>
+                                <state key="normal" title="OAuth"/>
+                                <connections>
+                                    <action selector="OAuth:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="0g3-lB-ch4"/>
+                                    <action selector="OAuth:" destination="he5-GB-Amc" eventType="touchUpInside" id="wHw-FW-i5S"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7gy-PD-6lJ">
+                                <rect key="frame" x="81" y="284" width="158" height="30"/>
+                                <state key="normal" title="WeChat Session Image"/>
+                                <connections>
+                                    <action selector="shareImageToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="kZk-9y-viX"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="QQ" id="7yu-Bt-WxS"/>
