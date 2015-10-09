@@ -436,6 +436,8 @@ public class MonkeyKing: NSObject {
 
                         qqSchemeURLString += "&url=\(encodedURLString)"
 
+                        print(qqSchemeURLString)
+
                     case .Image(let image):
 
                         guard let imageData = UIImageJPEGRepresentation(image, 1) else {
@@ -455,6 +457,7 @@ public class MonkeyKing: NSObject {
                         UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
                         
                         qqSchemeURLString += "img"
+
                     }
 
                     if let encodedTitle = type.info.title?.base64AndURLEncodedString {

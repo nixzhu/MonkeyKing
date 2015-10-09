@@ -22,6 +22,7 @@ class QQViewController: UIViewController {
         MonkeyKing.registerAccount(account)
     }
 
+    // MARK: QQ Friends
 
     @IBAction func shareImageToQQ(sender: UIButton) {
 
@@ -67,6 +68,58 @@ class QQViewController: UIViewController {
         }
 
     }
+
+    
+    // MARK: QZone
+
+    @IBAction func shareImageToQZone(sender: UIButton) {
+
+        let message = MonkeyKing.Message.QQ(.QZone(info: (
+            title: "friends",
+            description: "helloworld",
+            thumbnail: nil,
+            media: .Image(UIImage(named: "rabbit")!)
+        )))
+
+        MonkeyKing.shareMessage(message) { success in
+            print("success: \(success)")
+        }
+
+    }
+
+
+    @IBAction func shareTextToQZone(sender: UIButton) {
+
+        let message = MonkeyKing.Message.QQ(.QZone(info: (
+            title: nil,
+            description: "helloworld",
+            thumbnail: nil,
+            media: nil
+        )))
+
+        MonkeyKing.shareMessage(message) { success in
+            print("success: \(success)")
+        }
+    }
+
+
+    @IBAction func shareURLToQZone(sender: UIButton) {
+
+        let message = MonkeyKing.Message.QQ(.QZone(info: (
+            title: "friends",
+            description: "apple.com",
+            thumbnail: UIImage(named: "rabbit")!,
+            media: .URL(NSURL(string: "http://www.qq.com")!)
+        )))
+
+        MonkeyKing.shareMessage(message) { success in
+            print("success: \(success)")
+        }
+    }
+
+
+    // MARK: OAuth
+
     @IBAction func OAuth(sender: UIButton) {
         MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
             print("dictionary \(dictionary) error \(error)")

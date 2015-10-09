@@ -17,15 +17,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pFI-rc-Qus">
-                                <rect key="frame" x="133" y="213" width="56" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pFI-rc-Qus">
+                                <rect key="frame" x="132" y="213" width="56" height="30"/>
                                 <state key="normal" title="QQ URL"/>
                                 <connections>
                                     <action selector="shareURLToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="Xp9-BO-y2B"/>
                                     <action selector="shareURLToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="QGT-hy-fth"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yox-0f-rEK">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yox-0f-rEK">
                                 <rect key="frame" x="126" y="113" width="69" height="30"/>
                                 <state key="normal" title="QQ Image"/>
                                 <connections>
@@ -33,7 +33,7 @@
                                     <action selector="shareImageToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="kbf-By-PuW"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R1t-qh-QzC">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R1t-qh-QzC">
                                 <rect key="frame" x="132" y="163" width="56" height="30"/>
                                 <state key="normal" title="QQ Text"/>
                                 <connections>
@@ -41,21 +41,23 @@
                                     <action selector="shareTextToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="mq8-5u-5dh"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P4E-LE-cpH">
-                                <rect key="frame" x="88" y="384" width="145" height="30"/>
-                                <state key="normal" title="WeChat Session URL"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P4E-LE-cpH">
+                                <rect key="frame" x="121" y="384" width="79" height="30"/>
+                                <state key="normal" title="QZone URL"/>
                                 <connections>
+                                    <action selector="shareURLToQZone:" destination="he5-GB-Amc" eventType="touchUpInside" id="veB-uH-ztu"/>
                                     <action selector="shareURLToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="aqK-HC-UdW"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SwG-wK-wCn">
-                                <rect key="frame" x="88" y="334" width="145" height="30"/>
-                                <state key="normal" title="WeChat Session Text"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SwG-wK-wCn">
+                                <rect key="frame" x="121" y="334" width="79" height="30"/>
+                                <state key="normal" title="QZone Text"/>
                                 <connections>
+                                    <action selector="shareTextToQZone:" destination="he5-GB-Amc" eventType="touchUpInside" id="nKe-sP-c78"/>
                                     <action selector="shareTextToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="Juv-lT-v28"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cly-xf-sCw">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cly-xf-sCw">
                                 <rect key="frame" x="139" y="455" width="43" height="30"/>
                                 <state key="normal" title="OAuth"/>
                                 <connections>
@@ -63,15 +65,32 @@
                                     <action selector="OAuth:" destination="he5-GB-Amc" eventType="touchUpInside" id="wHw-FW-i5S"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7gy-PD-6lJ">
-                                <rect key="frame" x="81" y="284" width="158" height="30"/>
-                                <state key="normal" title="WeChat Session Image"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7gy-PD-6lJ">
+                                <rect key="frame" x="114" y="284" width="92" height="30"/>
+                                <state key="normal" title="QZone Image"/>
                                 <connections>
+                                    <action selector="shareImageToQZone:" destination="he5-GB-Amc" eventType="touchUpInside" id="0Qm-se-HRp"/>
                                     <action selector="shareImageToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="kZk-9y-viX"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="7gy-PD-6lJ" firstAttribute="centerX" secondItem="pFI-rc-Qus" secondAttribute="centerX" id="4Qw-aa-Zgu"/>
+                            <constraint firstItem="pFI-rc-Qus" firstAttribute="top" secondItem="R1t-qh-QzC" secondAttribute="bottom" constant="20" id="9Iw-7d-OsJ"/>
+                            <constraint firstItem="7gy-PD-6lJ" firstAttribute="top" secondItem="pFI-rc-Qus" secondAttribute="bottom" constant="41" id="Fmj-g5-Eg8"/>
+                            <constraint firstItem="yox-0f-rEK" firstAttribute="centerX" secondItem="Ugc-QJ-KXn" secondAttribute="centerX" id="LBa-ra-sDm"/>
+                            <constraint firstItem="cly-xf-sCw" firstAttribute="top" secondItem="P4E-LE-cpH" secondAttribute="bottom" constant="41" id="NPQ-7G-DSl"/>
+                            <constraint firstItem="cly-xf-sCw" firstAttribute="centerX" secondItem="P4E-LE-cpH" secondAttribute="centerX" id="Qap-Xq-pjB"/>
+                            <constraint firstItem="SwG-wK-wCn" firstAttribute="top" secondItem="7gy-PD-6lJ" secondAttribute="bottom" constant="20" id="kaD-bV-fls"/>
+                            <constraint firstItem="R1t-qh-QzC" firstAttribute="centerX" secondItem="yox-0f-rEK" secondAttribute="centerX" id="pXV-rQ-3Nj"/>
+                            <constraint firstItem="R1t-qh-QzC" firstAttribute="top" secondItem="yox-0f-rEK" secondAttribute="bottom" constant="20" id="par-aC-hVg"/>
+                            <constraint firstItem="P4E-LE-cpH" firstAttribute="top" secondItem="SwG-wK-wCn" secondAttribute="bottom" constant="20" id="vGU-Ri-lAt"/>
+                            <constraint firstItem="yox-0f-rEK" firstAttribute="top" secondItem="Kcj-Tf-smK" secondAttribute="bottom" constant="49" id="vHl-mH-g0b"/>
+                            <constraint firstItem="SwG-wK-wCn" firstAttribute="centerX" secondItem="7gy-PD-6lJ" secondAttribute="centerX" id="y8D-dP-aNe"/>
+                            <constraint firstItem="pFI-rc-Qus" firstAttribute="centerX" secondItem="R1t-qh-QzC" secondAttribute="centerX" id="yF4-RZ-3hs"/>
+                            <constraint firstItem="P4E-LE-cpH" firstAttribute="centerX" secondItem="SwG-wK-wCn" secondAttribute="centerX" id="yl5-Wt-Yw6"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="QQ" id="7yu-Bt-WxS"/>
                 </viewController>
