@@ -30,7 +30,7 @@ public class MonkeyKing: NSObject {
             case .QQ:
                 return canOpenURL(NSURL(string: "mqqapi://"))
             case .Weibo:
-                return true//canOpenURL(NSURL(string: "weibosdk://request"))
+                return canOpenURL(NSURL(string: "weibosdk://request"))
             }
         }
 
@@ -309,12 +309,7 @@ public class MonkeyKing: NSObject {
                 }
                 return false
             case .Weibo:
-                for account in sharedMonkeyKing.accountSet {
-                    if case .Weibo = account {
-                        return account.isAppInstalled
-                    }
-                }
-                return false
+                return true
             }
         }
     }
@@ -544,7 +539,7 @@ public class MonkeyKing: NSObject {
                 var parameters = [String: AnyObject]()
 
                 guard let accessToken = type.accessToken else {
-                    print("accessToken nil")
+                    print("When Weibo did not install, accessToken must need")
                     finish(false)
                     return
                 }
@@ -634,7 +629,13 @@ extension MonkeyKing {
 
     public class func OAuth(account: Account, completionHandler: SerializeResponse) {
 
-        guard account.isAppInstalled else {
+        var isWeiboAccount = false
+
+        if case .Weibo = account {
+            isWeiboAccount = true
+        }
+
+        guard account.isAppInstalled || isWeiboAccount else {
             let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
             completionHandler(nil, nil, error)
             return
@@ -852,15 +853,6 @@ extension MonkeyKing: WKNavigationDelegate {
 
                 sendRequest(accessTokenAPI, method: .POST) { [weak self] (JSON, response, error) -> Void in
                     self?.oauthCompletionHandler?(JSON, response, error)
-
-                    var parameters = [String: AnyObject]()
-
-                    if let json = JSON, let accessToken = json["access_token"] as? String {
-                        print("accessToken \(accessToken)")
-                        parameters["access_token"] = accessToken
-                    } else {
-                        print("accessToken nil")
-                    }
                 }
 
                 UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseOut, animations: {

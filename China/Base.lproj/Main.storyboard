@@ -123,7 +123,51 @@
                     <view key="view" contentMode="scaleToFill" id="uRf-RT-IOL">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kLV-RC-Vac">
+                                <rect key="frame" x="139" y="455" width="43" height="30"/>
+                                <state key="normal" title="OAuth"/>
+                                <connections>
+                                    <action selector="OAuth:" destination="LgQ-W6-Vcr" eventType="touchUpInside" id="PRK-rS-1H1"/>
+                                    <action selector="OAuth:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="zDr-lF-BbG"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fRZ-FT-5hS">
+                                <rect key="frame" x="122" y="213" width="76" height="30"/>
+                                <state key="normal" title="Weibo URL"/>
+                                <connections>
+                                    <action selector="shareURL:" destination="LgQ-W6-Vcr" eventType="touchUpInside" id="nIE-2X-uhn"/>
+                                    <action selector="shareURLToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="yCQ-cA-yCX"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tyb-i3-0Cn">
+                                <rect key="frame" x="116" y="113" width="89" height="30"/>
+                                <state key="normal" title="Weibo Image"/>
+                                <connections>
+                                    <action selector="shareImage:" destination="LgQ-W6-Vcr" eventType="touchUpInside" id="gXp-Qr-fSI"/>
+                                    <action selector="shareImageToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="MFV-7M-qmC"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ks6-VB-9Yk">
+                                <rect key="frame" x="122" y="163" width="76" height="30"/>
+                                <state key="normal" title="Weibo Text"/>
+                                <connections>
+                                    <action selector="shareText:" destination="LgQ-W6-Vcr" eventType="touchUpInside" id="QXy-w6-YNt"/>
+                                    <action selector="shareTextToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="rH2-Aq-cgd"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="kLV-RC-Vac" firstAttribute="centerX" secondItem="uRf-RT-IOL" secondAttribute="centerX" id="DE9-zU-oE5"/>
+                            <constraint firstItem="Tyb-i3-0Cn" firstAttribute="top" secondItem="FnJ-Ce-uuH" secondAttribute="bottom" constant="49" id="VD8-yr-s2h"/>
+                            <constraint firstItem="muv-Fn-ED6" firstAttribute="top" secondItem="kLV-RC-Vac" secondAttribute="bottom" constant="83" id="bCC-W8-1m1"/>
+                            <constraint firstItem="fRZ-FT-5hS" firstAttribute="top" secondItem="ks6-VB-9Yk" secondAttribute="bottom" constant="20" id="eJE-TM-Abq"/>
+                            <constraint firstItem="ks6-VB-9Yk" firstAttribute="centerX" secondItem="Tyb-i3-0Cn" secondAttribute="centerX" id="g2U-0E-Ytt"/>
+                            <constraint firstItem="fRZ-FT-5hS" firstAttribute="centerX" secondItem="ks6-VB-9Yk" secondAttribute="centerX" id="j8H-cE-kXa"/>
+                            <constraint firstItem="ks6-VB-9Yk" firstAttribute="top" secondItem="Tyb-i3-0Cn" secondAttribute="bottom" constant="20" id="xWr-CJ-QWo"/>
+                            <constraint firstItem="Tyb-i3-0Cn" firstAttribute="centerX" secondItem="uRf-RT-IOL" secondAttribute="centerX" id="zfL-j0-htg"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Weibo" id="joK-Zg-BIw"/>
                 </viewController>
