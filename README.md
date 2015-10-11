@@ -59,7 +59,7 @@ Share to WeChat (微信)：
 	
 	Just like this.
 	
-	![URL Scheme for WeChat](https://raw.githubusercontent.com/Limon-catch/MonkeyKing/master/images/NSAppTransportSecurity.png)
+	![URL Scheme for WeChat](https://raw.githubusercontent.com/Limon-catch/MonkeyKing/master/images/AppTransportSecurity.png)
 	
 	
 	
