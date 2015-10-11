@@ -8,11 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
-}
-
-extension ViewController: UITableViewDataSource, UITableViewDelegate {
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 4

@@ -48,6 +48,15 @@ public class MonkeyKing: NSObject {
         public var hashValue: Int {
             return appID.hashValue
         }
+
+        public var isWeiboAccount: Bool {
+            switch self {
+            case .Weibo:
+                return true
+            default:
+                return false
+            }
+        }
     }
 
     var accountSet = Set<Account>()
@@ -434,8 +443,6 @@ public class MonkeyKing: NSObject {
 
                         qqSchemeURLString += "&url=\(encodedURLString)"
 
-                        print(qqSchemeURLString)
-
                     case .Image(let image):
 
                         guard let imageData = UIImageJPEGRepresentation(image, 1) else {
@@ -638,13 +645,7 @@ extension MonkeyKing {
 
     public class func OAuth(account: Account, completionHandler: SerializeResponse) {
 
-        var isWeiboAccount = false
-
-        if case .Weibo = account {
-            isWeiboAccount = true
-        }
-
-        guard account.isAppInstalled || isWeiboAccount else {
+        guard account.isAppInstalled || account.isWeiboAccount else {
             let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
             completionHandler(nil, nil, error)
             return

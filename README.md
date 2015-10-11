@@ -7,7 +7,7 @@
 
 MonkeyKing help you post message to Chinese Social Network, without third party SDKs.
 
-MonkeyKing use the same analysis process of [openshare](https://github.com/100apps/openshare), but now only support share URL and Image to **WeChat** or **QQ**.
+MonkeyKing use the same analysis process of [openshare](https://github.com/100apps/openshare), support share Text, URL and Image to **WeChat**, **Weibo** or **QQ**. MonkeyKing can post message to Wiebo by webpage. One more thing: Support OAuth.
 
 ## Requirements
 
@@ -59,7 +59,7 @@ Share to WeChat (微信)：
 	
 	Just like this.
 	
-	![URL Scheme for WeChat](https://raw.githubusercontent.com/Limon-catch/MonkeyKing/master/images/AppTransportSecurity.png)
+	![URL Scheme for WeChat](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/AppTransportSecurity.png)
 	
 	
 	
@@ -109,6 +109,21 @@ func application(application: UIApplication, didFinishLaunchingWithOptions launc
     return true
 }
 ```
+
+### OAuth
+Weibo OAuth:
+
+	let account = MonkeyKing.Account.Weibo(appID: weiboAppID, appKey: weiboAppKey, redirectURL: weiboRedirectURL)
+	
+	MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
+            print("dictionary \(dictionary) error \(error)")
+        }
+	 
+if people not installed Weibo App 
+	 
+	 ![weiboOAuth](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/weiboOAuth.png)
+	
+	
 
 ### More
 
@@ -193,7 +208,8 @@ For more information about how to use Carthage, please see its [project page](ht
 
 ## Contact
 
-NIX [@nixzhu](https://twitter.com/nixzhu)
+NIX [@nixzhu](https://twitter.com/nixzhu) or 
+Limon [@LimonTop](http://weibo.com/u/1783821582)
 
 ## Credits
 

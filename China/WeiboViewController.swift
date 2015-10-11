@@ -26,6 +26,8 @@ class WeiboViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
+        // not installed weibo app, must need accessToken
+
         if !account.isAppInstalled {
 
             MonkeyKing.OAuth(account) { [weak self] (dictionary, response, error) -> Void in
@@ -39,7 +41,6 @@ class WeiboViewController: UIViewController {
 
         }
     }
-
 
     @IBAction func shareImage(sender: UIButton) {
 
@@ -56,7 +57,6 @@ class WeiboViewController: UIViewController {
 
     }
 
-
     @IBAction func shareText(sender: UIButton) {
 
         let message = MonkeyKing.Message.Weibo(.Default(info: (
@@ -72,7 +72,6 @@ class WeiboViewController: UIViewController {
 
     }
 
-
     @IBAction func shareURL(sender: UIButton) {
 
         let message = MonkeyKing.Message.Weibo(.Default(info: (
@@ -87,7 +86,6 @@ class WeiboViewController: UIViewController {
         }
 
     }
-
 
     // MARK: OAuth
 
