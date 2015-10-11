@@ -121,7 +121,7 @@ Weibo OAuth:
 	 
 if people not installed Weibo App 
 	 
-	 ![weiboOAuth](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/weiboOAuth.png)
+![weiboOAuth](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/weiboOAuth.png)
 	
 	
 
