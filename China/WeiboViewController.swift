@@ -89,6 +89,8 @@ class WeiboViewController: UIViewController {
     }
 
 
+    // MARK: OAuth
+
     @IBAction func OAuth(sender: UIButton) {
         MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
             print("dictionary \(dictionary) error \(error)")

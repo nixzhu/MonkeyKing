@@ -9,8 +9,8 @@
 import UIKit
 import MonkeyKing
 
-let weChatAppID = "wx4634c56c1aed39f5"
-let weChatAppKey = "8493fd2c782dd9b1dfdd724a6847dd28"
+let weChatAppID = "wx4868b35061f87885"
+let weChatAppKey = "64020361b8ec4c99936c0e3999a9f249"
 
 class WeChatViewController: UIViewController {
 
@@ -107,6 +107,9 @@ class WeChatViewController: UIViewController {
             print("success: \(success)")
         }
     }
+
+
+    // MARK: OAuth
 
     @IBAction func OAuth(sender: UIButton) {
         MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
