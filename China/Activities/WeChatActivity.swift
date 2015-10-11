@@ -45,7 +45,7 @@ class WeChatActivity: AnyActivity {
 
     init(type: Type, message: MonkeyKing.Message, finish: MonkeyKing.Finish) {
 
-        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID))
+        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID, appKey: ""))
 
         super.init(
             type: type.type,
