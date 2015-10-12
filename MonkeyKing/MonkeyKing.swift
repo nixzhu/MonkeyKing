@@ -112,7 +112,10 @@ public class MonkeyKing: NSObject {
                 }
             }
 
-        } else if URL.scheme.hasPrefix("tencent") {
+        }
+        
+        // QQ Share
+        if URL.scheme.hasPrefix("QQ") {
 
             guard let error = URL.queryInfo["error"] else {
                 return false

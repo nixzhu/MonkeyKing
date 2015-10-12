@@ -113,11 +113,15 @@ func application(application: UIApplication, didFinishLaunchingWithOptions launc
 ### OAuth
 Weibo OAuth:
 
+
+```swift
 	let account = MonkeyKing.Account.Weibo(appID: weiboAppID, appKey: weiboAppKey, redirectURL: weiboRedirectURL)
 	
 	MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
             print("dictionary \(dictionary) error \(error)")
         }
+```
+
 	 
 if people not installed Weibo App 
 	 
@@ -217,4 +221,5 @@ WeChat logos from [WeChat-Logo](https://github.com/RayPS/WeChat-Logo) by Ray.
 
 ## License
 
-MonkeyKing is available under the MIT license. See the LICENSE file for more info.
+MonkeyKing is available under the [MIT License][mitLink] license. See the LICENSE file for more info.
+[mitLink]:http://opensource.org/licenses/MIT
