@@ -7,7 +7,9 @@
 
 MonkeyKing help you post message to Chinese Social Network, without third party SDKs.
 
-MonkeyKing use the same analysis process of [openshare](https://github.com/100apps/openshare), support share Text, URL and Image to **WeChat**, **Weibo** or **QQ**. MonkeyKing can post message to Wiebo by webpage. One more thing: Support OAuth.
+MonkeyKing use the same analysis process of [openshare](https://github.com/100apps/openshare), support share **Text**, **URL** and **Image** to **WeChat**, **Weibo** or **QQ**. MonkeyKing also can post message to Wiebo by webpage. 
+
+One more thing: MonkeyKing supports **OAuth**.
 
 ## Requirements
 
@@ -82,6 +84,7 @@ Share to WeChat (微信)：
         }
     }
 	```
+	
 3. If you need handle call back, add following code
 
 	```swift
@@ -99,7 +102,7 @@ Share to WeChat (微信)：
 	
 It's done!
 
-If you don't want to register account before share each time, do it in AppDelegate like follow:
+If you don't want to register account before share each time, you may do it in AppDelegate like follow:
 	
 ```swift
 func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -111,23 +114,21 @@ func application(application: UIApplication, didFinishLaunchingWithOptions launc
 ```
 
 ### OAuth
+
 Weibo OAuth:
 
-
 ```swift
-	let account = MonkeyKing.Account.Weibo(appID: weiboAppID, appKey: weiboAppKey, redirectURL: weiboRedirectURL)
-	
-	MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
-            print("dictionary \(dictionary) error \(error)")
-        }
-```
+let account = MonkeyKing.Account.Weibo(appID: weiboAppID, appKey: weiboAppKey, redirectURL: weiboRedirectURL)
 
+MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
+    print("dictionary \(dictionary) error \(error)")
+}
+```
 	 
-if people not installed Weibo App 
+If user do not installed Weibo App on their devices, MonkeyKing will use web OAuth:
 	 
 ![weiboOAuth](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/wbOAuth.png)
-	
-	
+
 
 ### More
 
@@ -139,7 +140,7 @@ Check the demo for more information.
 
 ## Installation
 
-Feel free to drag `MonkeyKing.swift` & `AnyActivity.swift` to your iOS Project. But it's recommended to use CocoaPods or Carthage.
+It's recommended to use CocoaPods or Carthage.
 
 ### CocoaPods
 
@@ -158,7 +159,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 use_frameworks!
 
-pod 'MonkeyKing', '~> 0.0.2'
+pod 'MonkeyKing', '~> 0.5'
 ```
 
 Then, run the following command:
@@ -183,7 +184,7 @@ $ brew install carthage
 To integrate MonkeyKing into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "nixzhu/MonkeyKing" >= 0.0.2
+github "nixzhu/MonkeyKing" >= 0.5
 ```
 
 Then, run the following command to build the MonkeyKing framework:

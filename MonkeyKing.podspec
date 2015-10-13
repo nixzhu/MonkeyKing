@@ -1,8 +1,8 @@
 Pod::Spec.new do |s|
 
   s.name        = "MonkeyKing"
-  s.version     = "0.0.2"
-  s.summary     = "MonkeyKing help you post message to Chinese Social Network."
+  s.version     = "0.5"
+  s.summary     = "MonkeyKing helps you post message to Chinese Social Networks, or do OAuth."
 
   s.description = <<-DESC
                    You just want to share some information to WeChat, QQ, ...
