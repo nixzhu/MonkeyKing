@@ -5,7 +5,7 @@
 
 # MonkeyKing
 
-MonkeyKing help you post message to Chinese Social Network, without third party SDKs.
+MonkeyKing helps you post message to Chinese Social Networks, without their buggy SDKs.
 
 MonkeyKing use the same analysis process of [openshare](https://github.com/100apps/openshare), support share **Text**, **URL** and **Image** to **WeChat**, **Weibo** or **QQ**. MonkeyKing also can post message to Wiebo by webpage. 
 
