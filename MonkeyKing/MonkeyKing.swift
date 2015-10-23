@@ -670,10 +670,10 @@ extension MonkeyKing {
                 let dic = ["app_id": appID,
                     "app_name": appName,
                     "client_id": appID,
-                    "response_type":"token",
-                    "scope":scope,
-                    "sdkp":"i",
-                    "sdkv":"2.9",
+                    "response_type": "token",
+                    "scope": scope,
+                    "sdkp": "i",
+                    "sdkv": "2.9",
                     "status_machine": UIDevice.currentDevice().model,
                     "status_os": UIDevice.currentDevice().systemVersion,
                     "status_version": UIDevice.currentDevice().systemVersion]
@@ -701,7 +701,8 @@ extension MonkeyKing {
                 }
 
                 // Web OAuth
-                let accessTokenAPI = "https://open.weibo.cn/oauth2/authorize?client_id=\(appID)&response_type=code&redirect_uri=\(redirectURL)&scope=all"
+                let accessTokenAPI = "https://open.weibo.cn/oauth2/authorize?client_id=\(appID)&response_type=code&redirect_uri=\(redirectURL)&scope=\(scope)"
+
                 guard let URL = NSURL(string: accessTokenAPI) else {
                     return
                 }
