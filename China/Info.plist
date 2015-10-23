@@ -57,6 +57,7 @@
 	<array>
 		<string>weixin</string>
 		<string>mqqapi</string>
+		<string>weibosdk</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
