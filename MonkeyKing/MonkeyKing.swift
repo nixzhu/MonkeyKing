@@ -919,16 +919,11 @@ private extension NSBundle {
             return displayName
         }
 
-        guard let localizedInfo = localizedInfoDictionary else {
-
-            if let info = infoDictionary {
-                return getNameByInfo(info)
-            }
-
+        guard let info = localizedInfoDictionary ?? infoDictionary else {
             return nil
         }
 
-        return getNameByInfo(localizedInfo)
+        return getNameByInfo(info)
     }
 
     var bundleID: String? {
