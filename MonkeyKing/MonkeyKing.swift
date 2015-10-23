@@ -910,17 +910,25 @@ private extension NSBundle {
 
     var displayName: String? {
 
-        if let info = localizedInfoDictionary {
+        func getNameByInfo(info: [String : AnyObject]) -> String? {
 
-            if let localizedDisplayName = info["CFBundleDisplayName"] as? String {
-                return localizedDisplayName
-
-            } else {
+            guard let displayName = info["CFBundleDisplayName"] as? String else {
                 return info["CFBundleName"] as? String
             }
+
+            return displayName
         }
 
-        return nil
+        guard let localizedInfo = localizedInfoDictionary else {
+
+            if let info = infoDictionary {
+                return getNameByInfo(info)
+            }
+
+            return nil
+        }
+
+        return getNameByInfo(localizedInfo)
     }
 
     var bundleID: String? {
