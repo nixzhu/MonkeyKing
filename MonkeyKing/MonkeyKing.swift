@@ -910,7 +910,7 @@ private extension NSBundle {
 
     var displayName: String? {
 
-        if let info = infoDictionary {
+        if let info = localizedInfoDictionary {
 
             if let localizedDisplayName = info["CFBundleDisplayName"] as? String {
                 return localizedDisplayName
