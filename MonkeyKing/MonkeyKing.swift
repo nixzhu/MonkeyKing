@@ -646,7 +646,7 @@ extension MonkeyKing {
 
     public typealias SerializeResponse = (NSDictionary?, NSURLResponse?, NSError?) -> Void
 
-    public class func OAuth(account: Account, completionHandler: SerializeResponse) {
+    public class func OAuth(account: Account, scope: String? = nil, completionHandler: SerializeResponse) {
 
         guard account.isAppInstalled || account.isWeiboAccount else {
             let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
@@ -660,12 +660,12 @@ extension MonkeyKing {
 
             case .WeChat(let appID, _):
 
-                let scope = "snsapi_userinfo"
+                let scope = scope ?? "snsapi_userinfo"
                 openURL(URLString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth")
 
             case .QQ(let appID):
 
-                let scope = ""
+                let scope = scope ?? ""
                 let appName = NSBundle.mainBundle().displayName ?? "nixApp"
                 let dic = ["app_id": appID,
                     "app_name": appName,
@@ -686,7 +686,7 @@ extension MonkeyKing {
             case .Weibo(let appID, _, let redirectURL):
 
                 guard !canOpenURL(NSURL(string: "weibosdk://request")) else {
-                    let scope = "all"
+                    let scope = scope ?? "all"
                     let uuIDString = CFUUIDCreateString(nil, CFUUIDCreate(nil))
                     let authData = [
                         ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(["__class": "WBAuthorizeRequest", "redirectURI": redirectURL, "requestID":uuIDString, "scope": scope])
