@@ -310,10 +310,10 @@
                     <navigationItem key="navigationItem" title="MonkeyKing" id="dS1-NJ-y7S"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
-                        <segue destination="2Fh-zG-2iM" kind="push" identifier="WeChat" id="9YK-n5-egm"/>
-                        <segue destination="LgQ-W6-Vcr" kind="push" identifier="Weibo" id="Zft-v1-zYL"/>
-                        <segue destination="he5-GB-Amc" kind="push" identifier="QQ" id="2c0-4X-8gv"/>
-                        <segue destination="KaI-44-6m0" kind="push" identifier="System" id="wNz-79-HiF"/>
+                        <segue destination="2Fh-zG-2iM" kind="show" identifier="WeChat" id="9YK-n5-egm"/>
+                        <segue destination="LgQ-W6-Vcr" kind="show" identifier="Weibo" id="Zft-v1-zYL"/>
+                        <segue destination="he5-GB-Amc" kind="show" identifier="QQ" id="2c0-4X-8gv"/>
+                        <segue destination="KaI-44-6m0" kind="show" identifier="System" id="wNz-79-HiF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
