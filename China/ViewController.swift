@@ -34,6 +34,9 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+
         switch indexPath.row {
         case 0:
             performSegueWithIdentifier("WeChat", sender: nil)
