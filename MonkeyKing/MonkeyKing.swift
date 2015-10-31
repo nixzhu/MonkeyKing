@@ -803,24 +803,6 @@ extension MonkeyKing: WKNavigationDelegate {
         webView.evaluateJavaScript(HTML, completionHandler: nil)
     }
 
-    public func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
-        UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseOut, animations: {
-            webView.frame.origin.y = UIScreen.mainScreen().bounds.height
-        }, completion: {_ in
-            webView.removeFromSuperview()
-            self.oauthCompletionHandler?(nil, nil, error)
-        })
-    }
-
-    public func webView(webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: NSError) {
-        UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseOut, animations: {
-            webView.frame.origin.y = UIScreen.mainScreen().bounds.height
-        }, completion: {_ in
-            webView.removeFromSuperview()
-            self.oauthCompletionHandler?(nil, nil, error)
-        })
-    }
-
     public func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
 
         guard let URL = webView.URL else {
