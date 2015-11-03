@@ -113,10 +113,27 @@ class QQViewController: UIViewController {
 
     @IBAction func OAuth(sender: UIButton) {
 
-        //"get_user_info,get_simple_userinfo,add_album,add_idol,add_one_blog,add_pic_t,add_share,add_topic,check_page_fans,del_idol,del_t,get_fanslist,get_idollist,get_info,get_other_info,get_repost_list,list_album,upload_pic,get_vip_info,get_vip_rich_info,get_intimate_friends_weibo,match_nick_tips_weibo"
+        // "get_user_info,get_simple_userinfo,add_album,add_idol,add_one_blog,add_pic_t,add_share,add_topic,check_page_fans,del_idol,del_t,get_fanslist,get_idollist,get_info,get_other_info,get_repost_list,list_album,upload_pic,get_vip_info,get_vip_rich_info,get_intimate_friends_weibo,match_nick_tips_weibo"
 
         MonkeyKing.OAuth(account, scope: "get_user_info") { (dictionary, response, error) -> Void in
-            print("dictionary \(dictionary) error \(error)")
+
+            guard let results = dictionary else {
+                return
+            }
+
+            let token = results["access_token"] as! String
+            let openid = results["openid"] as! String
+
+            let scope = "get_user_info"
+            let userInfoAPI = "https://graph.qq.com/user/\(scope)?access_token=\(token)&oauth_consumer_key=\(qqAppID)&openid=\(openid)"
+
+            // You can use this URL to request the info.
+            print(userInfoAPI)
+
+            // More API
+            // http://wiki.open.qq.com/wiki/website/API列表
+
+            //  带中文的链接，乖乖地复制吧🙂
         }
     }
 }
