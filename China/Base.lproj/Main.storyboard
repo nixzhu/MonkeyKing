@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pFI-rc-Qus">
-                                <rect key="frame" x="132" y="213" width="56" height="30"/>
+                                <rect key="frame" x="14" y="134" width="56" height="30"/>
                                 <animations/>
                                 <state key="normal" title="QQ URL"/>
                                 <connections>
@@ -28,7 +28,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yox-0f-rEK">
-                                <rect key="frame" x="126" y="113" width="69" height="30"/>
+                                <rect key="frame" x="14" y="184" width="69" height="30"/>
                                 <animations/>
                                 <state key="normal" title="QQ Image"/>
                                 <connections>
@@ -37,7 +37,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R1t-qh-QzC">
-                                <rect key="frame" x="132" y="163" width="56" height="30"/>
+                                <rect key="frame" x="14" y="84" width="56" height="30"/>
                                 <animations/>
                                 <state key="normal" title="QQ Text"/>
                                 <connections>
@@ -46,7 +46,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P4E-LE-cpH">
-                                <rect key="frame" x="121" y="384" width="79" height="30"/>
+                                <rect key="frame" x="221" y="134" width="79" height="30"/>
                                 <animations/>
                                 <state key="normal" title="QZone URL"/>
                                 <connections>
@@ -55,7 +55,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SwG-wK-wCn">
-                                <rect key="frame" x="121" y="334" width="79" height="30"/>
+                                <rect key="frame" x="221" y="84" width="79" height="30"/>
                                 <animations/>
                                 <state key="normal" title="QZone Text"/>
                                 <connections>
@@ -64,7 +64,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cly-xf-sCw">
-                                <rect key="frame" x="139" y="455" width="43" height="30"/>
+                                <rect key="frame" x="139" y="498" width="43" height="30"/>
                                 <animations/>
                                 <state key="normal" title="OAuth"/>
                                 <connections>
@@ -73,7 +73,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7gy-PD-6lJ">
-                                <rect key="frame" x="114" y="284" width="92" height="30"/>
+                                <rect key="frame" x="208" y="184" width="92" height="30"/>
                                 <animations/>
                                 <state key="normal" title="QZone Image"/>
                                 <connections>
@@ -81,24 +81,64 @@
                                     <action selector="shareImageToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="kZk-9y-viX"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M2g-P2-GvI">
+                                <rect key="frame" x="14" y="284" width="66" height="30"/>
+                                <animations/>
+                                <state key="normal" title="QQ Video"/>
+                                <connections>
+                                    <action selector="shareVideoToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="hUH-Jx-YqC"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gKk-H8-Cg8">
+                                <rect key="frame" x="211" y="234" width="89" height="30"/>
+                                <animations/>
+                                <state key="normal" title="QZone Audio"/>
+                                <connections>
+                                    <action selector="shareAudioToQZone:" destination="he5-GB-Amc" eventType="touchUpInside" id="hno-jT-CaM"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aYI-AS-QI8">
+                                <rect key="frame" x="210" y="284" width="90" height="30"/>
+                                <animations/>
+                                <state key="normal" title="QZone Video"/>
+                                <connections>
+                                    <action selector="shareVideoToQZone:" destination="he5-GB-Amc" eventType="touchUpInside" id="sbM-L6-rqi"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="94M-dg-nm6">
+                                <rect key="frame" x="14" y="234" width="66" height="30"/>
+                                <animations/>
+                                <state key="normal" title="QQ Audio"/>
+                                <connections>
+                                    <action selector="shareAudioToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="quH-ew-N3t"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="7gy-PD-6lJ" firstAttribute="centerX" secondItem="pFI-rc-Qus" secondAttribute="centerX" id="4Qw-aa-Zgu"/>
-                            <constraint firstItem="pFI-rc-Qus" firstAttribute="top" secondItem="R1t-qh-QzC" secondAttribute="bottom" constant="20" id="9Iw-7d-OsJ"/>
-                            <constraint firstItem="7gy-PD-6lJ" firstAttribute="top" secondItem="pFI-rc-Qus" secondAttribute="bottom" constant="41" id="Fmj-g5-Eg8"/>
-                            <constraint firstItem="yox-0f-rEK" firstAttribute="centerX" secondItem="Ugc-QJ-KXn" secondAttribute="centerX" id="LBa-ra-sDm"/>
-                            <constraint firstItem="cly-xf-sCw" firstAttribute="top" secondItem="P4E-LE-cpH" secondAttribute="bottom" constant="41" id="NPQ-7G-DSl"/>
-                            <constraint firstItem="cly-xf-sCw" firstAttribute="centerX" secondItem="P4E-LE-cpH" secondAttribute="centerX" id="Qap-Xq-pjB"/>
-                            <constraint firstItem="SwG-wK-wCn" firstAttribute="top" secondItem="7gy-PD-6lJ" secondAttribute="bottom" constant="20" id="kaD-bV-fls"/>
-                            <constraint firstItem="R1t-qh-QzC" firstAttribute="centerX" secondItem="yox-0f-rEK" secondAttribute="centerX" id="pXV-rQ-3Nj"/>
-                            <constraint firstItem="R1t-qh-QzC" firstAttribute="top" secondItem="yox-0f-rEK" secondAttribute="bottom" constant="20" id="par-aC-hVg"/>
-                            <constraint firstItem="P4E-LE-cpH" firstAttribute="top" secondItem="SwG-wK-wCn" secondAttribute="bottom" constant="20" id="vGU-Ri-lAt"/>
-                            <constraint firstItem="yox-0f-rEK" firstAttribute="top" secondItem="Kcj-Tf-smK" secondAttribute="bottom" constant="49" id="vHl-mH-g0b"/>
-                            <constraint firstItem="SwG-wK-wCn" firstAttribute="centerX" secondItem="7gy-PD-6lJ" secondAttribute="centerX" id="y8D-dP-aNe"/>
-                            <constraint firstItem="pFI-rc-Qus" firstAttribute="centerX" secondItem="R1t-qh-QzC" secondAttribute="centerX" id="yF4-RZ-3hs"/>
-                            <constraint firstItem="P4E-LE-cpH" firstAttribute="centerX" secondItem="SwG-wK-wCn" secondAttribute="centerX" id="yl5-Wt-Yw6"/>
+                            <constraint firstItem="aYI-AS-QI8" firstAttribute="trailing" secondItem="gKk-H8-Cg8" secondAttribute="trailing" id="5Yt-EO-6F9"/>
+                            <constraint firstItem="gKk-H8-Cg8" firstAttribute="trailing" secondItem="7gy-PD-6lJ" secondAttribute="trailing" id="7Bp-j6-6lC"/>
+                            <constraint firstItem="R1t-qh-QzC" firstAttribute="top" secondItem="Kcj-Tf-smK" secondAttribute="bottom" constant="20" id="7lA-jW-fbl"/>
+                            <constraint firstItem="T0w-Zh-f0l" firstAttribute="top" secondItem="cly-xf-sCw" secondAttribute="bottom" constant="40" id="82U-e7-tzc"/>
+                            <constraint firstItem="94M-dg-nm6" firstAttribute="leading" secondItem="M2g-P2-GvI" secondAttribute="leading" id="EON-r7-5G6"/>
+                            <constraint firstItem="pFI-rc-Qus" firstAttribute="leading" secondItem="yox-0f-rEK" secondAttribute="leading" id="Enf-Ed-qpe"/>
+                            <constraint firstItem="94M-dg-nm6" firstAttribute="top" secondItem="yox-0f-rEK" secondAttribute="bottom" constant="20" id="Gwl-so-ui0"/>
+                            <constraint firstItem="pFI-rc-Qus" firstAttribute="top" secondItem="R1t-qh-QzC" secondAttribute="bottom" constant="20" id="H0J-RO-5ie"/>
+                            <constraint firstItem="M2g-P2-GvI" firstAttribute="top" secondItem="94M-dg-nm6" secondAttribute="bottom" constant="20" id="IL4-UH-JGL"/>
+                            <constraint firstItem="SwG-wK-wCn" firstAttribute="leading" secondItem="P4E-LE-cpH" secondAttribute="leading" id="Q6u-xq-23Y"/>
+                            <constraint firstItem="gKk-H8-Cg8" firstAttribute="baseline" secondItem="94M-dg-nm6" secondAttribute="baseline" id="QQr-TS-svb"/>
+                            <constraint firstItem="P4E-LE-cpH" firstAttribute="trailing" secondItem="7gy-PD-6lJ" secondAttribute="trailing" id="Swk-PC-XKG"/>
+                            <constraint firstItem="aYI-AS-QI8" firstAttribute="baseline" secondItem="M2g-P2-GvI" secondAttribute="baseline" id="V4n-FA-2yA"/>
+                            <constraint firstItem="R1t-qh-QzC" firstAttribute="leading" secondItem="Ugc-QJ-KXn" secondAttribute="leadingMargin" constant="-2" id="aRU-AS-wLd"/>
+                            <constraint firstItem="R1t-qh-QzC" firstAttribute="leading" secondItem="pFI-rc-Qus" secondAttribute="leading" id="bgF-LL-ynE"/>
+                            <constraint firstItem="cly-xf-sCw" firstAttribute="centerX" secondItem="Ugc-QJ-KXn" secondAttribute="centerX" id="fUS-Xv-JFE"/>
+                            <constraint firstItem="94M-dg-nm6" firstAttribute="leading" secondItem="yox-0f-rEK" secondAttribute="leading" id="n4f-6Q-aGu"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="SwG-wK-wCn" secondAttribute="trailing" constant="4" id="pEW-LG-blf"/>
+                            <constraint firstItem="P4E-LE-cpH" firstAttribute="baseline" secondItem="pFI-rc-Qus" secondAttribute="baseline" id="pon-ob-RB3"/>
+                            <constraint firstItem="7gy-PD-6lJ" firstAttribute="baseline" secondItem="yox-0f-rEK" secondAttribute="baseline" id="uM4-Y6-0bs"/>
+                            <constraint firstItem="yox-0f-rEK" firstAttribute="top" secondItem="pFI-rc-Qus" secondAttribute="bottom" constant="20" id="wBo-DL-Hjv"/>
+                            <constraint firstItem="SwG-wK-wCn" firstAttribute="baseline" secondItem="R1t-qh-QzC" secondAttribute="baseline" id="yKc-q3-a7F"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="QQ" id="7yu-Bt-WxS"/>

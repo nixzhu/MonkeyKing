@@ -69,14 +69,16 @@ public class MonkeyKing: NSObject {
         } else if case .Weibo = account {
             sharedMonkeyKing.accountSet.insert(account)
         }
-
     }
 
     public class func handleOpenURL(URL: NSURL) -> Bool {
 
+        print("open URL: \(URL)")
+
         if URL.scheme.hasPrefix("wx") {
 
             // WeChat OAuth
+
             if let stateRange = URL.absoluteString.rangeOfString("&state=Weixinauth") {
                 if let codeRange = URL.absoluteString.rangeOfString("?code=") {
                     //login succcess
@@ -90,6 +92,7 @@ public class MonkeyKing: NSObject {
             }
 
             // WeChat Share
+
             guard let data = UIPasteboard.generalPasteboard().dataForPasteboardType("content") else {
                 return false
             }
@@ -111,10 +114,10 @@ public class MonkeyKing: NSObject {
                     }
                 }
             }
-
         }
         
         // QQ Share
+
         if URL.scheme.hasPrefix("QQ") {
 
             guard let error = URL.queryInfo["error"] else {
@@ -129,6 +132,7 @@ public class MonkeyKing: NSObject {
         }
 
         // QQ OAuth
+
         if URL.scheme.hasPrefix("tencent") {
 
             for case let .QQ(appID) in sharedMonkeyKing.accountSet {
@@ -162,10 +166,13 @@ public class MonkeyKing: NSObject {
         }
 
         // Weibo
+
         if URL.scheme.hasPrefix("wb") {
+
             guard let items = UIPasteboard.generalPasteboard().items as? [[String: AnyObject]] else {
                 return false
             }
+
             var results = [String: AnyObject]()
 
             for item in items {
@@ -442,9 +449,7 @@ public class MonkeyKing: NSObject {
 
                 if let media = type.info.media {
 
-                    switch media {
-
-                    case .URL(let URL):
+                    func handleNewsWithURL(URL: NSURL, mediaType: String?) {
 
                         if let thumbnail = type.info.thumbnail, thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
                             let dic = ["previewimagedata": thumbnailData]
@@ -452,7 +457,7 @@ public class MonkeyKing: NSObject {
                             UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
                         }
 
-                        qqSchemeURLString += "news"
+                        qqSchemeURLString += mediaType ?? "news"
 
                         guard let encodedURLString = URL.absoluteString.base64AndURLEncodedString else {
                             finish(false)
@@ -460,6 +465,13 @@ public class MonkeyKing: NSObject {
                         }
 
                         qqSchemeURLString += "&url=\(encodedURLString)"
+                    }
+
+                    switch media {
+
+                    case .URL(let URL):
+
+                        handleNewsWithURL(URL, mediaType: "news")
 
                     case .Image(let image):
 
@@ -481,11 +493,11 @@ public class MonkeyKing: NSObject {
                         
                         qqSchemeURLString += "img"
 
-                    case .Audio:
-                        fatalError("QQ not supports Audio type")
+                    case .Audio(let audioURL, _):
+                        handleNewsWithURL(audioURL, mediaType: "audio")
 
-                    case .Video:
-                        fatalError("QQ not supports Video type")
+                    case .Video(let URL):
+                        handleNewsWithURL(URL, mediaType: nil) // 没有 video 类型，默认用 news
                     }
 
                     if let encodedTitle = type.info.title?.base64AndURLEncodedString {
@@ -497,7 +509,6 @@ public class MonkeyKing: NSObject {
                     }
 
                 } else { // Share Text
-
                     qqSchemeURLString += "text&file_data="
 
                     if let encodedDescription = type.info.description?.base64AndURLEncodedString {
