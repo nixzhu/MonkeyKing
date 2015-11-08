@@ -7,7 +7,7 @@
 
 MonkeyKing helps you post messages to Chinese Social Networks, without their buggy SDKs.
 
-MonkeyKing use the same analysis process of [openshare](https://github.com/100apps/openshare), support share **Text**, **URL** and **Image** to **WeChat**, **Weibo** or **QQ**. MonkeyKing also can post message to Weibo by webpage. 
+MonkeyKing use the same analysis process of [openshare](https://github.com/100apps/openshare), support share **Text**, **URL**, **Image**, **Audio**, and **Video** to **WeChat**, **Weibo** or **QQ**. MonkeyKing also can post message to Weibo by webpage. (Note thate Auido and Video specifically for WeChat or QQ)
 
 One more thing: MonkeyKing supports **OAuth**.
 
@@ -159,7 +159,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 use_frameworks!
 
-pod 'MonkeyKing', '~> 0.5.2'
+pod 'MonkeyKing', '~> 0.6'
 ```
 
 Then, run the following command:
@@ -184,7 +184,7 @@ $ brew install carthage
 To integrate MonkeyKing into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "nixzhu/MonkeyKing" >= 0.5.2
+github "nixzhu/MonkeyKing" >= 0.6
 ```
 
 Then, run the following command to build the MonkeyKing framework:
