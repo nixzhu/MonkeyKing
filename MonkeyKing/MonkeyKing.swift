@@ -223,8 +223,11 @@ public class MonkeyKing: NSObject {
     }
 
     public enum Media {
+
         case URL(NSURL)
         case Image(UIImage)
+        case Music(audioURL: NSURL, linkURL: NSURL)
+        case Video(NSURL)
     }
 
     public typealias Info = (title: String?, description: String?, thumbnail: UIImage?, media: Media?)
@@ -370,20 +373,28 @@ public class MonkeyKing: NSObject {
                 if let media = info.media {
                     switch media {
 
-                        case .URL(let URL):
-                            weChatMessageInfo["objectType"] = "5"
-                            weChatMessageInfo["mediaUrl"] = URL.absoluteString
+                    case .URL(let URL):
+                        weChatMessageInfo["objectType"] = "5"
+                        weChatMessageInfo["mediaUrl"] = URL.absoluteString
 
-                        case .Image(let image):
-                            weChatMessageInfo["objectType"] = "2"
+                    case .Image(let image):
+                        weChatMessageInfo["objectType"] = "2"
 
-                            if let fileImageData = UIImageJPEGRepresentation(image, 1) {
-                                weChatMessageInfo["fileData"] = fileImageData
-                            }
+                        if let fileImageData = UIImageJPEGRepresentation(image, 1) {
+                            weChatMessageInfo["fileData"] = fileImageData
+                        }
+
+                    case .Music(let audioURL, let linkURL):
+                        weChatMessageInfo["objectType"] = "3"
+                        weChatMessageInfo["mediaUrl"] = linkURL.absoluteString
+                        weChatMessageInfo["mediaDataUrl"] = audioURL.absoluteString
+
+                    case .Video(let URL):
+                        weChatMessageInfo["objectType"] = "4"
+                        weChatMessageInfo["mediaUrl"] = URL.absoluteString
                     }
 
                 } else { // Text Share
-
                     weChatMessageInfo["command"] = "1020"
                 }
 
@@ -466,6 +477,11 @@ public class MonkeyKing: NSObject {
                         
                         qqSchemeURLString += "img"
 
+                    case .Music:
+                        fatalError("QQ not supports Music type")
+
+                    case .Video:
+                        fatalError("QQ not supports Video type")
                     }
 
                     if let encodedTitle = type.info.title?.base64AndURLEncodedString {
@@ -491,6 +507,7 @@ public class MonkeyKing: NSObject {
             }
 
         case .Weibo(let type):
+
             for case let .Weibo(appID, _, _) in sharedMonkeyKing.accountSet {
 
                 guard !canOpenURL(NSURL(string: "weibosdk://request")) else {
@@ -531,6 +548,12 @@ public class MonkeyKing: NSObject {
                             if let imageData = UIImageJPEGRepresentation(image, 1.0) {
                                 messageInfo["imageObject"] = ["imageData": imageData]
                             }
+
+                        case .Music:
+                            fatalError("Weibo not supports Music type")
+
+                        case .Video:
+                            fatalError("Weibo not supports Video type")
                         }
                     }
 
@@ -596,8 +619,13 @@ public class MonkeyKing: NSObject {
 
                         parameters["pic"] = imageData
                         mediaType = Media.Image(image)
-                    }
 
+                    case .Music:
+                        fatalError("web Weibo not supports Music type")
+
+                    case .Video:
+                        fatalError("we Weibo not supports Video type")
+                    }
                 }
 
                 parameters["status"] = statusText
@@ -633,8 +661,12 @@ public class MonkeyKing: NSObject {
                         }
                     }
 
-                }
+                case .Music:
+                    fatalError("web Weibo not supports Music type")
 
+                case .Video:
+                    fatalError("web Weibo not supports Video type")
+                }
             }
         }
     }

@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--QQ-->
@@ -119,47 +120,47 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qRT-OX-cmy">
-                                <rect key="frame" x="88" y="384" width="145" height="30"/>
+                                <rect key="frame" x="274" y="163" width="30" height="30"/>
                                 <animations/>
-                                <state key="normal" title="WeChat Session URL"/>
+                                <state key="normal" title="URL"/>
                                 <connections>
                                     <action selector="shareURLToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="2ub-NQ-fRL"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gS0-c6-rje">
-                                <rect key="frame" x="79" y="113" width="162" height="30"/>
+                                <rect key="frame" x="16" y="213" width="42" height="30"/>
                                 <animations/>
-                                <state key="normal" title="WeChat Timeline Image"/>
+                                <state key="normal" title="Image"/>
                                 <connections>
                                     <action selector="shareImageToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="3dv-vf-PYZ"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lbo-xY-RTb">
-                                <rect key="frame" x="86" y="213" width="149" height="30"/>
+                                <rect key="frame" x="16" y="163" width="30" height="30"/>
                                 <animations/>
-                                <state key="normal" title="WeChat Timeline URL"/>
+                                <state key="normal" title="URL"/>
                                 <connections>
                                     <action selector="shareURLToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="W6F-9D-pF8"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wyh-QX-rAS">
-                                <rect key="frame" x="85" y="163" width="150" height="30"/>
+                                <rect key="frame" x="16" y="113" width="30" height="30"/>
                                 <animations/>
-                                <state key="normal" title="WeChat Timeline Text"/>
+                                <state key="normal" title="Text"/>
                                 <connections>
                                     <action selector="shareTextToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="IOi-Hr-yJw"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WRq-Ww-IEN">
-                                <rect key="frame" x="88" y="334" width="145" height="30"/>
+                                <rect key="frame" x="274" y="113" width="30" height="30"/>
                                 <animations/>
-                                <state key="normal" title="WeChat Session Text"/>
+                                <state key="normal" title="Text"/>
                                 <connections>
                                     <action selector="shareTextToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="5jg-iA-SW3"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UWw-uP-3po">
-                                <rect key="frame" x="139" y="455" width="43" height="30"/>
+                                <rect key="frame" x="139" y="498" width="43" height="30"/>
                                 <animations/>
                                 <state key="normal" title="OAuth"/>
                                 <connections>
@@ -167,31 +168,89 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b1F-BB-pJv">
-                                <rect key="frame" x="81" y="284" width="158" height="30"/>
+                                <rect key="frame" x="262" y="213" width="42" height="30"/>
                                 <animations/>
-                                <state key="normal" title="WeChat Session Image"/>
+                                <state key="normal" title="Image"/>
                                 <connections>
                                     <action selector="shareImageToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="oiq-gU-5HA"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Timeline" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PJB-1N-QAg">
+                                <rect key="frame" x="16" y="72" width="65" height="21"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Session" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rlR-4h-0zV">
+                                <rect key="frame" x="244" y="72" width="60" height="21"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Vz-30-FuV">
+                                <rect key="frame" x="16" y="263" width="41" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Music"/>
+                                <connections>
+                                    <action selector="shareMusicToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="HsH-Dn-1Hr"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sOl-Wo-bDF">
+                                <rect key="frame" x="16" y="313" width="40" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Video"/>
+                                <connections>
+                                    <action selector="shareVideoToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="9aX-vG-l1A"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4ju-BG-Eg2">
+                                <rect key="frame" x="263" y="263" width="41" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Music"/>
+                                <connections>
+                                    <action selector="shareMusicToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="YDv-pu-5EU"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vf3-Ne-pou">
+                                <rect key="frame" x="264" y="313" width="40" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Video"/>
+                                <connections>
+                                    <action selector="shareVideoToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="PnJ-ZR-V2n"/>
                                 </connections>
                             </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="b1F-BB-pJv" firstAttribute="centerX" secondItem="gS0-c6-rje" secondAttribute="centerX" id="3ZB-TI-O38"/>
-                            <constraint firstItem="lbo-xY-RTb" firstAttribute="top" secondItem="Wyh-QX-rAS" secondAttribute="bottom" constant="20" id="5zN-en-sgt"/>
-                            <constraint firstItem="gS0-c6-rje" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="FhV-7h-Qdk"/>
-                            <constraint firstItem="lbo-xY-RTb" firstAttribute="centerX" secondItem="gS0-c6-rje" secondAttribute="centerX" id="Gcm-ew-ScO"/>
-                            <constraint firstItem="WRq-Ww-IEN" firstAttribute="centerX" secondItem="gS0-c6-rje" secondAttribute="centerX" id="HFy-Tn-81y"/>
-                            <constraint firstItem="qRT-OX-cmy" firstAttribute="centerX" secondItem="gS0-c6-rje" secondAttribute="centerX" id="HeZ-ek-j25"/>
-                            <constraint firstItem="Wyh-QX-rAS" firstAttribute="centerX" secondItem="gS0-c6-rje" secondAttribute="centerX" id="Hr8-j1-FJO"/>
-                            <constraint firstItem="b1F-BB-pJv" firstAttribute="top" secondItem="lbo-xY-RTb" secondAttribute="bottom" constant="41" id="Jly-Gb-etC"/>
-                            <constraint firstItem="Wyh-QX-rAS" firstAttribute="top" secondItem="gS0-c6-rje" secondAttribute="bottom" constant="20" id="Oca-Md-gHR"/>
-                            <constraint firstItem="qRT-OX-cmy" firstAttribute="top" secondItem="WRq-Ww-IEN" secondAttribute="bottom" constant="20" id="bUy-vf-VFg"/>
-                            <constraint firstItem="WRq-Ww-IEN" firstAttribute="top" secondItem="b1F-BB-pJv" secondAttribute="bottom" constant="20" id="pf0-db-wuA"/>
-                            <constraint firstItem="gS0-c6-rje" firstAttribute="top" secondItem="ERE-md-U1h" secondAttribute="bottom" constant="49" id="pnO-Ng-bfG"/>
-                            <constraint firstItem="UWw-uP-3po" firstAttribute="centerX" secondItem="gS0-c6-rje" secondAttribute="centerX" id="swS-zb-XYB"/>
-                            <constraint firstItem="UWw-uP-3po" firstAttribute="top" secondItem="qRT-OX-cmy" secondAttribute="bottom" constant="41" id="zcM-m4-ovf"/>
+                            <constraint firstItem="WRq-Ww-IEN" firstAttribute="baseline" secondItem="Wyh-QX-rAS" secondAttribute="baseline" id="0k0-uH-ggv"/>
+                            <constraint firstItem="Wyh-QX-rAS" firstAttribute="leading" secondItem="PJB-1N-QAg" secondAttribute="leading" id="538-rb-BtL"/>
+                            <constraint firstItem="wfw-9a-DtS" firstAttribute="top" secondItem="UWw-uP-3po" secondAttribute="bottom" constant="40" id="7ew-1Y-cIR"/>
+                            <constraint firstItem="Wyh-QX-rAS" firstAttribute="top" secondItem="PJB-1N-QAg" secondAttribute="bottom" constant="20" id="F43-wv-ZDN"/>
+                            <constraint firstItem="4ju-BG-Eg2" firstAttribute="trailing" secondItem="Vf3-Ne-pou" secondAttribute="trailing" id="GZ8-pc-Byl"/>
+                            <constraint firstItem="Vf3-Ne-pou" firstAttribute="baseline" secondItem="sOl-Wo-bDF" secondAttribute="baseline" id="IQu-vj-LNG"/>
+                            <constraint firstItem="UWw-uP-3po" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="NBp-he-WOd"/>
+                            <constraint firstItem="WRq-Ww-IEN" firstAttribute="leading" secondItem="qRT-OX-cmy" secondAttribute="leading" id="OAv-A9-X3y"/>
+                            <constraint firstItem="qRT-OX-cmy" firstAttribute="trailing" secondItem="b1F-BB-pJv" secondAttribute="trailing" id="OBH-h9-iVc"/>
+                            <constraint firstItem="Wyh-QX-rAS" firstAttribute="leading" secondItem="lbo-xY-RTb" secondAttribute="leading" id="OM2-Wf-fce"/>
+                            <constraint firstItem="gS0-c6-rje" firstAttribute="top" secondItem="lbo-xY-RTb" secondAttribute="bottom" constant="20" id="Pmt-IQ-Wmy"/>
+                            <constraint firstItem="8Vz-30-FuV" firstAttribute="leading" secondItem="sOl-Wo-bDF" secondAttribute="leading" id="U0J-aS-KjM"/>
+                            <constraint firstItem="PJB-1N-QAg" firstAttribute="top" secondItem="ERE-md-U1h" secondAttribute="bottom" constant="8" id="XZG-SO-cSC"/>
+                            <constraint firstItem="b1F-BB-pJv" firstAttribute="baseline" secondItem="gS0-c6-rje" secondAttribute="baseline" id="ZgG-kI-2ei"/>
+                            <constraint firstItem="4ju-BG-Eg2" firstAttribute="trailing" secondItem="b1F-BB-pJv" secondAttribute="trailing" id="aMC-iI-BZV"/>
+                            <constraint firstItem="gS0-c6-rje" firstAttribute="leading" secondItem="lbo-xY-RTb" secondAttribute="leading" id="c5h-ta-x20"/>
+                            <constraint firstItem="sOl-Wo-bDF" firstAttribute="top" secondItem="8Vz-30-FuV" secondAttribute="bottom" constant="20" id="czJ-6x-VBv"/>
+                            <constraint firstItem="rlR-4h-0zV" firstAttribute="top" secondItem="ERE-md-U1h" secondAttribute="bottom" constant="8" id="doP-v9-Rqk"/>
+                            <constraint firstItem="8Vz-30-FuV" firstAttribute="top" secondItem="gS0-c6-rje" secondAttribute="bottom" constant="20" id="giV-48-eJ6"/>
+                            <constraint firstItem="8Vz-30-FuV" firstAttribute="leading" secondItem="gS0-c6-rje" secondAttribute="leading" id="jHz-OC-D2v"/>
+                            <constraint firstItem="lbo-xY-RTb" firstAttribute="top" secondItem="Wyh-QX-rAS" secondAttribute="bottom" constant="20" id="kn7-bN-QM8"/>
+                            <constraint firstItem="WRq-Ww-IEN" firstAttribute="trailing" secondItem="rlR-4h-0zV" secondAttribute="trailing" id="meE-cb-gON"/>
+                            <constraint firstItem="4ju-BG-Eg2" firstAttribute="baseline" secondItem="8Vz-30-FuV" secondAttribute="baseline" id="o74-j4-zq7"/>
+                            <constraint firstItem="qRT-OX-cmy" firstAttribute="baseline" secondItem="lbo-xY-RTb" secondAttribute="baseline" id="vbh-wq-LYY"/>
+                            <constraint firstItem="PJB-1N-QAg" firstAttribute="leading" secondItem="pco-JT-UnQ" secondAttribute="leadingMargin" id="xkw-ho-0Yx"/>
+                            <constraint firstItem="rlR-4h-0zV" firstAttribute="trailing" secondItem="pco-JT-UnQ" secondAttribute="trailingMargin" id="zzp-me-jEf"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="WeChat" id="mLX-zG-32f"/>
