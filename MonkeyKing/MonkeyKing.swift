@@ -73,7 +73,7 @@ public class MonkeyKing: NSObject {
 
     public class func handleOpenURL(URL: NSURL) -> Bool {
 
-        print("open URL: \(URL)")
+        //print("handleOpenURL: \(URL)")
 
         if URL.scheme.hasPrefix("wx") {
 
