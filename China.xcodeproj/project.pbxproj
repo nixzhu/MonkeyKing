@@ -114,15 +114,15 @@
 			children = (
 				50FBA6B81BA2AFAE00E69BB3 /* AppDelegate.swift */,
 				50FBA6BA1BA2AFAE00E69BB3 /* ViewController.swift */,
+				3F62B3651BB6ACBB00AABD3C /* WeChatViewController.swift */,
+				3F62B3671BB6ACCE00AABD3C /* WeiboViewController.swift */,
+				3F62B3691BB6ACD800AABD3C /* QQViewController.swift */,
+				3F62B36B1BB6ACE500AABD3C /* SystemShareViewController.swift */,
 				50FBA6E21BA56E2200E69BB3 /* Activities */,
 				50FBA6BC1BA2AFAE00E69BB3 /* Main.storyboard */,
 				50FBA6BF1BA2AFAE00E69BB3 /* Assets.xcassets */,
 				50FBA6C11BA2AFAE00E69BB3 /* LaunchScreen.storyboard */,
 				50FBA6C41BA2AFAE00E69BB3 /* Info.plist */,
-				3F62B3651BB6ACBB00AABD3C /* WeChatViewController.swift */,
-				3F62B3671BB6ACCE00AABD3C /* WeiboViewController.swift */,
-				3F62B3691BB6ACD800AABD3C /* QQViewController.swift */,
-				3F62B36B1BB6ACE500AABD3C /* SystemShareViewController.swift */,
 			);
 			path = China;
 			sourceTree = "<group>";
