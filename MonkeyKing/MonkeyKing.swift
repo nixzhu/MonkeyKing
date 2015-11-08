@@ -226,7 +226,7 @@ public class MonkeyKing: NSObject {
 
         case URL(NSURL)
         case Image(UIImage)
-        case Music(audioURL: NSURL, linkURL: NSURL)
+        case Audio(audioURL: NSURL, linkURL: NSURL?)
         case Video(NSURL)
     }
 
@@ -384,9 +384,13 @@ public class MonkeyKing: NSObject {
                             weChatMessageInfo["fileData"] = fileImageData
                         }
 
-                    case .Music(let audioURL, let linkURL):
+                    case .Audio(let audioURL, let linkURL):
                         weChatMessageInfo["objectType"] = "3"
-                        weChatMessageInfo["mediaUrl"] = linkURL.absoluteString
+
+                        if let linkURL = linkURL {
+                            weChatMessageInfo["mediaUrl"] = linkURL.absoluteString
+                        }
+
                         weChatMessageInfo["mediaDataUrl"] = audioURL.absoluteString
 
                     case .Video(let URL):
@@ -477,8 +481,8 @@ public class MonkeyKing: NSObject {
                         
                         qqSchemeURLString += "img"
 
-                    case .Music:
-                        fatalError("QQ not supports Music type")
+                    case .Audio:
+                        fatalError("QQ not supports Audio type")
 
                     case .Video:
                         fatalError("QQ not supports Video type")
@@ -549,8 +553,8 @@ public class MonkeyKing: NSObject {
                                 messageInfo["imageObject"] = ["imageData": imageData]
                             }
 
-                        case .Music:
-                            fatalError("Weibo not supports Music type")
+                        case .Audio:
+                            fatalError("Weibo not supports Audio type")
 
                         case .Video:
                             fatalError("Weibo not supports Video type")
@@ -620,8 +624,8 @@ public class MonkeyKing: NSObject {
                         parameters["pic"] = imageData
                         mediaType = Media.Image(image)
 
-                    case .Music:
-                        fatalError("web Weibo not supports Music type")
+                    case .Audio:
+                        fatalError("web Weibo not supports Audio type")
 
                     case .Video:
                         fatalError("we Weibo not supports Video type")
@@ -661,8 +665,8 @@ public class MonkeyKing: NSObject {
                         }
                     }
 
-                case .Music:
-                    fatalError("web Weibo not supports Music type")
+                case .Audio:
+                    fatalError("web Weibo not supports Audio type")
 
                 case .Video:
                     fatalError("web Weibo not supports Video type")
@@ -760,10 +764,8 @@ extension MonkeyKing {
                 UIView.animateWithDuration(0.32, delay: 0.0, options: .CurveEaseOut, animations: {
                     webView.frame.origin.y = 0
                 }, completion: nil)
-
         }
     }
-
 
     private class func fetchWeChatUserInfoByCode(code code: String, completionHandler: SerializeResponse) {
 
@@ -815,15 +817,14 @@ extension MonkeyKing {
             }
         }
     }
-
 }
-
 
 // MARK: WKNavigationDelegate
 
 extension MonkeyKing: WKNavigationDelegate {
 
     public func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+
         for subview in webView.scrollView.subviews {
             if let activityIndicatorView = subview as? UIActivityIndicatorView {
                 activityIndicatorView.stopAnimating()
@@ -890,31 +891,36 @@ extension MonkeyKing: WKNavigationDelegate {
                 })
             }
         }
-        
     }
 }
 
 // MARK: Private Methods
 
 private func sendRequest(URLString: String, method: SimpleNetworking.Method, parameters: [String: AnyObject]? = nil, completionHandler: MonkeyKing.SerializeResponse) {
+
     guard let URL = NSURL(string: URLString) else {
         print("URL init Error: URLString")
         return
     }
+
     SimpleNetworking.sharedInstance.request(URL, method: method, parameters: parameters, completionHandler: completionHandler)
 }
 
 private func openURL(URLString URLString: String) -> Bool {
+
     guard let URL = NSURL(string: URLString) else {
         return false
     }
+
     return UIApplication.sharedApplication().openURL(URL)
 }
 
 private func canOpenURL(URL: NSURL?) -> Bool {
+
     guard let URL = URL else {
         return false
     }
+
     return UIApplication.sharedApplication().canOpenURL(URL)
 }
 

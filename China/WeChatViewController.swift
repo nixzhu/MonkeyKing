@@ -71,7 +71,7 @@ class WeChatViewController: UIViewController {
             title: "Title Music",
             description: "Description Music",
             thumbnail: UIImage(named: "rabbit"),
-            media: .Music(audioURL: NSURL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: NSURL(string: "http://www.apple.com/cn")!)
+            media: .Audio(audioURL: NSURL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: NSURL(string: "http://www.apple.com/cn")!)
         )))
 
         MonkeyKing.shareMessage(message) { success in
@@ -143,7 +143,7 @@ class WeChatViewController: UIViewController {
             title: "Title Music",
             description: "Description Music",
             thumbnail: UIImage(named: "rabbit"),
-            media: .Music(audioURL: NSURL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: NSURL(string: "http://www.apple.com/cn")!)
+            media: .Audio(audioURL: NSURL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: NSURL(string: "http://www.apple.com/cn")!)
         )))
 
         MonkeyKing.shareMessage(message) { success in
