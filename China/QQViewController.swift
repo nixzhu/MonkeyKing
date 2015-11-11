@@ -181,10 +181,12 @@ class QQViewController: UIViewController {
             let openid = results["openid"] as! String
 
             let scope = "get_user_info"
-            let userInfoAPI = "https://graph.qq.com/user/\(scope)?access_token=\(token)&oauth_consumer_key=\(qqAppID)&openid=\(openid)"
+            let userInfoAPI = "https://graph.qq.com/user/\(scope)"
+            let parameters = ["openid": openid, "access_token": token, "oauth_consumer_key": qqAppID]
 
-            // You can use this URL to request the info.
-            print(userInfoAPI)
+            SimpleNetworking.sharedInstance.request(NSURL(string: userInfoAPI)!, method: .GET, parameters: parameters, completionHandler: { (dic, _, _) -> Void in
+                print(dic)
+            })
 
             // More API
             // http://wiki.open.qq.com/wiki/website/API列表

@@ -8,6 +8,7 @@
 
 import UIKit
 import MonkeyKing
+//import SimpleNetworking
 
 let weiboAppID = "504855958"
 let weiboAppKey = "f5107a6c6cd2cc76c9b261208a3b17a1"
@@ -91,7 +92,26 @@ class WeiboViewController: UIViewController {
 
     @IBAction func OAuth(sender: UIButton) {
         MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
-            print("dictionary \(dictionary) error \(error)")
+
+            guard let results = dictionary else {
+                return
+            }
+
+            guard let token = (results["access_token"] ?? results["accessToken"]) as? String, userID = (results["uid"] ?? results["userID"]) as? String else {
+                return
+            }
+
+            let userInfoAPI = "https://api.weibo.com/2/users/show.json"
+            let parameters = ["uid": userID, "access_token": token, "source": weiboAppID]
+
+            SimpleNetworking.sharedInstance.request(NSURL(string: userInfoAPI)!, method: .GET, parameters: parameters, completionHandler: { (dic, _, _) -> Void in
+                print(dic)
+            })
+
+            // More API
+            // http://open.weibo.com/wiki/微博API
+            
+            //  带中文的链接，乖乖地复制吧🙂
         }
     }
 

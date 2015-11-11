@@ -10,7 +10,7 @@ import Foundation
 
 public class SimpleNetworking {
 
-    static let sharedInstance = SimpleNetworking()
+    public static let sharedInstance = SimpleNetworking()
     private let session = NSURLSession.sharedSession()
 
     public enum Method: String {
