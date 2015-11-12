@@ -432,7 +432,7 @@ public class MonkeyKing: NSObject {
 
             for case let .QQ(appID) in sharedMonkeyKing.accountSet {
 
-                let callbackName = String(format: "QQ%02llx", (appID as NSString).longLongValue)
+                let callbackName = appID.mk_QQCallbackName
 
                 var qqSchemeURLString = "mqqapi://share/to_fri?"
                 if let encodedAppDisplayName = NSBundle.mainBundle().displayName?.base64EncodedString {
@@ -974,6 +974,16 @@ private extension String {
 
     var base64AndURLEncodedString: String? {
         return base64EncodedString?.urlEncodedString
+    }
+
+    var mk_QQCallbackName: String {
+
+        var callbackName = String(format: "QQ%02llx", (self as NSString).longLongValue)
+        while callbackName.characters.count < 0 {
+            callbackName = "0" + callbackName
+        }
+
+        return callbackName
     }
 }
 
