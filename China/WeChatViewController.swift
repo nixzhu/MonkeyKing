@@ -174,12 +174,12 @@ class WeChatViewController: UIViewController {
         }
     }
 
-    private func fetchUserInfo(dictionary: NSDictionary?) {
+    private func fetchUserInfo(OAuthInfo: NSDictionary?) {
 
-        guard let token = dictionary?["access_token"] as? String,
-            let openID = dictionary?["openid"] as? String,
-            let refreshToken = dictionary?["refresh_token"] as? String,
-            let expiresIn = dictionary?["expires_in"] as? Int else {
+        guard let token = OAuthInfo?["access_token"] as? String,
+            let openID = OAuthInfo?["openid"] as? String,
+            let refreshToken = OAuthInfo?["refresh_token"] as? String,
+            let expiresIn = OAuthInfo?["expires_in"] as? Int else {
                 return
         }
 
@@ -190,7 +190,7 @@ class WeChatViewController: UIViewController {
             "access_token": token
         ]
 
-        // fetch UserInfo
+        // fetch UserInfo by userInfoAPI
         SimpleNetworking.sharedInstance.request(NSURL(string: userInfoAPI)!, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
 
             guard let mutableDictionary = userInfoDictionary?.mutableCopy() as? NSMutableDictionary else {

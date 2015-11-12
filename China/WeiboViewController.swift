@@ -91,19 +91,17 @@ class WeiboViewController: UIViewController {
     // MARK: OAuth
 
     @IBAction func OAuth(sender: UIButton) {
-        MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
+        MonkeyKing.OAuth(account) { (OAuthInfo, response, error) -> Void in
 
-            guard let results = dictionary else {
-                return
-            }
-
-            guard let token = (results["access_token"] ?? results["accessToken"]) as? String, userID = (results["uid"] ?? results["userID"]) as? String else {
+            // App or Web: token & userID
+            guard let token = (OAuthInfo?["access_token"] ?? OAuthInfo?["accessToken"]) as? String, userID = (OAuthInfo?["uid"] ?? OAuthInfo?["userID"]) as? String else {
                 return
             }
 
             let userInfoAPI = "https://api.weibo.com/2/users/show.json"
             let parameters = ["uid": userID, "access_token": token, "source": weiboAppID]
 
+            // fetch UserInfo by userInfoAPI
             SimpleNetworking.sharedInstance.request(NSURL(string: userInfoAPI)!, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
                 print("userInfoDictionary \(userInfoDictionary)")
             })
