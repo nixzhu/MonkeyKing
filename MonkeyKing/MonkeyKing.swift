@@ -73,18 +73,18 @@ public class MonkeyKing: NSObject {
 
     public class func handleOpenURL(URL: NSURL) -> Bool {
 
-        //print("handleOpenURL: \(URL)")
-
         if URL.scheme.hasPrefix("wx") {
 
             // WeChat OAuth
 
             if let stateRange = URL.absoluteString.rangeOfString("&state=Weixinauth") {
                 if let codeRange = URL.absoluteString.rangeOfString("?code=") {
-                    //login succcess
+
+                    // login succcess
+
                     let code = URL.absoluteString.substringToIndex(stateRange.startIndex).substringFromIndex(codeRange.endIndex)
-                    fetchWeChatUserInfoByCode(code: code) { (userInfo, response, error) -> Void in
-                        sharedMonkeyKing.oauthCompletionHandler?(userInfo, response, error)
+                    fetchWeChatOAuthInfoByCode(code: code) { (info, response, error) -> Void in
+                        sharedMonkeyKing.oauthCompletionHandler?(info, response, error)
                     }
                     return true
                 }
@@ -778,7 +778,7 @@ extension MonkeyKing {
         }
     }
 
-    private class func fetchWeChatUserInfoByCode(code code: String, completionHandler: SerializeResponse) {
+    private class func fetchWeChatOAuthInfoByCode(code code: String, completionHandler: SerializeResponse) {
 
         var appID = ""
         var appKey = ""
@@ -794,38 +794,7 @@ extension MonkeyKing {
 
         // OAuth
         sendRequest(accessTokenAPI, method: .GET) { (OAuthJSON, response, error) -> Void in
-
-            var userInfoDictionary: NSDictionary?
-
-            guard let accessToken = OAuthJSON?["access_token"] as? String,
-                let openID = OAuthJSON?["openid"] as? String,
-                let refreshToken = OAuthJSON?["refresh_token"] as? String,
-                let expiresIn = OAuthJSON?["expires_in"] as? Int else {
-                    completionHandler(userInfoDictionary, response, error)
-                    return
-            }
-
-            let userInfoAPI = "https://api.weixin.qq.com/sns/userinfo?access_token=\(accessToken)&openid=\(openID)"
-
-            // fetch UserInfo
-            sendRequest(userInfoAPI, method: .GET) { (userInfoJSON, response, error) -> Void in
-
-                defer {
-                    completionHandler(userInfoDictionary, response, error)
-                }
-
-                guard let userInfoJSON = userInfoJSON,
-                    let mutableDictionary = userInfoJSON.mutableCopy() as? NSMutableDictionary else {
-                        return
-                }
-
-                mutableDictionary["access_token"] = accessToken
-                mutableDictionary["openid"] = openID
-                mutableDictionary["refresh_token"] = refreshToken
-                mutableDictionary["expires_in"] = expiresIn
-                
-                userInfoDictionary = mutableDictionary
-            }
+            completionHandler(OAuthJSON, response, error)
         }
     }
 }

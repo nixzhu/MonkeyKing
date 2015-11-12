@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F16EAF01BF4D1DB005B1799 /* SimpleNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F16EAEF1BF4D1DB005B1799 /* SimpleNetworking.swift */; };
 		3F62B3661BB6ACBB00AABD3C /* WeChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62B3651BB6ACBB00AABD3C /* WeChatViewController.swift */; };
 		3F62B3681BB6ACCE00AABD3C /* WeiboViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62B3671BB6ACCE00AABD3C /* WeiboViewController.swift */; };
 		3F62B36A1BB6ACD800AABD3C /* QQViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62B3691BB6ACD800AABD3C /* QQViewController.swift */; };
@@ -51,6 +52,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3F16EAEF1BF4D1DB005B1799 /* SimpleNetworking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleNetworking.swift; sourceTree = "<group>"; };
 		3F62B3651BB6ACBB00AABD3C /* WeChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatViewController.swift; sourceTree = "<group>"; };
 		3F62B3671BB6ACCE00AABD3C /* WeiboViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeiboViewController.swift; sourceTree = "<group>"; };
 		3F62B3691BB6ACD800AABD3C /* QQViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QQViewController.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				3F62B3671BB6ACCE00AABD3C /* WeiboViewController.swift */,
 				3F62B3691BB6ACD800AABD3C /* QQViewController.swift */,
 				3F62B36B1BB6ACE500AABD3C /* SystemShareViewController.swift */,
+				3F16EAEF1BF4D1DB005B1799 /* SimpleNetworking.swift */,
 				50FBA6E21BA56E2200E69BB3 /* Activities */,
 				50FBA6BC1BA2AFAE00E69BB3 /* Main.storyboard */,
 				50FBA6BF1BA2AFAE00E69BB3 /* Assets.xcassets */,
@@ -133,8 +136,8 @@
 				50FBA6D11BA2BBE900E69BB3 /* MonkeyKing.h */,
 				50FBA6DC1BA2BC0A00E69BB3 /* MonkeyKing.swift */,
 				50FBA6DE1BA3079D00E69BB3 /* AnyActivity.swift */,
-				50FBA6D31BA2BBE900E69BB3 /* Info.plist */,
 				3FBCB1BA1BB58A4D00E20A28 /* SimpleNetworking.swift */,
+				50FBA6D31BA2BBE900E69BB3 /* Info.plist */,
 			);
 			path = MonkeyKing;
 			sourceTree = "<group>";
@@ -263,6 +266,7 @@
 			files = (
 				50FBA6E11BA56E1C00E69BB3 /* WeChatActivity.swift in Sources */,
 				3F62B3661BB6ACBB00AABD3C /* WeChatViewController.swift in Sources */,
+				3F16EAF01BF4D1DB005B1799 /* SimpleNetworking.swift in Sources */,
 				3F62B36A1BB6ACD800AABD3C /* QQViewController.swift in Sources */,
 				3F62B3681BB6ACCE00AABD3C /* WeiboViewController.swift in Sources */,
 				50FBA6BB1BA2AFAE00E69BB3 /* ViewController.swift in Sources */,

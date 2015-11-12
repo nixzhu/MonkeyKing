@@ -104,14 +104,13 @@ class WeiboViewController: UIViewController {
             let userInfoAPI = "https://api.weibo.com/2/users/show.json"
             let parameters = ["uid": userID, "access_token": token, "source": weiboAppID]
 
-            SimpleNetworking.sharedInstance.request(NSURL(string: userInfoAPI)!, method: .GET, parameters: parameters, completionHandler: { (dic, _, _) -> Void in
-                print(dic)
+            SimpleNetworking.sharedInstance.request(NSURL(string: userInfoAPI)!, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
+                print("userInfoDictionary \(userInfoDictionary)")
             })
 
             // More API
             // http://open.weibo.com/wiki/微博API
-            
-            //  带中文的链接，乖乖地复制吧🙂
+
         }
     }
 

@@ -182,16 +182,19 @@ class QQViewController: UIViewController {
 
             let scope = "get_user_info"
             let userInfoAPI = "https://graph.qq.com/user/\(scope)"
-            let parameters = ["openid": openid, "access_token": token, "oauth_consumer_key": qqAppID]
 
-            SimpleNetworking.sharedInstance.request(NSURL(string: userInfoAPI)!, method: .GET, parameters: parameters, completionHandler: { (dic, _, _) -> Void in
-                print(dic)
+            let parameters = [
+                "openid": openid,
+                "access_token": token,
+                "oauth_consumer_key": qqAppID
+            ]
+
+            SimpleNetworking.sharedInstance.request(NSURL(string: userInfoAPI)!, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
+                print("userInfoDictionary \(userInfoDictionary)")
             })
 
             // More API
             // http://wiki.open.qq.com/wiki/website/API列表
-
-            //  带中文的链接，乖乖地复制吧🙂
         }
     }
 }

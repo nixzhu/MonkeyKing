@@ -169,9 +169,44 @@ class WeChatViewController: UIViewController {
 
     @IBAction func OAuth(sender: UIButton) {
 
-        MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
-            print("dictionary \(dictionary) error \(error)")
+        MonkeyKing.OAuth(account) { [weak self] (dictionary, response, error) -> Void in
+            self?.fetchUserInfo(dictionary)
         }
+    }
+
+    private func fetchUserInfo(dictionary: NSDictionary?) {
+
+        guard let token = dictionary?["access_token"] as? String,
+            let openID = dictionary?["openid"] as? String,
+            let refreshToken = dictionary?["refresh_token"] as? String,
+            let expiresIn = dictionary?["expires_in"] as? Int else {
+                return
+        }
+
+        let userInfoAPI = "https://api.weixin.qq.com/sns/userinfo"
+
+        let parameters = [
+            "openid": openID,
+            "access_token": token
+        ]
+
+        // fetch UserInfo
+        SimpleNetworking.sharedInstance.request(NSURL(string: userInfoAPI)!, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
+
+            guard let mutableDictionary = userInfoDictionary?.mutableCopy() as? NSMutableDictionary else {
+                return
+            }
+
+            mutableDictionary["access_token"] = token
+            mutableDictionary["openid"] = openID
+            mutableDictionary["refresh_token"] = refreshToken
+            mutableDictionary["expires_in"] = expiresIn
+
+            print("userInfoDictionary \(mutableDictionary)")
+        })
+
+        // More API
+        // http://mp.weixin.qq.com/wiki/home/index.html
     }
 }
 
