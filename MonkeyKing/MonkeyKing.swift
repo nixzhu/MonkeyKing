@@ -120,7 +120,7 @@ public class MonkeyKing: NSObject {
 
         if URL.scheme.hasPrefix("QQ") {
 
-            guard let error = URL.queryInfo["error"] else {
+            guard let error = URL.monkeyking_queryInfo["error"] else {
                 return false
             }
 
@@ -432,10 +432,10 @@ public class MonkeyKing: NSObject {
 
             for case let .QQ(appID) in sharedMonkeyKing.accountSet {
 
-                let callbackName = appID.mk_QQCallbackName
+                let callbackName = appID.monkeyking_QQCallbackName
 
                 var qqSchemeURLString = "mqqapi://share/to_fri?"
-                if let encodedAppDisplayName = NSBundle.mainBundle().displayName?.base64EncodedString {
+                if let encodedAppDisplayName = NSBundle.mainBundle().monkeyking_displayName?.monkeyking_base64EncodedString {
                     qqSchemeURLString += "thirdAppDisplayName=" + encodedAppDisplayName
                 } else {
                     qqSchemeURLString += "thirdAppDisplayName=" + "nixApp" // Should not be there
@@ -459,7 +459,7 @@ public class MonkeyKing: NSObject {
 
                         qqSchemeURLString += mediaType ?? "news"
 
-                        guard let encodedURLString = URL.absoluteString.base64AndURLEncodedString else {
+                        guard let encodedURLString = URL.absoluteString.monkeyking_base64AndURLEncodedString else {
                             finish(false)
                             return
                         }
@@ -500,18 +500,18 @@ public class MonkeyKing: NSObject {
                         handleNewsWithURL(URL, mediaType: nil) // 没有 video 类型，默认用 news
                     }
 
-                    if let encodedTitle = type.info.title?.base64AndURLEncodedString {
+                    if let encodedTitle = type.info.title?.monkeyking_base64AndURLEncodedString {
                         qqSchemeURLString += "&title=\(encodedTitle)"
                     }
 
-                    if let encodedDescription = type.info.description?.base64AndURLEncodedString {
+                    if let encodedDescription = type.info.description?.monkeyking_base64AndURLEncodedString {
                         qqSchemeURLString += "&objectlocation=pasteboard&description=\(encodedDescription)"
                     }
 
                 } else { // Share Text
                     qqSchemeURLString += "text&file_data="
 
-                    if let encodedDescription = type.info.description?.base64AndURLEncodedString {
+                    if let encodedDescription = type.info.description?.monkeyking_base64AndURLEncodedString {
                         qqSchemeURLString += "\(encodedDescription)"
                     }
                 }
@@ -578,7 +578,7 @@ public class MonkeyKing: NSObject {
                     let messageData: [AnyObject] = [
                         ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(dict)],
                         ["userInfo": NSKeyedArchiver.archivedDataWithRootObject([])],
-                        ["app": NSKeyedArchiver.archivedDataWithRootObject(["appKey": appID, "bundleID": NSBundle.mainBundle().bundleID ?? ""])]
+                        ["app": NSKeyedArchiver.archivedDataWithRootObject(["appKey": appID, "bundleID": NSBundle.mainBundle().monkeyking_bundleID ?? ""])]
                     ]
                     
                     UIPasteboard.generalPasteboard().items = messageData
@@ -713,7 +713,7 @@ extension MonkeyKing {
             case .QQ(let appID):
 
                 let scope = scope ?? ""
-                let appName = NSBundle.mainBundle().displayName ?? "nixApp"
+                let appName = NSBundle.mainBundle().monkeyking_displayName ?? "nixApp"
                 let dic = ["app_id": appID,
                     "app_name": appName,
                     "client_id": appID,
@@ -739,7 +739,7 @@ extension MonkeyKing {
                         ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(["__class": "WBAuthorizeRequest", "redirectURI": redirectURL, "requestID":uuIDString, "scope": scope])
                         ],
                         ["userInfo": NSKeyedArchiver.archivedDataWithRootObject(["mykey": "as you like", "SSO_From": "SendMessageToWeiboViewController"])],
-                        ["app": NSKeyedArchiver.archivedDataWithRootObject(["appKey": appID, "bundleID": NSBundle.mainBundle().bundleID ?? "", "name": NSBundle.mainBundle().displayName ?? ""])]
+                        ["app": NSKeyedArchiver.archivedDataWithRootObject(["appKey": appID, "bundleID": NSBundle.mainBundle().monkeyking_bundleID ?? "", "name": NSBundle.mainBundle().monkeyking_displayName ?? ""])]
                     ]
 
                     UIPasteboard.generalPasteboard().items = authData
@@ -880,7 +880,7 @@ extension MonkeyKing: WKNavigationDelegate {
 
                 webView.stopLoading()
 
-                guard let code = URL.queryInfo["code"] else {
+                guard let code = URL.monkeyking_queryInfo["code"] else {
                     return
                 }
 
@@ -939,7 +939,7 @@ private func canOpenURL(URL: NSURL?) -> Bool {
 
 private extension NSBundle {
 
-    var displayName: String? {
+    var monkeyking_displayName: String? {
 
         func getNameByInfo(info: [String : AnyObject]) -> String? {
 
@@ -957,26 +957,26 @@ private extension NSBundle {
         return getNameByInfo(info)
     }
 
-    var bundleID: String? {
+    var monkeyking_bundleID: String? {
         return objectForInfoDictionaryKey("CFBundleIdentifier") as? String
     }
 }
 
 private extension String {
 
-    var base64EncodedString: String? {
+    var monkeyking_base64EncodedString: String? {
         return dataUsingEncoding(NSUTF8StringEncoding)?.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
     }
 
-    var urlEncodedString: String? {
+    var monkeyking_urlEncodedString: String? {
         return stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLHostAllowedCharacterSet())
     }
 
-    var base64AndURLEncodedString: String? {
-        return base64EncodedString?.urlEncodedString
+    var monkeyking_base64AndURLEncodedString: String? {
+        return monkeyking_base64EncodedString?.monkeyking_urlEncodedString
     }
 
-    var mk_QQCallbackName: String {
+    var monkeyking_QQCallbackName: String {
 
         var callbackName = String(format: "QQ%02llx", (self as NSString).longLongValue)
         while callbackName.characters.count < 0 {
@@ -989,7 +989,7 @@ private extension String {
 
 private extension NSURL {
 
-    var queryInfo: [String: String] {
+    var monkeyking_queryInfo: [String: String] {
 
         var info = [String: String]()
 
