@@ -120,8 +120,9 @@ Weibo OAuth:
 ```swift
 let account = MonkeyKing.Account.Weibo(appID: weiboAppID, appKey: weiboAppKey, redirectURL: weiboRedirectURL)
 
-MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
-    print("dictionary \(dictionary) error \(error)")
+MonkeyKing.OAuth(account) { (OAuthInfo, response, error) -> Void in
+    print("OAuthInfo \(OAuthInfo) error \(error)")
+    // Now, you can use the token to fetch info.
 }
 ```
 	 
