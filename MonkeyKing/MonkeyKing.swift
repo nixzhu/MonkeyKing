@@ -948,7 +948,7 @@ private extension String {
     var monkeyking_QQCallbackName: String {
 
         var hexString = String(format: "%02llx", (self as NSString).longLongValue)
-        while hexString.characters.count < 0 {
+        while hexString.characters.count < 8 {
             hexString = "0" + hexString
         }
 
