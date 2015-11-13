@@ -953,12 +953,12 @@ private extension String {
 
     var monkeyking_QQCallbackName: String {
 
-        var callbackName = String(format: "QQ%02llx", (self as NSString).longLongValue)
-        while callbackName.characters.count < 0 {
-            callbackName = "0" + callbackName
+        var hexString = String(format: "%02llx", (self as NSString).longLongValue)
+        while hexString.characters.count < 8 {
+            hexString = "0" + hexString
         }
 
-        return callbackName
+        return "QQ" + hexString
     }
 }
 
