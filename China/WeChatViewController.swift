@@ -174,6 +174,18 @@ class WeChatViewController: UIViewController {
         }
     }
 
+    @IBAction func OAuthWithoutAppKey(sender: UIButton) {
+
+        let account = MonkeyKing.Account.WeChat(appID: weChatAppID, appKey: nil)
+        MonkeyKing.registerAccount(account)
+
+        MonkeyKing.OAuth(account) { (dictionary, response, error) -> Void in
+
+            // You can use this code to OAuth, if you do not want to keep the weChatAppKey in client.
+            print("dictionary \(dictionary)")
+        }
+    }
+
     private func fetchUserInfo(OAuthInfo: NSDictionary?) {
 
         guard let token = OAuthInfo?["access_token"] as? String,
@@ -208,5 +220,22 @@ class WeChatViewController: UIViewController {
         // More API
         // http://mp.weixin.qq.com/wiki/home/index.html
     }
+
+    private func fetchWeChatOAuthInfoByCode(code code: String) {
+
+        let appID = ""
+        let appKey = "" // fetch appKey from server
+
+        var accessTokenAPI = "https://api.weixin.qq.com/sns/oauth2/access_token?"
+        accessTokenAPI += "appid=" + appID
+        accessTokenAPI += "&secret=" + appKey
+        accessTokenAPI += "&code=" + code + "&grant_type=authorization_code"
+
+        // OAuth
+        SimpleNetworking.sharedInstance.request(NSURL(string: accessTokenAPI)!, method: .GET) { (OAuthJSON, response, error) -> Void in
+            print("OAuthJSON \(OAuthJSON)")
+        }
+    }
+    
 }
 

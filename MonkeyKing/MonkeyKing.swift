@@ -19,7 +19,7 @@ public class MonkeyKing: NSObject {
 
     public enum Account: Hashable {
 
-        case WeChat(appID: String, appKey: String)
+        case WeChat(appID: String, appKey: String?)
         case QQ(appID: String)
         case Weibo(appID: String, appKey: String, redirectURL: String)
 
@@ -84,7 +84,7 @@ public class MonkeyKing: NSObject {
 
                     let code = URL.absoluteString.substringToIndex(stateRange.startIndex).substringFromIndex(codeRange.endIndex)
                     fetchWeChatOAuthInfoByCode(code: code) { (info, response, error) -> Void in
-                        sharedMonkeyKing.oauthCompletionHandler?(info, response, error)
+                        sharedMonkeyKing.OAuthCompletionHandler?(info, response, error)
                     }
                     return true
                 }
@@ -141,7 +141,7 @@ public class MonkeyKing: NSObject {
                 var error: NSError?
 
                 defer {
-                    sharedMonkeyKing.oauthCompletionHandler?(userInfoDictionary, nil, error)
+                    sharedMonkeyKing.OAuthCompletionHandler?(userInfoDictionary, nil, error)
                 }
 
                 guard let data = UIPasteboard.generalPasteboard().dataForPasteboardType("com.tencent.tencent\(appID)"),
@@ -201,7 +201,7 @@ public class MonkeyKing: NSObject {
                     var error: NSError?
 
                     defer {
-                        sharedMonkeyKing.oauthCompletionHandler?(responseData, nil, error)
+                        sharedMonkeyKing.OAuthCompletionHandler?(responseData, nil, error)
                     }
 
                     userInfoDictionary = responseData
@@ -337,7 +337,7 @@ public class MonkeyKing: NSObject {
     public typealias Finish = Bool -> Void
     var latestFinish: Finish?
 
-    private var oauthCompletionHandler: SerializeResponse?
+    private var OAuthCompletionHandler: SerializeResponse?
 
     public class func shareMessage(message: Message, finish: Finish) {
 
@@ -701,7 +701,7 @@ extension MonkeyKing {
             return
         }
 
-        sharedMonkeyKing.oauthCompletionHandler = completionHandler
+        sharedMonkeyKing.OAuthCompletionHandler = completionHandler
 
         switch account {
 
@@ -783,6 +783,12 @@ extension MonkeyKing {
         var appID = ""
         var appKey = ""
         for case let .WeChat(id, key) in sharedMonkeyKing.accountSet {
+
+            guard let key = key else {
+                completionHandler(["code": code], nil, nil)
+                return
+            }
+
             appID = id
             appKey = key
         }
@@ -832,7 +838,7 @@ extension MonkeyKing: WKNavigationDelegate {
                 webView.frame.origin.y = UIScreen.mainScreen().bounds.height
             }, completion: {_ in
                 webView.removeFromSuperview()
-                self.oauthCompletionHandler?(nil, nil, error)
+                self.OAuthCompletionHandler?(nil, nil, error)
             })
         }
 
@@ -861,7 +867,7 @@ extension MonkeyKing: WKNavigationDelegate {
                 accessTokenAPI += "&code=" + code
 
                 sendRequest(accessTokenAPI, method: .POST) { [weak self] (JSON, response, error) -> Void in
-                    self?.oauthCompletionHandler?(JSON, response, error)
+                    self?.OAuthCompletionHandler?(JSON, response, error)
                 }
 
                 UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseOut, animations: {
