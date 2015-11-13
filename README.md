@@ -160,7 +160,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 use_frameworks!
 
-pod 'MonkeyKing', '~> 0.6'
+pod 'MonkeyKing', '~> 0.6.5'
 ```
 
 Then, run the following command:
@@ -185,7 +185,7 @@ $ brew install carthage
 To integrate MonkeyKing into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "nixzhu/MonkeyKing" >= 0.6
+github "nixzhu/MonkeyKing" >= 0.6.5
 ```
 
 Then, run the following command to build the MonkeyKing framework:
