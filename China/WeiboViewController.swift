@@ -107,7 +107,7 @@ class WeiboViewController: UIViewController {
             })
 
             // More API
-            // http://open.weibo.com/wiki/微博API
+            // http://open.weibo.com/wiki/%E5%BE%AE%E5%8D%9AAPI
 
         }
     }

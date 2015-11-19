@@ -195,7 +195,7 @@ class QQViewController: UIViewController {
             })
 
             // More API
-            // http://wiki.open.qq.com/wiki/website/API列表
+            // http://wiki.open.qq.com/wiki/website/API%E5%88%97%E8%A1%A8
         }
     }
 }
