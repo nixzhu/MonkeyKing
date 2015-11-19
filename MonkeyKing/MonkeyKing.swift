@@ -735,10 +735,9 @@ extension MonkeyKing {
                 }
 
                 // Web OAuth
-                let accessTokenAPI = "https://graph.qq.com/oauth2.0/authorize?response_type=token&client_id=\(appID)&redirect_uri=auth://www.qq.com&scope=\(scope)"
-//                let accessTokenAPI = "https://openmobile.qq.com/oauth2.0/m_authorize?response_type=token&client_id=\(appID)&redirect_uri=auth://www.qq.com&scope=\(scope)"
 
-//                let accessTokenAPI = "https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=\(appID)&redirect_uri=auth://www.qq.com&scope=\(scope)&state=mk"
+                let accessTokenAPI = "http://xui.ptlogin2.qq.com/cgi-bin/xlogin?appid=716027609&pt_3rd_aid=209656&style=35&s_url=http%3A%2F%2Fconnect.qq.com&refer_cgi=m_authorize&client_id=\(appID)&redirect_uri=auth%3A%2F%2Fwww.qq.com&response_type=token&scope=\(scope)"
+
                 addWebViewByURLString(accessTokenAPI)
 
 
@@ -858,8 +857,6 @@ extension MonkeyKing: WKNavigationDelegate {
                 self.OAuthCompletionHandler?(nil, nil, error)
             })
         }
-
-        print(URL.absoluteString)
 
         guard URL.absoluteString.containsString("&access_token=") else {
             return

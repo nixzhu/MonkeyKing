@@ -9,7 +9,7 @@
 import UIKit
 import MonkeyKing
 
-let qqAppID = "100424468"
+let qqAppID = "1104881792"
 
 class QQViewController: UIViewController {
 
@@ -178,16 +178,14 @@ class QQViewController: UIViewController {
                     return
             }
 
-            let scope = "get_user_info"
-            let userInfoAPI = "https://graph.qq.com/user/\(scope)"
+            let query = "get_user_info"
+            let userInfoAPI = "https://graph.qq.com/user/\(query)"
 
             let parameters = [
                 "openid": openID,
                 "access_token": token,
                 "oauth_consumer_key": qqAppID
             ]
-
-            print(parameters)
 
             // fetch UserInfo by userInfoAPI
             SimpleNetworking.sharedInstance.request(NSURL(string: userInfoAPI)!, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
