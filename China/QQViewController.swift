@@ -9,8 +9,7 @@
 import UIKit
 import MonkeyKing
 
-let qqAppID = "1104965610"
-let qqAppKey = "ePNssOYVESuviLWv"
+let qqAppID = "100424468"
 
 class QQViewController: UIViewController {
 

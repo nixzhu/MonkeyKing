@@ -736,6 +736,7 @@ extension MonkeyKing {
 
                 // Web OAuth
                 let accessTokenAPI = "https://graph.qq.com/oauth2.0/authorize?response_type=token&client_id=\(appID)&redirect_uri=auth://www.qq.com&scope=\(scope)"
+//                let accessTokenAPI = "https://openmobile.qq.com/oauth2.0/m_authorize?response_type=token&client_id=\(appID)&redirect_uri=auth://www.qq.com&scope=\(scope)"
 
 //                let accessTokenAPI = "https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=\(appID)&redirect_uri=auth://www.qq.com&scope=\(scope)&state=mk"
                 addWebViewByURLString(accessTokenAPI)
