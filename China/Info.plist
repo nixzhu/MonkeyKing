@@ -77,7 +77,7 @@
 				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
 				<false/>
 			</dict>
-			<key>api.weixin.qq.com</key>
+			<key>open.weibo.cn</key>
 			<dict>
 				<key>NSIncludesSubdomains</key>
 				<true/>
@@ -86,8 +86,10 @@
 				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
 				<false/>
 			</dict>
-			<key>open.weibo.cn</key>
+			<key>qq.com</key>
 			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
 				<key>NSIncludesSubdomains</key>
 				<true/>
 				<key>NSThirdPartyExceptionMinimumTLSVersion</key>

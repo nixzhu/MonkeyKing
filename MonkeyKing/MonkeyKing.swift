@@ -49,9 +49,9 @@ public class MonkeyKing: NSObject {
             return appID.hashValue
         }
 
-        public var isWeiboAccount: Bool {
+        public var canWebOAuth: Bool {
             switch self {
-            case .Weibo:
+            case .QQ, .Weibo:
                 return true
             default:
                 return false
@@ -695,7 +695,7 @@ extension MonkeyKing {
 
     public class func OAuth(account: Account, scope: String? = nil, completionHandler: SerializeResponse) {
 
-        guard account.isAppInstalled || account.isWeiboAccount else {
+        guard account.isAppInstalled || account.canWebOAuth else {
             let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
             completionHandler(nil, nil, error)
             return
@@ -713,27 +713,39 @@ extension MonkeyKing {
             case .QQ(let appID):
 
                 let scope = scope ?? ""
-                let appName = NSBundle.mainBundle().monkeyking_displayName ?? "nixApp"
-                let dic = ["app_id": appID,
-                    "app_name": appName,
-                    "client_id": appID,
-                    "response_type": "token",
-                    "scope": scope,
-                    "sdkp": "i",
-                    "sdkv": "2.9",
-                    "status_machine": UIDevice.currentDevice().model,
-                    "status_os": UIDevice.currentDevice().systemVersion,
-                    "status_version": UIDevice.currentDevice().systemVersion]
+                guard !account.isAppInstalled else {
+                    let appName = NSBundle.mainBundle().monkeyking_displayName ?? "nixApp"
+                    let dic = ["app_id": appID,
+                        "app_name": appName,
+                        "client_id": appID,
+                        "response_type": "token",
+                        "scope": scope,
+                        "sdkp": "i",
+                        "sdkv": "2.9",
+                        "status_machine": UIDevice.currentDevice().model,
+                        "status_os": UIDevice.currentDevice().systemVersion,
+                        "status_version": UIDevice.currentDevice().systemVersion]
 
-                let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
-                UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.tencent\(appID)")
+                    let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
+                    UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.tencent\(appID)")
 
-                openURL(URLString: "mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1")
+                    openURL(URLString: "mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1")
+
+                    return
+                }
+
+                // Web OAuth
+                let accessTokenAPI = "https://graph.qq.com/oauth2.0/authorize?response_type=token&client_id=\(appID)&redirect_uri=auth://www.qq.com&scope=\(scope)"
+
+//                let accessTokenAPI = "https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=\(appID)&redirect_uri=auth://www.qq.com&scope=\(scope)&state=mk"
+                addWebViewByURLString(accessTokenAPI)
+
 
             case .Weibo(let appID, _, let redirectURL):
 
-                guard !canOpenURL(NSURL(string: "weibosdk://request")) else {
-                    let scope = scope ?? "all"
+                let scope = scope ?? "all"
+
+                guard !account.isAppInstalled else {
                     let uuIDString = CFUUIDCreateString(nil, CFUUIDCreate(nil))
                     let authData = [
                         ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(["__class": "WBAuthorizeRequest", "redirectURI": redirectURL, "requestID":uuIDString, "scope": scope])
@@ -749,33 +761,37 @@ extension MonkeyKing {
 
                 // Web OAuth
                 let accessTokenAPI = "https://open.weibo.cn/oauth2/authorize?client_id=\(appID)&response_type=code&redirect_uri=\(redirectURL)&scope=\(scope)"
-
-                guard let URL = NSURL(string: accessTokenAPI) else {
-                    return
-                }
-
-                let webView = WKWebView()
-                webView.frame = UIScreen.mainScreen().bounds
-                webView.frame.origin.y = UIScreen.mainScreen().bounds.height
-
-                webView.loadRequest(NSURLRequest(URL: URL))
-                webView.navigationDelegate = sharedMonkeyKing
-                webView.backgroundColor = UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 1.0)
-                webView.scrollView.frame.origin.y = 20
-                webView.scrollView.backgroundColor = webView.backgroundColor
-
-                let activityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
-                activityIndicatorView.center = CGPoint(x: CGRectGetMidX(webView.bounds), y: CGRectGetMidY(webView.bounds)+30)
-                activityIndicatorView.activityIndicatorViewStyle = .Gray
-
-                webView.scrollView.addSubview(activityIndicatorView)
-                activityIndicatorView.startAnimating()
-
-                UIApplication.sharedApplication().keyWindow?.addSubview(webView)
-                UIView.animateWithDuration(0.32, delay: 0.0, options: .CurveEaseOut, animations: {
-                    webView.frame.origin.y = 0
-                }, completion: nil)
+                addWebViewByURLString(accessTokenAPI)
         }
+    }
+
+    private class func addWebViewByURLString(URLString: String) {
+
+        guard let URL = NSURL(string: URLString) else {
+            return
+        }
+
+        let webView = WKWebView()
+        webView.frame = UIScreen.mainScreen().bounds
+        webView.frame.origin.y = UIScreen.mainScreen().bounds.height
+
+        webView.loadRequest(NSURLRequest(URL: URL))
+        webView.navigationDelegate = sharedMonkeyKing
+        webView.backgroundColor = UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 1.0)
+        webView.scrollView.frame.origin.y = 20
+        webView.scrollView.backgroundColor = webView.backgroundColor
+
+        let activityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        activityIndicatorView.center = CGPoint(x: CGRectGetMidX(webView.bounds), y: CGRectGetMidY(webView.bounds)+30)
+        activityIndicatorView.activityIndicatorViewStyle = .Gray
+
+        webView.scrollView.addSubview(activityIndicatorView)
+        activityIndicatorView.startAnimating()
+
+        UIApplication.sharedApplication().keyWindow?.addSubview(webView)
+        UIView.animateWithDuration(0.32, delay: 0.0, options: .CurveEaseOut, animations: {
+            webView.frame.origin.y = 0
+        }, completion: nil)
     }
 
     private class func fetchWeChatOAuthInfoByCode(code code: String, completionHandler: SerializeResponse) {
@@ -841,6 +857,35 @@ extension MonkeyKing: WKNavigationDelegate {
                 self.OAuthCompletionHandler?(nil, nil, error)
             })
         }
+
+        print(URL.absoluteString)
+
+        guard URL.absoluteString.containsString("&access_token=") else {
+            return
+        }
+
+        guard let fragment = URL.fragment?.characters.dropFirst(), newsURL = NSURL(string: "limon.top/?\(String(fragment))") else {
+            return
+        }
+
+        let components = NSURLComponents(URL: newsURL, resolvingAgainstBaseURL: false)
+
+        guard let items = components?.queryItems else {
+            return
+        }
+
+        let infos = NSMutableDictionary()
+        items.forEach {
+            infos.setValue($0.value, forKey: $0.name)
+        }
+
+        UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseOut, animations: {
+            webView.frame.origin.y = UIScreen.mainScreen().bounds.height
+
+        }, completion: {_ in
+            webView.removeFromSuperview()
+            self.OAuthCompletionHandler?(infos, nil, nil)
+        })
 
     }
 

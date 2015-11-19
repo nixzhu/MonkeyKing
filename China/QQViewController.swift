@@ -9,7 +9,8 @@
 import UIKit
 import MonkeyKing
 
-let qqAppID = "1104881792"
+let qqAppID = "1104965610"
+let qqAppKey = "ePNssOYVESuviLWv"
 
 class QQViewController: UIViewController {
 
@@ -186,6 +187,8 @@ class QQViewController: UIViewController {
                 "access_token": token,
                 "oauth_consumer_key": qqAppID
             ]
+
+            print(parameters)
 
             // fetch UserInfo by userInfoAPI
             SimpleNetworking.sharedInstance.request(NSURL(string: userInfoAPI)!, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
