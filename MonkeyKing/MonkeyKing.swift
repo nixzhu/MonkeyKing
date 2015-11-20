@@ -77,18 +77,21 @@ public class MonkeyKing: NSObject {
 
             // WeChat OAuth
 
-            if let stateRange = URL.absoluteString.rangeOfString("&state=Weixinauth") {
-                if let codeRange = URL.absoluteString.rangeOfString("?code=") {
+            if let query = URL.query {
+                let parts = query.componentsSeparatedByString("&") as NSArray
+                if parts.filteredArrayUsingPredicate(NSPredicate(format: "SELF == %@", argumentArray: ["state=Weixinauth"])).count > 0 {
+                    guard let codePart = parts.filteredArrayUsingPredicate(NSPredicate(format: "SELF BEGINSWITH %@", argumentArray: ["code="])).first, code = codePart.componentsSeparatedByString("=").last else {
+                        return false
+                    }
 
                     // login succcess
 
-                    let code = URL.absoluteString.substringToIndex(stateRange.startIndex).substringFromIndex(codeRange.endIndex)
                     fetchWeChatOAuthInfoByCode(code: code) { (info, response, error) -> Void in
                         sharedMonkeyKing.OAuthCompletionHandler?(info, response, error)
                     }
+
                     return true
                 }
-                return false
             }
 
             // WeChat Share
