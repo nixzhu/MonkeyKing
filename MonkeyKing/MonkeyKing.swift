@@ -84,9 +84,9 @@ public class MonkeyKing: NSObject {
                     return false
                 }
 
-                let infos = NSMutableDictionary()
+                var infos = [String: AnyObject]()
                 items.forEach {
-                    infos.setValue($0.value, forKey: $0.name)
+                    infos[$0.name] = $0.value
                 }
 
                 guard let code = infos["code"] as? String else {
@@ -881,9 +881,9 @@ extension MonkeyKing: WKNavigationDelegate {
             return
         }
 
-        let infos = NSMutableDictionary()
+        var infos = [String: AnyObject]()
         items.forEach {
-            infos.setValue($0.value, forKey: $0.name)
+            infos[$0.name] = $0.value
         }
 
         UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseOut, animations: {
