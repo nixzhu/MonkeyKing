@@ -76,26 +76,32 @@ public class MonkeyKing: NSObject {
         if URL.scheme.hasPrefix("wx") {
 
             // WeChat OAuth
+            if URL.absoluteString.containsString("&state=Weixinauth") {
 
-            if let query = URL.query {
-                let parts = query.componentsSeparatedByString("&") as NSArray
-                if parts.filteredArrayUsingPredicate(NSPredicate(format: "SELF == %@", argumentArray: ["state=Weixinauth"])).count > 0 {
-                    guard let codePart = parts.filteredArrayUsingPredicate(NSPredicate(format: "SELF BEGINSWITH %@", argumentArray: ["code="])).first, code = codePart.componentsSeparatedByString("=").last else {
-                        return false
-                    }
+                let components = NSURLComponents(URL: URL, resolvingAgainstBaseURL: false)
 
-                    // login succcess
-
-                    fetchWeChatOAuthInfoByCode(code: code) { (info, response, error) -> Void in
-                        sharedMonkeyKing.OAuthCompletionHandler?(info, response, error)
-                    }
-
-                    return true
+                guard let items = components?.queryItems else {
+                    return false
                 }
+
+                let infos = NSMutableDictionary()
+                items.forEach {
+                    infos.setValue($0.value, forKey: $0.name)
+                }
+
+                guard let code = infos["code"] as? String else {
+                    return false
+                }
+
+                // Login Succcess
+                fetchWeChatOAuthInfoByCode(code: code) { (info, response, error) -> Void in
+                    sharedMonkeyKing.OAuthCompletionHandler?(info, response, error)
+                }
+
+                return true
             }
 
             // WeChat Share
-
             guard let data = UIPasteboard.generalPasteboard().dataForPasteboardType("content") else {
                 return false
             }
@@ -865,11 +871,11 @@ extension MonkeyKing: WKNavigationDelegate {
             return
         }
 
-        guard let fragment = URL.fragment?.characters.dropFirst(), newsURL = NSURL(string: "limon.top/?\(String(fragment))") else {
+        guard let fragment = URL.fragment?.characters.dropFirst(), newURL = NSURL(string: "limon.top/?\(String(fragment))") else {
             return
         }
 
-        let components = NSURLComponents(URL: newsURL, resolvingAgainstBaseURL: false)
+        let components = NSURLComponents(URL: newURL, resolvingAgainstBaseURL: false)
 
         guard let items = components?.queryItems else {
             return
