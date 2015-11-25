@@ -846,10 +846,21 @@ extension MonkeyKing: WKNavigationDelegate {
 
         activityIndicatorViewAction(webView, stop: true)
 
-        let scriptString = "var button = document.createElement('a'); button.setAttribute('href', 'about:blank'); button.innerHTML = '关闭'; button.setAttribute('style', 'width: calc(100% - 40px); background-color: gray;display: inline-block;height: 40px;line-height: 40px;text-align: center;color: #777777;text-decoration: none;border-radius: 3px;background: linear-gradient(180deg, white, #f1f1f1);border: 1px solid #CACACA;box-shadow: 0 2px 3px #DEDEDE, inset 0 0 0 1px white;text-shadow: 0 2px 0 white;position: absolute;bottom: 0;margin: 20px 20px 40px 20px;font-size: 18px;'); document.body.appendChild(button);  document.querySelector('aside.logins').style.display = 'none';"
+        guard let URL = webView.URL else {
+            return
+        }
+
+        let absoluteString = URL.absoluteString
+
+        var scriptString = "var button = document.createElement('a'); button.setAttribute('href', 'about:blank'); button.innerHTML = '关闭'; button.setAttribute('style', 'width: calc(100% - 40px); background-color: gray;display: inline-block;height: 40px;line-height: 40px;text-align: center;color: #777777;text-decoration: none;border-radius: 3px;background: linear-gradient(180deg, white, #f1f1f1);border: 1px solid #CACACA;box-shadow: 0 2px 3px #DEDEDE, inset 0 0 0 1px white;text-shadow: 0 2px 0 white;position: fixed;left: 0;bottom: 0;margin: 20px;font-size: 18px;'); document.body.appendChild(button);"
+
+        if absoluteString.containsString("getpocket.com") {
+            scriptString += "document.querySelector('div.toolbar').style.display = 'none';"
+        } else if absoluteString.containsString("open.weibo.cn") {
+            scriptString += "document.querySelector('aside.logins').style.display = 'none';"
+        }
 
         webView.evaluateJavaScript(scriptString, completionHandler: nil)
-
     }
 
     public func webView(webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
