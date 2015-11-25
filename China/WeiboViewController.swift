@@ -8,7 +8,6 @@
 
 import UIKit
 import MonkeyKing
-//import SimpleNetworking
 
 let weiboAppID = "504855958"
 let weiboAppKey = "f5107a6c6cd2cc76c9b261208a3b17a1"

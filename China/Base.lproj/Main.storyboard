@@ -423,11 +423,42 @@
                         <segue destination="LgQ-W6-Vcr" kind="show" identifier="Weibo" id="Zft-v1-zYL"/>
                         <segue destination="he5-GB-Amc" kind="show" identifier="QQ" id="2c0-4X-8gv"/>
                         <segue destination="KaI-44-6m0" kind="show" identifier="System" id="wNz-79-HiF"/>
+                        <segue destination="KHj-bA-9ar" kind="show" identifier="Pocket" id="R4a-KY-4sF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="189" y="421"/>
+        </scene>
+        <!--Pocket View Controller-->
+        <scene sceneID="TaN-7t-XL6">
+            <objects>
+                <viewController id="KHj-bA-9ar" customClass="PocketViewController" customModule="China" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="c6j-Oo-K7N"/>
+                        <viewControllerLayoutGuide type="bottom" id="Y2U-lf-uWB"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="CWO-M8-gcP">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DeZ-G5-7Ij">
+                                <rect key="frame" x="139" y="365" width="43" height="30"/>
+                                <animations/>
+                                <state key="normal" title="OAuth"/>
+                                <connections>
+                                    <action selector="OAuth:" destination="KHj-bA-9ar" eventType="touchUpInside" id="2kA-lY-16f"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="VKK-aQ-usZ"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5r6-Ms-S9N" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="189" y="1585"/>
         </scene>
         <!--System-->
         <scene sceneID="Yfp-9g-afE">
