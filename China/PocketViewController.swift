@@ -21,6 +21,27 @@ class PocketViewController: UIViewController {
         MonkeyKing.registerAccount(account)
     }
 
+    @IBAction func saveButtonAction(sender: UIButton) {
+
+        guard let accessToken = accessToken else {
+            return
+        }
+
+        let addAPI = "https://getpocket.com/v3/add"
+        let parameters = [
+            "url": "http://tips.producter.io",
+            "title": "Producter",
+            "consumer_key": pocketAppID,
+            "access_token": accessToken
+        ]
+
+        SimpleNetworking.sharedInstance.request(NSURL(string: addAPI)!, method: .POST, parameters: parameters) { (dict, response, error) -> Void in
+            print(dict)
+        }
+
+        // More API
+        // https://getpocket.com/developer/docs/v3/add
+    }
 
     @IBAction func OAuth(sender: UIButton) {
 
@@ -39,7 +60,7 @@ class PocketViewController: UIViewController {
 
         print("S1: fetch requestToken")
 
-        SimpleNetworking.sharedInstance.request(NSURL(string: requestAPI)!, method: .POST, parameters: parameters) { [weak self]  (dict, response, error) -> Void in
+        SimpleNetworking.sharedInstance.request(NSURL(string: requestAPI)!, method: .POST, parameters: parameters) { [weak self] (dict, response, error) -> Void in
 
             guard let strongSelf = self, requestToken = dict?["code"] as? String else {
                 return
@@ -58,6 +79,8 @@ class PocketViewController: UIViewController {
                 print("S3: fetch OAuth state")
 
                 SimpleNetworking.sharedInstance.request(NSURL(string: accessTokenAPI)!, method: .POST, parameters: parameters) { (JSON, response, error) -> Void in
+
+                    print("S4: OAuth completion")
 
                     print("JSON: \(JSON)")
 

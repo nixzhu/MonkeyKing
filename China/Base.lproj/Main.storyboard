@@ -442,17 +442,31 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DeZ-G5-7Ij">
-                                <rect key="frame" x="139" y="365" width="43" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DeZ-G5-7Ij">
+                                <rect key="frame" x="139" y="397" width="43" height="30"/>
                                 <animations/>
                                 <state key="normal" title="OAuth"/>
                                 <connections>
                                     <action selector="OAuth:" destination="KHj-bA-9ar" eventType="touchUpInside" id="2kA-lY-16f"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="imj-of-vxR">
+                                <rect key="frame" x="127" y="269" width="66" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Save URL"/>
+                                <connections>
+                                    <action selector="saveButtonAction:" destination="KHj-bA-9ar" eventType="touchUpInside" id="kbv-H8-cU1"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="DeZ-G5-7Ij" firstAttribute="centerX" secondItem="CWO-M8-gcP" secondAttribute="centerX" id="bax-rC-zVJ"/>
+                            <constraint firstItem="imj-of-vxR" firstAttribute="centerY" secondItem="CWO-M8-gcP" secondAttribute="centerY" id="kUK-XN-FJn"/>
+                            <constraint firstItem="Y2U-lf-uWB" firstAttribute="top" secondItem="DeZ-G5-7Ij" secondAttribute="bottom" constant="141" id="m2G-bC-geQ"/>
+                            <constraint firstItem="imj-of-vxR" firstAttribute="centerX" secondItem="CWO-M8-gcP" secondAttribute="centerX" id="qkX-8d-hbv"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="VKK-aQ-usZ"/>
                 </viewController>
