@@ -38,7 +38,6 @@ class WeiboViewController: UIViewController {
 
                 print("dictionary \(dictionary) error \(error)")
             }
-
         }
     }
 
@@ -54,7 +53,6 @@ class WeiboViewController: UIViewController {
         MonkeyKing.shareMessage(message) { success in
             print("success: \(success)")
         }
-
     }
 
     @IBAction func shareText(sender: UIButton) {
@@ -69,22 +67,20 @@ class WeiboViewController: UIViewController {
         MonkeyKing.shareMessage(message) { success in
             print("success: \(success)")
         }
-
     }
 
     @IBAction func shareURL(sender: UIButton) {
 
         let message = MonkeyKing.Message.Weibo(.Default(info: (
             title: "News",
-            description: "Hello Apple",
+            description: "Hello Yep",
             thumbnail: UIImage(named: "rabbit"),
-            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
+            media: .URL(NSURL(string: "http://soyep.com")!)
         ), accessToken: accessToken))
 
         MonkeyKing.shareMessage(message) { success in
             print("success: \(success)")
         }
-
     }
 
     // MARK: OAuth
@@ -107,8 +103,6 @@ class WeiboViewController: UIViewController {
 
             // More API
             // http://open.weibo.com/wiki/%E5%BE%AE%E5%8D%9AAPI
-
         }
     }
-
 }
