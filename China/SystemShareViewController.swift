@@ -13,43 +13,22 @@ class SystemShareViewController: UIViewController {
 
     @IBAction func systemShare(sender: UIButton) {
 
-        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID, appKey: weChatAppKey))
-
         let shareURL = NSURL(string: "http://www.apple.com/cn/iphone/compare/")!
 
-        let info = MonkeyKing.Info(
-            title: "iPhone Compare",
-            description: "iPhone 机型比较",
-            thumbnail: UIImage(named: "rabbit"),
-            media: .URL(shareURL)
-        )
+        var content = Content()
+        content.title = "iPhone Compare"
+        content.description = "iPhone 机型比较"
+        content.thumbnail = UIImage(named: "rabbit")
+        content.media = .URL(shareURL)
 
-        let sessionMessage = MonkeyKing.Message.WeChat(.Session(info: info))
 
-        let weChatSessionActivity = AnyActivity(
-            type: "com.nixWork.China.WeChat.Session",
-            title: NSLocalizedString("WeChat Session", comment: ""),
-            image: UIImage(named: "wechat_session")!,
-            message: sessionMessage,
-            finish: { success in
-                print("Session success: \(success)")
-            }
-        )
+        let weChatSessionActivity = WeChatActivity(content: content, serviceProvider: WeChatServiceProvier(appID: weChatAppID, appKey: weChatAppKey, destination: .Session))
+        let weChatTimelineActivity = WeChatActivity(content: content, serviceProvider: WeChatServiceProvier(appID: weChatAppID, appKey: weChatAppKey, destination: .Timeline))
+        let qzonActivity = QQActivity(content: content, serviceProvider: QQServiceProvider(appID: qqAppID, destination: .QZone))
+        let qqActivity = QQActivity(content: content, serviceProvider: QQServiceProvider(appID: qqAppID, destination: .Friends))
 
-        let timelineMessage = MonkeyKing.Message.WeChat(.Timeline(info: info))
 
-        let weChatTimelineActivity = AnyActivity(
-            type: "com.nixWork.China.WeChat.Timeline",
-            title: NSLocalizedString("WeChat Timeline", comment: ""),
-            image: UIImage(named: "wechat_timeline")!,
-            message: timelineMessage,
-            finish: { success in
-                print("Timeline success: \(success)")
-            }
-        )
-
-        let activityViewController = UIActivityViewController(activityItems: [shareURL], applicationActivities: [weChatSessionActivity, weChatTimelineActivity])
-
+        let activityViewController = UIActivityViewController(activityItems: [shareURL], applicationActivities: [weChatSessionActivity, weChatTimelineActivity, qzonActivity, qqActivity])
         presentViewController(activityViewController, animated: true, completion: nil)
     }
 }
