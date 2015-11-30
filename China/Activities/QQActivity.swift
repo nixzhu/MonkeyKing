@@ -6,54 +6,57 @@
 //  Copyright © 2015年 nixWork. All rights reserved.
 //
 
-import MonkeyKing
-
-class QQActivity: AnyActivity {
+public class QQActivity: ShareActivity {
 
     enum Type {
 
         case Friends
-        case Zone
+        case QZone
 
         var type: String {
             switch self {
-            case .Friends:
-                return "com.nixWork.China.QQ.Friends"
-            case .Zone:
-                return "com.nixWork.China.QQ.Zone"
+                case .Friends:
+                    return "com.nixWork.MonkeyKing.QQ.Friends\(NSUUID().UUIDString)"
+                case .QZone:
+                    return "com.nixWork.MonkeyKing.QQ.Zone\(NSUUID().UUIDString)"
             }
         }
 
         var title: String {
             switch self {
-            case .Friends:
-                return NSLocalizedString("QQ Friends", comment: "")
-            case .Zone:
-                return NSLocalizedString("QQ Zone", comment: "")
+                case .Friends:
+                    return NSLocalizedString("QQ", comment: "")
+                case .QZone:
+                    return NSLocalizedString("QQ 空间", comment: "")
             }
         }
 
         var image: UIImage {
             switch self {
-            case .Friends:
-                return UIImage(named: "wechat_session")! // TODO:
-            case .Zone:
-                return UIImage(named: "wechat_timeline")! // TODO:
+                case .Friends:
+                    return UIImage(named: "sns_share_qq", inBundle: NSBundle(forClass: QQActivity.self), compatibleWithTraitCollection: nil)!
+                case .QZone:
+                    return UIImage(named: "sns_share_qzone", inBundle: NSBundle(forClass: QQActivity.self), compatibleWithTraitCollection: nil)!
             }
         }
     }
 
-    init(type: Type, message: MonkeyKing.Message, finish: MonkeyKing.Finish) {
+    public init(content: Content, serviceProvider: QQServiceProvider, completionHandler: ShareCompletionHandler? = nil) {
 
-        MonkeyKing.registerAccount(.QQ(appID: qqAppID))
+        let type: Type
 
-        super.init(
-            type: type.type,
-            title: type.title,
-            image: type.image,
-            message: message,
-            finish: finish
-        )
+        if let destination = serviceProvider.destination {
+            switch destination {
+                case .Friends:
+                    type = .Friends
+                case .QZone:
+                    type = .QZone
+            }
+        }
+        else {
+            type = .Friends
+        }
+
+        super.init(type: type.type, title: type.title, image: type.image, content: content, serviceProvider: serviceProvider)
     }
 }
-
