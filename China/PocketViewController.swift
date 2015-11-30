@@ -9,94 +9,41 @@
 import UIKit
 import MonkeyKing
 
+// More API
+// https://getpocket.com/developer/docs/v3/add
+
 let pocketAppID = "48363-344532f670a052acff492a25"
 
 class PocketViewController: UIViewController {
 
-    let account = MonkeyKing.Account.Pocket(appID: pocketAppID)
-    var accessToken: String?
+    static var accessToken: String?
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        MonkeyKing.registerAccount(account)
-    }
-
-    // Save URL to Pocket
     @IBAction func saveButtonAction(sender: UIButton) {
+        var content = Content()
+        content.media = .URL(NSURL(string: "http://36kr.com/p/5040304.html")!)
 
-        guard let accessToken = accessToken else {
-            return
+        do {
+            try MonkeyKing.shareContent(content, serviceProvider: PocketServiceProvider(appID: pocketAppID, accessToken: "8b3a58bc-ac08-b34f-6ef0-76803b")) {
+                succeed in print(succeed)
+            }
+        }
+        catch let error {
+            print(error)
         }
 
-        let addAPI = "https://getpocket.com/v3/add"
-        let parameters = [
-            "url": "http://tips.producter.io",
-            "title": "Producter",
-            "consumer_key": pocketAppID,
-            "access_token": accessToken
-        ]
-
-        SimpleNetworking.sharedInstance.request(NSURL(string: addAPI)!, method: .POST, parameters: parameters) { (dict, response, error) -> Void in
-            print(dict)
-        }
-
-        // More API
-        // https://getpocket.com/developer/docs/v3/add
     }
 
     @IBAction func OAuth(sender: UIButton) {
-
-        guard let startIndex = pocketAppID.rangeOfString("-")?.startIndex else {
-            return
-        }
-
-        let prefix = pocketAppID.substringToIndex(startIndex)
-        let requestAPI = "https://getpocket.com/v3/oauth/request"
-        let redirectURLString = "pocketapp\(prefix):authorizationFinished"
-
-        let parameters = [
-            "consumer_key": pocketAppID,
-            "redirect_uri": redirectURLString
-        ]
-
-        print("S1: fetch requestToken")
-
-        SimpleNetworking.sharedInstance.request(NSURL(string: requestAPI)!, method: .POST, parameters: parameters) { [weak self] (dict, response, error) -> Void in
-
-            guard let strongSelf = self, requestToken = dict?["code"] as? String else {
-                return
-            }
-
-            print("S2: OAuth by requestToken")
-
-            MonkeyKing.OAuth(strongSelf.account, requestToken: requestToken) { (dictionary, response, error) -> Void in
-    
-                let accessTokenAPI = "https://getpocket.com/v3/oauth/authorize"
-                let parameters = [
-                    "consumer_key": pocketAppID,
-                    "code": requestToken
-                ]
-
-                print("S3: fetch OAuth state")
-
-                SimpleNetworking.sharedInstance.request(NSURL(string: accessTokenAPI)!, method: .POST, parameters: parameters) { (JSON, response, error) -> Void in
-
-                    print("S4: OAuth completion")
-
-                    print("JSON: \(JSON)")
-
-                    // If the HTTP status of the response is 200, then the request completed successfully.
-                    print("response: \(response)")
-
-                    strongSelf.accessToken = JSON?["access_token"] as? String
-
+        do {
+            try MonkeyKing.OAuth(PocketServiceProvider(appID: pocketAppID, accessToken: nil)) {
+                (dic, response, error) -> Void in if let accessToken = dic?["access_token"] as? String {
+                    PocketViewController.accessToken = accessToken
                 }
             }
 
-            // More details
-            // Pocket Authentication API Documentation: https://getpocket.com/developer/docs/authentication
-
+        }
+        catch let error {
+            print(error)
         }
     }
-
 }
