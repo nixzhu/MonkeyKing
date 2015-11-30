@@ -6,9 +6,7 @@
 //  Copyright © 2015年 nixWork. All rights reserved.
 //
 
-import MonkeyKing
-
-class WeChatActivity: AnyActivity {
+public class WeChatActivity: ShareActivity {
 
     enum Type {
 
@@ -17,43 +15,48 @@ class WeChatActivity: AnyActivity {
 
         var type: String {
             switch self {
-            case .Session:
-                return "com.nixWork.China.WeChat.Session"
-            case .Timeline:
-                return "com.nixWork.China.WeChat.Timeline"
+                case .Session:
+                    return "com.nixWork.China.WeChat.Session"
+                case .Timeline:
+                    return "com.nixWork.China.WeChat.Timeline"
             }
         }
 
         var title: String {
             switch self {
-            case .Session:
-                return NSLocalizedString("WeChat Session", comment: "")
-            case .Timeline:
-                return NSLocalizedString("WeChat Timeline", comment: "")
+                case .Session:
+                    return NSLocalizedString("WeChat Session", comment: "")
+                case .Timeline:
+                    return NSLocalizedString("WeChat Timeline", comment: "")
             }
         }
 
         var image: UIImage {
             switch self {
-            case .Session:
-                return UIImage(named: "wechat_session")!
-            case .Timeline:
-                return UIImage(named: "wechat_timeline")!
+                case .Session:
+                    return UIImage(named: "sns_share_session", inBundle: NSBundle(forClass: WeChatActivity.self), compatibleWithTraitCollection: nil)!
+                case .Timeline:
+                    return UIImage(named: "sns_share_moments", inBundle: NSBundle(forClass: WeChatActivity.self), compatibleWithTraitCollection: nil)!
             }
         }
     }
 
-    init(type: Type, message: MonkeyKing.Message, finish: MonkeyKing.Finish) {
+    public init(content: Content, serviceProvider: WeChatServiceProvier, completionHandler: ShareCompletionHandler? = nil) {
 
-        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID, appKey: ""))
+        let type: Type
+        if let destination = serviceProvider.destination {
+            switch destination {
+                case .Session:
+                    type = .Session
+                case .Timeline:
+                    type = .Timeline
+            }
+        }
+        else {
+            type = .Timeline
+        }
 
-        super.init(
-            type: type.type,
-            title: type.title,
-            image: type.image,
-            message: message,
-            finish: finish
-        )
+        super.init(type: type.type, title: type.title, image: type.image, content: content, serviceProvider: serviceProvider)
     }
 }
 
