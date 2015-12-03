@@ -137,6 +137,20 @@ class WeChatViewController: UIViewController {
         }
     }
 
+    @IBAction func shareImageURLToSession(sender: UIButton) {
+
+        let message = MonkeyKing.Message.WeChat(.Session(info: (
+            title: nil,
+            description: nil,
+            thumbnail: UIImage(named: "rabbit"),
+            media: .ImageURL(NSURL(string: "http://a4.mzstatic.com/us/r30/Purple6/v4/e1/6c/a3/e16ca3ff-9b47-a613-32fe-3766a738a068/icon175x175.jpeg")!)
+        )))
+
+        MonkeyKing.shareMessage(message) { success in
+            print("success: \(success)")
+        }
+    }
+
     @IBAction func shareMusicToSession(sender: UIButton) {
 
         let message = MonkeyKing.Message.WeChat(.Session(info: (
