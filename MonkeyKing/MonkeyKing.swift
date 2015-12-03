@@ -247,6 +247,7 @@ public class MonkeyKing: NSObject {
 
         case URL(NSURL)
         case Image(UIImage)
+        case ImageURL(NSURL)
         case Audio(audioURL: NSURL, linkURL: NSURL?)
         case Video(NSURL)
     }
@@ -405,6 +406,12 @@ public class MonkeyKing: NSObject {
                             weChatMessageInfo["fileData"] = fileImageData
                         }
 
+                    case .ImageURL(let URL):
+                        assert(type.scene == "0", "Image URL type is only supported by WeChat Session")
+                        assert(!URL.isFileReferenceURL(), "Should be a remote URL")
+                        weChatMessageInfo["objectType"] = "2"
+                        weChatMessageInfo["mediaUrl"] = URL.absoluteString
+
                     case .Audio(let audioURL, let linkURL):
                         weChatMessageInfo["objectType"] = "3"
 
@@ -507,6 +514,9 @@ public class MonkeyKing: NSObject {
                         
                         qqSchemeURLString += "img"
 
+                    case .ImageURL(_):
+                        fatalError("QQ not supports image URL type")
+
                     case .Audio(let audioURL, _):
                         handleNewsWithURL(audioURL, mediaType: "audio")
 
@@ -577,6 +587,9 @@ public class MonkeyKing: NSObject {
                             if let imageData = UIImageJPEGRepresentation(image, 1.0) {
                                 messageInfo["imageObject"] = ["imageData": imageData]
                             }
+
+                        case .ImageURL(_):
+                            fatalError("Weibo not supports image URL type")
 
                         case .Audio:
                             fatalError("Weibo not supports Audio type")
@@ -649,6 +662,9 @@ public class MonkeyKing: NSObject {
                         parameters["pic"] = imageData
                         mediaType = Media.Image(image)
 
+                    case .ImageURL(_):
+                        fatalError("web Weibo not supports image URL type")
+
                     case .Audio:
                         fatalError("web Weibo not supports Audio type")
 
@@ -689,6 +705,9 @@ public class MonkeyKing: NSObject {
                             finish(false)
                         }
                     }
+
+                case .ImageURL(_):
+                    fatalError("web Weibo not supports image URL type")
 
                 case .Audio:
                     fatalError("web Weibo not supports Audio type")
