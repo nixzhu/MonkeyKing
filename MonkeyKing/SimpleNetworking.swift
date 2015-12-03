@@ -99,11 +99,16 @@ class SimpleNetworking {
                 mutableURLRequest.URL = URLComponents.URL
             }
         default:
-            if mutableURLRequest.valueForHTTPHeaderField("Content-Type") == nil {
-                mutableURLRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            }
+            do {
+                let options = NSJSONWritingOptions()
+                let data = try NSJSONSerialization.dataWithJSONObject(parameters!, options: options)
 
-            mutableURLRequest.HTTPBody = query(parameters!).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+                mutableURLRequest.setValue("application/json; charset=UTF-8", forHTTPHeaderField: "Content-Type")
+                mutableURLRequest.setValue("application/json", forHTTPHeaderField: "X-Accept")
+                mutableURLRequest.HTTPBody = data
+            } catch {
+                print("SimpleNetworking: HTTPBody Encode")
+            }
         }
 
         func queryComponents(key: String, _ value: AnyObject) -> [(String, String)] {

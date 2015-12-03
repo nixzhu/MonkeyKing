@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F159F301C056B1D00BCB39B /* PocketViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F159F2F1C056B1D00BCB39B /* PocketViewController.swift */; };
 		3F16EAF01BF4D1DB005B1799 /* SimpleNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F16EAEF1BF4D1DB005B1799 /* SimpleNetworking.swift */; };
 		3F62B3661BB6ACBB00AABD3C /* WeChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62B3651BB6ACBB00AABD3C /* WeChatViewController.swift */; };
 		3F62B3681BB6ACCE00AABD3C /* WeiboViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62B3671BB6ACCE00AABD3C /* WeiboViewController.swift */; };
@@ -52,6 +53,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3F159F2F1C056B1D00BCB39B /* PocketViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PocketViewController.swift; sourceTree = "<group>"; };
 		3F16EAEF1BF4D1DB005B1799 /* SimpleNetworking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleNetworking.swift; sourceTree = "<group>"; };
 		3F62B3651BB6ACBB00AABD3C /* WeChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatViewController.swift; sourceTree = "<group>"; };
 		3F62B3671BB6ACCE00AABD3C /* WeiboViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeiboViewController.swift; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 				3F62B3671BB6ACCE00AABD3C /* WeiboViewController.swift */,
 				3F62B3691BB6ACD800AABD3C /* QQViewController.swift */,
 				3F62B36B1BB6ACE500AABD3C /* SystemShareViewController.swift */,
+				3F159F2F1C056B1D00BCB39B /* PocketViewController.swift */,
 				3F16EAEF1BF4D1DB005B1799 /* SimpleNetworking.swift */,
 				50FBA6E21BA56E2200E69BB3 /* Activities */,
 				50FBA6BC1BA2AFAE00E69BB3 /* Main.storyboard */,
@@ -271,6 +274,7 @@
 				3F62B3681BB6ACCE00AABD3C /* WeiboViewController.swift in Sources */,
 				50FBA6BB1BA2AFAE00E69BB3 /* ViewController.swift in Sources */,
 				50FBA6E41BA570CD00E69BB3 /* QQActivity.swift in Sources */,
+				3F159F301C056B1D00BCB39B /* PocketViewController.swift in Sources */,
 				50FBA6B91BA2AFAE00E69BB3 /* AppDelegate.swift in Sources */,
 				3F62B36C1BB6ACE500AABD3C /* SystemShareViewController.swift in Sources */,
 			);

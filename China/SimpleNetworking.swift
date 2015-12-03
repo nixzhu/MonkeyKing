@@ -94,17 +94,30 @@ class SimpleNetworking {
         let method = Method(rawValue: mutableURLRequest.HTTPMethod)!
 
         switch method {
-        case .GET:
-            if let URLComponents = NSURLComponents(URL: mutableURLRequest.URL!, resolvingAgainstBaseURL: false) {
-                URLComponents.percentEncodedQuery = (URLComponents.percentEncodedQuery != nil ? URLComponents.percentEncodedQuery! + "&" : "") + query(parameters!)
-                mutableURLRequest.URL = URLComponents.URL
-            }
-        default:
-            if mutableURLRequest.valueForHTTPHeaderField("Content-Type") == nil {
-                mutableURLRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            }
 
-            mutableURLRequest.HTTPBody = query(parameters!).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+            case .GET:
+                if let URLComponents = NSURLComponents(URL: mutableURLRequest.URL!, resolvingAgainstBaseURL: false) {
+                    URLComponents.percentEncodedQuery = (URLComponents.percentEncodedQuery != nil ? URLComponents.percentEncodedQuery! + "&" : "") + query(parameters!)
+                    mutableURLRequest.URL = URLComponents.URL
+                }
+
+            default:
+
+                do {
+                    let options = NSJSONWritingOptions()
+                    let data = try NSJSONSerialization.dataWithJSONObject(parameters!, options: options)
+
+                    mutableURLRequest.setValue("application/json; charset=UTF-8", forHTTPHeaderField: "Content-Type")
+                    mutableURLRequest.setValue("application/json", forHTTPHeaderField: "X-Accept")
+                    mutableURLRequest.HTTPBody = data
+                } catch {
+                    print("SimpleNetworking: HTTPBody Encode")
+                }
+
+    //            if mutableURLRequest.valueForHTTPHeaderField("Content-Type") == nil {
+    //                mutableURLRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+    //            }
+    //            mutableURLRequest.HTTPBody = query(parameters!).dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
         }
 
         func queryComponents(key: String, _ value: AnyObject) -> [(String, String)] {

@@ -27,7 +27,7 @@ class QQViewController: UIViewController {
 
         let message = MonkeyKing.Message.QQ(.Friends(info: (
             title: nil,
-            description: "QQ Text, hello world",
+            description: "QQ Text: Hello World, \(NSUUID().UUIDString)",
             thumbnail: nil,
             media: nil
         )))
@@ -40,8 +40,8 @@ class QQViewController: UIViewController {
     @IBAction func shareURLToQQ(sender: UIButton) {
 
         let message = MonkeyKing.Message.QQ(.Friends(info: (
-            title: "friends URL",
-            description: "apple.com",
+            title: "QQ Friends URL, \(NSUUID().UUIDString)",
+            description: "apple.com/cn, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit")!,
             media: .URL(NSURL(string: "http://www.apple.com/cn")!)
         )))
@@ -54,8 +54,8 @@ class QQViewController: UIViewController {
     @IBAction func shareImageToQQ(sender: UIButton) {
 
         let message = MonkeyKing.Message.QQ(.Friends(info: (
-            title: "friends Image",
-            description: "hello world",
+            title: "QQ Friends Image, \(NSUUID().UUIDString)",
+            description: "Hello World, \(NSUUID().UUIDString)",
             thumbnail: nil,
             media: .Image(UIImage(named: "rabbit")!)
         )))
@@ -68,8 +68,8 @@ class QQViewController: UIViewController {
     @IBAction func shareAudioToQQ(sender: UIButton) {
 
         let message = MonkeyKing.Message.QQ(.Friends(info: (
-            title: "friends Audio",
-            description: "hello world",
+            title: "QQ Friends Audio, \(NSUUID().UUIDString)",
+            description: "Hello World, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit")!,
             media: .Audio(audioURL: NSURL(string: "http://wfmusic.3g.qq.com/s?g_f=0&fr=&aid=mu_detail&id=2511915")!, linkURL: nil)
         )))
@@ -82,8 +82,8 @@ class QQViewController: UIViewController {
     @IBAction func shareVideoToQQ(sender: UIButton) {
 
         let message = MonkeyKing.Message.QQ(.Friends(info: (
-            title: "friends Video",
-            description: "hello world",
+            title: "QQ Friends Video, \(NSUUID().UUIDString)",
+            description: "Hello World, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit")!,
             media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XOTU2MzA0NzY4.html")!)
         )))
@@ -99,7 +99,7 @@ class QQViewController: UIViewController {
 
         let message = MonkeyKing.Message.QQ(.Zone(info: (
             title: nil,
-            description: "QZone Text, hello world",
+            description: "QZone Text: Hello World, \(NSUUID().UUIDString)",
             thumbnail: nil,
             media: nil
         )))
@@ -112,10 +112,10 @@ class QQViewController: UIViewController {
     @IBAction func shareURLToQZone(sender: UIButton) {
 
         let message = MonkeyKing.Message.QQ(.Zone(info: (
-            title: "QZone URL",
-            description: "apple.com",
+            title: "QZone URL, \(NSUUID().UUIDString)",
+            description: "soyep.com, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit")!,
-            media: .URL(NSURL(string: "http://www.qq.com")!)
+            media: .URL(NSURL(string: "http://www.soyep.com")!)
         )))
 
         MonkeyKing.shareMessage(message) { success in
@@ -126,8 +126,8 @@ class QQViewController: UIViewController {
     @IBAction func shareImageToQZone(sender: UIButton) {
 
         let message = MonkeyKing.Message.QQ(.Zone(info: (
-            title: "QZone URL Image",
-            description: "hello world",
+            title: "QZone URL Image, \(NSUUID().UUIDString)",
+            description: "Hello World, \(NSUUID().UUIDString)",
             thumbnail: nil,
             media: .Image(UIImage(named: "rabbit")!)
         )))
@@ -140,8 +140,8 @@ class QQViewController: UIViewController {
     @IBAction func shareAudioToQZone(sender: UIButton) {
 
         let message = MonkeyKing.Message.QQ(.Zone(info: (
-            title: "QZone Audio",
-            description: "hello world",
+            title: "QZone Audio, \(NSUUID().UUIDString)",
+            description: "Hello World, \(NSUUID().UUIDString)",
             thumbnail: nil,
             media: .Audio(audioURL: NSURL(string: "http://wfmusic.3g.qq.com/s?g_f=0&fr=&aid=mu_detail&id=2511915")!, linkURL: nil)
         )))
@@ -154,8 +154,8 @@ class QQViewController: UIViewController {
     @IBAction func shareVideoToQZone(sender: UIButton) {
 
         let message = MonkeyKing.Message.QQ(.Zone(info: (
-            title: "QZone Video",
-            description: "hello world",
+            title: "QZone Video, \(NSUUID().UUIDString)",
+            description: "Hello World, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit")!,
             media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XOTU2MzA0NzY4.html")!)
         )))

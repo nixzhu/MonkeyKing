@@ -26,7 +26,7 @@ class WeChatViewController: UIViewController {
     @IBAction func shareTextToTimeline(sender: UIButton) {
 
         let message = MonkeyKing.Message.WeChat(.Timeline(info: (
-            title: "Timeline Text",
+            title: "Timeline Text, \(NSUUID().UUIDString)",
             description: nil,
             thumbnail: nil,
             media: nil
@@ -40,10 +40,10 @@ class WeChatViewController: UIViewController {
     @IBAction func shareURLToTimeline(sender: UIButton) {
 
         let message = MonkeyKing.Message.WeChat(.Timeline(info: (
-            title: "Title URL",
-            description: "Description URL",
+            title: "Timeline URL, \(NSUUID().UUIDString)",
+            description: "Description URL, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit"),
-            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
+            media: .URL(NSURL(string: "http://soyep.com")!)
         )))
 
         MonkeyKing.shareMessage(message) { success in
@@ -68,10 +68,10 @@ class WeChatViewController: UIViewController {
     @IBAction func shareMusicToTimeline(sender: UIButton) {
 
         let message = MonkeyKing.Message.WeChat(.Timeline(info: (
-            title: "Title Music",
-            description: "Description Music",
+            title: "Timeline Music, \(NSUUID().UUIDString)",
+            description: "Description Music, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit"),
-            media: .Audio(audioURL: NSURL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: NSURL(string: "http://www.apple.com/cn")!)
+            media: .Audio(audioURL: NSURL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: NSURL(string: "http://soyep.com")!)
         )))
 
         MonkeyKing.shareMessage(message) { success in
@@ -82,8 +82,8 @@ class WeChatViewController: UIViewController {
     @IBAction func shareVideoToTimeline(sender: UIButton) {
 
         let message = MonkeyKing.Message.WeChat(.Timeline(info: (
-            title: "Title Video",
-            description: "Description Video",
+            title: "Timeline Video, \(NSUUID().UUIDString)",
+            description: "Description Video, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit"),
             media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XNTUxNDY1NDY4.html")!)
         )))
@@ -98,7 +98,7 @@ class WeChatViewController: UIViewController {
     @IBAction func shareTextToSession(sender: UIButton) {
 
         let message = MonkeyKing.Message.WeChat(.Session(info: (
-            title: "Session Text",
+            title: "Session Text, \(NSUUID().UUIDString)",
             description: nil,
             thumbnail: nil,
             media: nil)
@@ -112,10 +112,10 @@ class WeChatViewController: UIViewController {
     @IBAction func shareURLToSession(sender: UIButton) {
 
         let message = MonkeyKing.Message.WeChat(.Session(info: (
-            title: "Title URL",
-            description: "description URL",
+            title: "Session URL, \(NSUUID().UUIDString)",
+            description: "description URL, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit"),
-            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
+            media: .URL(NSURL(string: "http://soyep.com")!)
         )))
 
         MonkeyKing.shareMessage(message) { success in
@@ -140,10 +140,10 @@ class WeChatViewController: UIViewController {
     @IBAction func shareMusicToSession(sender: UIButton) {
 
         let message = MonkeyKing.Message.WeChat(.Session(info: (
-            title: "Title Music",
-            description: "Description Music",
+            title: "Session Music, \(NSUUID().UUIDString)",
+            description: "Description Music, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit"),
-            media: .Audio(audioURL: NSURL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: NSURL(string: "http://www.apple.com/cn")!)
+            media: .Audio(audioURL: NSURL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: NSURL(string: "http://soyep.com")!)
         )))
 
         MonkeyKing.shareMessage(message) { success in
@@ -154,8 +154,8 @@ class WeChatViewController: UIViewController {
     @IBAction func shareVideoToSession(sender: UIButton) {
 
         let message = MonkeyKing.Message.WeChat(.Session(info: (
-            title: "Title Video",
-            description: "Description Video",
+            title: "Session Video, \(NSUUID().UUIDString)",
+            description: "Description Video, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit"),
             media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XNTUxNDY1NDY4.html")!)
         )))
@@ -236,6 +236,5 @@ class WeChatViewController: UIViewController {
             print("OAuthJSON \(OAuthJSON)")
         }
     }
-    
 }
 
