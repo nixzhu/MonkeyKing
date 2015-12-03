@@ -680,7 +680,8 @@ public class MonkeyKing: NSObject {
                 case .URL(_):
 
                     let URLString = "https://api.weibo.com/2/statuses/update.json"
-                    sendRequest(URLString, method: .POST, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
+
+                    SimpleNetworking.sharedInstance.request(URLString, method: .POST, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
                         if let JSON = responseData, let _ = JSON["idstr"] as? String {
                             finish(true)
                         } else {
@@ -770,9 +771,7 @@ extension MonkeyKing {
                 // Web OAuth
 
                 let accessTokenAPI = "http://xui.ptlogin2.qq.com/cgi-bin/xlogin?appid=716027609&pt_3rd_aid=209656&style=35&s_url=http%3A%2F%2Fconnect.qq.com&refer_cgi=m_authorize&client_id=\(appID)&redirect_uri=auth%3A%2F%2Fwww.qq.com&response_type=token&scope=\(scope)"
-
                 addWebViewByURLString(accessTokenAPI)
-
 
             case .Weibo(let appID, _, let redirectURL):
 
@@ -920,7 +919,8 @@ extension MonkeyKing: WKNavigationDelegate {
                 accessTokenAPI += "&code=" + code
 
                 activityIndicatorViewAction(webView, stop: false)
-                sendRequest(accessTokenAPI, method: .POST) { [weak self] (JSON, response, error) -> Void in
+
+                SimpleNetworking.sharedInstance.request(accessTokenAPI, method: .POST) { [weak self] (JSON, response, error) -> Void in
                     dispatch_async(dispatch_get_main_queue()) {
                         self?.hideWebView(webView, tuples: (JSON, response, error))
                     }
@@ -956,7 +956,7 @@ extension MonkeyKing {
         accessTokenAPI += "&code=" + code + "&grant_type=authorization_code"
 
         // OAuth
-        sendRequest(accessTokenAPI, method: .GET) { (OAuthJSON, response, error) -> Void in
+        SimpleNetworking.sharedInstance.request(accessTokenAPI, method: .GET) { (OAuthJSON, response, error) -> Void in
             completionHandler(OAuthJSON, response, error)
         }
     }
@@ -1016,16 +1016,6 @@ extension MonkeyKing {
         }
     }
 
-}
-
-private func sendRequest(URLString: String, method: SimpleNetworking.Method, parameters: [String: AnyObject]? = nil, completionHandler: MonkeyKing.SerializeResponse) {
-
-    guard let URL = NSURL(string: URLString) else {
-        print("URL init Error: URLString")
-        return
-    }
-
-    SimpleNetworking.sharedInstance.request(URL, method: method, parameters: parameters, completionHandler: completionHandler)
 }
 
 private func openURL(URLString URLString: String) -> Bool {

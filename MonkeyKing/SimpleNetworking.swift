@@ -144,7 +144,11 @@ class SimpleNetworking {
         }
     }
 
-    func request(URL: NSURL, method: Method, parameters: [String: AnyObject]? = nil, encoding: ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: MonkeyKing.SerializeResponse) {
+    func request(URLString: String, method: Method, parameters: [String: AnyObject]? = nil, encoding: ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: MonkeyKing.SerializeResponse) {
+
+        guard let URL = NSURL(string: URLString) else {
+            return
+        }
 
         let mutableURLRequest = NSMutableURLRequest(URL: URL)
         mutableURLRequest.HTTPMethod = method.rawValue
