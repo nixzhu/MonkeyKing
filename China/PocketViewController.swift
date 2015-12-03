@@ -36,14 +36,18 @@ class PocketViewController: UIViewController {
             "access_token": accessToken
         ]
 
-        SimpleNetworking.sharedInstance.request(NSURL(string: addAPI)!, method: .POST, parameters: parameters) { (dict, response, error) -> Void in
-            print(dict)
+        SimpleNetworking.sharedInstance.request(NSURL(string: addAPI)!, method: .POST, parameters: parameters, encoding: .JSON) { (dict, response, error) -> Void in
+            guard let status = dict?["status"] as? Int where status == 1 else {
+                return
+            }
+            print("Pocket add url successfully")
         }
 
         // More API
         // https://getpocket.com/developer/docs/v3/add
     }
 
+    // Pocket OAuth
     @IBAction func OAuth(sender: UIButton) {
 
         guard let startIndex = pocketAppID.rangeOfString("-")?.startIndex else {
@@ -61,16 +65,21 @@ class PocketViewController: UIViewController {
 
         print("S1: fetch requestToken")
 
-        SimpleNetworking.sharedInstance.request(NSURL(string: requestAPI)!, method: .POST, parameters: parameters) { [weak self] (dict, response, error) -> Void in
+        SimpleNetworking.sharedInstance.request(NSURL(string: requestAPI)!, method: .POST, parameters: parameters, encoding: .JSON) { [weak self] (dict, response, error) -> Void in
 
             guard let strongSelf = self, requestToken = dict?["code"] as? String else {
                 return
             }
 
-            print("S2: OAuth by requestToken")
+            print("S2: OAuth by requestToken: \(requestToken)")
 
             MonkeyKing.OAuth(strongSelf.account, requestToken: requestToken) { (dictionary, response, error) -> Void in
-    
+
+                guard error == nil else {
+                    print(error)
+                    return
+                }
+
                 let accessTokenAPI = "https://getpocket.com/v3/oauth/authorize"
                 let parameters = [
                     "consumer_key": pocketAppID,
@@ -79,7 +88,7 @@ class PocketViewController: UIViewController {
 
                 print("S3: fetch OAuth state")
 
-                SimpleNetworking.sharedInstance.request(NSURL(string: accessTokenAPI)!, method: .POST, parameters: parameters) { (JSON, response, error) -> Void in
+                SimpleNetworking.sharedInstance.request(NSURL(string: accessTokenAPI)!, method: .POST, parameters: parameters, encoding: .JSON) { (JSON, response, error) -> Void in
 
                     print("S4: OAuth completion")
 
@@ -89,14 +98,14 @@ class PocketViewController: UIViewController {
                     print("response: \(response)")
 
                     strongSelf.accessToken = JSON?["access_token"] as? String
-
+                    
                 }
             }
-
+            
             // More details
             // Pocket Authentication API Documentation: https://getpocket.com/developer/docs/authentication
-
+            
         }
     }
-
+    
 }
