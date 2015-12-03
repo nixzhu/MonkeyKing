@@ -86,14 +86,12 @@ public class MonkeyKing: NSObject {
                     return false
                 }
 
-                var infos = [String: String]()
-                items.forEach({ (anItem) -> () in
-                    if let value = anItem.value {
-                        infos[anItem.name] = value
-                    }
-                })
+                var infos = [String: AnyObject]()
+                items.forEach {
+                    infos[$0.name] = $0.value
+                }
 
-                guard let code = infos["code"] else {
+                guard let code = infos["code"] as? String else {
                     return false
                 }
 
