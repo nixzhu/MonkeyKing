@@ -143,7 +143,7 @@ class WeChatViewController: UIViewController {
             title: nil,
             description: nil,
             thumbnail: UIImage(named: "rabbit"),
-            media: .ImageURL(NSURL(string: "https://res.wx.qq.com/open/zh_CN/htmledition/res/img/pic/mp-dev-guide/dev_code22c4cc.jpg")!)
+            media: .ImageURL(NSURL(string: "http://images.ifanr.cn/wp-content/uploads/2015/11/appso-banner1.jpg")!)
         )))
 
         MonkeyKing.shareMessage(message) { success in
