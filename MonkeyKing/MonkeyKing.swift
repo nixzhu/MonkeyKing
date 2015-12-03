@@ -850,6 +850,9 @@ extension MonkeyKing: WKNavigationDelegate {
 
         if absoluteString.containsString("getpocket.com") {
             scriptString += "document.querySelector('div.toolbar').style.display = 'none';"
+            scriptString += "document.querySelector('a.extra_action').style.display = 'none';"
+            scriptString += "var rightButton = $('.toolbarContents div:last-child');"
+            scriptString += "if (rightButton.html() == 'Log In') {rightButton.click()}"
         } else if absoluteString.containsString("open.weibo.cn") {
             scriptString += "document.querySelector('aside.logins').style.display = 'none';"
         }
