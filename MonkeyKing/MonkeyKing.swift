@@ -816,7 +816,7 @@ extension MonkeyKing {
 
                 let requestTokenAPI = "https://getpocket.com/auth/authorize?request_token=\(requestToken)&redirect_uri=\(redirectURLString)"
                 dispatch_async(dispatch_get_main_queue()) {
-                    addWebViewByURLString(requestTokenAPI, flagCode: requestToken)
+                    addWebViewByURLString(requestTokenAPI)
                 }
         }
     }
@@ -832,32 +832,7 @@ extension MonkeyKing: WKNavigationDelegate {
 
         // Pocket OAuth
         if let errorString = error.userInfo["NSErrorFailingURLStringKey"] as? String where errorString.hasSuffix(":authorizationFinished") {
-            var consumerKey = ""
-
-            for case let .Pocket(appID) in accountSet {
-                consumerKey = appID
-            }
-
-            activityIndicatorViewAction(webView, stop: true)
-            webView.stopLoading()
-
-            guard let code = webView.layer.name else {
-                let error = NSError(domain: "Code is nil", code: -1, userInfo: nil)
-                hideWebView(webView, tuples: (nil, nil, error))
-                return
-            }
-
-            let accessTokenAPI = "https://getpocket.com/v3/oauth/authorize"
-            let parameters = [
-                "consumer_key": consumerKey,
-                "code": code
-            ]
-
-            sendRequest(accessTokenAPI, method: .POST, parameters: parameters) { [weak self] (JSON, response, error) -> Void in
-                dispatch_async(dispatch_get_main_queue()) {
-                    self?.hideWebView(webView, tuples: (JSON, response, error))
-                }
-            }
+            hideWebView(webView, tuples: (nil, nil, nil))
         }
     }
 
@@ -983,7 +958,7 @@ extension MonkeyKing {
         }
     }
 
-    private class func addWebViewByURLString(URLString: String, flagCode: String? = nil) {
+    private class func addWebViewByURLString(URLString: String) {
 
         guard let URL = NSURL(string: URLString) else {
             return
@@ -1010,13 +985,6 @@ extension MonkeyKing {
         UIView.animateWithDuration(0.32, delay: 0.0, options: .CurveEaseOut, animations: {
             webView.frame.origin.y = 0
         }, completion: nil)
-
-        // FlagCode For Pocket
-        guard let code = flagCode else {
-            return
-        }
-
-        webView.layer.name = code
     }
 
     private func hideWebView(webView: WKWebView, tuples: (NSDictionary?, NSURLResponse?, NSError?)?) {
