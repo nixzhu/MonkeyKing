@@ -80,18 +80,8 @@ public class MonkeyKing: NSObject {
             // WeChat OAuth
             if URL.absoluteString.containsString("&state=Weixinauth") {
 
-                let components = NSURLComponents(URL: URL, resolvingAgainstBaseURL: false)
-
-                guard let items = components?.queryItems else {
-                    return false
-                }
-
-                var infos = [String: AnyObject]()
-                items.forEach {
-                    infos[$0.name] = $0.value
-                }
-
-                guard let code = infos["code"] as? String else {
+                let queryItems = URL.monkeyking_queryItems
+                guard let code = queryItems["code"] as? String else {
                     return false
                 }
 
@@ -130,7 +120,7 @@ public class MonkeyKing: NSObject {
         // QQ Share
         if URL.scheme.hasPrefix("QQ") {
 
-            guard let error = URL.monkeyking_queryInfo["error"] else {
+            guard let error = URL.monkeyking_queryItems["error"] as? String else {
                 return false
             }
 
@@ -869,26 +859,16 @@ extension MonkeyKing: WKNavigationDelegate {
         }
 
         // QQ Web OAuth
-        guard URL.absoluteString.containsString("&access_token=") else {
+        guard URL.absoluteString.containsString("&access_token=") && URL.absoluteString.containsString("qzs.qq.com") else {
             return
         }
 
-        guard let fragment = URL.fragment?.characters.dropFirst(), newURL = NSURL(string: "limon.top/?\(String(fragment))") else {
+        guard let fragment = URL.fragment?.characters.dropFirst(), newURL = NSURL(string: "http://qzs.qq.com/?\(String(fragment))") else {
             return
         }
 
-        let components = NSURLComponents(URL: newURL, resolvingAgainstBaseURL: false)
-
-        guard let items = components?.queryItems else {
-            return
-        }
-
-        var infos = [String: AnyObject]()
-        items.forEach {
-            infos[$0.name] = $0.value
-        }
-
-        hideWebView(webView, tuples: (infos, nil, nil))
+        let queryItems = newURL.monkeyking_queryItems
+        hideWebView(webView, tuples: (queryItems, nil, nil))
     }
 
     public func webView(webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
@@ -903,7 +883,7 @@ extension MonkeyKing: WKNavigationDelegate {
 
                 webView.stopLoading()
 
-                guard let code = URL.monkeyking_queryInfo["code"] else {
+                guard let code = URL.monkeyking_queryItems["code"] as? String else {
                     return
                 }
 
@@ -1087,23 +1067,20 @@ private extension String {
 
 private extension NSURL {
 
-    var monkeyking_queryInfo: [String: String] {
+    var monkeyking_queryItems: [String: AnyObject] {
 
-        var info = [String: String]()
+        var infos = [String: AnyObject]()
 
-        if let querys = query?.componentsSeparatedByString("&") {
-            for query in querys {
-                let keyValuePair = query.componentsSeparatedByString("=")
-                if keyValuePair.count == 2 {
-                    let key = keyValuePair[0]
-                    let value = keyValuePair[1]
+        let components = NSURLComponents(URL: self, resolvingAgainstBaseURL: false)
 
-                    info[key] = value
-                }
-            }
+        guard let items = components?.queryItems else {
+            return infos
         }
-        
-        return info
+
+        items.forEach {
+            infos[$0.name] = $0.value
+        }
+        return infos
     }
 }
 
