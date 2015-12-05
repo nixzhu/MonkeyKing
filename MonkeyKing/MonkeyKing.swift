@@ -27,13 +27,13 @@ public class MonkeyKing: NSObject {
         public var isAppInstalled: Bool {
             switch self {
             case .WeChat:
-                return canOpenURL(NSURL(string: "weixin://"))
+                return sharedMonkeyKing.canOpenURL(URLString: "weixin://")
             case .QQ:
-                return canOpenURL(NSURL(string: "mqqapi://"))
+                return sharedMonkeyKing.canOpenURL(URLString: "mqqapi://")
             case .Weibo:
-                return canOpenURL(NSURL(string: "weibosdk://request"))
+                return sharedMonkeyKing.canOpenURL(URLString: "weibosdk://request")
             case .Pocket:
-                return canOpenURL(NSURL(string: "pocket-oauth-v1://"))
+                return sharedMonkeyKing.canOpenURL(URLString: "pocket-oauth-v1://")
             }
         }
 
@@ -440,11 +440,7 @@ public class MonkeyKing: NSObject {
 
                 let weChatSchemeURLString = "weixin://app/\(appID)/sendreq/?"
 
-                guard let URL = NSURL(string: weChatSchemeURLString) else {
-                    return
-                }
-
-                if !UIApplication.sharedApplication().openURL(URL) {
+                if !openURL(URLString: weChatSchemeURLString) {
                     finish(false)
                 }
             }
@@ -549,7 +545,7 @@ public class MonkeyKing: NSObject {
 
             for case let .Weibo(appID, _, _) in sharedMonkeyKing.accountSet {
 
-                guard !canOpenURL(NSURL(string: "weibosdk://request")) else {
+                guard !sharedMonkeyKing.canOpenURL(URLString: "weibosdk://request") else {
 
                     // App Share
 
@@ -931,6 +927,7 @@ extension MonkeyKing: WKNavigationDelegate {
 
 }
 
+
 // MARK: Private Methods
 
 extension MonkeyKing {
@@ -1016,25 +1013,25 @@ extension MonkeyKing {
         }
     }
 
-}
+    private class func openURL(URLString URLString: String) -> Bool {
 
-private func openURL(URLString URLString: String) -> Bool {
+        guard let URL = NSURL(string: URLString) else {
+            return false
+        }
 
-    guard let URL = NSURL(string: URLString) else {
-        return false
+        return UIApplication.sharedApplication().openURL(URL)
     }
 
-    return UIApplication.sharedApplication().openURL(URL)
-}
+    private func canOpenURL(URLString URLString: String) -> Bool {
 
-private func canOpenURL(URL: NSURL?) -> Bool {
+        guard let URL = NSURL(string: URLString) else {
+            return false
+        }
 
-    guard let URL = URL else {
-        return false
+        return UIApplication.sharedApplication().canOpenURL(URL)
     }
-
-    return UIApplication.sharedApplication().canOpenURL(URL)
 }
+
 
 // MARK: Private Extensions
 
