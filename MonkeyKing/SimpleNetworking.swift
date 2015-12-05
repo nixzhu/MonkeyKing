@@ -8,143 +8,148 @@
 
 import Foundation
 
+public typealias NetworkingResponseHandler = (NSDictionary?, NSURLResponse?, NSError?) -> Void
+
+public enum MKGMethod: String {
+    case GET
+    case POST
+}
+
+public enum MKGParameterEncoding {
+    case URL
+    case URLEncodedInURL
+    case JSON
+
+    func encode(URLRequest: NSMutableURLRequest, parameters: [String: AnyObject]?) -> NSURLRequest {
+        guard let parameters = parameters, mutableURLRequest = URLRequest.mutableCopy() as? NSMutableURLRequest  else {
+            return URLRequest
+        }
+
+        switch self {
+        case .URL, .URLEncodedInURL:
+            func query(parameters: [String: AnyObject]) -> String {
+                var components: [(String, String)] = []
+
+                for key in parameters.keys.sort(<) {
+                    let value = parameters[key]!
+                    components += queryComponents(key, value)
+                }
+
+                return (components.map { "\($0)=\($1)" } as [String]).joinWithSeparator("&")
+            }
+
+            func encodesParametersInURL(method: MKGMethod) -> Bool {
+                switch self {
+                case .URLEncodedInURL:
+                    return true
+                default:
+                    break
+                }
+
+                switch method {
+                case .GET:
+                    return true
+                default:
+                    return false
+                }
+            }
+
+            if let method = MKGMethod(rawValue: mutableURLRequest.HTTPMethod) where encodesParametersInURL(method) {
+                if let URLComponents = NSURLComponents(URL: mutableURLRequest.URL!, resolvingAgainstBaseURL: false) {
+                    let percentEncodedQuery = (URLComponents.percentEncodedQuery.map { $0 + "&" } ?? "") + query(parameters)
+                    URLComponents.percentEncodedQuery = percentEncodedQuery
+                    mutableURLRequest.URL = URLComponents.URL
+                }
+            } else {
+                if mutableURLRequest.valueForHTTPHeaderField("Content-Type") == nil {
+                    mutableURLRequest.setValue(
+                        "application/x-www-form-urlencoded; charset=utf-8",
+                        forHTTPHeaderField: "Content-Type"
+                    )
+                }
+
+                mutableURLRequest.HTTPBody = query(parameters).dataUsingEncoding(
+                    NSUTF8StringEncoding,
+                    allowLossyConversion: false
+                )
+            }
+        case .JSON:
+            do {
+                let options = NSJSONWritingOptions()
+                let data = try NSJSONSerialization.dataWithJSONObject(parameters, options: options)
+
+                mutableURLRequest.setValue("application/json; charset=UTF-8", forHTTPHeaderField: "Content-Type")
+                mutableURLRequest.setValue("application/json", forHTTPHeaderField: "X-Accept")
+                mutableURLRequest.HTTPBody = data
+            } catch {
+            }
+
+        }
+
+        return mutableURLRequest
+    }
+
+    func queryComponents(key: String, _ value: AnyObject) -> [(String, String)] {
+        var components: [(String, String)] = []
+
+        if let dictionary = value as? [String: AnyObject] {
+            for (nestedKey, value) in dictionary {
+                components += queryComponents("\(key)[\(nestedKey)]", value)
+            }
+        } else if let array = value as? [AnyObject] {
+            for value in array {
+                components += queryComponents("\(key)[]", value)
+            }
+        } else {
+            components.append((escape(key), escape("\(value)")))
+        }
+
+        return components
+    }
+
+    func escape(string: String) -> String {
+        let generalDelimitersToEncode = ":#[]@" // does not include "?" or "/" due to RFC 3986 - Section 3.4
+        let subDelimitersToEncode = "!$&'()*+,;="
+
+        let allowedCharacterSet = NSCharacterSet.URLQueryAllowedCharacterSet().mutableCopy() as! NSMutableCharacterSet
+        allowedCharacterSet.removeCharactersInString(generalDelimitersToEncode + subDelimitersToEncode)
+
+        var escaped = ""
+
+        if #available(iOS 8.3, *) {
+            escaped = string.stringByAddingPercentEncodingWithAllowedCharacters(allowedCharacterSet) ?? string
+        } else {
+            let batchSize = 50
+            var index = string.startIndex
+
+            while index != string.endIndex {
+                let startIndex = index
+                let endIndex = index.advancedBy(batchSize, limit: string.endIndex)
+                let range = Range(start: startIndex, end: endIndex)
+
+                let substring = string.substringWithRange(range)
+
+                escaped += substring.stringByAddingPercentEncodingWithAllowedCharacters(allowedCharacterSet) ?? substring
+
+                index = endIndex
+            }
+        }
+
+        return escaped
+    }
+}
+
 class SimpleNetworking {
 
     static let sharedInstance = SimpleNetworking()
     private let session = NSURLSession.sharedSession()
 
-    enum Method: String {
-        case GET = "GET"
-        case POST = "POST"
-    }
+    func request(URLString: String, method: MKGMethod, parameters: [String: AnyObject]? = nil, encoding: MKGParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: NetworkingResponseHandler) {
 
-    enum ParameterEncoding {
-        case URL
-        case URLEncodedInURL
-        case JSON
-
-        func encode(URLRequest: NSMutableURLRequest, parameters: [String: AnyObject]?) -> NSURLRequest {
-            guard let parameters = parameters else {
-                return URLRequest
-            }
-
-            var mutableURLRequest: NSMutableURLRequest! = URLRequest.mutableCopy() as! NSMutableURLRequest
-
-            switch self {
-            case .URL, .URLEncodedInURL:
-                func query(parameters: [String: AnyObject]) -> String {
-                    var components: [(String, String)] = []
-
-                    for key in parameters.keys.sort(<) {
-                        let value = parameters[key]!
-                        components += queryComponents(key, value)
-                    }
-
-                    return (components.map { "\($0)=\($1)" } as [String]).joinWithSeparator("&")
-                }
-
-                func encodesParametersInURL(method: Method) -> Bool {
-                    switch self {
-                    case .URLEncodedInURL:
-                        return true
-                    default:
-                        break
-                    }
-
-                    switch method {
-                    case .GET:
-                        return true
-                    default:
-                        return false
-                    }
-                }
-
-                if let method = Method(rawValue: mutableURLRequest.HTTPMethod) where encodesParametersInURL(method) {
-                    if let URLComponents = NSURLComponents(URL: mutableURLRequest.URL!, resolvingAgainstBaseURL: false) {
-                        let percentEncodedQuery = (URLComponents.percentEncodedQuery.map { $0 + "&" } ?? "") + query(parameters)
-                        URLComponents.percentEncodedQuery = percentEncodedQuery
-                        mutableURLRequest.URL = URLComponents.URL
-                    }
-                } else {
-                    if mutableURLRequest.valueForHTTPHeaderField("Content-Type") == nil {
-                        mutableURLRequest.setValue(
-                            "application/x-www-form-urlencoded; charset=utf-8",
-                            forHTTPHeaderField: "Content-Type"
-                        )
-                    }
-
-                    mutableURLRequest.HTTPBody = query(parameters).dataUsingEncoding(
-                        NSUTF8StringEncoding,
-                        allowLossyConversion: false
-                    )
-                }
-            case .JSON:
-                do {
-                    let options = NSJSONWritingOptions()
-                    let data = try NSJSONSerialization.dataWithJSONObject(parameters, options: options)
-
-                    mutableURLRequest.setValue("application/json; charset=UTF-8", forHTTPHeaderField: "Content-Type")
-                    mutableURLRequest.setValue("application/json", forHTTPHeaderField: "X-Accept")
-                    mutableURLRequest.HTTPBody = data
-                } catch {
-                }
-
-            }
-
-            return mutableURLRequest
+        guard MonkeyKing.networkingDelegate == nil else {
+            MonkeyKing.networkingDelegate?.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
+            return
         }
-
-        func queryComponents(key: String, _ value: AnyObject) -> [(String, String)] {
-            var components: [(String, String)] = []
-
-            if let dictionary = value as? [String: AnyObject] {
-                for (nestedKey, value) in dictionary {
-                    components += queryComponents("\(key)[\(nestedKey)]", value)
-                }
-            } else if let array = value as? [AnyObject] {
-                for value in array {
-                    components += queryComponents("\(key)[]", value)
-                }
-            } else {
-                components.append((escape(key), escape("\(value)")))
-            }
-
-            return components
-        }
-
-        func escape(string: String) -> String {
-            let generalDelimitersToEncode = ":#[]@" // does not include "?" or "/" due to RFC 3986 - Section 3.4
-            let subDelimitersToEncode = "!$&'()*+,;="
-
-            let allowedCharacterSet = NSCharacterSet.URLQueryAllowedCharacterSet().mutableCopy() as! NSMutableCharacterSet
-            allowedCharacterSet.removeCharactersInString(generalDelimitersToEncode + subDelimitersToEncode)
-
-            var escaped = ""
-
-            if #available(iOS 8.3, *) {
-                escaped = string.stringByAddingPercentEncodingWithAllowedCharacters(allowedCharacterSet) ?? string
-            } else {
-                let batchSize = 50
-                var index = string.startIndex
-
-                while index != string.endIndex {
-                    let startIndex = index
-                    let endIndex = index.advancedBy(batchSize, limit: string.endIndex)
-                    let range = Range(start: startIndex, end: endIndex)
-
-                    let substring = string.substringWithRange(range)
-
-                    escaped += substring.stringByAddingPercentEncodingWithAllowedCharacters(allowedCharacterSet) ?? substring
-
-                    index = endIndex
-                }
-            }
-
-            return escaped
-        }
-    }
-
-    func request(URLString: String, method: Method, parameters: [String: AnyObject]? = nil, encoding: ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: MonkeyKing.SerializeResponse) {
 
         guard let URL = NSURL(string: URLString) else {
             return
@@ -160,8 +165,6 @@ class SimpleNetworking {
         }
 
         let request = encoding.encode(mutableURLRequest, parameters: parameters)
-
-
 
         let task = session.dataTaskWithRequest(request) { (data, response, error) -> Void in
 
@@ -184,9 +187,14 @@ class SimpleNetworking {
     }
 
 
-    func upload(URL: NSURL, parameters: [String: AnyObject], completionHandler: MonkeyKing.SerializeResponse) {
+    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: NetworkingResponseHandler) {
 
-        let tuple = urlRequestWithComponents(URL.absoluteString, parameters: parameters)
+        guard MonkeyKing.networkingDelegate == nil else {
+            MonkeyKing.networkingDelegate?.upload(URLString, parameters: parameters, completionHandler: completionHandler)
+            return
+        }
+
+        let tuple = urlRequestWithComponents(URLString, parameters: parameters)
 
         guard let request = tuple.request, let data = tuple.data else {
             return
@@ -211,7 +219,7 @@ class SimpleNetworking {
         uploadTask.resume()
     }
 
-    private func urlRequestWithComponents(URLString: String, parameters: [String: AnyObject], encoding: ParameterEncoding = .URL) -> (request: NSURLRequest?, data: NSData?) {
+    private func urlRequestWithComponents(URLString: String, parameters: [String: AnyObject], encoding: MKGParameterEncoding = .URL) -> (request: NSURLRequest?, data: NSData?) {
 
         guard let URL = NSURL(string: URLString) else {
             return (nil, nil)
@@ -219,7 +227,7 @@ class SimpleNetworking {
 
         // create url request to send
         let mutableURLRequest = NSMutableURLRequest(URL: URL)
-        mutableURLRequest.HTTPMethod = Method.POST.rawValue
+        mutableURLRequest.HTTPMethod = MKGMethod.POST.rawValue
         let boundaryConstant = "NET-POST-boundary-\(arc4random())-\(arc4random())"
         let contentType = "multipart/form-data;boundary="+boundaryConstant
         mutableURLRequest.setValue(contentType, forHTTPHeaderField: "Content-Type")

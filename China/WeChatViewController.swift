@@ -217,7 +217,7 @@ class WeChatViewController: UIViewController {
         ]
 
         // fetch UserInfo by userInfoAPI
-        SimpleNetworking.sharedInstance.request(NSURL(string: userInfoAPI)!, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
+        SimpleNetworking.sharedInstance.request(userInfoAPI, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
 
             guard let mutableDictionary = userInfoDictionary?.mutableCopy() as? NSMutableDictionary else {
                 return
@@ -246,7 +246,7 @@ class WeChatViewController: UIViewController {
         accessTokenAPI += "&code=" + code + "&grant_type=authorization_code"
 
         // OAuth
-        SimpleNetworking.sharedInstance.request(NSURL(string: accessTokenAPI)!, method: .GET) { (OAuthJSON, response, error) -> Void in
+        SimpleNetworking.sharedInstance.request(accessTokenAPI, method: .GET) { (OAuthJSON, response, error) -> Void in
             print("OAuthJSON \(OAuthJSON)")
         }
     }

@@ -15,8 +15,8 @@ class SimpleNetworking {
     private let session = NSURLSession.sharedSession()
 
     enum Method: String {
-        case GET = "GET"
-        case POST = "POST"
+        case GET
+        case POST
     }
 
     enum ParameterEncoding {
@@ -29,7 +29,7 @@ class SimpleNetworking {
                 return URLRequest
             }
 
-            var mutableURLRequest: NSMutableURLRequest! = URLRequest.mutableCopy() as! NSMutableURLRequest
+            var mutableURLRequest = URLRequest.mutableCopy() as! NSMutableURLRequest
 
             switch self {
             case .URL, .URLEncodedInURL:
@@ -145,7 +145,11 @@ class SimpleNetworking {
         }
     }
 
-    func request(URL: NSURL, method: Method, parameters: [String: AnyObject]? = nil, encoding: ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: MonkeyKing.SerializeResponse) {
+    func request(URLString: String, method: Method, parameters: [String: AnyObject]? = nil, encoding: ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: NetworkingResponseHandler) {
+
+        guard let URL = NSURL(string: URLString) else {
+            return
+        }
 
         let mutableURLRequest = NSMutableURLRequest(URL: URL)
         mutableURLRequest.HTTPMethod = method.rawValue
@@ -157,8 +161,6 @@ class SimpleNetworking {
         }
 
         let request = encoding.encode(mutableURLRequest, parameters: parameters)
-
-
 
         let task = session.dataTaskWithRequest(request) { (data, response, error) -> Void in
 
@@ -181,9 +183,9 @@ class SimpleNetworking {
     }
 
 
-    func upload(URL: NSURL, parameters: [String: AnyObject], completionHandler: MonkeyKing.SerializeResponse) {
+    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: NetworkingResponseHandler) {
 
-        let tuple = urlRequestWithComponents(URL.absoluteString, parameters: parameters)
+        let tuple = urlRequestWithComponents(URLString, parameters: parameters)
 
         guard let request = tuple.request, let data = tuple.data else {
             return

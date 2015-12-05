@@ -16,6 +16,7 @@ public func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
 public class MonkeyKing: NSObject {
 
     static let sharedMonkeyKing = MonkeyKing()
+    public static weak var networkingDelegate: NetworkingProtocol?
 
     public enum Account: Hashable {
 
@@ -342,7 +343,7 @@ public class MonkeyKing: NSObject {
     public typealias Finish = Bool -> Void
     var latestFinish: Finish?
 
-    private var OAuthCompletionHandler: SerializeResponse?
+    private var OAuthCompletionHandler: NetworkingResponseHandler?
 
     public class func shareMessage(message: Message, finish: Finish) {
 
@@ -679,12 +680,8 @@ public class MonkeyKing: NSObject {
                 case .Image(_):
 
                     let URLString = "https://upload.api.weibo.com/2/statuses/upload.json"
-                    guard let URL = NSURL(string: URLString) else {
-                        finish(false)
-                        return
-                    }
 
-                    SimpleNetworking.sharedInstance.upload(URL, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
+                    SimpleNetworking.sharedInstance.upload(URLString, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
                         if let JSON = responseData, let _ = JSON["idstr"] as? String {
                             finish(true)
                         } else {
@@ -711,9 +708,7 @@ public class MonkeyKing: NSObject {
 
 extension MonkeyKing {
 
-    public typealias SerializeResponse = (NSDictionary?, NSURLResponse?, NSError?) -> Void
-
-    public class func OAuth(account: Account, scope: String? = nil, requestToken: String? = nil, completionHandler: SerializeResponse) {
+    public class func OAuth(account: Account, scope: String? = nil, requestToken: String? = nil, completionHandler: NetworkingResponseHandler) {
 
         guard account.isAppInstalled || account.canWebOAuth else {
             let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
@@ -912,7 +907,7 @@ extension MonkeyKing: WKNavigationDelegate {
 
 extension MonkeyKing {
 
-    private class func fetchWeChatOAuthInfoByCode(code code: String, completionHandler: SerializeResponse) {
+    private class func fetchWeChatOAuthInfoByCode(code code: String, completionHandler: NetworkingResponseHandler) {
 
         var appID = ""
         var appKey = ""

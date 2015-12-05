@@ -7,8 +7,36 @@
 //
 
 import UIKit
+import MonkeyKing
+
+extension ViewController: NetworkingProtocol {
+
+    func request(URLString: String, method: MKGMethod, parameters: [String: AnyObject]?, encoding: MKGParameterEncoding, headers: [String: String]?, completionHandler: NetworkingResponseHandler) {
+        let method = SimpleNetworking.Method(rawValue: method.rawValue)!
+        var encoding = SimpleNetworking.ParameterEncoding.URL
+        switch encoding {
+            case .JSON:
+                encoding = .JSON
+            case .URL:
+                encoding = .URL
+            case .URLEncodedInURL:
+                encoding = .URLEncodedInURL
+        }
+
+        SimpleNetworking.sharedInstance.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
+    }
+
+    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: NetworkingResponseHandler) {
+        SimpleNetworking.sharedInstance.upload(URLString, parameters: parameters, completionHandler: completionHandler)
+    }
+}
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        MonkeyKing.networkingDelegate = self
+    }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 5

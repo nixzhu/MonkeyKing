@@ -36,7 +36,7 @@ class PocketViewController: UIViewController {
             "access_token": accessToken
         ]
 
-        SimpleNetworking.sharedInstance.request(NSURL(string: addAPI)!, method: .POST, parameters: parameters, encoding: .JSON) { (dict, response, error) -> Void in
+        SimpleNetworking.sharedInstance.request(addAPI, method: .POST, parameters: parameters, encoding: .JSON) { (dict, response, error) -> Void in
             guard let status = dict?["status"] as? Int where status == 1 else {
                 return
             }
@@ -65,7 +65,7 @@ class PocketViewController: UIViewController {
 
         print("S1: fetch requestToken")
 
-        SimpleNetworking.sharedInstance.request(NSURL(string: requestAPI)!, method: .POST, parameters: parameters, encoding: .JSON) { [weak self] (dict, response, error) -> Void in
+        SimpleNetworking.sharedInstance.request(requestAPI, method: .POST, parameters: parameters, encoding: .JSON) { [weak self] (dict, response, error) -> Void in
 
             guard let strongSelf = self, requestToken = dict?["code"] as? String else {
                 return
@@ -88,7 +88,7 @@ class PocketViewController: UIViewController {
 
                 print("S3: fetch OAuth state")
 
-                SimpleNetworking.sharedInstance.request(NSURL(string: accessTokenAPI)!, method: .POST, parameters: parameters, encoding: .JSON) { (JSON, response, error) -> Void in
+                SimpleNetworking.sharedInstance.request(accessTokenAPI, method: .POST, parameters: parameters, encoding: .JSON) { (JSON, response, error) -> Void in
 
                     print("S4: OAuth completion")
 

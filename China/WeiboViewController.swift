@@ -97,7 +97,7 @@ class WeiboViewController: UIViewController {
             let parameters = ["uid": userID, "access_token": token, "source": weiboAppID]
 
             // fetch UserInfo by userInfoAPI
-            SimpleNetworking.sharedInstance.request(NSURL(string: userInfoAPI)!, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
+            SimpleNetworking.sharedInstance.request(userInfoAPI, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
                 print("userInfoDictionary \(userInfoDictionary)")
             })
 
