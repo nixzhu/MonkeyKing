@@ -317,26 +317,15 @@ public class MonkeyKing: NSObject {
 
         public var canBeDelivered: Bool {
 
-            switch self {
-
-            case .WeChat:
-                for account in sharedMonkeyKing.accountSet {
-                    if case .WeChat = account {
-                        return account.isAppInstalled
-                    }
-                }
+            guard let account = sharedMonkeyKing.accountSet[self] else {
                 return false
+            }
 
-            case .QQ:
-                for account in sharedMonkeyKing.accountSet {
-                    if case .QQ = account {
-                        return account.isAppInstalled
-                    }
-                }
-                return false
-            case .Weibo:
+            if case .Weibo = account {
                 return true
             }
+
+            return account.isAppInstalled
         }
     }
 
@@ -1061,6 +1050,35 @@ extension Set {
         
         return nil
     }
+
+    subscript(type: MonkeyKing.Message) -> MonkeyKing.Account? {
+
+        switch type {
+
+        case .WeChat:
+            for account in MonkeyKing.sharedMonkeyKing.accountSet {
+                if case .WeChat = account {
+                    return account
+                }
+            }
+
+        case .QQ:
+            for account in MonkeyKing.sharedMonkeyKing.accountSet {
+                if case .QQ = account {
+                    return account
+                }
+            }
+        case .Weibo:
+            for account in MonkeyKing.sharedMonkeyKing.accountSet {
+                if case .Weibo = account {
+                    return account
+                }
+            }
+        }
+
+        return nil
+    }
+
 }
 
 private extension NSBundle {
