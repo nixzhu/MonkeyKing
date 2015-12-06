@@ -702,13 +702,26 @@ public class MonkeyKing: NSObject {
             }
         }
     }
+
 }
+
 
 // MARK: OAuth
 
 extension MonkeyKing {
 
-    public class func OAuth(account: Account, scope: String? = nil, requestToken: String? = nil, completionHandler: NetworkingResponseHandler) {
+    public enum OAuthPlatform {
+        case QQ
+        case WeChat
+        case Weibo
+        case Pocket(requestToken: String)
+    }
+
+    public class func OAuth(platform: OAuthPlatform, scope: String? = nil, completionHandler: NetworkingResponseHandler) {
+
+        guard let account = sharedMonkeyKing.accountSet[platform] else {
+            return
+        }
 
         guard account.isAppInstalled || account.canWebOAuth else {
             let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
@@ -720,88 +733,91 @@ extension MonkeyKing {
 
         switch account {
 
-            case .WeChat(let appID, _):
+        case .WeChat(let appID, _):
 
-                let scope = scope ?? "snsapi_userinfo"
-                openURL(URLString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth")
+            let scope = scope ?? "snsapi_userinfo"
+            openURL(URLString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth")
 
-            case .QQ(let appID):
+        case .QQ(let appID):
 
-                let scope = scope ?? ""
-                guard !account.isAppInstalled else {
-                    let appName = NSBundle.mainBundle().monkeyking_displayName ?? "nixApp"
-                    let dic = ["app_id": appID,
-                        "app_name": appName,
-                        "client_id": appID,
-                        "response_type": "token",
-                        "scope": scope,
-                        "sdkp": "i",
-                        "sdkv": "2.9",
-                        "status_machine": UIDevice.currentDevice().model,
-                        "status_os": UIDevice.currentDevice().systemVersion,
-                        "status_version": UIDevice.currentDevice().systemVersion]
+            let scope = scope ?? ""
+            guard !account.isAppInstalled else {
+                let appName = NSBundle.mainBundle().monkeyking_displayName ?? "nixApp"
+                let dic = ["app_id": appID,
+                    "app_name": appName,
+                    "client_id": appID,
+                    "response_type": "token",
+                    "scope": scope,
+                    "sdkp": "i",
+                    "sdkv": "2.9",
+                    "status_machine": UIDevice.currentDevice().model,
+                    "status_os": UIDevice.currentDevice().systemVersion,
+                    "status_version": UIDevice.currentDevice().systemVersion]
 
-                    let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
-                    UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.tencent\(appID)")
+                let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
+                UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.tencent\(appID)")
 
-                    openURL(URLString: "mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1")
+                openURL(URLString: "mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1")
 
-                    return
-                }
+                return
+            }
 
-                // Web OAuth
+            // Web OAuth
 
-                let accessTokenAPI = "http://xui.ptlogin2.qq.com/cgi-bin/xlogin?appid=716027609&pt_3rd_aid=209656&style=35&s_url=http%3A%2F%2Fconnect.qq.com&refer_cgi=m_authorize&client_id=\(appID)&redirect_uri=auth%3A%2F%2Fwww.qq.com&response_type=token&scope=\(scope)"
-                addWebViewByURLString(accessTokenAPI)
+            let accessTokenAPI = "http://xui.ptlogin2.qq.com/cgi-bin/xlogin?appid=716027609&pt_3rd_aid=209656&style=35&s_url=http%3A%2F%2Fconnect.qq.com&refer_cgi=m_authorize&client_id=\(appID)&redirect_uri=auth%3A%2F%2Fwww.qq.com&response_type=token&scope=\(scope)"
+            addWebViewByURLString(accessTokenAPI)
 
-            case .Weibo(let appID, _, let redirectURL):
+        case .Weibo(let appID, _, let redirectURL):
 
-                let scope = scope ?? "all"
+            let scope = scope ?? "all"
 
-                guard !account.isAppInstalled else {
-                    let uuIDString = CFUUIDCreateString(nil, CFUUIDCreate(nil))
-                    let authData = [
-                        ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(["__class": "WBAuthorizeRequest", "redirectURI": redirectURL, "requestID":uuIDString, "scope": scope])
-                        ],
-                        ["userInfo": NSKeyedArchiver.archivedDataWithRootObject(["mykey": "as you like", "SSO_From": "SendMessageToWeiboViewController"])],
-                        ["app": NSKeyedArchiver.archivedDataWithRootObject(["appKey": appID, "bundleID": NSBundle.mainBundle().monkeyking_bundleID ?? "", "name": NSBundle.mainBundle().monkeyking_displayName ?? ""])]
-                    ]
+            guard !account.isAppInstalled else {
+                let uuIDString = CFUUIDCreateString(nil, CFUUIDCreate(nil))
+                let authData = [
+                    ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(["__class": "WBAuthorizeRequest", "redirectURI": redirectURL, "requestID":uuIDString, "scope": scope])
+                    ],
+                    ["userInfo": NSKeyedArchiver.archivedDataWithRootObject(["mykey": "as you like", "SSO_From": "SendMessageToWeiboViewController"])],
+                    ["app": NSKeyedArchiver.archivedDataWithRootObject(["appKey": appID, "bundleID": NSBundle.mainBundle().monkeyking_bundleID ?? "", "name": NSBundle.mainBundle().monkeyking_displayName ?? ""])]
+                ]
 
-                    UIPasteboard.generalPasteboard().items = authData
-                    openURL(URLString: "weibosdk://request?id=\(uuIDString)&sdkversion=003013000")
-                    return
-                }
+                UIPasteboard.generalPasteboard().items = authData
+                openURL(URLString: "weibosdk://request?id=\(uuIDString)&sdkversion=003013000")
+                return
+            }
 
-                // Web OAuth
-                let accessTokenAPI = "https://open.weibo.cn/oauth2/authorize?client_id=\(appID)&response_type=code&redirect_uri=\(redirectURL)&scope=\(scope)"
-                addWebViewByURLString(accessTokenAPI)
+            // Web OAuth
+            let accessTokenAPI = "https://open.weibo.cn/oauth2/authorize?client_id=\(appID)&response_type=code&redirect_uri=\(redirectURL)&scope=\(scope)"
+            addWebViewByURLString(accessTokenAPI)
 
-            case .Pocket(let appID):
+        case .Pocket(let appID):
 
-                guard let startIndex = appID.rangeOfString("-")?.startIndex else {
-                    return
-                }
-                let prefix = appID.substringToIndex(startIndex)
-                let redirectURLString = "pocketapp\(prefix):authorizationFinished"
+            guard let startIndex = appID.rangeOfString("-")?.startIndex else {
+                return
+            }
+            let prefix = appID.substringToIndex(startIndex)
+            let redirectURLString = "pocketapp\(prefix):authorizationFinished"
 
-                guard let requestToken = requestToken else {
-                    return
-                }
+            var _requestToken: String?
+            if case .Pocket(let token) = platform {
+                _requestToken = token
+            }
 
-                guard !account.isAppInstalled else {
-                    let requestTokenAPI = "pocket-oauth-v1:///authorize?request_token=\(requestToken)&redirect_uri=\(redirectURLString)"
-                    openURL(URLString: requestTokenAPI)
-                    return
-                }
+            guard let requestToken = _requestToken else {
+                return
+            }
 
-                let requestTokenAPI = "https://getpocket.com/auth/authorize?request_token=\(requestToken)&redirect_uri=\(redirectURLString)"
-                dispatch_async(dispatch_get_main_queue()) {
-                    addWebViewByURLString(requestTokenAPI)
-                }
+            guard !account.isAppInstalled else {
+                let requestTokenAPI = "pocket-oauth-v1:///authorize?request_token=\(requestToken)&redirect_uri=\(redirectURLString)"
+                openURL(URLString: requestTokenAPI)
+                return
+            }
+
+            let requestTokenAPI = "https://getpocket.com/auth/authorize?request_token=\(requestToken)&redirect_uri=\(redirectURLString)"
+            dispatch_async(dispatch_get_main_queue()) {
+                addWebViewByURLString(requestTokenAPI)
+            }
         }
     }
-
-
 }
 
 // MARK: WKNavigationDelegate
@@ -1009,6 +1025,43 @@ extension MonkeyKing {
 
 
 // MARK: Private Extensions
+
+extension Set {
+
+    subscript(type: MonkeyKing.OAuthPlatform) -> MonkeyKing.Account? {
+
+        switch type {
+
+        case .WeChat:
+            for account in MonkeyKing.sharedMonkeyKing.accountSet {
+                if case .WeChat = account {
+                    return account
+                }
+            }
+
+        case .QQ:
+            for account in MonkeyKing.sharedMonkeyKing.accountSet {
+                if case .QQ = account {
+                    return account
+                }
+            }
+        case .Weibo:
+            for account in MonkeyKing.sharedMonkeyKing.accountSet {
+                if case .Weibo = account {
+                    return account
+                }
+            }
+        case .Pocket:
+            for account in MonkeyKing.sharedMonkeyKing.accountSet {
+                if case .Pocket = account {
+                    return account
+                }
+            }
+        }
+        
+        return nil
+    }
+}
 
 private extension NSBundle {
 

@@ -73,7 +73,7 @@ class PocketViewController: UIViewController {
 
             print("S2: OAuth by requestToken: \(requestToken)")
 
-            MonkeyKing.OAuth(strongSelf.account, requestToken: requestToken) { (dictionary, response, error) -> Void in
+            MonkeyKing.OAuth(.Pocket(requestToken: requestToken)) { (dictionary, response, error) -> Void in
 
                 guard error == nil else {
                     print(error)

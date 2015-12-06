@@ -183,7 +183,7 @@ class WeChatViewController: UIViewController {
 
     @IBAction func OAuth(sender: UIButton) {
 
-        MonkeyKing.OAuth(account) { [weak self] (dictionary, response, error) -> Void in
+        MonkeyKing.OAuth(.WeChat) { [weak self] (dictionary, response, error) -> Void in
             self?.fetchUserInfo(dictionary)
         }
     }
@@ -193,7 +193,7 @@ class WeChatViewController: UIViewController {
         let accountWithoutAppKey = MonkeyKing.Account.WeChat(appID: weChatAppID, appKey: nil)
         MonkeyKing.registerAccount(accountWithoutAppKey)
 
-        MonkeyKing.OAuth(accountWithoutAppKey) { (dictionary, response, error) -> Void in
+        MonkeyKing.OAuth(.WeChat) { (dictionary, response, error) -> Void in
 
             // You can use this code to OAuth, if you do not want to keep the weChatAppKey in client.
             print("dictionary \(dictionary)")

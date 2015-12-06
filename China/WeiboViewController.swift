@@ -29,15 +29,13 @@ class WeiboViewController: UIViewController {
         // not installed weibo app, must need accessToken
 
         if !account.isAppInstalled {
-
-            MonkeyKing.OAuth(account) { [weak self] (dictionary, response, error) -> Void in
-
+            MonkeyKing.OAuth(.Weibo, completionHandler: { [weak self] (dictionary, response, error) -> Void in
                 if let json = dictionary, accessToken = json["access_token"] as? String {
                     self?.accessToken = accessToken
                 }
 
                 print("dictionary \(dictionary) error \(error)")
-            }
+            })
         }
     }
 
@@ -86,7 +84,8 @@ class WeiboViewController: UIViewController {
     // MARK: OAuth
 
     @IBAction func OAuth(sender: UIButton) {
-        MonkeyKing.OAuth(account) { (OAuthInfo, response, error) -> Void in
+
+        MonkeyKing.OAuth(.Weibo) { (OAuthInfo, response, error) -> Void in
 
             // App or Web: token & userID
             guard let token = (OAuthInfo?["access_token"] ?? OAuthInfo?["accessToken"]) as? String, userID = (OAuthInfo?["uid"] ?? OAuthInfo?["userID"]) as? String else {

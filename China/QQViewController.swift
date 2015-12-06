@@ -171,7 +171,7 @@ class QQViewController: UIViewController {
 
         // "get_user_info,get_simple_userinfo,add_album,add_idol,add_one_blog,add_pic_t,add_share,add_topic,check_page_fans,del_idol,del_t,get_fanslist,get_idollist,get_info,get_other_info,get_repost_list,list_album,upload_pic,get_vip_info,get_vip_rich_info,get_intimate_friends_weibo,match_nick_tips_weibo"
 
-        MonkeyKing.OAuth(account, scope: "get_user_info") { (OAuthInfo, response, error) -> Void in
+        MonkeyKing.OAuth(.QQ, scope: "get_user_info") { (OAuthInfo, response, error) -> Void in
 
             guard let token = OAuthInfo?["access_token"] as? String,
                 let openID = OAuthInfo?["openid"] as? String else {

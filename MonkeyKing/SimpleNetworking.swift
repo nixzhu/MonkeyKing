@@ -186,7 +186,6 @@ class SimpleNetworking {
         task.resume()
     }
 
-
     func upload(URLString: String, parameters: [String: AnyObject], completionHandler: NetworkingResponseHandler) {
 
         guard MonkeyKing.networkingDelegate == nil else {
@@ -258,19 +257,18 @@ class SimpleNetworking {
                 }
                 uploadData.appendData(contentTypeData)
                 uploadData.appendData(imageData)
-                
+
             } else{
-                
+
                 guard let encodeDispositionData = "Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n\(value)".dataUsingEncoding(NSUTF8StringEncoding) else {
                     return (nil, nil)
                 }
                 uploadData.appendData(encodeDispositionData)
             }
         }
-        
+
         uploadData.appendData("\r\n--\(boundaryConstant)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
-        
+
         return (encoding.encode(mutableURLRequest, parameters: nil), uploadData)
     }
-    
 }
