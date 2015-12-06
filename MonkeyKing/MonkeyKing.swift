@@ -1035,7 +1035,7 @@ extension MonkeyKing {
 
 // MARK: Private Extensions
 
-extension Set {
+private extension Set {
 
     subscript(platform: MonkeyKing.OAuthPlatform) -> MonkeyKing.Account? {
 
