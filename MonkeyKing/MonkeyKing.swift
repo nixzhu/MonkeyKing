@@ -101,20 +101,16 @@ public class MonkeyKing: NSObject {
 
             if let dic = try? NSPropertyListSerialization.propertyListWithData(data, options: .Immutable, format: nil) {
 
-                for case let .WeChat(appID, _) in sharedMonkeyKing.accountSet {
-
-                    if let dic = dic[appID] as? NSDictionary {
-
-                        if let result = dic["result"]?.integerValue {
-
-                            let success = (result == 0)
-
-                            sharedMonkeyKing.latestFinish?(success)
-
-                            return success
-                        }
-                    }
+                guard let account = sharedMonkeyKing.accountSet[.WeChat],
+                        dic = dic[account.appID] as? NSDictionary,
+                        result = dic["result"]?.integerValue else {
+                            return false
                 }
+
+                let success = (result == 0)
+                sharedMonkeyKing.latestFinish?(success)
+
+                return success
             }
         }
         
@@ -135,34 +131,35 @@ public class MonkeyKing: NSObject {
         // QQ OAuth
         if URL.scheme.hasPrefix("tencent") {
 
-            for case let .QQ(appID) in sharedMonkeyKing.accountSet {
-
-                var userInfoDictionary: NSDictionary?
-                var error: NSError?
-
-                defer {
-                    sharedMonkeyKing.OAuthCompletionHandler?(userInfoDictionary, nil, error)
-                }
-
-                guard let data = UIPasteboard.generalPasteboard().dataForPasteboardType("com.tencent.tencent\(appID)"),
-                    let dic = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? NSDictionary else {
-                        error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
-                        return false
-                }
-
-                guard let result = dic["ret"]?.integerValue where result == 0 else {
-                    if let errorDomatin = dic["user_cancelled"] as? String where errorDomatin == "YES" {
-                        error = NSError(domain: "User Cancelled", code: -2, userInfo: nil)
-                    } else {
-                        error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
-                    }
+            guard let account = sharedMonkeyKing.accountSet[.QQ] else {
                     return false
-                }
-
-                userInfoDictionary = dic
-
-                return true
             }
+
+            var userInfoDictionary: NSDictionary?
+            var error: NSError?
+
+            defer {
+                sharedMonkeyKing.OAuthCompletionHandler?(userInfoDictionary, nil, error)
+            }
+
+            guard let data = UIPasteboard.generalPasteboard().dataForPasteboardType("com.tencent.tencent\(account.appID)"),
+                let dic = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? NSDictionary else {
+                    error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
+                    return false
+            }
+
+            guard let result = dic["ret"]?.integerValue where result == 0 else {
+                if let errorDomatin = dic["user_cancelled"] as? String where errorDomatin == "YES" {
+                    error = NSError(domain: "User Cancelled", code: -2, userInfo: nil)
+                } else {
+                    error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
+                }
+                return false
+            }
+
+            userInfoDictionary = dic
+
+            return true
         }
 
         // Weibo
@@ -343,341 +340,299 @@ public class MonkeyKing: NSObject {
 
         sharedMonkeyKing.latestFinish = finish
 
+        guard let account = sharedMonkeyKing.accountSet[message] else {
+            finish(false)
+            return
+        }
+
+        let appID = account.appID
+
         switch message {
 
         case .WeChat(let type):
 
-            for case let .WeChat(appID, _) in sharedMonkeyKing.accountSet {
+            var weChatMessageInfo: [String: AnyObject] = [
+                "result": "1",
+                "returnFromApp": "0",
+                "scene": type.scene,
+                "sdkver": "1.5",
+                "command": "1010",
+            ]
 
-                var weChatMessageInfo: [String: AnyObject] = [
-                    "result": "1",
-                    "returnFromApp": "0",
-                    "scene": type.scene,
-                    "sdkver": "1.5",
-                    "command": "1010",
-                ]
+            let info = type.info
 
-                let info = type.info
+            if let title = info.title {
+                weChatMessageInfo["title"] = title
+            }
 
-                if let title = info.title {
-                    weChatMessageInfo["title"] = title
-                }
+            if let description = info.description {
+                weChatMessageInfo["description"] = description
+            }
 
-                if let description = info.description {
-                    weChatMessageInfo["description"] = description
-                }
+            if let thumbnailImage = info.thumbnail,
+                let thumbnailData = UIImageJPEGRepresentation(thumbnailImage, 0.5) {
+                    weChatMessageInfo["thumbData"] = thumbnailData
+            }
 
-                if let thumbnailImage = info.thumbnail,
-                    let thumbnailData = UIImageJPEGRepresentation(thumbnailImage, 0.5) {
-                        weChatMessageInfo["thumbData"] = thumbnailData
-                }
+            if let media = info.media {
+                switch media {
 
-                if let media = info.media {
-                    switch media {
+                case .URL(let URL):
+                    weChatMessageInfo["objectType"] = "5"
+                    weChatMessageInfo["mediaUrl"] = URL.absoluteString
 
-                    case .URL(let URL):
-                        weChatMessageInfo["objectType"] = "5"
-                        weChatMessageInfo["mediaUrl"] = URL.absoluteString
+                case .Image(let image):
+                    weChatMessageInfo["objectType"] = "2"
 
-                    case .Image(let image):
-                        weChatMessageInfo["objectType"] = "2"
-
-                        if let fileImageData = UIImageJPEGRepresentation(image, 1) {
-                            weChatMessageInfo["fileData"] = fileImageData
-                        }
-
-                    case .ImageURL(let URL):
-                        assert(type.scene == "0", "Image URL type is only supported by WeChat Session")
-                        assert(!URL.isFileReferenceURL(), "Should be a remote URL")
-                        weChatMessageInfo["objectType"] = "2"
-                        weChatMessageInfo["mediaUrl"] = URL.absoluteString
-
-                    case .Audio(let audioURL, let linkURL):
-                        weChatMessageInfo["objectType"] = "3"
-
-                        if let linkURL = linkURL {
-                            weChatMessageInfo["mediaUrl"] = linkURL.absoluteString
-                        }
-
-                        weChatMessageInfo["mediaDataUrl"] = audioURL.absoluteString
-
-                    case .Video(let URL):
-                        weChatMessageInfo["objectType"] = "4"
-                        weChatMessageInfo["mediaUrl"] = URL.absoluteString
+                    if let fileImageData = UIImageJPEGRepresentation(image, 1) {
+                        weChatMessageInfo["fileData"] = fileImageData
                     }
 
-                } else { // Text Share
-                    weChatMessageInfo["command"] = "1020"
+                case .ImageURL(let URL):
+                    assert(type.scene == "0", "Image URL type is only supported by WeChat Session")
+                    assert(!URL.isFileReferenceURL(), "Should be a remote URL")
+                    weChatMessageInfo["objectType"] = "2"
+                    weChatMessageInfo["mediaUrl"] = URL.absoluteString
+
+                case .Audio(let audioURL, let linkURL):
+                    weChatMessageInfo["objectType"] = "3"
+
+                    if let linkURL = linkURL {
+                        weChatMessageInfo["mediaUrl"] = linkURL.absoluteString
+                    }
+
+                    weChatMessageInfo["mediaDataUrl"] = audioURL.absoluteString
+
+                case .Video(let URL):
+                    weChatMessageInfo["objectType"] = "4"
+                    weChatMessageInfo["mediaUrl"] = URL.absoluteString
                 }
 
-                let weChatMessage = [appID: weChatMessageInfo]
+            } else { // Text Share
+                weChatMessageInfo["command"] = "1020"
+            }
 
-                guard let data = try? NSPropertyListSerialization.dataWithPropertyList(weChatMessage, format: .BinaryFormat_v1_0, options: 0) else {
-                    return
-                }
+            let weChatMessage = [appID: weChatMessageInfo]
 
-                UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "content")
+            guard let data = try? NSPropertyListSerialization.dataWithPropertyList(weChatMessage, format: .BinaryFormat_v1_0, options: 0) else {
+                return
+            }
 
-                let weChatSchemeURLString = "weixin://app/\(appID)/sendreq/?"
+            UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "content")
 
-                if !openURL(URLString: weChatSchemeURLString) {
-                    finish(false)
-                }
+            let weChatSchemeURLString = "weixin://app/\(appID)/sendreq/?"
+
+            if !openURL(URLString: weChatSchemeURLString) {
+                finish(false)
             }
 
         case .QQ(let type):
 
-            for case let .QQ(appID) in sharedMonkeyKing.accountSet {
+            let callbackName = appID.monkeyking_QQCallbackName
 
-                let callbackName = appID.monkeyking_QQCallbackName
+            var qqSchemeURLString = "mqqapi://share/to_fri?"
+            if let encodedAppDisplayName = NSBundle.mainBundle().monkeyking_displayName?.monkeyking_base64EncodedString {
+                qqSchemeURLString += "thirdAppDisplayName=" + encodedAppDisplayName
+            } else {
+                qqSchemeURLString += "thirdAppDisplayName=" + "nixApp" // Should not be there
+            }
 
-                var qqSchemeURLString = "mqqapi://share/to_fri?"
-                if let encodedAppDisplayName = NSBundle.mainBundle().monkeyking_displayName?.monkeyking_base64EncodedString {
-                    qqSchemeURLString += "thirdAppDisplayName=" + encodedAppDisplayName
-                } else {
-                    qqSchemeURLString += "thirdAppDisplayName=" + "nixApp" // Should not be there
-                }
+            qqSchemeURLString += "&version=1&cflag=\(type.scene)"
+            qqSchemeURLString += "&callback_type=scheme&generalpastboard=1"
+            qqSchemeURLString += "&callback_name=\(callbackName)"
 
-                qqSchemeURLString += "&version=1&cflag=\(type.scene)"
-                qqSchemeURLString += "&callback_type=scheme&generalpastboard=1"
-                qqSchemeURLString += "&callback_name=\(callbackName)"
+            qqSchemeURLString += "&src_type=app&shareType=0&file_type="
 
-                qqSchemeURLString += "&src_type=app&shareType=0&file_type="
+            if let media = type.info.media {
 
-                if let media = type.info.media {
+                func handleNewsWithURL(URL: NSURL, mediaType: String?) {
 
-                    func handleNewsWithURL(URL: NSURL, mediaType: String?) {
-
-                        if let thumbnail = type.info.thumbnail, thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
-                            let dic = ["previewimagedata": thumbnailData]
-                            let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
-                            UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
-                        }
-
-                        qqSchemeURLString += mediaType ?? "news"
-
-                        guard let encodedURLString = URL.absoluteString.monkeyking_base64AndURLEncodedString else {
-                            finish(false)
-                            return
-                        }
-
-                        qqSchemeURLString += "&url=\(encodedURLString)"
-                    }
-
-                    switch media {
-
-                    case .URL(let URL):
-
-                        handleNewsWithURL(URL, mediaType: "news")
-
-                    case .Image(let image):
-
-                        guard let imageData = UIImageJPEGRepresentation(image, 1) else {
-                            finish(false)
-                            return
-                        }
-
-                        var dic = [
-                            "file_data": imageData,
-                        ]
-                        if let thumbnail = type.info.thumbnail, thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
-                            dic["previewimagedata"] = thumbnailData
-                        }
-
+                    if let thumbnail = type.info.thumbnail, thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
+                        let dic = ["previewimagedata": thumbnailData]
                         let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
-
                         UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
-                        
-                        qqSchemeURLString += "img"
-
-                    case .ImageURL(_):
-                        fatalError("QQ not supports image URL type")
-
-                    case .Audio(let audioURL, _):
-                        handleNewsWithURL(audioURL, mediaType: "audio")
-
-                    case .Video(let URL):
-                        handleNewsWithURL(URL, mediaType: nil) // 没有 video 类型，默认用 news
                     }
 
-                    if let encodedTitle = type.info.title?.monkeyking_base64AndURLEncodedString {
-                        qqSchemeURLString += "&title=\(encodedTitle)"
+                    qqSchemeURLString += mediaType ?? "news"
+
+                    guard let encodedURLString = URL.absoluteString.monkeyking_base64AndURLEncodedString else {
+                        finish(false)
+                        return
                     }
 
-                    if let encodedDescription = type.info.description?.monkeyking_base64AndURLEncodedString {
-                        qqSchemeURLString += "&objectlocation=pasteboard&description=\(encodedDescription)"
-                    }
-
-                } else { // Share Text
-                    qqSchemeURLString += "text&file_data="
-
-                    if let encodedDescription = type.info.description?.monkeyking_base64AndURLEncodedString {
-                        qqSchemeURLString += "\(encodedDescription)"
-                    }
+                    qqSchemeURLString += "&url=\(encodedURLString)"
                 }
 
-                if !openURL(URLString: qqSchemeURLString) {
-                    finish(false)
+                switch media {
+
+                case .URL(let URL):
+
+                    handleNewsWithURL(URL, mediaType: "news")
+
+                case .Image(let image):
+
+                    guard let imageData = UIImageJPEGRepresentation(image, 1) else {
+                        finish(false)
+                        return
+                    }
+
+                    var dic = [
+                        "file_data": imageData,
+                    ]
+                    if let thumbnail = type.info.thumbnail, thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
+                        dic["previewimagedata"] = thumbnailData
+                    }
+
+                    let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
+
+                    UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
+
+                    qqSchemeURLString += "img"
+
+                case .ImageURL(_):
+                    fatalError("QQ not supports image URL type")
+
+                case .Audio(let audioURL, _):
+                    handleNewsWithURL(audioURL, mediaType: "audio")
+
+                case .Video(let URL):
+                    handleNewsWithURL(URL, mediaType: nil) // 没有 video 类型，默认用 news
                 }
+
+                if let encodedTitle = type.info.title?.monkeyking_base64AndURLEncodedString {
+                    qqSchemeURLString += "&title=\(encodedTitle)"
+                }
+
+                if let encodedDescription = type.info.description?.monkeyking_base64AndURLEncodedString {
+                    qqSchemeURLString += "&objectlocation=pasteboard&description=\(encodedDescription)"
+                }
+
+            } else { // Share Text
+                qqSchemeURLString += "text&file_data="
+
+                if let encodedDescription = type.info.description?.monkeyking_base64AndURLEncodedString {
+                    qqSchemeURLString += "\(encodedDescription)"
+                }
+            }
+            
+            if !openURL(URLString: qqSchemeURLString) {
+                finish(false)
             }
 
         case .Weibo(let type):
 
-            for case let .Weibo(appID, _, _) in sharedMonkeyKing.accountSet {
+            guard !sharedMonkeyKing.canOpenURL(URLString: "weibosdk://request") else {
 
-                guard !sharedMonkeyKing.canOpenURL(URLString: "weibosdk://request") else {
+                // App Share
 
-                    // App Share
-
-                    var messageInfo: [String: AnyObject] = ["__class": "WBMessageObject"]
-                    let info = type.info
-
-                    if let description = info.description {
-                        messageInfo["text"] = description
-                    }
-
-                    if let media = info.media {
-                        switch media {
-                        case .URL(let URL):
-
-                            var mediaObject: [String: AnyObject] = [
-                                "__class": "WBWebpageObject",
-                                "objectID": "identifier1"
-                            ]
-
-                            if let title = info.title {
-                                mediaObject["title"] = title
-                            }
-
-                            if let thumbnailImage = info.thumbnail,
-                                let thumbnailData = UIImageJPEGRepresentation(thumbnailImage, 0.7) {
-                                    mediaObject["thumbnailData"] = thumbnailData
-                            }
-
-                            mediaObject["webpageUrl"] = URL.absoluteString
-
-                            messageInfo["mediaObject"] = mediaObject
-
-                        case .Image(let image):
-
-                            if let imageData = UIImageJPEGRepresentation(image, 1.0) {
-                                messageInfo["imageObject"] = ["imageData": imageData]
-                            }
-
-                        case .ImageURL(_):
-                            fatalError("Weibo not supports image URL type")
-
-                        case .Audio:
-                            fatalError("Weibo not supports Audio type")
-
-                        case .Video:
-                            fatalError("Weibo not supports Video type")
-                        }
-                    }
-
-                    let uuIDString = CFUUIDCreateString(nil, CFUUIDCreate(nil))
-                    let dict = ["__class" : "WBSendMessageToWeiboRequest", "message": messageInfo, "requestID" :uuIDString]
-
-                    let messageData: [AnyObject] = [
-                        ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(dict)],
-                        ["userInfo": NSKeyedArchiver.archivedDataWithRootObject([])],
-                        ["app": NSKeyedArchiver.archivedDataWithRootObject(["appKey": appID, "bundleID": NSBundle.mainBundle().monkeyking_bundleID ?? ""])]
-                    ]
-                    
-                    UIPasteboard.generalPasteboard().items = messageData
-
-                    if !openURL(URLString: "weibosdk://request?id=\(uuIDString)&sdkversion=003013000") {
-                        finish(false)
-                    }
-
-                    return
-                }
-
-                // Web Share
-
+                var messageInfo: [String: AnyObject] = ["__class": "WBMessageObject"]
                 let info = type.info
-                var parameters = [String: AnyObject]()
-
-                guard let accessToken = type.accessToken else {
-                    print("When Weibo did not install, accessToken must need")
-                    finish(false)
-                    return
-                }
-
-                parameters["access_token"] = accessToken
-
-                var statusText = ""
-
-                if let title = info.title {
-                    statusText += title
-                }
 
                 if let description = info.description {
-                    statusText += description
+                    messageInfo["text"] = description
                 }
 
-                var mediaType = Media.URL(NSURL())
-
                 if let media = info.media {
-
                     switch media {
-
                     case .URL(let URL):
 
-                        statusText += URL.absoluteString
+                        var mediaObject: [String: AnyObject] = [
+                            "__class": "WBWebpageObject",
+                            "objectID": "identifier1"
+                        ]
 
-                        mediaType = Media.URL(URL)
+                        if let title = info.title {
+                            mediaObject["title"] = title
+                        }
+
+                        if let thumbnailImage = info.thumbnail,
+                            let thumbnailData = UIImageJPEGRepresentation(thumbnailImage, 0.7) {
+                                mediaObject["thumbnailData"] = thumbnailData
+                        }
+
+                        mediaObject["webpageUrl"] = URL.absoluteString
+
+                        messageInfo["mediaObject"] = mediaObject
 
                     case .Image(let image):
 
-                        guard let imageData = UIImageJPEGRepresentation(image, 0.7) else {
-                            finish(false)
-                            return
+                        if let imageData = UIImageJPEGRepresentation(image, 1.0) {
+                            messageInfo["imageObject"] = ["imageData": imageData]
                         }
 
-                        parameters["pic"] = imageData
-                        mediaType = Media.Image(image)
-
                     case .ImageURL(_):
-                        fatalError("web Weibo not supports image URL type")
+                        fatalError("Weibo not supports image URL type")
 
                     case .Audio:
-                        fatalError("web Weibo not supports Audio type")
+                        fatalError("Weibo not supports Audio type")
 
                     case .Video:
-                        fatalError("we Weibo not supports Video type")
+                        fatalError("Weibo not supports Video type")
                     }
                 }
 
-                parameters["status"] = statusText
+                let uuIDString = CFUUIDCreateString(nil, CFUUIDCreate(nil))
+                let dict = ["__class" : "WBSendMessageToWeiboRequest", "message": messageInfo, "requestID" :uuIDString]
 
-                switch mediaType {
+                let messageData: [AnyObject] = [
+                    ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(dict)],
+                    ["userInfo": NSKeyedArchiver.archivedDataWithRootObject([])],
+                    ["app": NSKeyedArchiver.archivedDataWithRootObject(["appKey": appID, "bundleID": NSBundle.mainBundle().monkeyking_bundleID ?? ""])]
+                ]
 
-                case .URL(_):
+                UIPasteboard.generalPasteboard().items = messageData
 
-                    let URLString = "https://api.weibo.com/2/statuses/update.json"
+                if !openURL(URLString: "weibosdk://request?id=\(uuIDString)&sdkversion=003013000") {
+                    finish(false)
+                }
 
-                    SimpleNetworking.sharedInstance.request(URLString, method: .POST, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
-                        if let JSON = responseData, let _ = JSON["idstr"] as? String {
-                            finish(true)
-                        } else {
-                            print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
-                            finish(false)
-                        }
+                return
+            }
+
+            // Weibo Web Share
+
+            let info = type.info
+            var parameters = [String: AnyObject]()
+
+            guard let accessToken = type.accessToken else {
+                print("When Weibo did not install, accessToken must need")
+                finish(false)
+                return
+            }
+
+            parameters["access_token"] = accessToken
+
+            var statusText = ""
+
+            if let title = info.title {
+                statusText += title
+            }
+
+            if let description = info.description {
+                statusText += description
+            }
+
+            var mediaType = Media.URL(NSURL())
+
+            if let media = info.media {
+
+                switch media {
+
+                case .URL(let URL):
+
+                    statusText += URL.absoluteString
+
+                    mediaType = Media.URL(URL)
+
+                case .Image(let image):
+
+                    guard let imageData = UIImageJPEGRepresentation(image, 0.7) else {
+                        finish(false)
+                        return
                     }
-                    
-                case .Image(_):
 
-                    let URLString = "https://upload.api.weibo.com/2/statuses/upload.json"
-
-                    SimpleNetworking.sharedInstance.upload(URLString, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
-                        if let JSON = responseData, let _ = JSON["idstr"] as? String {
-                            finish(true)
-                        } else {
-                            print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
-                            finish(false)
-                        }
-                    }
+                    parameters["pic"] = imageData
+                    mediaType = Media.Image(image)
 
                 case .ImageURL(_):
                     fatalError("web Weibo not supports image URL type")
@@ -689,6 +644,47 @@ public class MonkeyKing: NSObject {
                     fatalError("web Weibo not supports Video type")
                 }
             }
+
+            parameters["status"] = statusText
+
+            switch mediaType {
+
+            case .URL(_):
+
+                let URLString = "https://api.weibo.com/2/statuses/update.json"
+
+                SimpleNetworking.sharedInstance.request(URLString, method: .POST, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
+                    if let JSON = responseData, let _ = JSON["idstr"] as? String {
+                        finish(true)
+                    } else {
+                        print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
+                        finish(false)
+                    }
+                }
+
+            case .Image(_):
+
+                let URLString = "https://upload.api.weibo.com/2/statuses/upload.json"
+
+                SimpleNetworking.sharedInstance.upload(URLString, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
+                    if let JSON = responseData, let _ = JSON["idstr"] as? String {
+                        finish(true)
+                    } else {
+                        print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
+                        finish(false)
+                    }
+                }
+
+            case .ImageURL(_):
+                fatalError("web Weibo not supports image URL type")
+                
+            case .Audio:
+                fatalError("web Weibo not supports Audio type")
+                
+            case .Video:
+                fatalError("web Weibo not supports Video type")
+            }
+
         }
     }
 
@@ -1017,31 +1013,32 @@ extension MonkeyKing {
 
 extension Set {
 
-    subscript(type: MonkeyKing.OAuthPlatform) -> MonkeyKing.Account? {
+    subscript(platform: MonkeyKing.OAuthPlatform) -> MonkeyKing.Account? {
 
-        switch type {
+        let accountSet = MonkeyKing.sharedMonkeyKing.accountSet
+
+        switch platform {
 
         case .WeChat:
-            for account in MonkeyKing.sharedMonkeyKing.accountSet {
+            for account in accountSet {
                 if case .WeChat = account {
                     return account
                 }
             }
-
         case .QQ:
-            for account in MonkeyKing.sharedMonkeyKing.accountSet {
+            for account in accountSet {
                 if case .QQ = account {
                     return account
                 }
             }
         case .Weibo:
-            for account in MonkeyKing.sharedMonkeyKing.accountSet {
+            for account in accountSet {
                 if case .Weibo = account {
                     return account
                 }
             }
         case .Pocket:
-            for account in MonkeyKing.sharedMonkeyKing.accountSet {
+            for account in accountSet {
                 if case .Pocket = account {
                     return account
                 }
@@ -1051,25 +1048,26 @@ extension Set {
         return nil
     }
 
-    subscript(type: MonkeyKing.Message) -> MonkeyKing.Account? {
+    subscript(platform: MonkeyKing.Message) -> MonkeyKing.Account? {
 
-        switch type {
+        let accountSet = MonkeyKing.sharedMonkeyKing.accountSet
+
+        switch platform {
 
         case .WeChat:
-            for account in MonkeyKing.sharedMonkeyKing.accountSet {
+            for account in accountSet {
                 if case .WeChat = account {
                     return account
                 }
             }
-
         case .QQ:
-            for account in MonkeyKing.sharedMonkeyKing.accountSet {
+            for account in accountSet {
                 if case .QQ = account {
                     return account
                 }
             }
         case .Weibo:
-            for account in MonkeyKing.sharedMonkeyKing.accountSet {
+            for account in accountSet {
                 if case .Weibo = account {
                     return account
                 }
