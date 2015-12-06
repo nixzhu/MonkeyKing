@@ -192,7 +192,7 @@ class WeChatViewController: UIViewController {
     @IBAction func OAuthWithoutAppKey(sender: UIButton) {
 
         // Should not register account here
-        let accountWithoutAppKey = MonkeyKing.Account.WeChat(appID: "\(weChatAppID)ssssss", appKey: nil)
+        let accountWithoutAppKey = MonkeyKing.Account.WeChat(appID: weChatAppID, appKey: nil)
         MonkeyKing.registerAccount(accountWithoutAppKey)
 
         MonkeyKing.OAuth(.WeChat) { (dictionary, response, error) -> Void in

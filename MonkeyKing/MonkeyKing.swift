@@ -70,6 +70,30 @@ public class MonkeyKing: NSObject {
     public class func registerAccount(account: Account) {
 
         if account.isAppInstalled || account.canWebOAuth {
+
+            for oldAccount in MonkeyKing.sharedMonkeyKing.accountSet {
+
+                switch oldAccount {
+
+                case .WeChat:
+                    if case .WeChat = account {
+                        sharedMonkeyKing.accountSet.remove(oldAccount)
+                    }
+                case .QQ:
+                    if case .QQ = account {
+                        sharedMonkeyKing.accountSet.remove(oldAccount)
+                    }
+                case .Weibo:
+                    if case .Weibo = account {
+                        sharedMonkeyKing.accountSet.remove(oldAccount)
+                    }
+                case .Pocket:
+                    if case .Pocket = account {
+                        sharedMonkeyKing.accountSet.remove(oldAccount)
+                    }
+                }
+            }
+
             sharedMonkeyKing.accountSet.insert(account)
         }
     }
