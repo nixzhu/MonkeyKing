@@ -18,6 +18,9 @@ public class MonkeyKing: NSObject {
     static let sharedMonkeyKing = MonkeyKing()
     public static weak var networkingDelegate: NetworkingProtocol?
 
+    // Prevent others from using the default '()' initializer for MonkeyKing.
+    private override init() {}
+
     public enum Account: Hashable {
 
         case WeChat(appID: String, appKey: String?)
