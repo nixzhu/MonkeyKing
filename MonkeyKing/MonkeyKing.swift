@@ -393,9 +393,8 @@ public class MonkeyKing: NSObject {
                 weChatMessageInfo["description"] = description
             }
 
-            if let thumbnailImage = info.thumbnail,
-                let thumbnailData = UIImageJPEGRepresentation(thumbnailImage, 0.5) {
-                    weChatMessageInfo["thumbData"] = thumbnailData
+            if let thumbnailData = info.thumbnail?.monkeyking_compressedImageData {
+                weChatMessageInfo["thumbData"] = thumbnailData
             }
 
             if let media = info.media {
@@ -1169,6 +1168,70 @@ private extension NSURL {
             infos[$0.name] = $0.value
         }
         return infos
+    }
+}
+
+private extension UIImage {
+
+    var monkeyking_compressedImageData: NSData? {
+
+        var compressionQuality: CGFloat = 0.5
+
+        func compresseImage(image: UIImage) -> NSData? {
+
+            let maxHeight: CGFloat = 240.0
+            let maxWidth: CGFloat = 240.0
+            var actualHeight: CGFloat = image.size.height
+            var actualWidth: CGFloat = image.size.width
+            var imgRatio: CGFloat = actualWidth/actualHeight
+            let maxRatio: CGFloat = maxWidth/maxHeight
+
+            if actualHeight > maxHeight || actualWidth > maxWidth {
+
+                if imgRatio < maxRatio { // adjust width according to maxHeight
+
+                    imgRatio = maxHeight / actualHeight
+                    actualWidth = imgRatio * actualWidth
+                    actualHeight = maxHeight
+
+                } else if imgRatio > maxRatio { // adjust height according to maxWidth
+
+                    imgRatio = maxWidth / actualWidth
+                    actualHeight = imgRatio * actualHeight
+                    actualWidth = maxWidth
+
+                } else {
+                    actualHeight = maxHeight
+                    actualWidth = maxWidth
+                }
+            }
+
+            let rect = CGRectMake(0.0, 0.0, actualWidth, actualHeight)
+            UIGraphicsBeginImageContext(rect.size)
+            image.drawInRect(rect)
+            let imageData = UIImageJPEGRepresentation(UIGraphicsGetImageFromCurrentImageContext(), compressionQuality)
+            UIGraphicsEndImageContext()
+
+            return imageData
+        }
+
+        var imageData = compresseImage(self)
+
+        guard imageData != nil else {
+            return nil
+        }
+
+        let minCompressionQuality: CGFloat = 0.001
+        while imageData!.length > 31000 && compressionQuality != minCompressionQuality {
+            compressionQuality = max(compressionQuality - 0.1, minCompressionQuality)
+            guard let image = UIImage(data: imageData!) else {
+                compressionQuality = minCompressionQuality
+                break
+            }
+            imageData = compresseImage(image)
+        }
+        
+        return imageData
     }
 }
 
