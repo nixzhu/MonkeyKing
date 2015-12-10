@@ -10,21 +10,21 @@ import UIKit
 
 public class AnyActivity: UIActivity {
 
-    let type: String
-    let title: String
-    let image: UIImage
+    private let type: String
+    private let title: String
+    private let image: UIImage
 
-    let message: MonkeyKing.Message
-    let finish: MonkeyKing.Finish
+    private let message: MonkeyKing.Message
+    private let sharedCompletionHandler: MonkeyKing.SharedCompletionHandler
 
-    public init(type: String, title: String, image: UIImage, message: MonkeyKing.Message, finish: MonkeyKing.Finish) {
+    public init(type: String, title: String, image: UIImage, message: MonkeyKing.Message, completionHandler: MonkeyKing.SharedCompletionHandler) {
 
         self.type = type
         self.title = title
         self.image = image
 
         self.message = message
-        self.finish = finish
+        self.sharedCompletionHandler = completionHandler
 
         super.init()
     }
@@ -50,7 +50,7 @@ public class AnyActivity: UIActivity {
     }
 
     override public func performActivity() {
-        MonkeyKing.shareMessage(message, finish: finish)
+        MonkeyKing.shareMessage(message, completionHandler: sharedCompletionHandler)
         activityDidFinish(true)
     }
 }

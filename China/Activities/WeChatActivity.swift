@@ -43,7 +43,7 @@ class WeChatActivity: AnyActivity {
         }
     }
 
-    init(type: Type, message: MonkeyKing.Message, finish: MonkeyKing.Finish) {
+    init(type: Type, message: MonkeyKing.Message, completionHandler: MonkeyKing.SharedCompletionHandler) {
 
         MonkeyKing.registerAccount(.WeChat(appID: weChatAppID, appKey: ""))
 
@@ -52,7 +52,7 @@ class WeChatActivity: AnyActivity {
             title: type.title,
             image: type.image,
             message: message,
-            finish: finish
+            completionHandler: completionHandler
         )
     }
 }

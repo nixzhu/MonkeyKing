@@ -18,9 +18,9 @@ public class MonkeyKing: NSObject {
     static let sharedMonkeyKing = MonkeyKing()
     public static weak var networkingDelegate: MKGNetworkingProtocol?
 
-    public typealias Finish = Bool -> Void
+    public typealias SharedCompletionHandler = (result: Bool) -> Void
 
-    private var latestFinish: Finish?
+    private var sharedCompletionHandler: SharedCompletionHandler?
     private var accountSet = Set<Account>()
     private var OAuthCompletionHandler: MKGNetworkingResponseHandler?
 
@@ -145,7 +145,7 @@ extension MonkeyKing {
                 }
 
                 let success = (result == 0)
-                sharedMonkeyKing.latestFinish?(success)
+                sharedMonkeyKing.sharedCompletionHandler?(result: success)
 
                 return success
             }
@@ -160,7 +160,7 @@ extension MonkeyKing {
 
             let success = (error == "0")
 
-            sharedMonkeyKing.latestFinish?(success)
+            sharedMonkeyKing.sharedCompletionHandler?(result: success)
 
             return success
         }
@@ -249,7 +249,7 @@ extension MonkeyKing {
             case "WBSendMessageToWeiboResponse":
 
                 let success = (statusCode == 0)
-                sharedMonkeyKing.latestFinish?(success)
+                sharedMonkeyKing.sharedCompletionHandler?(result: success)
                 
                 return success
                 
@@ -270,7 +270,7 @@ extension MonkeyKing {
 }
 
 
-// MARK: Message
+// MARK: Share Message
 
 extension MonkeyKing {
 
@@ -369,17 +369,17 @@ extension MonkeyKing {
         }
     }
 
-    public class func shareMessage(message: Message, finish: Finish) {
+    public class func shareMessage(message: Message, completionHandler: SharedCompletionHandler) {
 
         guard message.canBeDelivered else {
-            finish(false)
+            completionHandler(result: false)
             return
         }
 
-        sharedMonkeyKing.latestFinish = finish
+        sharedMonkeyKing.sharedCompletionHandler = completionHandler
 
         guard let account = sharedMonkeyKing.accountSet[message] else {
-            finish(false)
+            completionHandler(result: false)
             return
         }
 
@@ -460,7 +460,7 @@ extension MonkeyKing {
             let weChatSchemeURLString = "weixin://app/\(appID)/sendreq/?"
 
             if !openURL(URLString: weChatSchemeURLString) {
-                finish(false)
+                completionHandler(result: false)
             }
 
         case .QQ(let type):
@@ -493,7 +493,7 @@ extension MonkeyKing {
                     qqSchemeURLString += mediaType ?? "news"
 
                     guard let encodedURLString = URL.absoluteString.monkeyking_base64AndURLEncodedString else {
-                        finish(false)
+                        completionHandler(result: false)
                         return
                     }
 
@@ -509,7 +509,7 @@ extension MonkeyKing {
                 case .Image(let image):
 
                     guard let imageData = UIImageJPEGRepresentation(image, 1) else {
-                        finish(false)
+                        completionHandler(result: false)
                         return
                     }
 
@@ -553,7 +553,7 @@ extension MonkeyKing {
             }
 
             if !openURL(URLString: qqSchemeURLString) {
-                finish(false)
+                completionHandler(result: false)
             }
 
         case .Weibo(let type):
@@ -620,7 +620,7 @@ extension MonkeyKing {
                 UIPasteboard.generalPasteboard().items = messageData
 
                 if !openURL(URLString: "weibosdk://request?id=\(uuIDString)&sdkversion=003013000") {
-                    finish(false)
+                    completionHandler(result: false)
                 }
 
                 return
@@ -633,7 +633,7 @@ extension MonkeyKing {
 
             guard let accessToken = type.accessToken else {
                 print("When Weibo did not install, accessToken must need")
-                finish(false)
+                completionHandler(result: false)
                 return
             }
 
@@ -664,7 +664,7 @@ extension MonkeyKing {
                 case .Image(let image):
 
                     guard let imageData = UIImageJPEGRepresentation(image, 0.7) else {
-                        finish(false)
+                        completionHandler(result: false)
                         return
                     }
 
@@ -692,10 +692,10 @@ extension MonkeyKing {
                 
                 MKGNetworking.sharedInstance.request(URLString, method: .POST, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
                     if let JSON = responseData, let _ = JSON["idstr"] as? String {
-                        finish(true)
+                        completionHandler(result: true)
                     } else {
                         print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
-                        finish(false)
+                        completionHandler(result: false)
                     }
                 }
                 
@@ -705,10 +705,10 @@ extension MonkeyKing {
                 
                 MKGNetworking.sharedInstance.upload(URLString, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
                     if let JSON = responseData, let _ = JSON["idstr"] as? String {
-                        finish(true)
+                        completionHandler(result: true)
                     } else {
                         print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
-                        finish(false)
+                        completionHandler(result: false)
                     }
                 }
                 
