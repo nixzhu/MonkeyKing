@@ -48,8 +48,8 @@ class WeiboViewController: UIViewController {
             media: .Image(UIImage(named: "rabbit")!)
         ), accessToken: accessToken))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -62,8 +62,8 @@ class WeiboViewController: UIViewController {
             media: nil
         ), accessToken: accessToken))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -76,8 +76,8 @@ class WeiboViewController: UIViewController {
             media: .URL(NSURL(string: "http://soyep.com")!)
         ), accessToken: accessToken))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 

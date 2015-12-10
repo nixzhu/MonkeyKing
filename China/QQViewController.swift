@@ -32,8 +32,8 @@ class QQViewController: UIViewController {
             media: nil
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -46,8 +46,8 @@ class QQViewController: UIViewController {
             media: .URL(NSURL(string: "http://www.apple.com/cn")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -60,8 +60,8 @@ class QQViewController: UIViewController {
             media: .Image(UIImage(named: "rabbit")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -74,8 +74,8 @@ class QQViewController: UIViewController {
             media: .Audio(audioURL: NSURL(string: "http://wfmusic.3g.qq.com/s?g_f=0&fr=&aid=mu_detail&id=2511915")!, linkURL: nil)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -88,8 +88,8 @@ class QQViewController: UIViewController {
             media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XOTU2MzA0NzY4.html")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -104,8 +104,8 @@ class QQViewController: UIViewController {
             media: nil
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -118,8 +118,8 @@ class QQViewController: UIViewController {
             media: .URL(NSURL(string: "http://www.soyep.com")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -132,8 +132,8 @@ class QQViewController: UIViewController {
             media: .Image(UIImage(named: "rabbit")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -146,8 +146,8 @@ class QQViewController: UIViewController {
             media: .Audio(audioURL: NSURL(string: "http://wfmusic.3g.qq.com/s?g_f=0&fr=&aid=mu_detail&id=2511915")!, linkURL: nil)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -160,8 +160,8 @@ class QQViewController: UIViewController {
             media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XOTU2MzA0NzY4.html")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 

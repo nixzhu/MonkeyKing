@@ -34,8 +34,8 @@ class WeChatViewController: UIViewController {
             media: nil
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -48,8 +48,8 @@ class WeChatViewController: UIViewController {
             media: .URL(NSURL(string: "http://soyep.com")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -62,8 +62,8 @@ class WeChatViewController: UIViewController {
             media: .Image(UIImage(named: "rabbit")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -76,8 +76,8 @@ class WeChatViewController: UIViewController {
             media: .Audio(audioURL: NSURL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: NSURL(string: "http://soyep.com")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -90,8 +90,8 @@ class WeChatViewController: UIViewController {
             media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XNTUxNDY1NDY4.html")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -106,8 +106,8 @@ class WeChatViewController: UIViewController {
             media: nil)
         ))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -120,8 +120,8 @@ class WeChatViewController: UIViewController {
             media: .URL(NSURL(string: "http://soyep.com")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -134,8 +134,8 @@ class WeChatViewController: UIViewController {
             media: .Image(UIImage(named: "rabbit")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -148,8 +148,8 @@ class WeChatViewController: UIViewController {
             media: .ImageURL(NSURL(string: "http://images.ifanr.cn/wp-content/uploads/2015/11/appso-banner1.jpg")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -162,8 +162,8 @@ class WeChatViewController: UIViewController {
             media: .Audio(audioURL: NSURL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: NSURL(string: "http://soyep.com")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -176,8 +176,8 @@ class WeChatViewController: UIViewController {
             media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XNTUxNDY1NDY4.html")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
