@@ -18,6 +18,12 @@ public class MonkeyKing: NSObject {
     static let sharedMonkeyKing = MonkeyKing()
     public static weak var networkingDelegate: MKGNetworkingProtocol?
 
+    public typealias Finish = Bool -> Void
+
+    private var latestFinish: Finish?
+    private var accountSet = Set<Account>()
+    private var OAuthCompletionHandler: MKGNetworkingResponseHandler?
+
     // Prevent others from using the default '()' initializer for MonkeyKing.
     private override init() {}
 
@@ -68,8 +74,6 @@ public class MonkeyKing: NSObject {
         }
     }
 
-    var accountSet = Set<Account>()
-
     public class func registerAccount(account: Account) {
 
         if account.isAppInstalled || account.canWebOAuth {
@@ -100,6 +104,12 @@ public class MonkeyKing: NSObject {
             sharedMonkeyKing.accountSet.insert(account)
         }
     }
+}
+
+
+// MARK: OpenURL Handler
+
+extension MonkeyKing {
 
     public class func handleOpenURL(URL: NSURL) -> Bool {
 
@@ -129,9 +139,9 @@ public class MonkeyKing: NSObject {
             if let dic = try? NSPropertyListSerialization.propertyListWithData(data, options: .Immutable, format: nil) {
 
                 guard let account = sharedMonkeyKing.accountSet[.WeChat],
-                        dic = dic[account.appID] as? NSDictionary,
-                        result = dic["result"]?.integerValue else {
-                            return false
+                    dic = dic[account.appID] as? NSDictionary,
+                    result = dic["result"]?.integerValue else {
+                        return false
                 }
 
                 let success = (result == 0)
@@ -140,7 +150,7 @@ public class MonkeyKing: NSObject {
                 return success
             }
         }
-        
+
         // QQ Share
         if URL.scheme.hasPrefix("QQ") {
 
@@ -159,7 +169,7 @@ public class MonkeyKing: NSObject {
         if URL.scheme.hasPrefix("tencent") {
 
             guard let account = sharedMonkeyKing.accountSet[.QQ] else {
-                    return false
+                return false
             }
 
             var userInfoDictionary: NSDictionary?
@@ -207,8 +217,8 @@ public class MonkeyKing: NSObject {
             }
 
             guard let responseData = results["transferObject"] as? [String: AnyObject],
-                    let type = responseData["__class"] as? String else {
-                        return false
+                let type = responseData["__class"] as? String else {
+                    return false
             }
 
             guard let statusCode = responseData["statusCode"] as? Int else {
@@ -218,45 +228,51 @@ public class MonkeyKing: NSObject {
             switch type {
 
                 // Weibo OAuth
-                case "WBAuthorizeResponse":
+            case "WBAuthorizeResponse":
 
-                    var userInfoDictionary: NSDictionary?
-                    var error: NSError?
+                var userInfoDictionary: NSDictionary?
+                var error: NSError?
 
-                    defer {
-                        sharedMonkeyKing.OAuthCompletionHandler?(responseData, nil, error)
-                    }
+                defer {
+                    sharedMonkeyKing.OAuthCompletionHandler?(responseData, nil, error)
+                }
 
-                    userInfoDictionary = responseData
+                userInfoDictionary = responseData
 
-                    if statusCode != 0 {
-                        error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
-                        return false
-                    }
-                    return true
+                if statusCode != 0 {
+                    error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
+                    return false
+                }
+                return true
 
                 // Weibo Share
-                case "WBSendMessageToWeiboResponse":
+            case "WBSendMessageToWeiboResponse":
 
-                    let success = (statusCode == 0)
-                    sharedMonkeyKing.latestFinish?(success)
-
-                    return success
-
-                default:
-                    break
+                let success = (statusCode == 0)
+                sharedMonkeyKing.latestFinish?(success)
+                
+                return success
+                
+            default:
+                break
             }
-
+            
         }
-
+        
         // Pocket OAuth
         if URL.scheme.hasPrefix("pocketapp") {
             sharedMonkeyKing.OAuthCompletionHandler?(nil, nil, nil)
             return true
         }
-
+        
         return false
     }
+}
+
+
+// MARK: Message
+
+extension MonkeyKing {
 
     public enum Media {
 
@@ -325,16 +341,16 @@ public class MonkeyKing: NSObject {
 
             var info: Info {
                 switch self {
-                    case .Default(let info, _):
-                        return info
-                    }
+                case .Default(let info, _):
+                    return info
+                }
             }
 
             var accessToken: String? {
                 switch self {
-                    case .Default(_, let accessToken):
-                        return accessToken
-                    }
+                case .Default(_, let accessToken):
+                    return accessToken
+                }
             }
         }
         case Weibo(WeiboSubtype)
@@ -348,15 +364,10 @@ public class MonkeyKing: NSObject {
             if case .Weibo = account {
                 return true
             }
-
+            
             return account.isAppInstalled
         }
     }
-
-    public typealias Finish = Bool -> Void
-    var latestFinish: Finish?
-
-    private var OAuthCompletionHandler: MKGNetworkingResponseHandler?
 
     public class func shareMessage(message: Message, finish: Finish) {
 
@@ -540,7 +551,7 @@ public class MonkeyKing: NSObject {
                     qqSchemeURLString += "\(encodedDescription)"
                 }
             }
-            
+
             if !openURL(URLString: qqSchemeURLString) {
                 finish(false)
             }
@@ -672,13 +683,13 @@ public class MonkeyKing: NSObject {
             }
 
             parameters["status"] = statusText
-
+            
             switch mediaType {
-
+                
             case .URL(_):
-
+                
                 let URLString = "https://api.weibo.com/2/statuses/update.json"
-
+                
                 MKGNetworking.sharedInstance.request(URLString, method: .POST, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
                     if let JSON = responseData, let _ = JSON["idstr"] as? String {
                         finish(true)
@@ -687,11 +698,11 @@ public class MonkeyKing: NSObject {
                         finish(false)
                     }
                 }
-
+                
             case .Image(_):
-
+                
                 let URLString = "https://upload.api.weibo.com/2/statuses/upload.json"
-
+                
                 MKGNetworking.sharedInstance.upload(URLString, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
                     if let JSON = responseData, let _ = JSON["idstr"] as? String {
                         finish(true)
@@ -700,7 +711,7 @@ public class MonkeyKing: NSObject {
                         finish(false)
                     }
                 }
-
+                
             case .ImageURL(_):
                 fatalError("web Weibo not supports image URL type")
                 
@@ -710,10 +721,9 @@ public class MonkeyKing: NSObject {
             case .Video:
                 fatalError("web Weibo not supports Video type")
             }
-
+            
         }
     }
-
 }
 
 
@@ -831,6 +841,7 @@ extension MonkeyKing {
     }
 }
 
+
 // MARK: WKNavigationDelegate
 
 extension MonkeyKing: WKNavigationDelegate {
@@ -926,7 +937,6 @@ extension MonkeyKing: WKNavigationDelegate {
             }
         }
     }
-
 }
 
 
@@ -1102,7 +1112,6 @@ private extension Set {
 
         return nil
     }
-
 }
 
 private extension NSBundle {

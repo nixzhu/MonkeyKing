@@ -224,7 +224,6 @@ class MKGNetworking {
             return (nil, nil)
         }
 
-        // create url request to send
         let mutableURLRequest = NSMutableURLRequest(URL: URL)
         mutableURLRequest.HTTPMethod = MKGMethod.POST.rawValue
         let boundaryConstant = "NET-POST-boundary-\(arc4random())-\(arc4random())"
