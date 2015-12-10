@@ -13,8 +13,8 @@
 		3F62B3681BB6ACCE00AABD3C /* WeiboViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62B3671BB6ACCE00AABD3C /* WeiboViewController.swift */; };
 		3F62B36A1BB6ACD800AABD3C /* QQViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62B3691BB6ACD800AABD3C /* QQViewController.swift */; };
 		3F62B36C1BB6ACE500AABD3C /* SystemShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62B36B1BB6ACE500AABD3C /* SystemShareViewController.swift */; };
-		3FB428751C133FE000C4D6D4 /* NetworkingProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB428741C133FE000C4D6D4 /* NetworkingProtocol.swift */; };
-		3FBCB1BB1BB58A4D00E20A28 /* SimpleNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBCB1BA1BB58A4D00E20A28 /* SimpleNetworking.swift */; };
+		3FB428751C133FE000C4D6D4 /* MKGNetworkingProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB428741C133FE000C4D6D4 /* MKGNetworkingProtocol.swift */; };
+		3FBCB1BB1BB58A4D00E20A28 /* MKGNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBCB1BA1BB58A4D00E20A28 /* MKGNetworking.swift */; };
 		50FBA6B91BA2AFAE00E69BB3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6B81BA2AFAE00E69BB3 /* AppDelegate.swift */; };
 		50FBA6BB1BA2AFAE00E69BB3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6BA1BA2AFAE00E69BB3 /* ViewController.swift */; };
 		50FBA6BE1BA2AFAE00E69BB3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50FBA6BC1BA2AFAE00E69BB3 /* Main.storyboard */; };
@@ -60,8 +60,8 @@
 		3F62B3671BB6ACCE00AABD3C /* WeiboViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeiboViewController.swift; sourceTree = "<group>"; };
 		3F62B3691BB6ACD800AABD3C /* QQViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QQViewController.swift; sourceTree = "<group>"; };
 		3F62B36B1BB6ACE500AABD3C /* SystemShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemShareViewController.swift; sourceTree = "<group>"; };
-		3FB428741C133FE000C4D6D4 /* NetworkingProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingProtocol.swift; sourceTree = "<group>"; };
-		3FBCB1BA1BB58A4D00E20A28 /* SimpleNetworking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleNetworking.swift; sourceTree = "<group>"; };
+		3FB428741C133FE000C4D6D4 /* MKGNetworkingProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MKGNetworkingProtocol.swift; sourceTree = "<group>"; };
+		3FBCB1BA1BB58A4D00E20A28 /* MKGNetworking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MKGNetworking.swift; sourceTree = "<group>"; };
 		50FBA6B51BA2AFAD00E69BB3 /* China.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = China.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50FBA6B81BA2AFAE00E69BB3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		50FBA6BA1BA2AFAE00E69BB3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -140,9 +140,9 @@
 			children = (
 				50FBA6D11BA2BBE900E69BB3 /* MonkeyKing.h */,
 				50FBA6DC1BA2BC0A00E69BB3 /* MonkeyKing.swift */,
-				3FB428741C133FE000C4D6D4 /* NetworkingProtocol.swift */,
 				50FBA6DE1BA3079D00E69BB3 /* AnyActivity.swift */,
-				3FBCB1BA1BB58A4D00E20A28 /* SimpleNetworking.swift */,
+				3FB428741C133FE000C4D6D4 /* MKGNetworkingProtocol.swift */,
+				3FBCB1BA1BB58A4D00E20A28 /* MKGNetworking.swift */,
 				50FBA6D31BA2BBE900E69BB3 /* Info.plist */,
 			);
 			path = MonkeyKing;
@@ -287,8 +287,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3FBCB1BB1BB58A4D00E20A28 /* SimpleNetworking.swift in Sources */,
-				3FB428751C133FE000C4D6D4 /* NetworkingProtocol.swift in Sources */,
+				3FBCB1BB1BB58A4D00E20A28 /* MKGNetworking.swift in Sources */,
+				3FB428751C133FE000C4D6D4 /* MKGNetworkingProtocol.swift in Sources */,
 				50FBA6DD1BA2BC0A00E69BB3 /* MonkeyKing.swift in Sources */,
 				50FBA6DF1BA3079D00E69BB3 /* AnyActivity.swift in Sources */,
 			);

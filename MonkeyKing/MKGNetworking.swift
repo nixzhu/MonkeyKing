@@ -1,5 +1,5 @@
 //
-//  SimpleNetworking.swift
+//  MKGNetworking.swift
 //  MonkeyKing
 //
 //  Created by Limon on 15/9/25.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public typealias NetworkingResponseHandler = (NSDictionary?, NSURLResponse?, NSError?) -> Void
+public typealias MKGNetworkingResponseHandler = (NSDictionary?, NSURLResponse?, NSError?) -> Void
 
 public enum MKGMethod: String {
     case GET
@@ -139,12 +139,12 @@ public enum MKGParameterEncoding {
     }
 }
 
-class SimpleNetworking {
+class MKGNetworking {
 
-    static let sharedInstance = SimpleNetworking()
+    static let sharedInstance = MKGNetworking()
     private let session = NSURLSession.sharedSession()
 
-    func request(URLString: String, method: MKGMethod, parameters: [String: AnyObject]? = nil, encoding: MKGParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: NetworkingResponseHandler) {
+    func request(URLString: String, method: MKGMethod, parameters: [String: AnyObject]? = nil, encoding: MKGParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: MKGNetworkingResponseHandler) {
 
         guard MonkeyKing.networkingDelegate == nil else {
             MonkeyKing.networkingDelegate?.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
@@ -186,7 +186,7 @@ class SimpleNetworking {
         task.resume()
     }
 
-    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: NetworkingResponseHandler) {
+    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: MKGNetworkingResponseHandler) {
 
         guard MonkeyKing.networkingDelegate == nil else {
             MonkeyKing.networkingDelegate?.upload(URLString, parameters: parameters, completionHandler: completionHandler)

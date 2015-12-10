@@ -16,7 +16,7 @@ public func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
 public class MonkeyKing: NSObject {
 
     static let sharedMonkeyKing = MonkeyKing()
-    public static weak var networkingDelegate: NetworkingProtocol?
+    public static weak var networkingDelegate: MKGNetworkingProtocol?
 
     // Prevent others from using the default '()' initializer for MonkeyKing.
     private override init() {}
@@ -356,7 +356,7 @@ public class MonkeyKing: NSObject {
     public typealias Finish = Bool -> Void
     var latestFinish: Finish?
 
-    private var OAuthCompletionHandler: NetworkingResponseHandler?
+    private var OAuthCompletionHandler: MKGNetworkingResponseHandler?
 
     public class func shareMessage(message: Message, finish: Finish) {
 
@@ -679,7 +679,7 @@ public class MonkeyKing: NSObject {
 
                 let URLString = "https://api.weibo.com/2/statuses/update.json"
 
-                SimpleNetworking.sharedInstance.request(URLString, method: .POST, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
+                MKGNetworking.sharedInstance.request(URLString, method: .POST, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
                     if let JSON = responseData, let _ = JSON["idstr"] as? String {
                         finish(true)
                     } else {
@@ -692,7 +692,7 @@ public class MonkeyKing: NSObject {
 
                 let URLString = "https://upload.api.weibo.com/2/statuses/upload.json"
 
-                SimpleNetworking.sharedInstance.upload(URLString, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
+                MKGNetworking.sharedInstance.upload(URLString, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
                     if let JSON = responseData, let _ = JSON["idstr"] as? String {
                         finish(true)
                     } else {
@@ -728,7 +728,7 @@ extension MonkeyKing {
         case Pocket(requestToken: String)
     }
 
-    public class func OAuth(platform: OAuthPlatform, scope: String? = nil, completionHandler: NetworkingResponseHandler) {
+    public class func OAuth(platform: OAuthPlatform, scope: String? = nil, completionHandler: MKGNetworkingResponseHandler) {
 
         guard let account = sharedMonkeyKing.accountSet[platform] else {
             return
@@ -918,7 +918,7 @@ extension MonkeyKing: WKNavigationDelegate {
 
                 activityIndicatorViewAction(webView, stop: false)
 
-                SimpleNetworking.sharedInstance.request(accessTokenAPI, method: .POST) { [weak self] (JSON, response, error) -> Void in
+                MKGNetworking.sharedInstance.request(accessTokenAPI, method: .POST) { [weak self] (JSON, response, error) -> Void in
                     dispatch_async(dispatch_get_main_queue()) {
                         self?.hideWebView(webView, tuples: (JSON, response, error))
                     }
@@ -934,7 +934,7 @@ extension MonkeyKing: WKNavigationDelegate {
 
 extension MonkeyKing {
 
-    private class func fetchWeChatOAuthInfoByCode(code code: String, completionHandler: NetworkingResponseHandler) {
+    private class func fetchWeChatOAuthInfoByCode(code code: String, completionHandler: MKGNetworkingResponseHandler) {
 
         var appID = ""
         var appKey = ""
@@ -955,7 +955,7 @@ extension MonkeyKing {
         accessTokenAPI += "&code=" + code + "&grant_type=authorization_code"
 
         // OAuth
-        SimpleNetworking.sharedInstance.request(accessTokenAPI, method: .GET) { (OAuthJSON, response, error) -> Void in
+        MKGNetworking.sharedInstance.request(accessTokenAPI, method: .GET) { (OAuthJSON, response, error) -> Void in
             completionHandler(OAuthJSON, response, error)
         }
     }

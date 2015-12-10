@@ -145,7 +145,7 @@ class SimpleNetworking {
         }
     }
 
-    func request(URLString: String, method: Method, parameters: [String: AnyObject]? = nil, encoding: ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: NetworkingResponseHandler) {
+    func request(URLString: String, method: Method, parameters: [String: AnyObject]? = nil, encoding: ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: MKGNetworkingResponseHandler) {
 
         guard let URL = NSURL(string: URLString) else {
             return
@@ -183,7 +183,7 @@ class SimpleNetworking {
     }
 
 
-    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: NetworkingResponseHandler) {
+    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: MKGNetworkingResponseHandler) {
 
         let tuple = urlRequestWithComponents(URLString, parameters: parameters)
 

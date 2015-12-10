@@ -9,9 +9,9 @@
 import UIKit
 import MonkeyKing
 
-extension ViewController: NetworkingProtocol {
+extension ViewController: MKGNetworkingProtocol {
 
-    func request(URLString: String, method: MKGMethod, parameters: [String: AnyObject]?, encoding: MKGParameterEncoding, headers: [String: String]?, completionHandler: NetworkingResponseHandler) {
+    func request(URLString: String, method: MKGMethod, parameters: [String: AnyObject]?, encoding: MKGParameterEncoding, headers: [String: String]?, completionHandler: MKGNetworkingResponseHandler) {
         let method = SimpleNetworking.Method(rawValue: method.rawValue)!
         var encoding = SimpleNetworking.ParameterEncoding.URL
         switch encoding {
@@ -26,7 +26,7 @@ extension ViewController: NetworkingProtocol {
         SimpleNetworking.sharedInstance.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
     }
 
-    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: NetworkingResponseHandler) {
+    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: MKGNetworkingResponseHandler) {
         SimpleNetworking.sharedInstance.upload(URLString, parameters: parameters, completionHandler: completionHandler)
     }
 }
