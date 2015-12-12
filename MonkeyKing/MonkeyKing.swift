@@ -15,8 +15,7 @@ public func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
 
 public class MonkeyKing: NSObject {
 
-    static let sharedMonkeyKing = MonkeyKing()
-    public static weak var networkingDelegate: MKGNetworkingProtocol?
+    private static let sharedMonkeyKing = MonkeyKing()
 
     public typealias SharedCompletionHandler = (result: Bool) -> Void
 
@@ -690,7 +689,7 @@ extension MonkeyKing {
                 
                 let URLString = "https://api.weibo.com/2/statuses/update.json"
                 
-                MKGNetworking.sharedInstance.request(URLString, method: .POST, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
+                sharedMonkeyKing.request(URLString, method: .POST, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
                     if let JSON = responseData, let _ = JSON["idstr"] as? String {
                         completionHandler(result: true)
                     } else {
@@ -703,7 +702,7 @@ extension MonkeyKing {
                 
                 let URLString = "https://upload.api.weibo.com/2/statuses/upload.json"
                 
-                MKGNetworking.sharedInstance.upload(URLString, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
+                sharedMonkeyKing.upload(URLString, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
                     if let JSON = responseData, let _ = JSON["idstr"] as? String {
                         completionHandler(result: true)
                     } else {
@@ -929,7 +928,7 @@ extension MonkeyKing: WKNavigationDelegate {
 
                 activityIndicatorViewAction(webView, stop: false)
 
-                MKGNetworking.sharedInstance.request(accessTokenAPI, method: .POST) { [weak self] (JSON, response, error) -> Void in
+                request(accessTokenAPI, method: .POST) { [weak self] (JSON, response, error) -> Void in
                     dispatch_async(dispatch_get_main_queue()) {
                         self?.hideWebView(webView, tuples: (JSON, response, error))
                     }
@@ -965,9 +964,29 @@ extension MonkeyKing {
         accessTokenAPI += "&code=" + code + "&grant_type=authorization_code"
 
         // OAuth
-        MKGNetworking.sharedInstance.request(accessTokenAPI, method: .GET) { (OAuthJSON, response, error) -> Void in
+        sharedMonkeyKing.request(accessTokenAPI, method: .GET) { (OAuthJSON, response, error) -> Void in
             completionHandler(OAuthJSON, response, error)
         }
+    }
+
+    private func request(URLString: String, method: MKGMethod, parameters: [String: AnyObject]? = nil, encoding: MKGParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: MKGNetworkingResponseHandler) {
+
+        guard let networkingDelegate = MonkeyKing.sharedMonkeyKing as? protocol<MKGNetworkingProtocol> else {
+            MKGNetworking.sharedInstance.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
+            return
+        }
+
+        networkingDelegate.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
+    }
+
+    private func upload(URLString: String, parameters: [String: AnyObject], completionHandler: MKGNetworkingResponseHandler) {
+
+        guard let networkingDelegate = MonkeyKing.sharedMonkeyKing as? protocol<MKGNetworkingProtocol> else {
+            MKGNetworking.sharedInstance.upload(URLString, parameters: parameters, completionHandler: completionHandler)
+            return
+        }
+
+        networkingDelegate.upload(URLString, parameters: parameters, completionHandler: completionHandler)
     }
 
     private class func addWebViewByURLString(URLString: String) {

@@ -146,11 +146,6 @@ class MKGNetworking {
 
     func request(URLString: String, method: MKGMethod, parameters: [String: AnyObject]? = nil, encoding: MKGParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: MKGNetworkingResponseHandler) {
 
-        guard MonkeyKing.networkingDelegate == nil else {
-            MonkeyKing.networkingDelegate?.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
-            return
-        }
-
         guard let URL = NSURL(string: URLString) else {
             return
         }
@@ -187,11 +182,6 @@ class MKGNetworking {
     }
 
     func upload(URLString: String, parameters: [String: AnyObject], completionHandler: MKGNetworkingResponseHandler) {
-
-        guard MonkeyKing.networkingDelegate == nil else {
-            MonkeyKing.networkingDelegate?.upload(URLString, parameters: parameters, completionHandler: completionHandler)
-            return
-        }
 
         let tuple = urlRequestWithComponents(URLString, parameters: parameters)
 

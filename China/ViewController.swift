@@ -9,34 +9,7 @@
 import UIKit
 import MonkeyKing
 
-extension ViewController: MKGNetworkingProtocol {
-
-    func request(URLString: String, method: MKGMethod, parameters: [String: AnyObject]?, encoding: MKGParameterEncoding, headers: [String: String]?, completionHandler: MKGNetworkingResponseHandler) {
-        let method = SimpleNetworking.Method(rawValue: method.rawValue)!
-        var encoding = SimpleNetworking.ParameterEncoding.URL
-        switch encoding {
-            case .JSON:
-                encoding = .JSON
-            case .URL:
-                encoding = .URL
-            case .URLEncodedInURL:
-                encoding = .URLEncodedInURL
-        }
-
-        SimpleNetworking.sharedInstance.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
-    }
-
-    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: MKGNetworkingResponseHandler) {
-        SimpleNetworking.sharedInstance.upload(URLString, parameters: parameters, completionHandler: completionHandler)
-    }
-}
-
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        MonkeyKing.networkingDelegate = self
-    }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 5
@@ -81,6 +54,33 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         default:
             break
         }
+    }
+}
+
+
+// If extension MonkeyKing and implement MKGNetworkingProtocol, MonkeyKing will use the two methods to request.
+
+extension MonkeyKing: MKGNetworkingProtocol {
+
+    public func request(URLString: String, method: MKGMethod, parameters: [String: AnyObject]?, encoding: MKGParameterEncoding, headers: [String: String]?, completionHandler: MKGNetworkingResponseHandler) {
+
+        let method = SimpleNetworking.Method(rawValue: method.rawValue)!
+        var encoding = SimpleNetworking.ParameterEncoding.URL
+
+        switch encoding {
+        case .JSON:
+            encoding = .JSON
+        case .URL:
+            encoding = .URL
+        case .URLEncodedInURL:
+            encoding = .URLEncodedInURL
+        }
+
+        SimpleNetworking.sharedInstance.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
+    }
+
+    public func upload(URLString: String, parameters: [String: AnyObject], completionHandler: MKGNetworkingResponseHandler) {
+        SimpleNetworking.sharedInstance.upload(URLString, parameters: parameters, completionHandler: completionHandler)
     }
 }
 
