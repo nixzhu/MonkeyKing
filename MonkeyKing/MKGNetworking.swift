@@ -144,7 +144,7 @@ class MKGNetworking {
     static let sharedInstance = MKGNetworking()
     private let session = NSURLSession.sharedSession()
 
-    func request(URLString: String, method: MKGMethod, parameters: [String: AnyObject]? = nil, encoding: MKGParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: MKGNetworkingResponseHandler) {
+    func request(URLString: String, method: MKGMethod, parameters: [String: AnyObject]? = nil, encoding: MKGParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: (NSDictionary?, NSURLResponse?, NSError?) -> Void) {
 
         guard let URL = NSURL(string: URLString) else {
             return
@@ -181,7 +181,7 @@ class MKGNetworking {
         task.resume()
     }
 
-    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: MKGNetworkingResponseHandler) {
+    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: (NSDictionary?, NSURLResponse?, NSError?) -> Void) {
 
         let tuple = urlRequestWithComponents(URLString, parameters: parameters)
 

@@ -15,13 +15,13 @@ public func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
 
 public class MonkeyKing: NSObject {
 
-    private static let sharedMonkeyKing = MonkeyKing()
-
     public typealias SharedCompletionHandler = (result: Bool) -> Void
+    public typealias OAuthCompletionHandler = MKGNetworkingResponseHandler
 
-    private var sharedCompletionHandler: SharedCompletionHandler?
+    private static let sharedMonkeyKing = MonkeyKing()
     private var accountSet = Set<Account>()
-    private var OAuthCompletionHandler: MKGNetworkingResponseHandler?
+    private var sharedCompletionHandler: SharedCompletionHandler?
+    private var oauthCompletionHandler: OAuthCompletionHandler?
 
     // Prevent others from using the default '()' initializer for MonkeyKing.
     private override init() {}
@@ -124,7 +124,7 @@ extension MonkeyKing {
 
                 // Login Succcess
                 fetchWeChatOAuthInfoByCode(code: code) { (info, response, error) -> Void in
-                    sharedMonkeyKing.OAuthCompletionHandler?(info, response, error)
+                    sharedMonkeyKing.oauthCompletionHandler?(info, response, error)
                 }
 
                 return true
@@ -175,7 +175,7 @@ extension MonkeyKing {
             var error: NSError?
 
             defer {
-                sharedMonkeyKing.OAuthCompletionHandler?(userInfoDictionary, nil, error)
+                sharedMonkeyKing.oauthCompletionHandler?(userInfoDictionary, nil, error)
             }
 
             guard let data = UIPasteboard.generalPasteboard().dataForPasteboardType("com.tencent.tencent\(account.appID)"),
@@ -233,7 +233,7 @@ extension MonkeyKing {
                 var error: NSError?
 
                 defer {
-                    sharedMonkeyKing.OAuthCompletionHandler?(responseData, nil, error)
+                    sharedMonkeyKing.oauthCompletionHandler?(responseData, nil, error)
                 }
 
                 userInfoDictionary = responseData
@@ -260,7 +260,7 @@ extension MonkeyKing {
         
         // Pocket OAuth
         if URL.scheme.hasPrefix("pocketapp") {
-            sharedMonkeyKing.OAuthCompletionHandler?(nil, nil, nil)
+            sharedMonkeyKing.oauthCompletionHandler?(nil, nil, nil)
             return true
         }
         
@@ -737,7 +737,7 @@ extension MonkeyKing {
         case Pocket(requestToken: String)
     }
 
-    public class func OAuth(platform: OAuthPlatform, scope: String? = nil, completionHandler: MKGNetworkingResponseHandler) {
+    public class func OAuth(platform: OAuthPlatform, scope: String? = nil, completionHandler: OAuthCompletionHandler) {
 
         guard let account = sharedMonkeyKing.accountSet[platform] else {
             return
@@ -749,7 +749,7 @@ extension MonkeyKing {
             return
         }
 
-        sharedMonkeyKing.OAuthCompletionHandler = completionHandler
+        sharedMonkeyKing.oauthCompletionHandler = completionHandler
 
         switch account {
 
@@ -943,7 +943,7 @@ extension MonkeyKing: WKNavigationDelegate {
 
 extension MonkeyKing {
 
-    private class func fetchWeChatOAuthInfoByCode(code code: String, completionHandler: MKGNetworkingResponseHandler) {
+    private class func fetchWeChatOAuthInfoByCode(code code: String, completionHandler: OAuthCompletionHandler) {
 
         var appID = ""
         var appKey = ""
@@ -1028,7 +1028,7 @@ extension MonkeyKing {
 
         }, completion: {_ in
             webView.removeFromSuperview()
-            self.OAuthCompletionHandler?(tuples?.0, tuples?.1, tuples?.2)
+            self.oauthCompletionHandler?(tuples?.0, tuples?.1, tuples?.2)
         })
     }
 

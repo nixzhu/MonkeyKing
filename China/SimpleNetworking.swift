@@ -14,6 +14,8 @@ class SimpleNetworking {
     static let sharedInstance = SimpleNetworking()
     private let session = NSURLSession.sharedSession()
 
+    typealias NetworkingResponseHandler = (NSDictionary?, NSURLResponse?, NSError?) -> Void
+
     enum Method: String {
         case GET
         case POST
@@ -145,7 +147,7 @@ class SimpleNetworking {
         }
     }
 
-    func request(URLString: String, method: Method, parameters: [String: AnyObject]? = nil, encoding: ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: MKGNetworkingResponseHandler) {
+    func request(URLString: String, method: Method, parameters: [String: AnyObject]? = nil, encoding: ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: NetworkingResponseHandler) {
 
         guard let URL = NSURL(string: URLString) else {
             return
@@ -183,7 +185,7 @@ class SimpleNetworking {
     }
 
 
-    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: MKGNetworkingResponseHandler) {
+    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: NetworkingResponseHandler) {
 
         let tuple = urlRequestWithComponents(URLString, parameters: parameters)
 
