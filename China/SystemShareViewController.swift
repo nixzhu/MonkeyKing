@@ -13,7 +13,7 @@ class SystemShareViewController: UIViewController {
 
     @IBAction func systemShare(sender: UIButton) {
 
-        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID, appKey: weChatAppKey))
+        MonkeyKing.registerAccount(.WeChat(appID: Configs.Wechat.appID, appKey: Configs.Wechat.appKey))
 
         let shareURL = NSURL(string: "http://www.apple.com/cn/iphone/compare/")!
 

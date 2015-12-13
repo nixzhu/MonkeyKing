@@ -9,11 +9,9 @@
 import UIKit
 import MonkeyKing
 
-let pocketAppID = "48363-344532f670a052acff492a25"
-
 class PocketViewController: UIViewController {
 
-    let account = MonkeyKing.Account.Pocket(appID: pocketAppID)
+    let account = MonkeyKing.Account.Pocket(appID: Configs.Pocket.appID)
     var accessToken: String?
 
     override func viewDidLoad() {
@@ -32,7 +30,7 @@ class PocketViewController: UIViewController {
         let parameters = [
             "url": "http://tips.producter.io",
             "title": "Producter",
-            "consumer_key": pocketAppID,
+            "consumer_key": Configs.Pocket.appID,
             "access_token": accessToken
         ]
 
@@ -50,17 +48,11 @@ class PocketViewController: UIViewController {
     // Pocket OAuth
     @IBAction func OAuth(sender: UIButton) {
 
-        guard let startIndex = pocketAppID.rangeOfString("-")?.startIndex else {
-            return
-        }
-
-        let prefix = pocketAppID.substringToIndex(startIndex)
         let requestAPI = "https://getpocket.com/v3/oauth/request"
-        let redirectURLString = "pocketapp\(prefix):authorizationFinished"
 
         let parameters = [
-            "consumer_key": pocketAppID,
-            "redirect_uri": redirectURLString
+            "consumer_key": Configs.Pocket.appID,
+            "redirect_uri": Configs.Pocket.redirectURL
         ]
 
         print("S1: fetch requestToken")
@@ -82,7 +74,7 @@ class PocketViewController: UIViewController {
 
                 let accessTokenAPI = "https://getpocket.com/v3/oauth/authorize"
                 let parameters = [
-                    "consumer_key": pocketAppID,
+                    "consumer_key": Configs.Pocket.appID,
                     "code": requestToken
                 ]
 

@@ -9,13 +9,9 @@
 import UIKit
 import MonkeyKing
 
-let weiboAppID = "504855958"
-let weiboAppKey = "f5107a6c6cd2cc76c9b261208a3b17a1"
-let weiboRedirectURL = "http://www.limon.top"
-
 class WeiboViewController: UIViewController {
 
-    let account = MonkeyKing.Account.Weibo(appID: weiboAppID, appKey: weiboAppKey, redirectURL: weiboRedirectURL)
+    let account = MonkeyKing.Account.Weibo(appID: Configs.Weibo.appID, appKey: Configs.Weibo.appKey, redirectURL: Configs.Weibo.redirectURL)
     var accessToken: String?
 
     override func viewDidLoad() {
@@ -93,7 +89,7 @@ class WeiboViewController: UIViewController {
             }
 
             let userInfoAPI = "https://api.weibo.com/2/users/show.json"
-            let parameters = ["uid": userID, "access_token": token, "source": weiboAppID]
+            let parameters = ["uid": userID, "access_token": token]
 
             // fetch UserInfo by userInfoAPI
             SimpleNetworking.sharedInstance.request(userInfoAPI, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in

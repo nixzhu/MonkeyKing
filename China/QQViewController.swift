@@ -9,11 +9,9 @@
 import UIKit
 import MonkeyKing
 
-let qqAppID = "1104881792"
-
 class QQViewController: UIViewController {
 
-    let account = MonkeyKing.Account.QQ(appID: qqAppID)
+    let account = MonkeyKing.Account.QQ(appID: Configs.QQ.appID)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -184,7 +182,7 @@ class QQViewController: UIViewController {
             let parameters = [
                 "openid": openID,
                 "access_token": token,
-                "oauth_consumer_key": qqAppID
+                "oauth_consumer_key": Configs.QQ.appID
             ]
 
             // fetch UserInfo by userInfoAPI

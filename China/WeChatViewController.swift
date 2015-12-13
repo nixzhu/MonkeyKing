@@ -9,16 +9,13 @@
 import UIKit
 import MonkeyKing
 
-let weChatAppID = "wx4868b35061f87885"
-let weChatAppKey = "64020361b8ec4c99936c0e3999a9f249"
-
 class WeChatViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Should not register account here
-        let account = MonkeyKing.Account.WeChat(appID: weChatAppID, appKey: weChatAppKey)
+        let account = MonkeyKing.Account.WeChat(appID: Configs.Wechat.appID, appKey: Configs.Wechat.appKey)
         MonkeyKing.registerAccount(account)
 
     }
@@ -193,7 +190,7 @@ class WeChatViewController: UIViewController {
     @IBAction func OAuthWithoutAppKey(sender: UIButton) {
 
         // Should not register account here
-        let accountWithoutAppKey = MonkeyKing.Account.WeChat(appID: weChatAppID, appKey: nil)
+        let accountWithoutAppKey = MonkeyKing.Account.WeChat(appID: Configs.Wechat.appID, appKey: nil)
         MonkeyKing.registerAccount(accountWithoutAppKey)
 
         MonkeyKing.OAuth(.WeChat) { (dictionary, response, error) -> Void in
