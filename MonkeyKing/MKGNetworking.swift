@@ -166,7 +166,9 @@ class MKGNetworking {
             var JSON: NSDictionary?
 
             defer {
-                completionHandler(JSON, response, error)
+                dispatch_async(dispatch_get_main_queue()) {
+                    completionHandler(JSON, response, error)
+                }
             }
 
             guard let validData = data,
@@ -193,7 +195,9 @@ class MKGNetworking {
             var JSON: NSDictionary?
 
             defer {
-                completionHandler(JSON, response, error)
+                dispatch_async(dispatch_get_main_queue()) {
+                    completionHandler(JSON, response, error)
+                }
             }
 
             guard let validData = data,
