@@ -212,6 +212,32 @@ class SimpleNetworking {
         uploadTask.resume()
     }
 
+    func upload(request: NSURLRequest?, data: NSData?, completionHandler: MKGNetworkingResponseHandler) {
+
+        guard let request = request, data = data else {
+            return
+        }
+
+        let uploadTask = session.uploadTaskWithRequest(request, fromData: data) { (data, response, error) -> Void in
+            var JSON: NSDictionary?
+
+            defer {
+                completionHandler(JSON, response, error)
+            }
+
+            guard let validData = data,
+                let JSONData = try? NSJSONSerialization.JSONObjectWithData(validData, options: .AllowFragments) as? NSDictionary else {
+                    print("JSON could not be serialized because input data was nil.")
+                    return
+            }
+
+            JSON = JSONData
+        }
+        
+        uploadTask.resume()
+    }
+
+
     private func urlRequestWithComponents(URLString: String, parameters: [String: AnyObject], encoding: ParameterEncoding = .URL) -> (request: NSURLRequest?, data: NSData?) {
 
         guard let URL = NSURL(string: URLString) else {

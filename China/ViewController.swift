@@ -79,8 +79,12 @@ extension MonkeyKing: MKGNetworkingProtocol {
         SimpleNetworking.sharedInstance.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
     }
 
-    public func upload(URLString: String, parameters: [String: AnyObject], completionHandler: MKGNetworkingResponseHandler) {
-        SimpleNetworking.sharedInstance.upload(URLString, parameters: parameters, completionHandler: completionHandler)
+    public func upload(request: NSURLRequest?, data: NSData?, completionHandler: MKGNetworkingResponseHandler) {
+        SimpleNetworking.sharedInstance.upload(request, data: data, completionHandler: completionHandler)
+
+//        Alamofire.upload(request!, data: data!).responseJSON { response in
+//                completionHandler(response.result.value as? NSDictionary, response.response, response.result.error)
+//        }
     }
 }
 

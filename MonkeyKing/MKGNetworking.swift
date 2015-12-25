@@ -187,7 +187,7 @@ class MKGNetworking {
 
         let tuple = urlRequestWithComponents(URLString, parameters: parameters)
 
-        guard let request = tuple.request, let data = tuple.data else {
+        guard let request = tuple.request, data = tuple.data else {
             return
         }
 
@@ -212,7 +212,7 @@ class MKGNetworking {
         uploadTask.resume()
     }
 
-    private func urlRequestWithComponents(URLString: String, parameters: [String: AnyObject], encoding: MKGParameterEncoding = .URL) -> (request: NSURLRequest?, data: NSData?) {
+    func urlRequestWithComponents(URLString: String, parameters: [String: AnyObject], encoding: MKGParameterEncoding = .URL) -> (request: NSURLRequest?, data: NSData?) {
 
         guard let URL = NSURL(string: URLString) else {
             return (nil, nil)

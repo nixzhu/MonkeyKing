@@ -986,7 +986,8 @@ extension MonkeyKing {
             return
         }
 
-        networkingDelegate.upload(URLString, parameters: parameters, completionHandler: completionHandler)
+        let tuple = MKGNetworking.sharedInstance.urlRequestWithComponents(URLString, parameters: parameters)
+        networkingDelegate.upload(tuple.0, data: tuple.1, completionHandler: completionHandler)
     }
 
     private class func addWebViewByURLString(URLString: String) {
