@@ -76,7 +76,7 @@ It's done!
 
 ### OAuth
 
-Weibo OAuth:
+#### Example: Weibo OAuth
 
 ```swift
 MonkeyKing.OAuth(.Weibo) { (OAuthInfo, response, error) -> Void in
