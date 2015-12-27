@@ -16,7 +16,7 @@ public func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
 public class MonkeyKing: NSObject {
 
     public typealias SharedCompletionHandler = (result: Bool) -> Void
-    public typealias OAuthCompletionHandler = MKGNetworkingResponseHandler
+    public typealias OAuthCompletionHandler = (NSDictionary?, NSURLResponse?, NSError?) -> Void
 
     private static let sharedMonkeyKing = MonkeyKing()
     private var accountSet = Set<Account>()
@@ -969,25 +969,12 @@ extension MonkeyKing {
         }
     }
 
-    private func request(URLString: String, method: MKGMethod, parameters: [String: AnyObject]? = nil, encoding: MKGParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: MKGNetworkingResponseHandler) {
-
-        guard let networkingDelegate = MonkeyKing.sharedMonkeyKing as? protocol<MKGNetworkingProtocol> else {
-            MKGNetworking.sharedInstance.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
-            return
-        }
-
-        networkingDelegate.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
+    private func request(URLString: String, method: Networking.Method, parameters: [String: AnyObject]? = nil, encoding: Networking.ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: Networking.NetworkingResponseHandler) {
+        Networking.sharedInstance.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
     }
 
-    private func upload(URLString: String, parameters: [String: AnyObject], completionHandler: MKGNetworkingResponseHandler) {
-
-        guard let networkingDelegate = MonkeyKing.sharedMonkeyKing as? protocol<MKGNetworkingProtocol> else {
-            MKGNetworking.sharedInstance.upload(URLString, parameters: parameters, completionHandler: completionHandler)
-            return
-        }
-
-        let tuple = MKGNetworking.sharedInstance.urlRequestWithComponents(URLString, parameters: parameters)
-        networkingDelegate.upload(tuple.0, data: tuple.1, completionHandler: completionHandler)
+    private func upload(URLString: String, parameters: [String: AnyObject], completionHandler: Networking.NetworkingResponseHandler) {
+        Networking.sharedInstance.upload(URLString, parameters: parameters, completionHandler: completionHandler)
     }
 
     private class func addWebViewByURLString(URLString: String) {

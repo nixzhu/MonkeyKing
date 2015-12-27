@@ -56,35 +56,3 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
 }
-
-
-// If extension MonkeyKing and implement MKGNetworkingProtocol, MonkeyKing will use the two methods to request.
-
-extension MonkeyKing: MKGNetworkingProtocol {
-
-    public func request(URLString: String, method: MKGMethod, parameters: [String: AnyObject]?, encoding: MKGParameterEncoding, headers: [String: String]?, completionHandler: MKGNetworkingResponseHandler) {
-
-        let method = SimpleNetworking.Method(rawValue: method.rawValue)!
-        var encoding = SimpleNetworking.ParameterEncoding.URL
-
-        switch encoding {
-        case .JSON:
-            encoding = .JSON
-        case .URL:
-            encoding = .URL
-        case .URLEncodedInURL:
-            encoding = .URLEncodedInURL
-        }
-
-        SimpleNetworking.sharedInstance.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
-    }
-
-    public func upload(request: NSURLRequest?, data: NSData?, completionHandler: MKGNetworkingResponseHandler) {
-        SimpleNetworking.sharedInstance.upload(request, data: data, completionHandler: completionHandler)
-
-//        Alamofire.upload(request!, data: data!).responseJSON { response in
-//                completionHandler(response.result.value as? NSDictionary, response.response, response.result.error)
-//        }
-    }
-}
-

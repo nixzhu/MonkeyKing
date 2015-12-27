@@ -1,5 +1,5 @@
 //
-//  SimpleNetworking.swift
+//  Networking.swift
 //  MonkeyKing
 //
 //  Created by Limon on 15/9/25.
@@ -7,15 +7,14 @@
 //
 
 import Foundation
-import MonkeyKing
 
-class SimpleNetworking {
+class Networking {
 
-    static let sharedInstance = SimpleNetworking()
+    static let sharedInstance = Networking()
     private let session = NSURLSession.sharedSession()
 
     typealias NetworkingResponseHandler = (NSDictionary?, NSURLResponse?, NSError?) -> Void
-
+    
     enum Method: String {
         case GET
         case POST
@@ -27,11 +26,9 @@ class SimpleNetworking {
         case JSON
 
         func encode(URLRequest: NSMutableURLRequest, parameters: [String: AnyObject]?) -> NSURLRequest {
-            guard let parameters = parameters else {
+            guard let parameters = parameters, mutableURLRequest = URLRequest.mutableCopy() as? NSMutableURLRequest  else {
                 return URLRequest
             }
-
-            var mutableURLRequest = URLRequest.mutableCopy() as! NSMutableURLRequest
 
             switch self {
             case .URL, .URLEncodedInURL:
@@ -129,25 +126,25 @@ class SimpleNetworking {
             } else {
                 let batchSize = 50
                 var index = string.startIndex
-
+                
                 while index != string.endIndex {
                     let startIndex = index
                     let endIndex = index.advancedBy(batchSize, limit: string.endIndex)
                     let range = Range(start: startIndex, end: endIndex)
-
+                    
                     let substring = string.substringWithRange(range)
-
+                    
                     escaped += substring.stringByAddingPercentEncodingWithAllowedCharacters(allowedCharacterSet) ?? substring
-
+                    
                     index = endIndex
                 }
             }
-
+            
             return escaped
         }
     }
 
-    func request(URLString: String, method: Method, parameters: [String: AnyObject]? = nil, encoding: ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: NetworkingResponseHandler) {
+    func request(URLString: String, method: Method, parameters: [String: AnyObject]? = nil, encoding: ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: (NSDictionary?, NSURLResponse?, NSError?) -> Void) {
 
         guard let URL = NSURL(string: URLString) else {
             return
@@ -169,7 +166,9 @@ class SimpleNetworking {
             var JSON: NSDictionary?
 
             defer {
-                completionHandler(JSON, response, error)
+                dispatch_async(dispatch_get_main_queue()) {
+                    completionHandler(JSON, response, error)
+                }
             }
 
             guard let validData = data,
@@ -184,11 +183,11 @@ class SimpleNetworking {
         task.resume()
     }
 
-    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: NetworkingResponseHandler) {
+    func upload(URLString: String, parameters: [String: AnyObject], completionHandler: (NSDictionary?, NSURLResponse?, NSError?) -> Void) {
 
         let tuple = urlRequestWithComponents(URLString, parameters: parameters)
 
-        guard let request = tuple.request, let data = tuple.data else {
+        guard let request = tuple.request, data = tuple.data else {
             return
         }
 
@@ -196,7 +195,9 @@ class SimpleNetworking {
             var JSON: NSDictionary?
 
             defer {
-                completionHandler(JSON, response, error)
+                dispatch_async(dispatch_get_main_queue()) {
+                    completionHandler(JSON, response, error)
+                }
             }
 
             guard let validData = data,
@@ -211,13 +212,12 @@ class SimpleNetworking {
         uploadTask.resume()
     }
 
-    private func urlRequestWithComponents(URLString: String, parameters: [String: AnyObject], encoding: ParameterEncoding = .URL) -> (request: NSURLRequest?, data: NSData?) {
+    func urlRequestWithComponents(URLString: String, parameters: [String: AnyObject], encoding: ParameterEncoding = .URL) -> (request: NSURLRequest?, data: NSData?) {
 
         guard let URL = NSURL(string: URLString) else {
             return (nil, nil)
         }
 
-        // create url request to send
         let mutableURLRequest = NSMutableURLRequest(URL: URL)
         mutableURLRequest.HTTPMethod = Method.POST.rawValue
         let boundaryConstant = "NET-POST-boundary-\(arc4random())-\(arc4random())"
@@ -250,19 +250,18 @@ class SimpleNetworking {
                 }
                 uploadData.appendData(contentTypeData)
                 uploadData.appendData(imageData)
-                
+
             } else{
-                
+
                 guard let encodeDispositionData = "Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n\(value)".dataUsingEncoding(NSUTF8StringEncoding) else {
                     return (nil, nil)
                 }
                 uploadData.appendData(encodeDispositionData)
             }
         }
-        
+
         uploadData.appendData("\r\n--\(boundaryConstant)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
-        
+
         return (encoding.encode(mutableURLRequest, parameters: nil), uploadData)
     }
-    
 }
