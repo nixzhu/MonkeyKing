@@ -21,13 +21,9 @@ Share to WeChat (微信)：
 
 ### Basic
 
-1. In your Project Target's `Info.plist`:
+1. In your Project Target's `Info.plist`, set `URL Type`, `LSApplicationQueriesSchemes`, `NSAppTransportSecurity` as follow:
 
-<br \>
-
-set `URL Type`, `LSApplicationQueriesSchemes`, `NSAppTransportSecurity` as follow:
-
-	![](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/infoList.png)
+![infoList.png](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/infoList.png)
 
 2. Register account
 
