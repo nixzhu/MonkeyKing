@@ -7,7 +7,7 @@
 
 MonkeyKing helps you post messages to Chinese Social Networks, without their buggy SDKs.
 
-MonkeyKing use the same analysis process of [openshare](https://github.com/100apps/openshare), support share **Text**, **URL**, **Image**, **Audio**, and **Video** to **WeChat**, **QQ** or **Weibo**. MonkeyKing also can post message to Weibo by webpage. (Note that Auido and Video are only specifically for WeChat or QQ)
+MonkeyKing use the same analysis process of [openshare](https://github.com/100apps/openshare), support share **Text**, **URL**, **Image**, **Audio**, and **Video** to **WeChat**, **QQ** or **Weibo**. MonkeyKing also can post message to Weibo by webpage. (Note: Auido and Video are only specifically for WeChat or QQ. If you want to detect QR code by image in WeChat, you can use ImageURL.)
 
 One more thing: MonkeyKing supports **OAuth**.
 
@@ -76,7 +76,7 @@ It's done!
 
 ### OAuth
 
-#### Example: Weibo OAuth
+Example: Weibo OAuth
 
 ```swift
 MonkeyKing.OAuth(.Weibo) { (OAuthInfo, response, error) -> Void in
