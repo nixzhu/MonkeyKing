@@ -277,7 +277,6 @@ extension MonkeyKing {
 
         case URL(NSURL)
         case Image(UIImage)
-        case ImageURL(NSURL)
         case Audio(audioURL: NSURL, linkURL: NSURL?)
         case Video(NSURL)
     }
@@ -424,12 +423,6 @@ extension MonkeyKing {
                         weChatMessageInfo["fileData"] = fileImageData
                     }
 
-                case .ImageURL(let URL):
-                    assert(type.scene == "0", "Image URL type is only supported by WeChat Session")
-                    assert(!URL.isFileReferenceURL(), "Should be a remote URL")
-                    weChatMessageInfo["objectType"] = "2"
-                    weChatMessageInfo["mediaUrl"] = URL.absoluteString
-
                 case .Audio(let audioURL, let linkURL):
                     weChatMessageInfo["objectType"] = "3"
 
@@ -525,9 +518,6 @@ extension MonkeyKing {
 
                     qqSchemeURLString += "img"
 
-                case .ImageURL(_):
-                    fatalError("QQ not supports image URL type")
-
                 case .Audio(let audioURL, _):
                     handleNewsWithURL(audioURL, mediaType: "audio")
 
@@ -595,9 +585,6 @@ extension MonkeyKing {
                         if let imageData = UIImageJPEGRepresentation(image, 1.0) {
                             messageInfo["imageObject"] = ["imageData": imageData]
                         }
-
-                    case .ImageURL(_):
-                        fatalError("Weibo not supports image URL type")
 
                     case .Audio:
                         fatalError("Weibo not supports Audio type")
@@ -670,9 +657,6 @@ extension MonkeyKing {
                     parameters["pic"] = imageData
                     mediaType = Media.Image(image)
 
-                case .ImageURL(_):
-                    fatalError("web Weibo not supports image URL type")
-
                 case .Audio:
                     fatalError("web Weibo not supports Audio type")
 
@@ -710,9 +694,6 @@ extension MonkeyKing {
                         completionHandler(result: false)
                     }
                 }
-                
-            case .ImageURL(_):
-                fatalError("web Weibo not supports image URL type")
                 
             case .Audio:
                 fatalError("web Weibo not supports Audio type")
