@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15A282a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="tAd-W5-7vp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="tAd-W5-7vp">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -20,7 +20,6 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pFI-rc-Qus">
                                 <rect key="frame" x="14" y="134" width="56" height="30"/>
-                                <animations/>
                                 <state key="normal" title="QQ URL"/>
                                 <connections>
                                     <action selector="shareURLToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="Xp9-BO-y2B"/>
@@ -29,7 +28,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yox-0f-rEK">
                                 <rect key="frame" x="14" y="184" width="69" height="30"/>
-                                <animations/>
                                 <state key="normal" title="QQ Image"/>
                                 <connections>
                                     <action selector="shareImageToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="fQx-ym-Lv9"/>
@@ -38,7 +36,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R1t-qh-QzC">
                                 <rect key="frame" x="14" y="84" width="56" height="30"/>
-                                <animations/>
                                 <state key="normal" title="QQ Text"/>
                                 <connections>
                                     <action selector="shareTextToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="fqC-5N-dGE"/>
@@ -47,7 +44,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P4E-LE-cpH">
                                 <rect key="frame" x="221" y="134" width="79" height="30"/>
-                                <animations/>
                                 <state key="normal" title="QZone URL"/>
                                 <connections>
                                     <action selector="shareURLToQZone:" destination="he5-GB-Amc" eventType="touchUpInside" id="veB-uH-ztu"/>
@@ -56,7 +52,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SwG-wK-wCn">
                                 <rect key="frame" x="221" y="84" width="79" height="30"/>
-                                <animations/>
                                 <state key="normal" title="QZone Text"/>
                                 <connections>
                                     <action selector="shareTextToQZone:" destination="he5-GB-Amc" eventType="touchUpInside" id="nKe-sP-c78"/>
@@ -65,7 +60,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cly-xf-sCw">
                                 <rect key="frame" x="139" y="498" width="43" height="30"/>
-                                <animations/>
                                 <state key="normal" title="OAuth"/>
                                 <connections>
                                     <action selector="OAuth:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="0g3-lB-ch4"/>
@@ -74,7 +68,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7gy-PD-6lJ">
                                 <rect key="frame" x="208" y="184" width="92" height="30"/>
-                                <animations/>
                                 <state key="normal" title="QZone Image"/>
                                 <connections>
                                     <action selector="shareImageToQZone:" destination="he5-GB-Amc" eventType="touchUpInside" id="0Qm-se-HRp"/>
@@ -83,7 +76,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M2g-P2-GvI">
                                 <rect key="frame" x="14" y="284" width="66" height="30"/>
-                                <animations/>
                                 <state key="normal" title="QQ Video"/>
                                 <connections>
                                     <action selector="shareVideoToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="hUH-Jx-YqC"/>
@@ -91,7 +83,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gKk-H8-Cg8">
                                 <rect key="frame" x="211" y="234" width="89" height="30"/>
-                                <animations/>
                                 <state key="normal" title="QZone Audio"/>
                                 <connections>
                                     <action selector="shareAudioToQZone:" destination="he5-GB-Amc" eventType="touchUpInside" id="hno-jT-CaM"/>
@@ -99,7 +90,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aYI-AS-QI8">
                                 <rect key="frame" x="210" y="284" width="90" height="30"/>
-                                <animations/>
                                 <state key="normal" title="QZone Video"/>
                                 <connections>
                                     <action selector="shareVideoToQZone:" destination="he5-GB-Amc" eventType="touchUpInside" id="sbM-L6-rqi"/>
@@ -107,14 +97,12 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="94M-dg-nm6">
                                 <rect key="frame" x="14" y="234" width="66" height="30"/>
-                                <animations/>
                                 <state key="normal" title="QQ Audio"/>
                                 <connections>
                                     <action selector="shareAudioToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="quH-ew-N3t"/>
                                 </connections>
                             </button>
                         </subviews>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="aYI-AS-QI8" firstAttribute="trailing" secondItem="gKk-H8-Cg8" secondAttribute="trailing" id="5Yt-EO-6F9"/>
@@ -161,7 +149,6 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qRT-OX-cmy">
                                 <rect key="frame" x="274" y="162" width="30" height="30"/>
-                                <animations/>
                                 <state key="normal" title="URL"/>
                                 <connections>
                                     <action selector="shareURLToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="2ub-NQ-fRL"/>
@@ -169,7 +156,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gS0-c6-rje">
                                 <rect key="frame" x="16" y="212" width="42" height="30"/>
-                                <animations/>
                                 <state key="normal" title="Image"/>
                                 <connections>
                                     <action selector="shareImageToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="3dv-vf-PYZ"/>
@@ -177,7 +163,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lbo-xY-RTb">
                                 <rect key="frame" x="16" y="162" width="30" height="30"/>
-                                <animations/>
                                 <state key="normal" title="URL"/>
                                 <connections>
                                     <action selector="shareURLToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="W6F-9D-pF8"/>
@@ -185,7 +170,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wyh-QX-rAS">
                                 <rect key="frame" x="16" y="112" width="30" height="30"/>
-                                <animations/>
                                 <state key="normal" title="Text"/>
                                 <connections>
                                     <action selector="shareTextToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="IOi-Hr-yJw"/>
@@ -193,7 +177,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WRq-Ww-IEN">
                                 <rect key="frame" x="274" y="112" width="30" height="30"/>
-                                <animations/>
                                 <state key="normal" title="Text"/>
                                 <connections>
                                     <action selector="shareTextToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="5jg-iA-SW3"/>
@@ -201,7 +184,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UWw-uP-3po">
                                 <rect key="frame" x="139" y="458" width="43" height="30"/>
-                                <animations/>
                                 <state key="normal" title="OAuth"/>
                                 <connections>
                                     <action selector="OAuth:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="MMl-eP-Ktg"/>
@@ -209,7 +191,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b1F-BB-pJv">
                                 <rect key="frame" x="262" y="212" width="42" height="30"/>
-                                <animations/>
                                 <state key="normal" title="Image"/>
                                 <connections>
                                     <action selector="shareImageToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="oiq-gU-5HA"/>
@@ -217,21 +198,18 @@
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Timeline" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PJB-1N-QAg">
                                 <rect key="frame" x="16" y="72" width="64.5" height="20.5"/>
-                                <animations/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Session" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rlR-4h-0zV">
                                 <rect key="frame" x="244" y="72" width="60" height="20.5"/>
-                                <animations/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Vz-30-FuV">
                                 <rect key="frame" x="16" y="262" width="41" height="30"/>
-                                <animations/>
                                 <state key="normal" title="Music"/>
                                 <connections>
                                     <action selector="shareMusicToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="HsH-Dn-1Hr"/>
@@ -239,7 +217,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sOl-Wo-bDF">
                                 <rect key="frame" x="16" y="312" width="40" height="30"/>
-                                <animations/>
                                 <state key="normal" title="Video"/>
                                 <connections>
                                     <action selector="shareVideoToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="9aX-vG-l1A"/>
@@ -247,7 +224,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4ju-BG-Eg2">
                                 <rect key="frame" x="263" y="262" width="41" height="30"/>
-                                <animations/>
                                 <state key="normal" title="Music"/>
                                 <connections>
                                     <action selector="shareMusicToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="YDv-pu-5EU"/>
@@ -255,7 +231,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vf3-Ne-pou">
                                 <rect key="frame" x="264" y="312" width="40" height="30"/>
-                                <animations/>
                                 <state key="normal" title="Video"/>
                                 <connections>
                                     <action selector="shareVideoToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="PnJ-ZR-V2n"/>
@@ -263,22 +238,12 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oRX-XU-uEu">
                                 <rect key="frame" x="86" y="518" width="149" height="30"/>
-                                <animations/>
                                 <state key="normal" title="OAuthWithoutAppKey"/>
                                 <connections>
                                     <action selector="OAuthWithoutAppKey:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="whf-Mj-u5c"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hK8-fr-vqK">
-                                <rect key="frame" x="229" y="362.5" width="75" height="30"/>
-                                <animations/>
-                                <state key="normal" title="Image URL"/>
-                                <connections>
-                                    <action selector="shareImageURLToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="Hec-fW-qPV"/>
-                                </connections>
-                            </button>
                         </subviews>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="wfw-9a-DtS" firstAttribute="top" secondItem="oRX-XU-uEu" secondAttribute="bottom" constant="20" id="0Mk-6a-mUF"/>
@@ -286,12 +251,10 @@
                             <constraint firstItem="Wyh-QX-rAS" firstAttribute="leading" secondItem="PJB-1N-QAg" secondAttribute="leading" id="538-rb-BtL"/>
                             <constraint firstItem="oRX-XU-uEu" firstAttribute="centerX" secondItem="UWw-uP-3po" secondAttribute="centerX" id="5SP-dc-8Mv"/>
                             <constraint firstItem="wfw-9a-DtS" firstAttribute="top" secondItem="UWw-uP-3po" secondAttribute="bottom" constant="80" id="7ew-1Y-cIR"/>
-                            <constraint firstItem="hK8-fr-vqK" firstAttribute="top" secondItem="Vf3-Ne-pou" secondAttribute="bottom" constant="20" id="A8Y-j4-bW9"/>
                             <constraint firstItem="Wyh-QX-rAS" firstAttribute="top" secondItem="PJB-1N-QAg" secondAttribute="bottom" constant="20" id="F43-wv-ZDN"/>
                             <constraint firstItem="4ju-BG-Eg2" firstAttribute="trailing" secondItem="Vf3-Ne-pou" secondAttribute="trailing" id="GZ8-pc-Byl"/>
                             <constraint firstItem="Vf3-Ne-pou" firstAttribute="baseline" secondItem="sOl-Wo-bDF" secondAttribute="baseline" id="IQu-vj-LNG"/>
                             <constraint firstItem="UWw-uP-3po" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="NBp-he-WOd"/>
-                            <constraint firstItem="hK8-fr-vqK" firstAttribute="trailing" secondItem="Vf3-Ne-pou" secondAttribute="trailing" id="NIb-3o-anh"/>
                             <constraint firstItem="WRq-Ww-IEN" firstAttribute="leading" secondItem="qRT-OX-cmy" secondAttribute="leading" id="OAv-A9-X3y"/>
                             <constraint firstItem="qRT-OX-cmy" firstAttribute="trailing" secondItem="b1F-BB-pJv" secondAttribute="trailing" id="OBH-h9-iVc"/>
                             <constraint firstItem="Wyh-QX-rAS" firstAttribute="leading" secondItem="lbo-xY-RTb" secondAttribute="leading" id="OM2-Wf-fce"/>
@@ -334,7 +297,6 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kLV-RC-Vac">
                                 <rect key="frame" x="139" y="455" width="43" height="30"/>
-                                <animations/>
                                 <state key="normal" title="OAuth"/>
                                 <connections>
                                     <action selector="OAuth:" destination="LgQ-W6-Vcr" eventType="touchUpInside" id="PRK-rS-1H1"/>
@@ -343,7 +305,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fRZ-FT-5hS">
                                 <rect key="frame" x="122" y="213" width="76" height="30"/>
-                                <animations/>
                                 <state key="normal" title="Weibo URL"/>
                                 <connections>
                                     <action selector="shareURL:" destination="LgQ-W6-Vcr" eventType="touchUpInside" id="nIE-2X-uhn"/>
@@ -352,7 +313,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tyb-i3-0Cn">
                                 <rect key="frame" x="116" y="113" width="89" height="30"/>
-                                <animations/>
                                 <state key="normal" title="Weibo Image"/>
                                 <connections>
                                     <action selector="shareImage:" destination="LgQ-W6-Vcr" eventType="touchUpInside" id="gXp-Qr-fSI"/>
@@ -361,7 +321,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ks6-VB-9Yk">
                                 <rect key="frame" x="122" y="163" width="76" height="30"/>
-                                <animations/>
                                 <state key="normal" title="Weibo Text"/>
                                 <connections>
                                     <action selector="shareText:" destination="LgQ-W6-Vcr" eventType="touchUpInside" id="QXy-w6-YNt"/>
@@ -369,7 +328,6 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="kLV-RC-Vac" firstAttribute="centerX" secondItem="uRf-RT-IOL" secondAttribute="centerX" id="DE9-zU-oE5"/>
@@ -395,7 +353,6 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="100" sectionHeaderHeight="64" sectionFooterHeight="22" id="yNz-8b-MdA">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" textLabel="Q8C-5T-0Yz" style="IBUITableViewCellStyleDefault" id="07o-kz-uJI">
@@ -408,15 +365,12 @@
                                         <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Q8C-5T-0Yz">
                                             <rect key="frame" x="15" y="0.0" width="290" height="99.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <animations/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         </label>
                                     </subviews>
-                                    <animations/>
                                 </tableViewCellContentView>
-                                <animations/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </tableViewCell>
                         </prototypes>
@@ -454,7 +408,6 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DeZ-G5-7Ij">
                                 <rect key="frame" x="139" y="397" width="43" height="30"/>
-                                <animations/>
                                 <state key="normal" title="OAuth"/>
                                 <connections>
                                     <action selector="OAuth:" destination="KHj-bA-9ar" eventType="touchUpInside" id="2kA-lY-16f"/>
@@ -462,14 +415,12 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="imj-of-vxR">
                                 <rect key="frame" x="127" y="269" width="66" height="30"/>
-                                <animations/>
                                 <state key="normal" title="Save URL"/>
                                 <connections>
                                     <action selector="saveButtonAction:" destination="KHj-bA-9ar" eventType="touchUpInside" id="kbv-H8-cU1"/>
                                 </connections>
                             </button>
                         </subviews>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="DeZ-G5-7Ij" firstAttribute="centerX" secondItem="CWO-M8-gcP" secondAttribute="centerX" id="bax-rC-zVJ"/>
@@ -498,7 +449,6 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nFE-X4-kUD">
                                 <rect key="frame" x="113" y="268" width="94" height="32"/>
-                                <animations/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <state key="normal" title="systemShare"/>
                                 <connections>
@@ -506,7 +456,6 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="nFE-X4-kUD" firstAttribute="centerY" secondItem="wzo-i8-BMj" secondAttribute="centerY" id="HZf-v0-mun"/>
@@ -528,7 +477,6 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="5P4-mA-2xy">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
