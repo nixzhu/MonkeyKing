@@ -10,7 +10,9 @@ import UIKit
 import MonkeyKing
 
 class WeChatViewController: UIViewController {
-
+    
+    @IBOutlet private var segmentControl :UISegmentedControl!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -19,148 +21,69 @@ class WeChatViewController: UIViewController {
         MonkeyKing.registerAccount(account)
 
     }
-
-    // MARK: Timeline
-
-    @IBAction func shareTextToTimeline(sender: UIButton) {
-
-        let message = MonkeyKing.Message.WeChat(.Timeline(info: (
+    
+    @IBAction func shareText(sender :UIButton){
+        let info =  MonkeyKing.Info(
             title: "Timeline Text, \(NSUUID().UUIDString)",
             description: nil,
             thumbnail: nil,
             media: nil
-        )))
-
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
+        )
+        self.shareInfo(info)
     }
-
-    @IBAction func shareURLToTimeline(sender: UIButton) {
-
-        let message = MonkeyKing.Message.WeChat(.Timeline(info: (
+    @IBAction func shareURL(sender :UIButton){
+        let info =  MonkeyKing.Info(
             title: "Timeline URL, \(NSUUID().UUIDString)",
             description: "Description URL, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit"),
             media: .URL(NSURL(string: "http://soyep.com")!)
-        )))
-
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
+        )
+        self.shareInfo(info)
     }
-
-    @IBAction func shareImageToTimeline(sender: UIButton) {
-
-        let message = MonkeyKing.Message.WeChat(.Timeline(info: (
+    @IBAction func shareImage(sender :UIButton){
+        let info =  MonkeyKing.Info(
             title: nil,
             description: nil,
             thumbnail: UIImage(named: "rabbit"),
             media: .Image(UIImage(named: "rabbit")!)
-        )))
-
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
+        )
+        self.shareInfo(info)
     }
-
-    @IBAction func shareMusicToTimeline(sender: UIButton) {
-
-        let message = MonkeyKing.Message.WeChat(.Timeline(info: (
+    @IBAction func shareMusic(sender :UIButton){
+        let info =  MonkeyKing.Info(
             title: "Timeline Music, \(NSUUID().UUIDString)",
             description: "Description Music, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit"),
             media: .Audio(audioURL: NSURL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: NSURL(string: "http://soyep.com")!)
-        )))
-
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
+        )
+        self.shareInfo(info)
     }
-
-    @IBAction func shareVideoToTimeline(sender: UIButton) {
-
-        let message = MonkeyKing.Message.WeChat(.Timeline(info: (
+    @IBAction func shareVideo(sender :UIButton){
+        let info =  MonkeyKing.Info(
             title: "Timeline Video, \(NSUUID().UUIDString)",
             description: "Description Video, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit"),
             media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XNTUxNDY1NDY4.html")!)
-        )))
-
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
+        )
+        
+        self.shareInfo(info)
     }
-
-    // MARK: Session
-
-    @IBAction func shareTextToSession(sender: UIButton) {
-
-        let message = MonkeyKing.Message.WeChat(.Session(info: (
-            title: "Session Text, \(NSUUID().UUIDString)",
-            description: nil,
-            thumbnail: nil,
-            media: nil)
-        ))
-
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
+    
+    private func shareInfo(info :MonkeyKing.Info){
+        var message :MonkeyKing.Message?
+        switch self.segmentControl.selectedSegmentIndex{
+        case 0:
+            message = MonkeyKing.Message.WeChat(.Session(info: info))
+        case 1:()
+            message = MonkeyKing.Message.WeChat(.Timeline(info: info))
+        case 2:()
+            message = MonkeyKing.Message.WeChat(.Favorite(info: info))
+        default:()
         }
-    }
-
-    @IBAction func shareURLToSession(sender: UIButton) {
-
-        let message = MonkeyKing.Message.WeChat(.Session(info: (
-            title: "Session URL, \(NSUUID().UUIDString)",
-            description: "description URL, \(NSUUID().UUIDString)",
-            thumbnail: UIImage(named: "rabbit"),
-            media: .URL(NSURL(string: "http://soyep.com")!)
-        )))
-
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
-    }
-
-    @IBAction func shareImageToSession(sender: UIButton) {
-
-        let message = MonkeyKing.Message.WeChat(.Session(info: (
-            title: nil,
-            description: nil,
-            thumbnail: UIImage(named: "rabbit"),
-            media: .Image(UIImage(named: "rabbit")!)
-        )))
-
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
-    }
-
-    @IBAction func shareMusicToSession(sender: UIButton) {
-
-        let message = MonkeyKing.Message.WeChat(.Session(info: (
-            title: "Session Music, \(NSUUID().UUIDString)",
-            description: "Description Music, \(NSUUID().UUIDString)",
-            thumbnail: UIImage(named: "rabbit"),
-            media: .Audio(audioURL: NSURL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: NSURL(string: "http://soyep.com")!)
-        )))
-
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
-    }
-
-    @IBAction func shareVideoToSession(sender: UIButton) {
-
-        let message = MonkeyKing.Message.WeChat(.Session(info: (
-            title: "Session Video, \(NSUUID().UUIDString)",
-            description: "Description Video, \(NSUUID().UUIDString)",
-            thumbnail: UIImage(named: "rabbit"),
-            media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XNTUxNDY1NDY4.html")!)
-        )))
-
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
+        if let message = message{
+            MonkeyKing.shareMessage(message) { result in
+                print("result: \(result)")
+            }
         }
     }
 
