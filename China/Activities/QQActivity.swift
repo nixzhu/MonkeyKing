@@ -43,16 +43,16 @@ class QQActivity: AnyActivity {
         }
     }
 
-    init(type: Type, message: MonkeyKing.Message, finish: MonkeyKing.Finish) {
+    init(type: Type, message: MonkeyKing.Message, completionHandler: MonkeyKing.SharedCompletionHandler) {
 
-        MonkeyKing.registerAccount(.QQ(appID: qqAppID))
+        MonkeyKing.registerAccount(.QQ(appID: Configs.QQ.appID))
 
         super.init(
             type: type.type,
             title: type.title,
             image: type.image,
             message: message,
-            finish: finish
+            completionHandler: completionHandler
         )
     }
 }

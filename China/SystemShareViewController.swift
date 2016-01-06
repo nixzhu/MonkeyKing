@@ -13,7 +13,7 @@ class SystemShareViewController: UIViewController {
 
     @IBAction func systemShare(sender: UIButton) {
 
-        MonkeyKing.registerAccount(.WeChat(appID: weChatAppID, appKey: weChatAppKey))
+        MonkeyKing.registerAccount(.WeChat(appID: Configs.Wechat.appID, appKey: Configs.Wechat.appKey))
 
         let shareURL = NSURL(string: "http://www.apple.com/cn/iphone/compare/")!
 
@@ -31,7 +31,7 @@ class SystemShareViewController: UIViewController {
             title: NSLocalizedString("WeChat Session", comment: ""),
             image: UIImage(named: "wechat_session")!,
             message: sessionMessage,
-            finish: { success in
+            completionHandler: { success in
                 print("Session success: \(success)")
             }
         )
@@ -43,7 +43,7 @@ class SystemShareViewController: UIViewController {
             title: NSLocalizedString("WeChat Timeline", comment: ""),
             image: UIImage(named: "wechat_timeline")!,
             message: timelineMessage,
-            finish: { success in
+            completionHandler: { success in
                 print("Timeline success: \(success)")
             }
         )

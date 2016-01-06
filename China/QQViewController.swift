@@ -9,103 +9,157 @@
 import UIKit
 import MonkeyKing
 
-let qqAppID = "1104881792"
-
 class QQViewController: UIViewController {
 
-    let account = MonkeyKing.Account.QQ(appID: qqAppID)
+    let account = MonkeyKing.Account.QQ(appID: Configs.QQ.appID)
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         MonkeyKing.registerAccount(account)
     }
 
     // MARK: QQ Friends
 
-    @IBAction func shareImageToQQ(sender: UIButton) {
-
-        let message = MonkeyKing.Message.QQ(.Friends(info: (
-            title: "friends",
-            description: "helloworld",
-            thumbnail: nil,
-            media: .Image(UIImage(named: "rabbit")!)
-        )))
-
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
-        }
-    }
-
     @IBAction func shareTextToQQ(sender: UIButton) {
 
         let message = MonkeyKing.Message.QQ(.Friends(info: (
             title: nil,
-            description: "helloworld",
+            description: "QQ Text: Hello World, \(NSUUID().UUIDString)",
             thumbnail: nil,
             media: nil
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
     @IBAction func shareURLToQQ(sender: UIButton) {
 
         let message = MonkeyKing.Message.QQ(.Friends(info: (
-            title: "friends",
-            description: "apple.com",
+            title: "QQ Friends URL, \(NSUUID().UUIDString)",
+            description: "apple.com/cn, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit")!,
             media: .URL(NSURL(string: "http://www.apple.com/cn")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
-
     }
 
-    // MARK: QZone
+    @IBAction func shareImageToQQ(sender: UIButton) {
 
-    @IBAction func shareImageToQZone(sender: UIButton) {
-
-        let message = MonkeyKing.Message.QQ(.Zone(info: (
-            title: "friends",
-            description: "helloworld",
+        let message = MonkeyKing.Message.QQ(.Friends(info: (
+            title: "QQ Friends Image, \(NSUUID().UUIDString)",
+            description: "Hello World, \(NSUUID().UUIDString)",
             thumbnail: nil,
             media: .Image(UIImage(named: "rabbit")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
+
+    @IBAction func shareAudioToQQ(sender: UIButton) {
+
+        let message = MonkeyKing.Message.QQ(.Friends(info: (
+            title: "QQ Friends Audio, \(NSUUID().UUIDString)",
+            description: "Hello World, \(NSUUID().UUIDString)",
+            thumbnail: UIImage(named: "rabbit")!,
+            media: .Audio(audioURL: NSURL(string: "http://wfmusic.3g.qq.com/s?g_f=0&fr=&aid=mu_detail&id=2511915")!, linkURL: nil)
+        )))
+
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
+        }
+    }
+
+    @IBAction func shareVideoToQQ(sender: UIButton) {
+
+        let message = MonkeyKing.Message.QQ(.Friends(info: (
+            title: "QQ Friends Video, \(NSUUID().UUIDString)",
+            description: "Hello World, \(NSUUID().UUIDString)",
+            thumbnail: UIImage(named: "rabbit")!,
+            media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XOTU2MzA0NzY4.html")!)
+        )))
+
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
+        }
+    }
+
+    // MARK: QZone
 
     @IBAction func shareTextToQZone(sender: UIButton) {
 
         let message = MonkeyKing.Message.QQ(.Zone(info: (
             title: nil,
-            description: "helloworld",
+            description: "QZone Text: Hello World, \(NSUUID().UUIDString)",
             thumbnail: nil,
             media: nil
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
     @IBAction func shareURLToQZone(sender: UIButton) {
 
         let message = MonkeyKing.Message.QQ(.Zone(info: (
-            title: "friends",
-            description: "apple.com",
+            title: "QZone URL, \(NSUUID().UUIDString)",
+            description: "soyep.com, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit")!,
-            media: .URL(NSURL(string: "http://www.qq.com")!)
+            media: .URL(NSURL(string: "http://www.soyep.com")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
-            print("success: \(success)")
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
+        }
+    }
+
+    @IBAction func shareImageToQZone(sender: UIButton) {
+
+        let message = MonkeyKing.Message.QQ(.Zone(info: (
+            title: "QZone URL Image, \(NSUUID().UUIDString)",
+            description: "Hello World, \(NSUUID().UUIDString)",
+            thumbnail: nil,
+            media: .Image(UIImage(named: "rabbit")!)
+        )))
+
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
+        }
+    }
+
+    @IBAction func shareAudioToQZone(sender: UIButton) {
+
+        let message = MonkeyKing.Message.QQ(.Zone(info: (
+            title: "QZone Audio, \(NSUUID().UUIDString)",
+            description: "Hello World, \(NSUUID().UUIDString)",
+            thumbnail: nil,
+            media: .Audio(audioURL: NSURL(string: "http://wfmusic.3g.qq.com/s?g_f=0&fr=&aid=mu_detail&id=2511915")!, linkURL: nil)
+        )))
+
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
+        }
+    }
+
+    @IBAction func shareVideoToQZone(sender: UIButton) {
+
+        let message = MonkeyKing.Message.QQ(.Zone(info: (
+            title: "QZone Video, \(NSUUID().UUIDString)",
+            description: "Hello World, \(NSUUID().UUIDString)",
+            thumbnail: UIImage(named: "rabbit")!,
+            media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XOTU2MzA0NzY4.html")!)
+        )))
+
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
         }
     }
 
@@ -113,10 +167,31 @@ class QQViewController: UIViewController {
 
     @IBAction func OAuth(sender: UIButton) {
 
-        //"get_user_info,get_simple_userinfo,add_album,add_idol,add_one_blog,add_pic_t,add_share,add_topic,check_page_fans,del_idol,del_t,get_fanslist,get_idollist,get_info,get_other_info,get_repost_list,list_album,upload_pic,get_vip_info,get_vip_rich_info,get_intimate_friends_weibo,match_nick_tips_weibo"
+        // "get_user_info,get_simple_userinfo,add_album,add_idol,add_one_blog,add_pic_t,add_share,add_topic,check_page_fans,del_idol,del_t,get_fanslist,get_idollist,get_info,get_other_info,get_repost_list,list_album,upload_pic,get_vip_info,get_vip_rich_info,get_intimate_friends_weibo,match_nick_tips_weibo"
 
-        MonkeyKing.OAuth(account, scope: "get_user_info") { (dictionary, response, error) -> Void in
-            print("dictionary \(dictionary) error \(error)")
+        MonkeyKing.OAuth(.QQ, scope: "get_user_info") { (OAuthInfo, response, error) -> Void in
+
+            guard let token = OAuthInfo?["access_token"] as? String,
+                let openID = OAuthInfo?["openid"] as? String else {
+                    return
+            }
+
+            let query = "get_user_info"
+            let userInfoAPI = "https://graph.qq.com/user/\(query)"
+
+            let parameters = [
+                "openid": openID,
+                "access_token": token,
+                "oauth_consumer_key": Configs.QQ.appID
+            ]
+
+            // fetch UserInfo by userInfoAPI
+            SimpleNetworking.sharedInstance.request(userInfoAPI, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
+                print("userInfoDictionary \(userInfoDictionary)")
+            })
+
+            // More API
+            // http://wiki.open.qq.com/wiki/website/API%E5%88%97%E8%A1%A8
         }
     }
 }

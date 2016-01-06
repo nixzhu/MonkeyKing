@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>China</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -38,6 +40,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>tencent1104881792</string>
+				<string>QQ41db2880</string>
 			</array>
 		</dict>
 		<dict>
@@ -47,7 +50,17 @@
 			<string>Weibo</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>wb504855958</string>
+				<string>wb1772193724</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.readitlater</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>pocketapp48363</string>
 			</array>
 		</dict>
 	</array>
@@ -55,6 +68,7 @@
 	<string>1</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>pocket-oauth-v1</string>
 		<string>weixin</string>
 		<string>mqqapi</string>
 		<string>weibosdk</string>
@@ -65,8 +79,10 @@
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>api.weibo.com</key>
+			<key>qq.com</key>
 			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
 				<key>NSIncludesSubdomains</key>
 				<true/>
 				<key>NSThirdPartyExceptionMinimumTLSVersion</key>
@@ -74,7 +90,7 @@
 				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
 				<false/>
 			</dict>
-			<key>api.weixin.qq.com</key>
+			<key>api.weibo.com</key>
 			<dict>
 				<key>NSIncludesSubdomains</key>
 				<true/>
