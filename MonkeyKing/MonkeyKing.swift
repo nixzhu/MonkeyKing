@@ -289,13 +289,16 @@ extension MonkeyKing {
 
             case Session(info: Info)
             case Timeline(info: Info)
-
+            case Favorite(info: Info)
+            
             var scene: String {
                 switch self {
                 case .Session:
                     return "0"
                 case .Timeline:
                     return "1"
+                case .Favorite:
+                    return "2"
                 }
             }
 
@@ -304,6 +307,8 @@ extension MonkeyKing {
                 case .Session(let info):
                     return info
                 case .Timeline(let info):
+                    return info
+                case .Favorite(let info):
                     return info
                 }
             }
