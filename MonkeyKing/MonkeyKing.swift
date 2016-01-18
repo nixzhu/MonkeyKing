@@ -1120,11 +1120,17 @@ private extension NSBundle {
             return displayName
         }
 
-        guard let info = localizedInfoDictionary ?? infoDictionary else {
+        var info = infoDictionary
+
+        if let localizedInfo = localizedInfoDictionary where !localizedInfo.isEmpty {
+            info = localizedInfo
+        }
+
+        guard let unwrappedInfo = info else {
             return nil
         }
 
-        return getNameByInfo(info)
+        return getNameByInfo(unwrappedInfo)
     }
 
     var monkeyking_bundleID: String? {
