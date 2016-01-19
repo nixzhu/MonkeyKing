@@ -874,10 +874,11 @@ extension MonkeyKing: WKNavigationDelegate {
         if URL.absoluteString.containsString("about:blank") {
             let error = NSError(domain: "User Cancelled", code: -1, userInfo: nil)
             hideWebView(webView, tuples: (nil, nil, error))
+            return
         }
 
         // QQ Web OAuth
-        guard URL.absoluteString.containsString("&access_token=") && URL.absoluteString.containsString("qzs.qq.com") else {
+        guard URL.absoluteString.containsString("&access_token=") && URL.absoluteString.containsString("qq.com") else {
             return
         }
 
