@@ -1187,7 +1187,7 @@ private extension UIImage {
 
     var monkeyking_compressedImageData: NSData? {
 
-        var compressionQuality: CGFloat = 0.5
+        var compressionQuality: CGFloat = 0.7
 
         func compresseImage(image: UIImage) -> NSData? {
 
@@ -1227,17 +1227,18 @@ private extension UIImage {
             return imageData
         }
 
-        var imageData = compresseImage(self)
+        var imageData = UIImageJPEGRepresentation(self, compressionQuality)
 
         guard imageData != nil else {
             return nil
         }
 
-        let minCompressionQuality: CGFloat = 0.001
-        while imageData!.length > 31000 && compressionQuality != minCompressionQuality {
-            compressionQuality = max(compressionQuality - 0.1, minCompressionQuality)
+        let minCompressionQuality: CGFloat = 0.01
+        let dataLengthCeiling: Int = 31500
+
+        while imageData!.length > dataLengthCeiling && compressionQuality > minCompressionQuality {
+            compressionQuality -= 0.1
             guard let image = UIImage(data: imageData!) else {
-                compressionQuality = minCompressionQuality
                 break
             }
             imageData = compresseImage(image)
