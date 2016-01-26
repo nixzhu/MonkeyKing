@@ -29,4 +29,8 @@ struct Configs {
         static let appID = "48363-344532f670a052acff492a25"
         static let redirectURL = "pocketapp48363:authorizationFinished" // pocketapp + $prefix + :authorizationFinished
     }
+
+    struct Alipay {
+        static let appID = "2016012101112529"
+    }
 }

@@ -12,7 +12,7 @@ import MonkeyKing
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return 6
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -29,6 +29,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             cell.textLabel!.text = "System"
         case 4:
             cell.textLabel!.text = "Pocket"
+        case 5:
+            cell.textLabel!.text = "Alipay"
         default:
             break
         }
@@ -51,6 +53,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             performSegueWithIdentifier("System", sender: nil)
         case 4:
             performSegueWithIdentifier("Pocket", sender: nil)
+        case 5:
+            performSegueWithIdentifier("Alipay", sender: nil)
         default:
             break
         }
