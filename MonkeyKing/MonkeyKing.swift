@@ -78,6 +78,14 @@ public class MonkeyKing: NSObject {
         }
     }
 
+    public enum SupportedPlatform {
+        case QQ
+        case WeChat
+        case Weibo
+        case Pocket(requestToken: String)
+        case Alipay
+    }
+
     public class func registerAccount(account: Account) {
 
         if account.isAppInstalled || account.canWebOAuth {
@@ -279,8 +287,8 @@ extension MonkeyKing {
             guard let account = sharedMonkeyKing.accountSet[.Alipay],
                 data = UIPasteboard.generalPasteboard().dataForPasteboardType("com.alipay.openapi.pb.resp.\(account.appID)"),
                 dict = try? NSPropertyListSerialization.propertyListWithData(data, options: .Immutable, format: nil),
-                objectsArray = dict["$objects"] as? NSArray,
-                result = objectsArray[12] as? Int else {
+                objects = dict["$objects"] as? NSArray,
+                result = objects[12] as? Int else {
                     return false
             }
 
@@ -757,11 +765,14 @@ extension MonkeyKing {
 
             let dictionary = createAlipayMessageDictionary(type.info, appID: appID)
             guard let data = try? NSPropertyListSerialization.dataWithPropertyList(dictionary, format: .XMLFormat_v1_0, options: 0) else {
+                completionHandler(result: false)
                 return
             }
 
             UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.alipay.openapi.pb.req.\(appID)")
-            openURL(URLString: "alipayshare://platformapi/shareService?action=sendReq&shareId=\(appID)")
+            if !openURL(URLString: "alipayshare://platformapi/shareService?action=sendReq&shareId=\(appID)") {
+                completionHandler(result: false)
+            }
         }
     }
 }
@@ -771,15 +782,7 @@ extension MonkeyKing {
 
 extension MonkeyKing {
 
-    public enum OAuthPlatform {
-        case QQ
-        case WeChat
-        case Weibo
-        case Pocket(requestToken: String)
-        case Alipay
-    }
-
-    public class func OAuth(platform: OAuthPlatform, scope: String? = nil, completionHandler: OAuthCompletionHandler) {
+    public class func OAuth(platform: SupportedPlatform, scope: String? = nil, completionHandler: OAuthCompletionHandler) {
 
         guard let account = sharedMonkeyKing.accountSet[platform] else {
             return
@@ -1136,7 +1139,7 @@ extension MonkeyKing {
                 "text": [keyUID: 15]
             ]
 
-            let textObjectsItem15 = info.title ?? "Test"
+            let textObjectsItem15 = info.title ?? "Input Text"
             objectsValue = objectsValue + [publicObjectsItem13, textObjectsItem14, textObjectsItem15]
 
         case .Image(let image):
@@ -1145,7 +1148,7 @@ extension MonkeyKing {
                 "imageData": [keyUID: 15]
             ]
 
-            let imageData: NSData = UIImageJPEGRepresentation(image, 0.7) ?? NSData()
+            let imageData = UIImageJPEGRepresentation(image, 0.7) ?? NSData()
             let imageObjectsItem15 = [
                 keyClass: [keyUID: 16],
                 "NS.data": imageData
@@ -1161,10 +1164,10 @@ extension MonkeyKing {
                 "title": [keyUID: 14]
             ]
 
-            let thumbnailData: NSData = info.thumbnail?.monkeyking_compressedImageData ?? NSData()
+            let thumbnailData = info.thumbnail?.monkeyking_compressedImageData ?? NSData()
 
-            let URLObjectsItem14 = info.title ?? "标题"
-            let URLObjectsItem15 = info.description ?? "简介"
+            let URLObjectsItem14 = info.title ?? "Input Title"
+            let URLObjectsItem15 = info.description ?? "Input Description"
             let URLObjectsItem16 = [
                 keyClass: [keyUID: 17],
                 "NS.data": thumbnailData
@@ -1279,7 +1282,7 @@ extension MonkeyKing {
 
 private extension Set {
 
-    subscript(platform: MonkeyKing.OAuthPlatform) -> MonkeyKing.Account? {
+    subscript(platform: MonkeyKing.SupportedPlatform) -> MonkeyKing.Account? {
 
         let accountSet = MonkeyKing.sharedMonkeyKing.accountSet
 

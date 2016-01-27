@@ -20,7 +20,7 @@ class AlipayViewController: UIViewController {
 
     @IBAction func shareTextToAlipay(sender: UIButton) {
         let info =  MonkeyKing.Info(
-            title: "Timeline Text, \(NSUUID().UUIDString)",
+            title: "Friends Text, \(NSUUID().UUIDString)",
             description: nil,
             thumbnail: nil,
             media: nil
@@ -40,7 +40,7 @@ class AlipayViewController: UIViewController {
 
     @IBAction func shareURLToAlipay(sender: UIButton) {
         let info =  MonkeyKing.Info(
-            title: "Timeline URL, \(NSUUID().UUIDString)",
+            title: "Friends URL, \(NSUUID().UUIDString)",
             description: "Description URL, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit"),
             media: .URL(NSURL(string: "http://soyep.com")!)
