@@ -32,6 +32,7 @@ public class MonkeyKing: NSObject {
         case QQ(appID: String)
         case Weibo(appID: String, appKey: String, redirectURL: String)
         case Pocket(appID: String)
+        case Alipay(appID: String)
 
         public var isAppInstalled: Bool {
             switch self {
@@ -43,6 +44,8 @@ public class MonkeyKing: NSObject {
                 return sharedMonkeyKing.canOpenURL(URLString: "weibosdk://request")
             case .Pocket:
                 return sharedMonkeyKing.canOpenURL(URLString: "pocket-oauth-v1://")
+            case .Alipay:
+                return sharedMonkeyKing.canOpenURL(URLString: "alipayshare://")
             }
         }
 
@@ -55,6 +58,8 @@ public class MonkeyKing: NSObject {
             case .Weibo(let appID, _, _):
                 return appID
             case .Pocket(let appID):
+                return appID
+            case .Alipay(let appID):
                 return appID
             }
         }
@@ -71,6 +76,14 @@ public class MonkeyKing: NSObject {
                 return false
             }
         }
+    }
+
+    public enum SupportedPlatform {
+        case QQ
+        case WeChat
+        case Weibo
+        case Pocket(requestToken: String)
+        case Alipay
     }
 
     public class func registerAccount(account: Account) {
@@ -95,6 +108,10 @@ public class MonkeyKing: NSObject {
                     }
                 case .Pocket:
                     if case .Pocket = account {
+                        sharedMonkeyKing.accountSet.remove(oldAccount)
+                    }
+                case .Alipay:
+                    if case .Alipay = account {
                         sharedMonkeyKing.accountSet.remove(oldAccount)
                     }
                 }
@@ -263,6 +280,23 @@ extension MonkeyKing {
             sharedMonkeyKing.oauthCompletionHandler?(nil, nil, nil)
             return true
         }
+
+        // Alipay
+        if URL.scheme.hasPrefix("ap") {
+            // Alipay Share
+            guard let account = sharedMonkeyKing.accountSet[.Alipay],
+                data = UIPasteboard.generalPasteboard().dataForPasteboardType("com.alipay.openapi.pb.resp.\(account.appID)"),
+                dict = try? NSPropertyListSerialization.propertyListWithData(data, options: .Immutable, format: nil),
+                objects = dict["$objects"] as? NSArray,
+                result = objects[12] as? Int else {
+                    return false
+            }
+
+            let success = (result == 0)
+            sharedMonkeyKing.sharedCompletionHandler?(result: success)
+
+            return success
+        }
         
         return false
     }
@@ -357,6 +391,25 @@ extension MonkeyKing {
             }
         }
         case Weibo(WeiboSubtype)
+
+        public enum AlipaySubtype {
+            case Friends(info: Info)
+
+            var scene: Int {
+                switch self {
+                case .Friends:
+                    return 0
+                }
+            }
+
+            var info: Info {
+                switch self {
+                case .Friends(let info):
+                    return info
+                }
+            }
+        }
+        case Alipay(AlipaySubtype)
 
         public var canBeDelivered: Bool {
 
@@ -706,7 +759,20 @@ extension MonkeyKing {
             case .Video:
                 fatalError("web Weibo not supports Video type")
             }
-            
+
+        // Alipay
+        case .Alipay(let type):
+
+            let dictionary = createAlipayMessageDictionary(type.info, appID: appID)
+            guard let data = try? NSPropertyListSerialization.dataWithPropertyList(dictionary, format: .XMLFormat_v1_0, options: 0) else {
+                completionHandler(result: false)
+                return
+            }
+
+            UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.alipay.openapi.pb.req.\(appID)")
+            if !openURL(URLString: "alipayshare://platformapi/shareService?action=sendReq&shareId=\(appID)") {
+                completionHandler(result: false)
+            }
         }
     }
 }
@@ -716,14 +782,7 @@ extension MonkeyKing {
 
 extension MonkeyKing {
 
-    public enum OAuthPlatform {
-        case QQ
-        case WeChat
-        case Weibo
-        case Pocket(requestToken: String)
-    }
-
-    public class func OAuth(platform: OAuthPlatform, scope: String? = nil, completionHandler: OAuthCompletionHandler) {
+    public class func OAuth(platform: SupportedPlatform, scope: String? = nil, completionHandler: OAuthCompletionHandler) {
 
         guard let account = sharedMonkeyKing.accountSet[platform] else {
             return
@@ -822,6 +881,8 @@ extension MonkeyKing {
             dispatch_async(dispatch_get_main_queue()) {
                 addWebViewByURLString(requestTokenAPI)
             }
+        case .Alipay:
+            break
         }
     }
 }
@@ -956,6 +1017,184 @@ extension MonkeyKing {
         }
     }
 
+    private class func createAlipayMessageDictionary(info: Info, appID: String) -> NSDictionary {
+        enum AlipayMessageType {
+            case Text
+            case Image(UIImage)
+            case URL(NSURL)
+        }
+
+        let keyUID = "CF$UID"
+        let keyClass = "$class"
+        let keyClasses = "$classes"
+        let keyClassname = "$classname"
+
+        var messageType: AlipayMessageType = .Text
+
+        if let media = info.media {
+            switch media {
+            case .URL(let URL):
+                messageType = .URL(URL)
+            case .Image(let image):
+                messageType = .Image(image)
+            case .Audio:
+                fatalError("Alipay not supports Audio type")
+            case .Video:
+                fatalError("Alipay not supports Video type")
+            }
+        } else { // Text
+            messageType = .Text
+        }
+
+        // Public Items
+        let UIDValue: Int
+        let APMediaType: String
+
+        switch messageType {
+        case .Text:
+            UIDValue = 19
+            APMediaType = "APShareTextObject"
+        case .Image:
+            UIDValue = 20
+            APMediaType = "APShareImageObject"
+        case .URL:
+            UIDValue = 23
+            APMediaType = "APShareWebObject"
+        }
+
+        let publicObjectsItem0 = "$null"
+        let publicObjectsItem1 = [
+            keyClass: [keyUID: UIDValue],
+            "NS.keys": [
+                [keyUID: 2],
+                [keyUID: 3]
+            ],
+            "NS.objects": [
+                [keyUID: 4],
+                [keyUID: 11]
+            ]
+        ]
+        let publicObjectsItem2 = "app"
+        let publicObjectsItem3 = "req"
+        let publicObjectsItem4 = [
+            keyClass: [keyUID: 10],
+            "appKey": [keyUID: 6],
+            "bundleId": [keyUID: 7],
+            "name": [keyUID: 5],
+            "scheme": [keyUID: 8],
+            "sdkVersion": [keyUID: 9]
+        ]
+        let publicObjectsItem5 = NSBundle.mainBundle().monkeyking_displayName ?? "China"
+        let publicObjectsItem6 = appID
+        let publicObjectsItem7 = NSBundle.mainBundle().monkeyking_bundleID ?? "com.nixWork.China"
+        let publicObjectsItem8 = "ap\(appID)"
+        let publicObjectsItem9 = "1.0.1.150917" // SDK Version
+        let publicObjectsItem10 = [
+            keyClasses: ["APSdkApp", "NSObject"],
+            keyClassname: "APSdkApp"
+        ]
+        let publicObjectsItem11 = [
+            keyClass: [keyUID: UIDValue - 1],
+            "message": [keyUID: 13],
+            "scene": [keyUID: 12],
+            "type": [keyUID: 12]
+        ]
+        let publicObjectsItem12: NSNumber = 0
+        let publicObjectsItem13 = [    // For Text(13) && Image(13)
+            keyClass: [keyUID: UIDValue - 2],
+            "mediaObject": [keyUID: 14]
+        ]
+        let publicObjectsItem14 = [   // For Image(16) && URL(17)
+            keyClasses: ["NSMutableData", "NSData", "NSObject"],
+            keyClassname: "NSMutableData"
+        ]
+        let publicObjectsItem16 = [
+            keyClasses: [APMediaType, "NSObject"],
+            keyClassname: APMediaType
+        ]
+        let publicObjectsItem17 = [
+            keyClasses: ["APMediaMessage", "NSObject"],
+            keyClassname: "APMediaMessage"
+        ]
+        let publicObjectsItem18 = [
+            keyClasses: ["APSendMessageToAPReq", "APBaseReq", "NSObject"],
+            keyClassname: "APSendMessageToAPReq"
+        ]
+        let publicObjectsItem19 = [
+            keyClasses: ["NSMutableDictionary", "NSDictionary", "NSObject"],
+            keyClassname: "NSMutableDictionary"
+        ]
+
+        var objectsValue = [
+            publicObjectsItem0, publicObjectsItem1, publicObjectsItem2, publicObjectsItem3,
+            publicObjectsItem4, publicObjectsItem5, publicObjectsItem6, publicObjectsItem7,
+            publicObjectsItem8, publicObjectsItem9, publicObjectsItem10, publicObjectsItem11,
+            publicObjectsItem12
+        ]
+
+        switch messageType {
+        case .Text:
+            let textObjectsItem14 = [
+                keyClass: [keyUID: 16],
+                "text": [keyUID: 15]
+            ]
+
+            let textObjectsItem15 = info.title ?? "Input Text"
+            objectsValue = objectsValue + [publicObjectsItem13, textObjectsItem14, textObjectsItem15]
+
+        case .Image(let image):
+            let imageObjectsItem14 = [
+                keyClass: [keyUID: 17],
+                "imageData": [keyUID: 15]
+            ]
+
+            let imageData = UIImageJPEGRepresentation(image, 0.7) ?? NSData()
+            let imageObjectsItem15 = [
+                keyClass: [keyUID: 16],
+                "NS.data": imageData
+            ]
+            objectsValue = objectsValue + [publicObjectsItem13, imageObjectsItem14, imageObjectsItem15, publicObjectsItem14]
+
+        case .URL(let URL):
+            let URLObjectsItem13 = [
+                keyClass: [keyUID: 21],
+                "desc": [keyUID: 15],
+                "mediaObject": [keyUID: 18],
+                "thumbData": [keyUID: 16],
+                "title": [keyUID: 14]
+            ]
+
+            let thumbnailData = info.thumbnail?.monkeyking_compressedImageData ?? NSData()
+
+            let URLObjectsItem14 = info.title ?? "Input Title"
+            let URLObjectsItem15 = info.description ?? "Input Description"
+            let URLObjectsItem16 = [
+                keyClass: [keyUID: 17],
+                "NS.data": thumbnailData
+            ]
+            let URLObjectsItem18 = [
+                keyClass: [keyUID: 20],
+                "webpageUrl": [keyUID: 19]
+            ]
+            let URLObjectsItem19 = URL.absoluteString
+            objectsValue = objectsValue + [
+                URLObjectsItem13, URLObjectsItem14, URLObjectsItem15,
+                URLObjectsItem16, publicObjectsItem14, URLObjectsItem18, URLObjectsItem19
+            ]
+        }
+
+        objectsValue += [publicObjectsItem16, publicObjectsItem17, publicObjectsItem18, publicObjectsItem19]
+
+        let dictionary = [
+            "$archiver": "NSKeyedArchiver",
+            "$objects": objectsValue,
+            "$top": ["root" : [keyUID: 1]],
+            "$version": 100000
+        ]
+        
+        return dictionary
+    }
+
     private func request(URLString: String, method: Networking.Method, parameters: [String: AnyObject]? = nil, encoding: Networking.ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: Networking.NetworkingResponseHandler) {
         Networking.sharedInstance.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
     }
@@ -1043,7 +1282,7 @@ extension MonkeyKing {
 
 private extension Set {
 
-    subscript(platform: MonkeyKing.OAuthPlatform) -> MonkeyKing.Account? {
+    subscript(platform: MonkeyKing.SupportedPlatform) -> MonkeyKing.Account? {
 
         let accountSet = MonkeyKing.sharedMonkeyKing.accountSet
 
@@ -1073,6 +1312,12 @@ private extension Set {
                     return account
                 }
             }
+        case .Alipay:
+            for account in accountSet {
+                if case .Alipay = account {
+                    return account
+                }
+            }
         }
         
         return nil
@@ -1099,6 +1344,12 @@ private extension Set {
         case .Weibo:
             for account in accountSet {
                 if case .Weibo = account {
+                    return account
+                }
+            }
+        case .Alipay:
+            for account in accountSet {
+                if case .Alipay = account {
                     return account
                 }
             }

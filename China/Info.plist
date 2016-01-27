@@ -63,6 +63,16 @@
 				<string>pocketapp48363</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>alipayShare</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>ap2016012101112529</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
@@ -72,6 +82,8 @@
 		<string>weixin</string>
 		<string>mqqapi</string>
 		<string>weibosdk</string>
+		<string>alipay</string>
+		<string>alipayshare</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -79,17 +91,6 @@
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>qq.com</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-				<key>NSIncludesSubdomains</key>
-				<true/>
-				<key>NSThirdPartyExceptionMinimumTLSVersion</key>
-				<string>TLSv1.0</string>
-				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
-				<false/>
-			</dict>
 			<key>api.weibo.com</key>
 			<dict>
 				<key>NSIncludesSubdomains</key>
@@ -101,6 +102,17 @@
 			</dict>
 			<key>open.weibo.cn</key>
 			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSThirdPartyExceptionMinimumTLSVersion</key>
+				<string>TLSv1.0</string>
+				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+				<false/>
+			</dict>
+			<key>qq.com</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
 				<key>NSIncludesSubdomains</key>
 				<true/>
 				<key>NSThirdPartyExceptionMinimumTLSVersion</key>
