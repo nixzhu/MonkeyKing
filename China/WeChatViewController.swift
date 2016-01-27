@@ -22,7 +22,7 @@ class WeChatViewController: UIViewController {
 
     }
     
-    @IBAction func shareText(sender: UIButton){
+    @IBAction func shareText(sender: UIButton) {
         let info =  MonkeyKing.Info(
             title: "Timeline Text, \(NSUUID().UUIDString)",
             description: nil,
@@ -32,7 +32,7 @@ class WeChatViewController: UIViewController {
         self.shareInfo(info)
     }
 
-    @IBAction func shareURL(sender: UIButton){
+    @IBAction func shareURL(sender: UIButton) {
         let info =  MonkeyKing.Info(
             title: "Timeline URL, \(NSUUID().UUIDString)",
             description: "Description URL, \(NSUUID().UUIDString)",
@@ -42,7 +42,7 @@ class WeChatViewController: UIViewController {
         self.shareInfo(info)
     }
 
-    @IBAction func shareImage(sender: UIButton){
+    @IBAction func shareImage(sender: UIButton) {
         let info =  MonkeyKing.Info(
             title: nil,
             description: nil,
@@ -52,7 +52,7 @@ class WeChatViewController: UIViewController {
         self.shareInfo(info)
     }
 
-    @IBAction func shareMusic(sender: UIButton){
+    @IBAction func shareMusic(sender: UIButton) {
         let info =  MonkeyKing.Info(
             title: "Timeline Music, \(NSUUID().UUIDString)",
             description: "Description Music, \(NSUUID().UUIDString)",
@@ -62,7 +62,7 @@ class WeChatViewController: UIViewController {
         self.shareInfo(info)
     }
 
-    @IBAction func shareVideo(sender: UIButton){
+    @IBAction func shareVideo(sender: UIButton) {
         let info =  MonkeyKing.Info(
             title: "Timeline Video, \(NSUUID().UUIDString)",
             description: "Description Video, \(NSUUID().UUIDString)",
@@ -73,7 +73,7 @@ class WeChatViewController: UIViewController {
         self.shareInfo(info)
     }
     
-    private func shareInfo(info: MonkeyKing.Info){
+    private func shareInfo(info: MonkeyKing.Info) {
         var message :MonkeyKing.Message?
         switch self.segmentControl.selectedSegmentIndex{
         case 0:

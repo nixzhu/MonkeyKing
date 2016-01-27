@@ -10,11 +10,11 @@ import UIKit
 import MonkeyKing
 
 class AlipayViewController: UIViewController {
-    let account = MonkeyKing.Account.Alipay(appID: Configs.Alipay.appID)
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let account = MonkeyKing.Account.Alipay(appID: Configs.Alipay.appID)
         MonkeyKing.registerAccount(account)
     }
 
@@ -55,6 +55,5 @@ class AlipayViewController: UIViewController {
             print("result: \(result)")
         }
     }
-
-
 }
+
