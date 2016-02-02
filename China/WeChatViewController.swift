@@ -113,6 +113,13 @@ class WeChatViewController: UIViewController {
         }
     }
 
+    @IBAction func pay(sender: AnyObject) {
+        let link = MonkeyKing.Link.WeChat(linkString: "http://www.blessingsoft.com/pay.php?payType=weixin")
+        MonkeyKing.pay(link) { (result, error) -> Void in
+            print("result: \(result), error: \(error)")
+        }
+    }
+
     private func fetchUserInfo(OAuthInfo: NSDictionary?) {
 
         guard let token = OAuthInfo?["access_token"] as? String,

@@ -17,11 +17,13 @@ public class MonkeyKing: NSObject {
 
     public typealias SharedCompletionHandler = (result: Bool) -> Void
     public typealias OAuthCompletionHandler = (NSDictionary?, NSURLResponse?, NSError?) -> Void
+    public typealias PayCompletionHandler = (result: Bool, error: NSError?) -> Void
 
     private static let sharedMonkeyKing = MonkeyKing()
     private var accountSet = Set<Account>()
     private var sharedCompletionHandler: SharedCompletionHandler?
     private var oauthCompletionHandler: OAuthCompletionHandler?
+    private var payCompletionHandler: PayCompletionHandler?
 
     // Prevent others from using the default '()' initializer for MonkeyKing.
     private override init() {}
@@ -145,6 +147,20 @@ extension MonkeyKing {
                 }
 
                 return true
+            }
+            
+            if URL.absoluteString.containsString("://pay/") {
+                let queryItems = URL.monkeyking_queryItems
+                guard let ret = queryItems["ret"] as? Int else {
+                    return false
+                }
+                
+                let result = (ret == 0)
+                let error = NSError(domain: "Pay Error", code: ret, userInfo: nil)
+                
+                sharedMonkeyKing.payCompletionHandler?(result: result, error: error)
+                
+                return result
             }
 
             // WeChat Share
@@ -313,6 +329,7 @@ extension MonkeyKing {
         case Image(UIImage)
         case Audio(audioURL: NSURL, linkURL: NSURL?)
         case Video(NSURL)
+        case File(NSData)
     }
 
     public typealias Info = (title: String?, description: String?, thumbnail: UIImage?, media: Media?)
@@ -352,6 +369,7 @@ extension MonkeyKing {
         public enum QQSubtype {
             case Friends(info: Info)
             case Zone(info: Info)
+            case Dataline(info: Info)
 
             var scene: Int {
                 switch self {
@@ -359,6 +377,8 @@ extension MonkeyKing {
                     return 0
                 case .Zone:
                     return 1
+                case .Dataline:
+                    return 0x10
                 }
             }
 
@@ -367,6 +387,8 @@ extension MonkeyKing {
                 case .Friends(let info):
                     return info
                 case .Zone(let info):
+                    return info
+                case .Dataline(let info):
                     return info
                 }
             }
@@ -493,6 +515,8 @@ extension MonkeyKing {
                 case .Video(let URL):
                     weChatMessageInfo["objectType"] = "4"
                     weChatMessageInfo["mediaUrl"] = URL.absoluteString
+                case .File:
+                    fatalError("WeChat not supports File type")
                 }
 
             } else { // Text Share
@@ -581,6 +605,22 @@ extension MonkeyKing {
 
                 case .Video(let URL):
                     handleNewsWithURL(URL, mediaType: nil) // 没有 video 类型，默认用 news
+                case .File(let fileData):
+                    print("file")
+                    
+                    let dic = [
+                        "file_data": fileData,
+                    ]
+                    
+                    let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
+                    
+                    UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
+                    
+                    qqSchemeURLString += "localFile"
+                    
+                    if let filename = type.info.description?.monkeyking_urlEncodedString {
+                        qqSchemeURLString += "&fileName=\(filename)"
+                    }
                 }
 
                 if let encodedTitle = type.info.title?.monkeyking_base64AndURLEncodedString {
@@ -649,6 +689,8 @@ extension MonkeyKing {
 
                     case .Video:
                         fatalError("Weibo not supports Video type")
+                    case .File:
+                        fatalError("Weibo not supports File type")
                     }
                 }
 
@@ -720,6 +762,8 @@ extension MonkeyKing {
 
                 case .Video:
                     fatalError("web Weibo not supports Video type")
+                case .File:
+                    fatalError("web Weibo not supports File type")
                 }
             }
 
@@ -758,6 +802,8 @@ extension MonkeyKing {
                 
             case .Video:
                 fatalError("web Weibo not supports Video type")
+            case .File:
+                fatalError("web Weibo not supports File type")
             }
 
         // Alipay
@@ -777,6 +823,66 @@ extension MonkeyKing {
     }
 }
 
+
+// MARK: Pay
+
+extension MonkeyKing {
+    
+    public enum Link {
+        case Alipay(linkString: String, screenshot: Bool)
+        
+        case WeChat(linkString: String)
+        
+        public var canBeDelivered: Bool {
+            var scheme = ""
+            switch self {
+            case .Alipay:
+                scheme = "alipay://"
+            case .WeChat:
+                scheme = "weixin://"
+            }
+            
+            return sharedMonkeyKing.canOpenURL(URLString: scheme)
+        }
+    }
+    
+    // 
+    public class func pay(link: Link, completionHandler: PayCompletionHandler) {
+        
+        if !link.canBeDelivered {
+            let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
+            completionHandler(result: false, error: error)
+            return
+        }
+        
+        sharedMonkeyKing.payCompletionHandler = completionHandler
+        
+        switch link {
+        case .WeChat(let linkString):
+            if !openURL(URLString: linkString) {
+                completionHandler(result: false, error: nil)
+            }
+            
+        case .Alipay(let linkString, let screenshot):
+            if screenshot {
+                let image = sharedMonkeyKing.screenshot()
+                let params = NSURL(string: linkString)?.monkeyking_queryItems
+                
+                let dict = NSMutableDictionary()
+                dict["image_data"] = UIImagePNGRepresentation(image)
+                dict["scheme"] = params!["fromAppUrlScheme"]
+                
+                let imageData = NSKeyedArchiver.archivedDataWithRootObject(dict)
+                UIPasteboard.generalPasteboard().setData(imageData, forPasteboardType: "com.alipay.alipayClient.screenImage")
+            }
+            
+            if !openURL(URLString: linkString) {
+                completionHandler(result: false, error: nil)
+            }
+        }
+        
+    }
+}
 
 // MARK: OAuth
 
@@ -1041,6 +1147,8 @@ extension MonkeyKing {
                 fatalError("Alipay not supports Audio type")
             case .Video:
                 fatalError("Alipay not supports Video type")
+            case .File:
+                fatalError("Alipay not supports File type")
             }
         } else { // Text
             messageType = .Text
@@ -1193,6 +1301,18 @@ extension MonkeyKing {
         ]
         
         return dictionary
+    }
+    
+    private func screenshot() -> UIImage {
+        let layer = UIApplication.sharedApplication().keyWindow!.layer
+        let scale = UIScreen.mainScreen().scale
+        UIGraphicsBeginImageContextWithOptions(layer.frame.size, false, scale);
+        
+        layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return image
     }
 
     private func request(URLString: String, method: Networking.Method, parameters: [String: AnyObject]? = nil, encoding: Networking.ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: Networking.NetworkingResponseHandler) {
@@ -1402,6 +1522,10 @@ private extension String {
 
     var monkeyking_base64AndURLEncodedString: String? {
         return monkeyking_base64EncodedString?.monkeyking_urlEncodedString
+    }
+    
+    var monkeyking_urlDecodedString: String? {
+        return stringByReplacingOccurrencesOfString("+", withString: " ").stringByRemovingPercentEncoding
     }
 
     var monkeyking_QQCallbackName: String {
