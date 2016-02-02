@@ -313,6 +313,7 @@ extension MonkeyKing {
         case Image(UIImage)
         case Audio(audioURL: NSURL, linkURL: NSURL?)
         case Video(NSURL)
+        case File(NSData)
     }
 
     public typealias Info = (title: String?, description: String?, thumbnail: UIImage?, media: Media?)
@@ -352,6 +353,7 @@ extension MonkeyKing {
         public enum QQSubtype {
             case Friends(info: Info)
             case Zone(info: Info)
+            case Dataline(info: Info)
 
             var scene: Int {
                 switch self {
@@ -359,6 +361,8 @@ extension MonkeyKing {
                     return 0
                 case .Zone:
                     return 1
+                case .Dataline:
+                    return 0x10
                 }
             }
 
@@ -367,6 +371,8 @@ extension MonkeyKing {
                 case .Friends(let info):
                     return info
                 case .Zone(let info):
+                    return info
+                case .Dataline(let info):
                     return info
                 }
             }
@@ -493,6 +499,8 @@ extension MonkeyKing {
                 case .Video(let URL):
                     weChatMessageInfo["objectType"] = "4"
                     weChatMessageInfo["mediaUrl"] = URL.absoluteString
+                case .File:
+                    fatalError("WeChat not supports File type")
                 }
 
             } else { // Text Share
@@ -581,6 +589,22 @@ extension MonkeyKing {
 
                 case .Video(let URL):
                     handleNewsWithURL(URL, mediaType: nil) // 没有 video 类型，默认用 news
+                case .File(let fileData):
+                    print("file")
+                    
+                    let dic = [
+                        "file_data": fileData,
+                    ]
+                    
+                    let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
+                    
+                    UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
+                    
+                    qqSchemeURLString += "localFile"
+                    
+                    if let filename = type.info.description?.monkeyking_urlEncodedString {
+                        qqSchemeURLString += "&fileName=\(filename)"
+                    }
                 }
 
                 if let encodedTitle = type.info.title?.monkeyking_base64AndURLEncodedString {
@@ -649,6 +673,8 @@ extension MonkeyKing {
 
                     case .Video:
                         fatalError("Weibo not supports Video type")
+                    case .File:
+                        fatalError("Weibo not supports File type")
                     }
                 }
 
@@ -720,6 +746,8 @@ extension MonkeyKing {
 
                 case .Video:
                     fatalError("web Weibo not supports Video type")
+                case .File:
+                    fatalError("web Weibo not supports File type")
                 }
             }
 
@@ -758,6 +786,8 @@ extension MonkeyKing {
                 
             case .Video:
                 fatalError("web Weibo not supports Video type")
+            case .File:
+                fatalError("web Weibo not supports File type")
             }
 
         // Alipay
@@ -1041,6 +1071,8 @@ extension MonkeyKing {
                 fatalError("Alipay not supports Audio type")
             case .Video:
                 fatalError("Alipay not supports Video type")
+            case .File:
+                fatalError("Alipay not supports File type")
             }
         } else { // Text
             messageType = .Text
@@ -1193,6 +1225,18 @@ extension MonkeyKing {
         ]
         
         return dictionary
+    }
+    
+    private func screenshot() -> UIImage {
+        let layer = UIApplication.sharedApplication().keyWindow!.layer
+        let scale = UIScreen.mainScreen().scale
+        UIGraphicsBeginImageContextWithOptions(layer.frame.size, false, scale);
+        
+        layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return image
     }
 
     private func request(URLString: String, method: Networking.Method, parameters: [String: AnyObject]? = nil, encoding: Networking.ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: Networking.NetworkingResponseHandler) {
@@ -1402,6 +1446,10 @@ private extension String {
 
     var monkeyking_base64AndURLEncodedString: String? {
         return monkeyking_base64EncodedString?.monkeyking_urlEncodedString
+    }
+    
+    var monkeyking_urlDecodedString: String? {
+        return stringByReplacingOccurrencesOfString("+", withString: " ").stringByRemovingPercentEncoding
     }
 
     var monkeyking_QQCallbackName: String {

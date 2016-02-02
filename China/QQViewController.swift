@@ -163,6 +163,48 @@ class QQViewController: UIViewController {
         }
     }
 
+    @IBAction func shareTextToDataline(sender: AnyObject) {
+        let message = MonkeyKing.Message.QQ(.Dataline(info: (
+            title: "Dataline Text, \(NSUUID().UUIDString)",
+            description: "Hello World, \(NSUUID().UUIDString)",
+            thumbnail: nil,
+            media: nil
+        )))
+        
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
+        }
+    }
+    
+    @IBAction func shareFileToDataline(sender: AnyObject) {
+        
+        let message = MonkeyKing.Message.QQ(.Dataline(info: (
+            title: "Dataline File, \(NSUUID().UUIDString)",
+            description: "[720p]七个男的大战一个妖娆女的.993.86MB.torrent",
+            thumbnail: nil,
+            media: .File(NSData(contentsOfFile: NSBundle.mainBundle().pathForResource("[720p]七个男的大战一个妖娆女的.993.86MB", ofType: "torrent")!)!)
+        )))
+        
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
+        }
+    }
+    
+    @IBAction func shareImageToDataline(sender: AnyObject) {
+        
+        let message = MonkeyKing.Message.QQ(.Dataline(info: (
+            title: "Dataline Image, \(NSUUID().UUIDString)",
+            description: "Hello World, \(NSUUID().UUIDString)",
+            thumbnail: nil,
+            media: .Image(UIImage(named: "rabbit")!)
+        )))
+        
+        MonkeyKing.shareMessage(message) { result in
+            print("result: \(result)")
+        }
+
+    }
+    
     // MARK: OAuth
 
     @IBAction func OAuth(sender: UIButton) {
