@@ -173,8 +173,9 @@ For more information about how to use Carthage, please see its [project page](ht
 
 ## Contact
 
-NIX [@nixzhu](https://twitter.com/nixzhu) or
-Limon [@LimonTop](http://weibo.com/u/1783821582)
+NIX [@nixzhu](https://twitter.com/nixzhu), 
+Limon [@LimonTop](http://weibo.com/u/1783821582) or
+Lanford [@Lanford3_3](http://weibo.com/accoropitor)
 
 ## Credits
 
