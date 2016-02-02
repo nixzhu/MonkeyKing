@@ -48,13 +48,6 @@ class AlipayViewController: UIViewController {
         self.shareInfo(info)
     }
 
-    @IBAction func pay(sender: AnyObject) {
-        let link = MonkeyKing.Link.Alipay(linkString: "http://www.blessingsoft.com/pay.php?payType=alipay", screenshot: true)
-        MonkeyKing.pay(link) { (result, error) -> Void in
-            print("result: \(result), error: \(error)")
-        }
-    }
-
     private func shareInfo(info: MonkeyKing.Info){
         let message = MonkeyKing.Message.Alipay(.Friends(info: info))
         MonkeyKing.shareMessage(message) { result in

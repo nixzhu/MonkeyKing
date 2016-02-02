@@ -17,13 +17,11 @@ public class MonkeyKing: NSObject {
 
     public typealias SharedCompletionHandler = (result: Bool) -> Void
     public typealias OAuthCompletionHandler = (NSDictionary?, NSURLResponse?, NSError?) -> Void
-    public typealias PayCompletionHandler = (result: Bool, error: NSError?) -> Void
 
     private static let sharedMonkeyKing = MonkeyKing()
     private var accountSet = Set<Account>()
     private var sharedCompletionHandler: SharedCompletionHandler?
     private var oauthCompletionHandler: OAuthCompletionHandler?
-    private var payCompletionHandler: PayCompletionHandler?
 
     // Prevent others from using the default '()' initializer for MonkeyKing.
     private override init() {}
@@ -147,20 +145,6 @@ extension MonkeyKing {
                 }
 
                 return true
-            }
-            
-            if URL.absoluteString.containsString("://pay/") {
-                let queryItems = URL.monkeyking_queryItems
-                guard let ret = queryItems["ret"] as? Int else {
-                    return false
-                }
-                
-                let result = (ret == 0)
-                let error = NSError(domain: "Pay Error", code: ret, userInfo: nil)
-                
-                sharedMonkeyKing.payCompletionHandler?(result: result, error: error)
-                
-                return result
             }
 
             // WeChat Share
@@ -823,66 +807,6 @@ extension MonkeyKing {
     }
 }
 
-
-// MARK: Pay
-
-extension MonkeyKing {
-    
-    public enum Link {
-        case Alipay(linkString: String, screenshot: Bool)
-        
-        case WeChat(linkString: String)
-        
-        public var canBeDelivered: Bool {
-            var scheme = ""
-            switch self {
-            case .Alipay:
-                scheme = "alipay://"
-            case .WeChat:
-                scheme = "weixin://"
-            }
-            
-            return sharedMonkeyKing.canOpenURL(URLString: scheme)
-        }
-    }
-    
-    // 
-    public class func pay(link: Link, completionHandler: PayCompletionHandler) {
-        
-        if !link.canBeDelivered {
-            let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
-            completionHandler(result: false, error: error)
-            return
-        }
-        
-        sharedMonkeyKing.payCompletionHandler = completionHandler
-        
-        switch link {
-        case .WeChat(let linkString):
-            if !openURL(URLString: linkString) {
-                completionHandler(result: false, error: nil)
-            }
-            
-        case .Alipay(let linkString, let screenshot):
-            if screenshot {
-                let image = sharedMonkeyKing.screenshot()
-                let params = NSURL(string: linkString)?.monkeyking_queryItems
-                
-                let dict = NSMutableDictionary()
-                dict["image_data"] = UIImagePNGRepresentation(image)
-                dict["scheme"] = params!["fromAppUrlScheme"]
-                
-                let imageData = NSKeyedArchiver.archivedDataWithRootObject(dict)
-                UIPasteboard.generalPasteboard().setData(imageData, forPasteboardType: "com.alipay.alipayClient.screenImage")
-            }
-            
-            if !openURL(URLString: linkString) {
-                completionHandler(result: false, error: nil)
-            }
-        }
-        
-    }
-}
 
 // MARK: OAuth
 

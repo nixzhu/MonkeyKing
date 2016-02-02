@@ -250,22 +250,13 @@
                                     <segment title="Favorite"/>
                                 </segments>
                             </segmentedControl>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zV4-xf-mvR">
-                                <rect key="frame" x="145.5" y="498" width="30" height="30"/>
-                                <state key="normal" title="Pay"/>
-                                <connections>
-                                    <action selector="pay:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="yFc-Qf-a3D"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="wfw-9a-DtS" firstAttribute="top" secondItem="oRX-XU-uEu" secondAttribute="bottom" constant="80" id="0Mk-6a-mUF"/>
                             <constraint firstItem="Wyh-QX-rAS" firstAttribute="leading" secondItem="PJB-1N-QAg" secondAttribute="leading" id="538-rb-BtL"/>
                             <constraint firstItem="oRX-XU-uEu" firstAttribute="centerX" secondItem="UWw-uP-3po" secondAttribute="centerX" id="5SP-dc-8Mv"/>
-                            <constraint firstItem="zV4-xf-mvR" firstAttribute="centerX" secondItem="UWw-uP-3po" secondAttribute="centerX" id="5nw-5Z-MSZ"/>
                             <constraint firstItem="wfw-9a-DtS" firstAttribute="top" secondItem="UWw-uP-3po" secondAttribute="bottom" constant="120" id="7ew-1Y-cIR"/>
-                            <constraint firstAttribute="bottom" secondItem="zV4-xf-mvR" secondAttribute="bottom" constant="20" id="BHc-xz-Cbg"/>
                             <constraint firstItem="Wyh-QX-rAS" firstAttribute="top" secondItem="PJB-1N-QAg" secondAttribute="bottom" constant="20" id="F43-wv-ZDN"/>
                             <constraint firstItem="UWw-uP-3po" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="NBp-he-WOd"/>
                             <constraint firstItem="Wyh-QX-rAS" firstAttribute="leading" secondItem="lbo-xY-RTb" secondAttribute="leading" id="OM2-Wf-fce"/>
@@ -280,13 +271,11 @@
                             <constraint firstItem="8Vz-30-FuV" firstAttribute="leading" secondItem="gS0-c6-rje" secondAttribute="leading" id="jHz-OC-D2v"/>
                             <constraint firstItem="lbo-xY-RTb" firstAttribute="top" secondItem="Wyh-QX-rAS" secondAttribute="bottom" constant="20" id="kn7-bN-QM8"/>
                             <constraint firstItem="PJB-1N-QAg" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="mbI-pC-Twk"/>
-                            <constraint firstItem="wfw-9a-DtS" firstAttribute="top" secondItem="zV4-xf-mvR" secondAttribute="bottom" constant="40" id="vQk-kU-h2V"/>
                             <constraint firstItem="PJB-1N-QAg" firstAttribute="leading" secondItem="pco-JT-UnQ" secondAttribute="leadingMargin" constant="100" id="xkw-ho-0Yx"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="xkw-ho-0Yx"/>
-                                <exclude reference="BHc-xz-Cbg"/>
                             </mask>
                         </variation>
                     </view>
@@ -396,21 +385,12 @@
                                     <action selector="shareURLToAlipay:" destination="enf-fb-fjR" eventType="touchUpInside" id="gad-oW-rUC"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oZ9-9S-W2h">
-                                <rect key="frame" x="125" y="434" width="71" height="30"/>
-                                <state key="normal" title="Alipay Pay"/>
-                                <connections>
-                                    <action selector="pay:" destination="enf-fb-fjR" eventType="touchUpInside" id="fTa-HH-KKH"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="oZ9-9S-W2h" firstAttribute="top" secondItem="ci4-1i-Sib" secondAttribute="bottom" constant="60" id="0wb-LJ-qTO"/>
                             <constraint firstItem="rib-Zt-LiP" firstAttribute="centerX" secondItem="zQL-2N-wfU" secondAttribute="centerX" id="CHM-0F-Szi"/>
                             <constraint firstItem="ewo-ab-eI8" firstAttribute="top" secondItem="rib-Zt-LiP" secondAttribute="bottom" constant="60" id="Kii-G4-jwd"/>
                             <constraint firstItem="ci4-1i-Sib" firstAttribute="top" secondItem="ewo-ab-eI8" secondAttribute="bottom" constant="60" id="Pmk-qH-xSC"/>
-                            <constraint firstItem="oZ9-9S-W2h" firstAttribute="centerX" secondItem="ci4-1i-Sib" secondAttribute="centerX" id="fRR-8m-jg3"/>
                             <constraint firstItem="ci4-1i-Sib" firstAttribute="centerX" secondItem="zQL-2N-wfU" secondAttribute="centerX" id="ssA-rb-cDO"/>
                             <constraint firstItem="ewo-ab-eI8" firstAttribute="centerX" secondItem="zQL-2N-wfU" secondAttribute="centerX" id="uzE-1f-4eT"/>
                             <constraint firstItem="rib-Zt-LiP" firstAttribute="top" secondItem="4Ei-Fo-sDx" secondAttribute="bottom" constant="100" id="wvS-Zz-YFb"/>
