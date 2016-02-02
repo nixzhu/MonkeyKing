@@ -369,6 +369,7 @@ extension MonkeyKing {
         public enum QQSubtype {
             case Friends(info: Info)
             case Zone(info: Info)
+            case Favorites(into: Info)
             case Dataline(info: Info)
 
             var scene: Int {
@@ -377,6 +378,8 @@ extension MonkeyKing {
                     return 0
                 case .Zone:
                     return 1
+                case .Favorites:
+                    return 0x08
                 case .Dataline:
                     return 0x10
                 }
@@ -387,6 +390,8 @@ extension MonkeyKing {
                 case .Friends(let info):
                     return info
                 case .Zone(let info):
+                    return info
+                case .Favorites(let info):
                     return info
                 case .Dataline(let info):
                     return info
