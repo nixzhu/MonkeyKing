@@ -125,6 +125,7 @@ class QQViewController: UIViewController {
         }
     }
 
+
     // MARK: OAuth
 
     @IBAction func OAuth(sender: UIButton) {

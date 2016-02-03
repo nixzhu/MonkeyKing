@@ -504,6 +504,7 @@ extension MonkeyKing {
                 case .Video(let URL):
                     weChatMessageInfo["objectType"] = "4"
                     weChatMessageInfo["mediaUrl"] = URL.absoluteString
+
                 case .File:
                     fatalError("WeChat not supports File type")
                 }
@@ -596,18 +597,13 @@ extension MonkeyKing {
                     handleNewsWithURL(URL, mediaType: nil) // 没有 video 类型，默认用 news
 
                 case .File(let fileData):
-                    
-                    let dic = [
-                        "file_data": fileData,
-                    ]
-                    
-                    let data = NSKeyedArchiver.archivedDataWithRootObject(dic)
-                    
+
+                    let data = NSKeyedArchiver.archivedDataWithRootObject(["file_data": fileData])
                     UIPasteboard.generalPasteboard().setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
-                    
+
                     qqSchemeURLString += "localFile"
-                    
-                    if let filename = type.info.description?.monkeyking_urlEncodedString {
+
+                    if let filename = type.info.description?.monkeyking_URLEncodedString {
                         qqSchemeURLString += "&fileName=\(filename)"
                     }
                 }
@@ -675,7 +671,6 @@ extension MonkeyKing {
 
                     case .Audio:
                         fatalError("Weibo not supports Audio type")
-
                     case .Video:
                         fatalError("Weibo not supports Video type")
                     case .File:
@@ -748,7 +743,6 @@ extension MonkeyKing {
 
                 case .Audio:
                     fatalError("web Weibo not supports Audio type")
-
                 case .Video:
                     fatalError("web Weibo not supports Video type")
                 case .File:
@@ -788,7 +782,6 @@ extension MonkeyKing {
                 
             case .Audio:
                 fatalError("web Weibo not supports Audio type")
-                
             case .Video:
                 fatalError("web Weibo not supports Video type")
             case .File:
@@ -1236,11 +1229,11 @@ extension MonkeyKing {
         let layer = UIApplication.sharedApplication().keyWindow!.layer
         let scale = UIScreen.mainScreen().scale
         UIGraphicsBeginImageContextWithOptions(layer.frame.size, false, scale);
-        
+
         layer.renderInContext(UIGraphicsGetCurrentContext()!)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        
+
         return image
     }
 
