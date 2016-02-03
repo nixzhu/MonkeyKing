@@ -163,7 +163,9 @@ class QQViewController: UIViewController {
         }
     }
 
-    @IBAction func shareTextToDataline(sender: AnyObject) {
+    // MARK: QQ Dataline
+
+    @IBAction func shareTextToDataline(sender: UIButton) {
         let message = MonkeyKing.Message.QQ(.Dataline(info: (
             title: "Dataline Text, \(NSUUID().UUIDString)",
             description: "Hello World, \(NSUUID().UUIDString)",
@@ -176,7 +178,7 @@ class QQViewController: UIViewController {
         }
     }
     
-    @IBAction func shareFileToDataline(sender: AnyObject) {
+    @IBAction func shareFileToDataline(sender: UIButton) {
         
         let message = MonkeyKing.Message.QQ(.Dataline(info: (
             title: "Dataline File, \(NSUUID().UUIDString)",
@@ -190,7 +192,7 @@ class QQViewController: UIViewController {
         }
     }
     
-    @IBAction func shareImageToDataline(sender: AnyObject) {
+    @IBAction func shareImageToDataline(sender: UIButton) {
         
         let message = MonkeyKing.Message.QQ(.Dataline(info: (
             title: "Dataline Image, \(NSUUID().UUIDString)",
@@ -202,7 +204,6 @@ class QQViewController: UIViewController {
         MonkeyKing.shareMessage(message) { result in
             print("result: \(result)")
         }
-
     }
     
     // MARK: OAuth
