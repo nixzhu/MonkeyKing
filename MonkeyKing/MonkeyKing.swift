@@ -353,6 +353,7 @@ extension MonkeyKing {
         public enum QQSubtype {
             case Friends(info: Info)
             case Zone(info: Info)
+            case Favorites(info: Info)
             case Dataline(info: Info)
 
             var scene: Int {
@@ -361,6 +362,8 @@ extension MonkeyKing {
                     return 0
                 case .Zone:
                     return 1
+                case .Favorites:
+                    return 0x08
                 case .Dataline:
                     return 0x10
                 }
@@ -371,6 +374,8 @@ extension MonkeyKing {
                 case .Friends(let info):
                     return info
                 case .Zone(let info):
+                    return info
+                case .Favorites(let info):
                     return info
                 case .Dataline(let info):
                     return info
@@ -589,8 +594,8 @@ extension MonkeyKing {
 
                 case .Video(let URL):
                     handleNewsWithURL(URL, mediaType: nil) // 没有 video 类型，默认用 news
+
                 case .File(let fileData):
-                    print("file")
                     
                     let dic = [
                         "file_data": fileData,
@@ -1440,15 +1445,15 @@ private extension String {
         return dataUsingEncoding(NSUTF8StringEncoding)?.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0))
     }
 
-    var monkeyking_urlEncodedString: String? {
+    var monkeyking_URLEncodedString: String? {
         return stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLHostAllowedCharacterSet())
     }
 
     var monkeyking_base64AndURLEncodedString: String? {
-        return monkeyking_base64EncodedString?.monkeyking_urlEncodedString
+        return monkeyking_base64EncodedString?.monkeyking_URLEncodedString
     }
     
-    var monkeyking_urlDecodedString: String? {
+    var monkeyking_URLDecodedString: String? {
         return stringByReplacingOccurrencesOfString("+", withString: " ").stringByRemovingPercentEncoding
     }
 

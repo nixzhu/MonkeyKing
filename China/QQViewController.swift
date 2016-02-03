@@ -13,6 +13,10 @@ class QQViewController: UIViewController {
 
     let account = MonkeyKing.Account.QQ(appID: Configs.QQ.appID)
 
+    @IBOutlet private weak var segmentControl: UISegmentedControl!
+    
+    @IBOutlet weak var fileButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -21,190 +25,106 @@ class QQViewController: UIViewController {
 
     // MARK: QQ Friends
 
-    @IBAction func shareTextToQQ(sender: UIButton) {
+    @IBAction func shareText(sender: UIButton) {
 
-        let message = MonkeyKing.Message.QQ(.Friends(info: (
+        let info = MonkeyKing.Info(
             title: nil,
             description: "QQ Text: Hello World, \(NSUUID().UUIDString)",
             thumbnail: nil,
             media: nil
-        )))
+        )
 
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
+        shareInfo(info)
     }
 
-    @IBAction func shareURLToQQ(sender: UIButton) {
+    @IBAction func shareURL(sender: UIButton) {
 
-        let message = MonkeyKing.Message.QQ(.Friends(info: (
-            title: "QQ Friends URL, \(NSUUID().UUIDString)",
+        let info = MonkeyKing.Info(
+            title: "QQ URL, \(NSUUID().UUIDString)",
             description: "apple.com/cn, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit")!,
             media: .URL(NSURL(string: "http://www.apple.com/cn")!)
-        )))
+        )
 
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
+        shareInfo(info)
     }
 
-    @IBAction func shareImageToQQ(sender: UIButton) {
+    @IBAction func shareImage(sender: UIButton) {
 
-        let message = MonkeyKing.Message.QQ(.Friends(info: (
-            title: "QQ Friends Image, \(NSUUID().UUIDString)",
+        let info = MonkeyKing.Info(
+            title: "QQ Image, \(NSUUID().UUIDString)",
             description: "Hello World, \(NSUUID().UUIDString)",
             thumbnail: nil,
             media: .Image(UIImage(named: "rabbit")!)
-        )))
+        )
 
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
+        shareInfo(info)
     }
 
-    @IBAction func shareAudioToQQ(sender: UIButton) {
+    @IBAction func shareAudio(sender: UIButton) {
 
-        let message = MonkeyKing.Message.QQ(.Friends(info: (
-            title: "QQ Friends Audio, \(NSUUID().UUIDString)",
+        let info = MonkeyKing.Info(
+            title: "QQ Audio, \(NSUUID().UUIDString)",
             description: "Hello World, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit")!,
             media: .Audio(audioURL: NSURL(string: "http://wfmusic.3g.qq.com/s?g_f=0&fr=&aid=mu_detail&id=2511915")!, linkURL: nil)
-        )))
+        )
 
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
+        shareInfo(info)
     }
 
-    @IBAction func shareVideoToQQ(sender: UIButton) {
+    @IBAction func shareVideo(sender: UIButton) {
 
-        let message = MonkeyKing.Message.QQ(.Friends(info: (
-            title: "QQ Friends Video, \(NSUUID().UUIDString)",
+        let info = MonkeyKing.Info(
+            title: "QQ Video, \(NSUUID().UUIDString)",
             description: "Hello World, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit")!,
             media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XOTU2MzA0NzY4.html")!)
-        )))
+        )
 
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
+        shareInfo(info)
     }
 
-    // MARK: QZone
-
-    @IBAction func shareTextToQZone(sender: UIButton) {
-
-        let message = MonkeyKing.Message.QQ(.Zone(info: (
-            title: nil,
-            description: "QZone Text: Hello World, \(NSUUID().UUIDString)",
-            thumbnail: nil,
-            media: nil
-        )))
-
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
-    }
-
-    @IBAction func shareURLToQZone(sender: UIButton) {
-
-        let message = MonkeyKing.Message.QQ(.Zone(info: (
-            title: "QZone URL, \(NSUUID().UUIDString)",
-            description: "soyep.com, \(NSUUID().UUIDString)",
-            thumbnail: UIImage(named: "rabbit")!,
-            media: .URL(NSURL(string: "http://www.soyep.com")!)
-        )))
-
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
-    }
-
-    @IBAction func shareImageToQZone(sender: UIButton) {
-
-        let message = MonkeyKing.Message.QQ(.Zone(info: (
-            title: "QZone URL Image, \(NSUUID().UUIDString)",
-            description: "Hello World, \(NSUUID().UUIDString)",
-            thumbnail: nil,
-            media: .Image(UIImage(named: "rabbit")!)
-        )))
-
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
-    }
-
-    @IBAction func shareAudioToQZone(sender: UIButton) {
-
-        let message = MonkeyKing.Message.QQ(.Zone(info: (
-            title: "QZone Audio, \(NSUUID().UUIDString)",
-            description: "Hello World, \(NSUUID().UUIDString)",
-            thumbnail: nil,
-            media: .Audio(audioURL: NSURL(string: "http://wfmusic.3g.qq.com/s?g_f=0&fr=&aid=mu_detail&id=2511915")!, linkURL: nil)
-        )))
-
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
-    }
-
-    @IBAction func shareVideoToQZone(sender: UIButton) {
-
-        let message = MonkeyKing.Message.QQ(.Zone(info: (
-            title: "QZone Video, \(NSUUID().UUIDString)",
-            description: "Hello World, \(NSUUID().UUIDString)",
-            thumbnail: UIImage(named: "rabbit")!,
-            media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XOTU2MzA0NzY4.html")!)
-        )))
-
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
-    }
-
-    @IBAction func shareTextToDataline(sender: AnyObject) {
-        let message = MonkeyKing.Message.QQ(.Dataline(info: (
-            title: "Dataline Text, \(NSUUID().UUIDString)",
-            description: "Hello World, \(NSUUID().UUIDString)",
-            thumbnail: nil,
-            media: nil
-        )))
+    @IBAction func shareFile(sender: AnyObject) {
         
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
-    }
-    
-    @IBAction func shareFileToDataline(sender: AnyObject) {
-        
-        let message = MonkeyKing.Message.QQ(.Dataline(info: (
+        let info = MonkeyKing.Info(
             title: "Dataline File, \(NSUUID().UUIDString)",
             description: "[720p]七个男的大战一个妖娆女的.993.86MB.torrent",
             thumbnail: nil,
             media: .File(NSData(contentsOfFile: NSBundle.mainBundle().pathForResource("[720p]七个男的大战一个妖娆女的.993.86MB", ofType: "torrent")!)!)
-        )))
-        
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
-        }
+        )
+
+        shareInfo(info)
     }
-    
-    @IBAction func shareImageToDataline(sender: AnyObject) {
-        
-        let message = MonkeyKing.Message.QQ(.Dataline(info: (
-            title: "Dataline Image, \(NSUUID().UUIDString)",
-            description: "Hello World, \(NSUUID().UUIDString)",
-            thumbnail: nil,
-            media: .Image(UIImage(named: "rabbit")!)
-        )))
-        
-        MonkeyKing.shareMessage(message) { result in
-            print("result: \(result)")
+
+    @IBAction func segmentChanged(sender: AnyObject) {
+
+        fileButton.hidden = (sender.selectedSegmentIndex != 2)
+    }
+
+    private func shareInfo(info: MonkeyKing.Info) {
+
+        var message :MonkeyKing.Message?
+
+        switch self.segmentControl.selectedSegmentIndex{
+        case 0:
+            message = MonkeyKing.Message.QQ(.Friends(info: info))
+        case 1:
+            message = MonkeyKing.Message.QQ(.Zone(info: info))
+        case 2:
+            message = MonkeyKing.Message.QQ(.Dataline(info: info))
+        case 3:
+            message = MonkeyKing.Message.QQ(.Favorites(info: info))
+        default:()
         }
 
+        if let message = message{
+            MonkeyKing.shareMessage(message) { result in
+                print("result: \(result)")
+            }
+        }
     }
-    
+
     // MARK: OAuth
 
     @IBAction func OAuth(sender: UIButton) {

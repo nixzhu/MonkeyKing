@@ -19,157 +19,103 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pFI-rc-Qus">
-                                <rect key="frame" x="14" y="134" width="56" height="30"/>
-                                <state key="normal" title="QQ URL"/>
+                                <rect key="frame" x="139" y="154" width="42" height="30"/>
+                                <state key="normal" title="URL"/>
                                 <connections>
-                                    <action selector="shareURLToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="Xp9-BO-y2B"/>
-                                    <action selector="shareURLToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="QGT-hy-fth"/>
+                                    <action selector="shareURL:" destination="he5-GB-Amc" eventType="touchUpInside" id="0tc-FD-9Jn"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yox-0f-rEK">
-                                <rect key="frame" x="14" y="184" width="69" height="30"/>
-                                <state key="normal" title="QQ Image"/>
+                                <rect key="frame" x="139" y="204" width="42" height="30"/>
+                                <state key="normal" title="Image"/>
                                 <connections>
-                                    <action selector="shareImageToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="fQx-ym-Lv9"/>
-                                    <action selector="shareImageToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="kbf-By-PuW"/>
+                                    <action selector="shareImage:" destination="he5-GB-Amc" eventType="touchUpInside" id="noZ-rU-3ir"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R1t-qh-QzC">
-                                <rect key="frame" x="14" y="84" width="56" height="30"/>
-                                <state key="normal" title="QQ Text"/>
+                                <rect key="frame" x="139" y="104" width="42" height="30"/>
+                                <state key="normal" title="Text"/>
                                 <connections>
-                                    <action selector="shareTextToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="fqC-5N-dGE"/>
-                                    <action selector="shareTextToTimeline:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="mq8-5u-5dh"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P4E-LE-cpH">
-                                <rect key="frame" x="221" y="134" width="79" height="30"/>
-                                <state key="normal" title="QZone URL"/>
-                                <connections>
-                                    <action selector="shareURLToQZone:" destination="he5-GB-Amc" eventType="touchUpInside" id="veB-uH-ztu"/>
-                                    <action selector="shareURLToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="aqK-HC-UdW"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SwG-wK-wCn">
-                                <rect key="frame" x="221" y="84" width="79" height="30"/>
-                                <state key="normal" title="QZone Text"/>
-                                <connections>
-                                    <action selector="shareTextToQZone:" destination="he5-GB-Amc" eventType="touchUpInside" id="nKe-sP-c78"/>
-                                    <action selector="shareTextToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="Juv-lT-v28"/>
+                                    <action selector="shareText:" destination="he5-GB-Amc" eventType="touchUpInside" id="6eG-Tv-mv2"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cly-xf-sCw">
                                 <rect key="frame" x="139" y="498" width="43" height="30"/>
                                 <state key="normal" title="OAuth"/>
                                 <connections>
-                                    <action selector="OAuth:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="0g3-lB-ch4"/>
-                                    <action selector="OAuth:" destination="he5-GB-Amc" eventType="touchUpInside" id="wHw-FW-i5S"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7gy-PD-6lJ">
-                                <rect key="frame" x="208" y="184" width="92" height="30"/>
-                                <state key="normal" title="QZone Image"/>
-                                <connections>
-                                    <action selector="shareImageToQZone:" destination="he5-GB-Amc" eventType="touchUpInside" id="0Qm-se-HRp"/>
-                                    <action selector="shareImageToSession:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="kZk-9y-viX"/>
+                                    <action selector="OAuth:" destination="he5-GB-Amc" eventType="touchUpInside" id="zRv-DX-lH4"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M2g-P2-GvI">
-                                <rect key="frame" x="14" y="284" width="66" height="30"/>
-                                <state key="normal" title="QQ Video"/>
+                                <rect key="frame" x="139" y="304" width="42" height="30"/>
+                                <state key="normal" title="Video"/>
                                 <connections>
-                                    <action selector="shareVideoToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="hUH-Jx-YqC"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gKk-H8-Cg8">
-                                <rect key="frame" x="211" y="234" width="89" height="30"/>
-                                <state key="normal" title="QZone Audio"/>
-                                <connections>
-                                    <action selector="shareAudioToQZone:" destination="he5-GB-Amc" eventType="touchUpInside" id="hno-jT-CaM"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aYI-AS-QI8">
-                                <rect key="frame" x="210" y="284" width="90" height="30"/>
-                                <state key="normal" title="QZone Video"/>
-                                <connections>
-                                    <action selector="shareVideoToQZone:" destination="he5-GB-Amc" eventType="touchUpInside" id="sbM-L6-rqi"/>
+                                    <action selector="shareVideo:" destination="he5-GB-Amc" eventType="touchUpInside" id="3X9-yF-cpj"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="94M-dg-nm6">
-                                <rect key="frame" x="14" y="234" width="66" height="30"/>
-                                <state key="normal" title="QQ Audio"/>
+                                <rect key="frame" x="139" y="254" width="42" height="30"/>
+                                <state key="normal" title="Audio"/>
                                 <connections>
-                                    <action selector="shareAudioToQQ:" destination="he5-GB-Amc" eventType="touchUpInside" id="quH-ew-N3t"/>
+                                    <action selector="shareAudio:" destination="he5-GB-Amc" eventType="touchUpInside" id="Gdx-xV-LfN"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h6R-oq-BIu">
-                                <rect key="frame" x="14" y="372" width="30" height="30"/>
-                                <state key="normal" title="Text"/>
-                                <connections>
-                                    <action selector="shareTextToDataline:" destination="he5-GB-Amc" eventType="touchUpInside" id="c6x-r1-LK9"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gPU-D2-OrH">
-                                <rect key="frame" x="145" y="372" width="30" height="30"/>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gPU-D2-OrH">
+                                <rect key="frame" x="145" y="354" width="30" height="30"/>
                                 <state key="normal" title="File"/>
                                 <connections>
-                                    <action selector="shareFileToDataline:" destination="he5-GB-Amc" eventType="touchUpInside" id="RJb-lj-DGp"/>
+                                    <action selector="shareFile:" destination="he5-GB-Amc" eventType="touchUpInside" id="Dvp-Pp-AcN"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5XL-i0-zID">
-                                <rect key="frame" x="258" y="372" width="42" height="30"/>
-                                <state key="normal" title="Image"/>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="HSd-0J-b8h">
+                                <rect key="frame" x="21" y="430" width="279" height="29"/>
+                                <segments>
+                                    <segment title="Friends"/>
+                                    <segment title="QZone"/>
+                                    <segment title="Dataline"/>
+                                    <segment title="Favorites"/>
+                                </segments>
                                 <connections>
-                                    <action selector="shareImageToDataline:" destination="he5-GB-Amc" eventType="touchUpInside" id="bHF-bI-cvo"/>
+                                    <action selector="segmentChanged:" destination="he5-GB-Amc" eventType="valueChanged" id="eob-yV-d2Z"/>
                                 </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Dataline:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="egd-YM-wfg">
-                                <rect key="frame" x="14" y="334" width="65.5" height="18"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="5XL-i0-zID" firstAttribute="trailing" secondItem="aYI-AS-QI8" secondAttribute="trailing" id="0Df-ke-epE"/>
-                            <constraint firstItem="5XL-i0-zID" firstAttribute="centerY" secondItem="gPU-D2-OrH" secondAttribute="centerY" id="3Zl-wt-b4f"/>
-                            <constraint firstItem="aYI-AS-QI8" firstAttribute="trailing" secondItem="gKk-H8-Cg8" secondAttribute="trailing" id="5Yt-EO-6F9"/>
-                            <constraint firstItem="gPU-D2-OrH" firstAttribute="centerY" secondItem="h6R-oq-BIu" secondAttribute="centerY" id="5vd-FR-xhV"/>
-                            <constraint firstItem="h6R-oq-BIu" firstAttribute="top" secondItem="M2g-P2-GvI" secondAttribute="bottom" constant="80" id="60G-OU-zMW"/>
-                            <constraint firstItem="gKk-H8-Cg8" firstAttribute="trailing" secondItem="7gy-PD-6lJ" secondAttribute="trailing" id="7Bp-j6-6lC"/>
-                            <constraint firstItem="R1t-qh-QzC" firstAttribute="top" secondItem="Kcj-Tf-smK" secondAttribute="bottom" constant="20" id="7lA-jW-fbl"/>
+                            <constraint firstItem="yox-0f-rEK" firstAttribute="centerX" secondItem="Ugc-QJ-KXn" secondAttribute="centerX" id="1kg-ww-VO7"/>
+                            <constraint firstItem="R1t-qh-QzC" firstAttribute="top" secondItem="Kcj-Tf-smK" secondAttribute="bottom" constant="40" id="7lA-jW-fbl"/>
                             <constraint firstItem="T0w-Zh-f0l" firstAttribute="top" secondItem="cly-xf-sCw" secondAttribute="bottom" constant="40" id="82U-e7-tzc"/>
                             <constraint firstItem="94M-dg-nm6" firstAttribute="leading" secondItem="M2g-P2-GvI" secondAttribute="leading" id="EON-r7-5G6"/>
                             <constraint firstItem="pFI-rc-Qus" firstAttribute="leading" secondItem="yox-0f-rEK" secondAttribute="leading" id="Enf-Ed-qpe"/>
                             <constraint firstItem="94M-dg-nm6" firstAttribute="top" secondItem="yox-0f-rEK" secondAttribute="bottom" constant="20" id="Gwl-so-ui0"/>
                             <constraint firstItem="pFI-rc-Qus" firstAttribute="top" secondItem="R1t-qh-QzC" secondAttribute="bottom" constant="20" id="H0J-RO-5ie"/>
                             <constraint firstItem="M2g-P2-GvI" firstAttribute="top" secondItem="94M-dg-nm6" secondAttribute="bottom" constant="20" id="IL4-UH-JGL"/>
-                            <constraint firstItem="SwG-wK-wCn" firstAttribute="leading" secondItem="P4E-LE-cpH" secondAttribute="leading" id="Q6u-xq-23Y"/>
-                            <constraint firstItem="gKk-H8-Cg8" firstAttribute="baseline" secondItem="94M-dg-nm6" secondAttribute="baseline" id="QQr-TS-svb"/>
-                            <constraint firstItem="P4E-LE-cpH" firstAttribute="trailing" secondItem="7gy-PD-6lJ" secondAttribute="trailing" id="Swk-PC-XKG"/>
-                            <constraint firstItem="aYI-AS-QI8" firstAttribute="baseline" secondItem="M2g-P2-GvI" secondAttribute="baseline" id="V4n-FA-2yA"/>
-                            <constraint firstItem="h6R-oq-BIu" firstAttribute="leading" secondItem="M2g-P2-GvI" secondAttribute="leading" id="Ye5-jd-bFG"/>
+                            <constraint firstItem="pFI-rc-Qus" firstAttribute="centerX" secondItem="Ugc-QJ-KXn" secondAttribute="centerX" id="Q0f-Ru-ADb"/>
+                            <constraint firstItem="HSd-0J-b8h" firstAttribute="centerX" secondItem="Ugc-QJ-KXn" secondAttribute="centerX" id="Y2E-ma-US9"/>
                             <constraint firstItem="R1t-qh-QzC" firstAttribute="leading" secondItem="Ugc-QJ-KXn" secondAttribute="leadingMargin" constant="-2" id="aRU-AS-wLd"/>
                             <constraint firstItem="R1t-qh-QzC" firstAttribute="leading" secondItem="pFI-rc-Qus" secondAttribute="leading" id="bgF-LL-ynE"/>
                             <constraint firstItem="cly-xf-sCw" firstAttribute="centerX" secondItem="Ugc-QJ-KXn" secondAttribute="centerX" id="fUS-Xv-JFE"/>
+                            <constraint firstItem="gPU-D2-OrH" firstAttribute="top" secondItem="M2g-P2-GvI" secondAttribute="bottom" constant="20" id="fz3-Mx-ciC"/>
+                            <constraint firstItem="cly-xf-sCw" firstAttribute="top" secondItem="HSd-0J-b8h" secondAttribute="bottom" constant="40" id="gOR-gZ-drY"/>
                             <constraint firstItem="gPU-D2-OrH" firstAttribute="centerX" secondItem="Ugc-QJ-KXn" secondAttribute="centerX" id="hht-xV-Cu6"/>
-                            <constraint firstItem="h6R-oq-BIu" firstAttribute="top" secondItem="egd-YM-wfg" secondAttribute="bottom" constant="20" id="iSb-DO-uWu"/>
+                            <constraint firstItem="M2g-P2-GvI" firstAttribute="centerX" secondItem="Ugc-QJ-KXn" secondAttribute="centerX" id="kjH-Al-IyD"/>
                             <constraint firstItem="94M-dg-nm6" firstAttribute="leading" secondItem="yox-0f-rEK" secondAttribute="leading" id="n4f-6Q-aGu"/>
-                            <constraint firstItem="egd-YM-wfg" firstAttribute="top" secondItem="M2g-P2-GvI" secondAttribute="bottom" constant="20" id="olf-f7-05h"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="SwG-wK-wCn" secondAttribute="trailing" constant="4" id="pEW-LG-blf"/>
-                            <constraint firstItem="egd-YM-wfg" firstAttribute="leading" secondItem="M2g-P2-GvI" secondAttribute="leading" id="pQL-Bg-NlI"/>
-                            <constraint firstItem="P4E-LE-cpH" firstAttribute="baseline" secondItem="pFI-rc-Qus" secondAttribute="baseline" id="pon-ob-RB3"/>
-                            <constraint firstItem="7gy-PD-6lJ" firstAttribute="baseline" secondItem="yox-0f-rEK" secondAttribute="baseline" id="uM4-Y6-0bs"/>
+                            <constraint firstItem="gPU-D2-OrH" firstAttribute="centerX" secondItem="R1t-qh-QzC" secondAttribute="centerX" id="o28-Ab-m3s"/>
+                            <constraint firstItem="94M-dg-nm6" firstAttribute="centerX" secondItem="Ugc-QJ-KXn" secondAttribute="centerX" id="tP2-9g-ejf"/>
+                            <constraint firstItem="R1t-qh-QzC" firstAttribute="centerX" secondItem="Ugc-QJ-KXn" secondAttribute="centerX" id="vQ9-Xe-bHT"/>
                             <constraint firstItem="yox-0f-rEK" firstAttribute="top" secondItem="pFI-rc-Qus" secondAttribute="bottom" constant="20" id="wBo-DL-Hjv"/>
-                            <constraint firstItem="SwG-wK-wCn" firstAttribute="baseline" secondItem="R1t-qh-QzC" secondAttribute="baseline" id="yKc-q3-a7F"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
-                                <exclude reference="60G-OU-zMW"/>
+                                <exclude reference="aRU-AS-wLd"/>
                             </mask>
                         </variation>
                     </view>
                     <navigationItem key="navigationItem" title="QQ" id="7yu-Bt-WxS"/>
+                    <connections>
+                        <outlet property="fileButton" destination="gPU-D2-OrH" id="qo5-3Y-XDX"/>
+                        <outlet property="segmentControl" destination="HSd-0J-b8h" id="2bQ-hi-thz"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CsX-y3-KYz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
