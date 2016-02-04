@@ -729,7 +729,6 @@ extension MonkeyKing {
 
                 let messageData: [AnyObject] = [
                     ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(dict)],
-                    ["userInfo": NSKeyedArchiver.archivedDataWithRootObject([])],
                     ["app": NSKeyedArchiver.archivedDataWithRootObject(["appKey": appID, "bundleID": NSBundle.mainBundle().monkeyking_bundleID ?? ""])]
                 ]
 
