@@ -28,7 +28,7 @@
 		50FBA6DF1BA3079D00E69BB3 /* AnyActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6DE1BA3079D00E69BB3 /* AnyActivity.swift */; };
 		50FBA6E11BA56E1C00E69BB3 /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */; };
 		50FBA6E41BA570CD00E69BB3 /* QQActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */; };
-		7855FE021C60A3CF008DD8E7 /* [720p]七个男的大战一个妖娆女的.993.86MB.torrent in Resources */ = {isa = PBXBuildFile; fileRef = 7855FE011C60A3CF008DD8E7 /* [720p]七个男的大战一个妖娆女的.993.86MB.torrent */; };
+		7840AF1D1C63167C00AD5256 /* pay.php in Resources */ = {isa = PBXBuildFile; fileRef = 7840AF1C1C63167C00AD5256 /* pay.php */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,7 +79,7 @@
 		50FBA6DE1BA3079D00E69BB3 /* AnyActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyActivity.swift; sourceTree = "<group>"; };
 		50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeChatActivity.swift; path = Activities/WeChatActivity.swift; sourceTree = "<group>"; };
 		50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QQActivity.swift; path = Activities/QQActivity.swift; sourceTree = "<group>"; };
-		7855FE011C60A3CF008DD8E7 /* [720p]七个男的大战一个妖娆女的.993.86MB.torrent */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "[720p]七个男的大战一个妖娆女的.993.86MB.torrent"; sourceTree = "<group>"; };
+		7840AF1C1C63167C00AD5256 /* pay.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = pay.php; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,7 +136,7 @@
 				50FBA6BC1BA2AFAE00E69BB3 /* Main.storyboard */,
 				50FBA6BF1BA2AFAE00E69BB3 /* Assets.xcassets */,
 				50FBA6C11BA2AFAE00E69BB3 /* LaunchScreen.storyboard */,
-				7855FE011C60A3CF008DD8E7 /* [720p]七个男的大战一个妖娆女的.993.86MB.torrent */,
+				7840AF1C1C63167C00AD5256 /* pay.php */,
 				50FBA6C41BA2AFAE00E69BB3 /* Info.plist */,
 			);
 			path = China;
@@ -226,7 +226,6 @@
 				TargetAttributes = {
 					50FBA6B41BA2AFAD00E69BB3 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = DJ5N6T769K;
 					};
 					50FBA6CE1BA2BBE900E69BB3 = {
 						CreatedOnToolsVersion = 7.0;
@@ -258,8 +257,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				50FBA6C31BA2AFAE00E69BB3 /* LaunchScreen.storyboard in Resources */,
+				7840AF1D1C63167C00AD5256 /* pay.php in Resources */,
 				50FBA6C01BA2AFAE00E69BB3 /* Assets.xcassets in Resources */,
-				7855FE021C60A3CF008DD8E7 /* [720p]七个男的大战一个妖娆女的.993.86MB.torrent in Resources */,
 				50FBA6BE1BA2AFAE00E69BB3 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

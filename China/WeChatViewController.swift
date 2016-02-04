@@ -113,6 +113,25 @@ class WeChatViewController: UIViewController {
         }
     }
 
+    // MARK: Pay
+
+    @IBAction func pay(sender: AnyObject) {
+
+        do {
+            let data = try NSURLConnection.sendSynchronousRequest(NSURLRequest(URL: NSURL(string: "http://www.example.com/pay.php?payType=weixin")!), returningResponse: nil)
+            let URLString = String(data: data, encoding: NSUTF8StringEncoding)
+
+            let order = MonkeyKing.Order.WeChat(URLString: URLString!)
+
+            MonkeyKing.payOrder(order) { result in
+                print("result: \(result)")
+            }
+
+        } catch (let e) {
+            print(e)
+        }
+    }
+
     private func fetchUserInfo(OAuthInfo: NSDictionary?) {
 
         guard let token = OAuthInfo?["access_token"] as? String,

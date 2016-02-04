@@ -89,9 +89,9 @@ class QQViewController: UIViewController {
         
         let info = MonkeyKing.Info(
             title: "Dataline File, \(NSUUID().UUIDString)",
-            description: "[720p]七个男的大战一个妖娆女的.993.86MB.torrent",
+            description: "pay.php",
             thumbnail: nil,
-            media: .File(NSData(contentsOfFile: NSBundle.mainBundle().pathForResource("[720p]七个男的大战一个妖娆女的.993.86MB", ofType: "torrent")!)!)
+            media: .File(NSData(contentsOfFile: NSBundle.mainBundle().pathForResource("pay", ofType: "php")!)!)
         )
 
         shareInfo(info)

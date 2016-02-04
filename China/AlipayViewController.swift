@@ -48,6 +48,23 @@ class AlipayViewController: UIViewController {
         self.shareInfo(info)
     }
 
+    @IBAction func pay(sender: AnyObject) {
+
+        do {
+            let data = try NSURLConnection.sendSynchronousRequest(NSURLRequest(URL: NSURL(string: "http://www.example.com/pay.php?payType=alipay")!), returningResponse: nil)
+            let URLString = String(data: data, encoding: NSUTF8StringEncoding)
+
+            let order = MonkeyKing.Order.Alipay(URLString: URLString!)
+
+            MonkeyKing.payOrder(order) { result in
+                print("result: \(result)")
+            }
+
+        } catch (let e) {
+            print(e)
+        }
+    }
+
     private func shareInfo(info: MonkeyKing.Info){
         let message = MonkeyKing.Message.Alipay(.Friends(info: info))
         MonkeyKing.shareMessage(message) { result in

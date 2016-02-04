@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="tAd-W5-7vp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="tAd-W5-7vp">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -182,20 +182,27 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oRX-XU-uEu">
-                                <rect key="frame" x="86" y="458" width="149" height="30"/>
+                                <rect key="frame" x="86" y="463" width="149" height="30"/>
                                 <state key="normal" title="OAuthWithoutAppKey"/>
                                 <connections>
                                     <action selector="OAuthWithoutAppKey:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="whf-Mj-u5c"/>
                                 </connections>
                             </button>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="dBn-A2-v5r">
-                                <rect key="frame" x="60" y="369" width="200" height="29"/>
+                                <rect key="frame" x="60" y="370" width="200" height="29"/>
                                 <segments>
                                     <segment title="Session"/>
                                     <segment title="Timeline"/>
                                     <segment title="Favorite"/>
                                 </segments>
                             </segmentedControl>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1yl-b1-jyR">
+                                <rect key="frame" x="145" y="508" width="30" height="30"/>
+                                <state key="normal" title="Pay"/>
+                                <connections>
+                                    <action selector="pay:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="TXf-I7-DAh"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -203,25 +210,39 @@
                             <constraint firstItem="Wyh-QX-rAS" firstAttribute="leading" secondItem="PJB-1N-QAg" secondAttribute="leading" id="538-rb-BtL"/>
                             <constraint firstItem="oRX-XU-uEu" firstAttribute="centerX" secondItem="UWw-uP-3po" secondAttribute="centerX" id="5SP-dc-8Mv"/>
                             <constraint firstItem="wfw-9a-DtS" firstAttribute="top" secondItem="UWw-uP-3po" secondAttribute="bottom" constant="120" id="7ew-1Y-cIR"/>
+                            <constraint firstItem="oRX-XU-uEu" firstAttribute="top" secondItem="UWw-uP-3po" secondAttribute="bottom" constant="15" id="8SX-ii-Vch"/>
                             <constraint firstItem="Wyh-QX-rAS" firstAttribute="top" secondItem="PJB-1N-QAg" secondAttribute="bottom" constant="20" id="F43-wv-ZDN"/>
+                            <constraint firstItem="oRX-XU-uEu" firstAttribute="centerX" secondItem="UWw-uP-3po" secondAttribute="centerX" id="LMc-TR-Xjx"/>
                             <constraint firstItem="UWw-uP-3po" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="NBp-he-WOd"/>
                             <constraint firstItem="Wyh-QX-rAS" firstAttribute="leading" secondItem="lbo-xY-RTb" secondAttribute="leading" id="OM2-Wf-fce"/>
+                            <constraint firstItem="1yl-b1-jyR" firstAttribute="top" secondItem="oRX-XU-uEu" secondAttribute="bottom" constant="15" id="OSU-xS-X21"/>
                             <constraint firstItem="gS0-c6-rje" firstAttribute="top" secondItem="lbo-xY-RTb" secondAttribute="bottom" constant="20" id="Pmt-IQ-Wmy"/>
+                            <constraint firstItem="1yl-b1-jyR" firstAttribute="centerX" secondItem="UWw-uP-3po" secondAttribute="centerX" id="RRj-kJ-syX"/>
                             <constraint firstItem="8Vz-30-FuV" firstAttribute="leading" secondItem="sOl-Wo-bDF" secondAttribute="leading" id="U0J-aS-KjM"/>
                             <constraint firstItem="PJB-1N-QAg" firstAttribute="top" secondItem="ERE-md-U1h" secondAttribute="bottom" constant="8" id="XZG-SO-cSC"/>
+                            <constraint firstItem="wfw-9a-DtS" firstAttribute="top" secondItem="UWw-uP-3po" secondAttribute="bottom" constant="120" id="YEu-E9-jJo"/>
+                            <constraint firstItem="1yl-b1-jyR" firstAttribute="centerX" secondItem="UWw-uP-3po" secondAttribute="centerX" id="YU9-Gv-G45"/>
                             <constraint firstItem="gS0-c6-rje" firstAttribute="leading" secondItem="lbo-xY-RTb" secondAttribute="leading" id="c5h-ta-x20"/>
                             <constraint firstItem="sOl-Wo-bDF" firstAttribute="top" secondItem="8Vz-30-FuV" secondAttribute="bottom" constant="20" id="czJ-6x-VBv"/>
                             <constraint firstItem="dBn-A2-v5r" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="dhe-dT-Uhd"/>
-                            <constraint firstItem="UWw-uP-3po" firstAttribute="top" secondItem="dBn-A2-v5r" secondAttribute="bottom" constant="21" id="fOu-7w-Fbd"/>
+                            <constraint firstItem="UWw-uP-3po" firstAttribute="top" secondItem="dBn-A2-v5r" secondAttribute="bottom" constant="20" id="fOu-7w-Fbd"/>
                             <constraint firstItem="8Vz-30-FuV" firstAttribute="top" secondItem="gS0-c6-rje" secondAttribute="bottom" constant="20" id="giV-48-eJ6"/>
                             <constraint firstItem="8Vz-30-FuV" firstAttribute="leading" secondItem="gS0-c6-rje" secondAttribute="leading" id="jHz-OC-D2v"/>
+                            <constraint firstItem="UWw-uP-3po" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="jIt-83-Fy3"/>
                             <constraint firstItem="lbo-xY-RTb" firstAttribute="top" secondItem="Wyh-QX-rAS" secondAttribute="bottom" constant="20" id="kn7-bN-QM8"/>
                             <constraint firstItem="PJB-1N-QAg" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="mbI-pC-Twk"/>
+                            <constraint firstItem="UWw-uP-3po" firstAttribute="top" secondItem="dBn-A2-v5r" secondAttribute="bottom" constant="20" id="qZP-HK-Fz5"/>
                             <constraint firstItem="PJB-1N-QAg" firstAttribute="leading" secondItem="pco-JT-UnQ" secondAttribute="leadingMargin" constant="100" id="xkw-ho-0Yx"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="xkw-ho-0Yx"/>
+                                <exclude reference="NBp-he-WOd"/>
+                                <exclude reference="fOu-7w-Fbd"/>
+                                <exclude reference="5SP-dc-8Mv"/>
+                                <exclude reference="RRj-kJ-syX"/>
+                                <exclude reference="0Mk-6a-mUF"/>
+                                <exclude reference="7ew-1Y-cIR"/>
                             </mask>
                         </variation>
                     </view>
@@ -331,12 +352,21 @@
                                     <action selector="shareURLToAlipay:" destination="enf-fb-fjR" eventType="touchUpInside" id="gad-oW-rUC"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="orj-LM-NKS">
+                                <rect key="frame" x="125" y="434" width="71" height="30"/>
+                                <state key="normal" title="Alipay Pay"/>
+                                <connections>
+                                    <action selector="pay:" destination="enf-fb-fjR" eventType="touchUpInside" id="g0R-Pi-FGM"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="orj-LM-NKS" firstAttribute="top" secondItem="ci4-1i-Sib" secondAttribute="bottom" constant="60" id="Ayd-r6-OGX"/>
                             <constraint firstItem="rib-Zt-LiP" firstAttribute="centerX" secondItem="zQL-2N-wfU" secondAttribute="centerX" id="CHM-0F-Szi"/>
                             <constraint firstItem="ewo-ab-eI8" firstAttribute="top" secondItem="rib-Zt-LiP" secondAttribute="bottom" constant="60" id="Kii-G4-jwd"/>
                             <constraint firstItem="ci4-1i-Sib" firstAttribute="top" secondItem="ewo-ab-eI8" secondAttribute="bottom" constant="60" id="Pmk-qH-xSC"/>
+                            <constraint firstItem="orj-LM-NKS" firstAttribute="centerX" secondItem="ci4-1i-Sib" secondAttribute="centerX" id="hbP-OO-mav"/>
                             <constraint firstItem="ci4-1i-Sib" firstAttribute="centerX" secondItem="zQL-2N-wfU" secondAttribute="centerX" id="ssA-rb-cDO"/>
                             <constraint firstItem="ewo-ab-eI8" firstAttribute="centerX" secondItem="zQL-2N-wfU" secondAttribute="centerX" id="uzE-1f-4eT"/>
                             <constraint firstItem="rib-Zt-LiP" firstAttribute="top" secondItem="4Ei-Fo-sDx" secondAttribute="bottom" constant="100" id="wvS-Zz-YFb"/>
