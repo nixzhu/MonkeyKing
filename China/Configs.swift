@@ -17,8 +17,8 @@ struct Configs {
     }
 
     struct Wechat {
-        static let appID = "wx4868b35061f87885"
-        static let appKey = "64020361b8ec4c99936c0e3999a9f249"
+        static let appID = "wx2be937c56f9f3faf"
+        static let appKey = "d56c26fea525e5761830fb57d19adffd"
     }
 
     struct QQ {

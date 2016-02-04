@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="tAd-W5-7vp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="tAd-W5-7vp">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -135,7 +135,6 @@
                             <constraint firstItem="5XL-i0-zID" firstAttribute="centerY" secondItem="gPU-D2-OrH" secondAttribute="centerY" id="3Zl-wt-b4f"/>
                             <constraint firstItem="aYI-AS-QI8" firstAttribute="trailing" secondItem="gKk-H8-Cg8" secondAttribute="trailing" id="5Yt-EO-6F9"/>
                             <constraint firstItem="gPU-D2-OrH" firstAttribute="centerY" secondItem="h6R-oq-BIu" secondAttribute="centerY" id="5vd-FR-xhV"/>
-                            <constraint firstItem="h6R-oq-BIu" firstAttribute="top" secondItem="M2g-P2-GvI" secondAttribute="bottom" constant="80" id="60G-OU-zMW"/>
                             <constraint firstItem="gKk-H8-Cg8" firstAttribute="trailing" secondItem="7gy-PD-6lJ" secondAttribute="trailing" id="7Bp-j6-6lC"/>
                             <constraint firstItem="R1t-qh-QzC" firstAttribute="top" secondItem="Kcj-Tf-smK" secondAttribute="bottom" constant="20" id="7lA-jW-fbl"/>
                             <constraint firstItem="T0w-Zh-f0l" firstAttribute="top" secondItem="cly-xf-sCw" secondAttribute="bottom" constant="40" id="82U-e7-tzc"/>
@@ -163,11 +162,6 @@
                             <constraint firstItem="yox-0f-rEK" firstAttribute="top" secondItem="pFI-rc-Qus" secondAttribute="bottom" constant="20" id="wBo-DL-Hjv"/>
                             <constraint firstItem="SwG-wK-wCn" firstAttribute="baseline" secondItem="R1t-qh-QzC" secondAttribute="baseline" id="yKc-q3-a7F"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="60G-OU-zMW"/>
-                            </mask>
-                        </variation>
                     </view>
                     <navigationItem key="navigationItem" title="QQ" id="7yu-Bt-WxS"/>
                 </viewController>
