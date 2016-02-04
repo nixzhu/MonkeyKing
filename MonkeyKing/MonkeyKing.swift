@@ -23,6 +23,7 @@ public class MonkeyKing: NSObject {
     private var accountSet = Set<Account>()
     private var sharedCompletionHandler: SharedCompletionHandler?
     private var oauthCompletionHandler: OAuthCompletionHandler?
+
     private var payCompletionHandler: PayCompletionHandler?
 
     // Prevent others from using the default '()' initializer for MonkeyKing.
