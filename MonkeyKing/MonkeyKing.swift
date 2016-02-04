@@ -21,9 +21,9 @@ public class MonkeyKing: NSObject {
 
     private static let sharedMonkeyKing = MonkeyKing()
     private var accountSet = Set<Account>()
+
     private var sharedCompletionHandler: SharedCompletionHandler?
     private var oauthCompletionHandler: OAuthCompletionHandler?
-
     private var payCompletionHandler: PayCompletionHandler?
 
     // Prevent others from using the default '()' initializer for MonkeyKing.
@@ -640,7 +640,7 @@ extension MonkeyKing {
                     handleNewsWithURL(audioURL, mediaType: "audio")
 
                 case .Video(let URL):
-                    handleNewsWithURL(URL, mediaType: nil) // 没有 video 类型，默认用 news
+                    handleNewsWithURL(URL, mediaType: nil) // No video type, default is news type.
 
                 case .File(let fileData):
 

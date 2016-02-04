@@ -115,7 +115,7 @@ class WeChatViewController: UIViewController {
 
     // MARK: Pay
 
-    @IBAction func pay(sender: AnyObject) {
+    @IBAction func pay(sender: UIButton) {
 
         do {
             let data = try NSURLConnection.sendSynchronousRequest(NSURLRequest(URL: NSURL(string: "http://www.example.com/pay.php?payType=weixin")!), returningResponse: nil)
@@ -127,10 +127,12 @@ class WeChatViewController: UIViewController {
                 print("result: \(result)")
             }
 
-        } catch (let e) {
-            print(e)
+        } catch {
+            print(error)
         }
     }
+
+    // MARK: Helper
 
     private func fetchUserInfo(OAuthInfo: NSDictionary?) {
 
