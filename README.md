@@ -191,7 +191,7 @@ For more information about how to use Carthage, please see its [project page](ht
 
 NIX [@nixzhu](https://twitter.com/nixzhu), 
 Limon [@LimonTop](http://weibo.com/u/1783821582) or
-Lanford [@Lanford3_3](http://weibo.com/accoropitor)
+Lanford [@Lanford3_3](http://weibo.com/accoropitor) Alex [@Xspyhack](http://weibo.com/xspyhack)
 
 ## Credits
 
