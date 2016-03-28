@@ -137,7 +137,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 use_frameworks!
 
-pod 'MonkeyKing', '~> 0.9.1'
+pod 'MonkeyKing', '~> 0.9.2'
 ```
 
 Then, run the following command:
@@ -162,7 +162,7 @@ $ brew install carthage
 To integrate MonkeyKing into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "nixzhu/MonkeyKing" >= 0.9.1
+github "nixzhu/MonkeyKing" >= 0.9.2
 ```
 
 Then, run the following command to build the MonkeyKing framework:
@@ -202,5 +202,6 @@ WeChat logos from [WeChat-Logo](https://github.com/RayPS/WeChat-Logo) by Ray.
 
 ## License
 
-MonkeyKing is available under the [MIT License][mitLink] license. See the LICENSE file for more info.
+MonkeyKing is available under the [MIT License][mitLink]. See the LICENSE file for more info.
+
 [mitLink]:http://opensource.org/licenses/MIT
