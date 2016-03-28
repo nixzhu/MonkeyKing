@@ -833,7 +833,6 @@ extension MonkeyKing {
                 fatalError("web Weibo not supports File type")
             }
 
-        // Alipay
         case .Alipay(let type):
 
             let dictionary = createAlipayMessageDictionary(type.info, appID: appID)
@@ -1139,6 +1138,7 @@ extension MonkeyKing {
     }
 
     private class func createAlipayMessageDictionary(info: Info, appID: String) -> NSDictionary {
+
         enum AlipayMessageType {
             case Text
             case Image(UIImage)
@@ -1319,10 +1319,12 @@ extension MonkeyKing {
     }
 
     private func request(URLString: String, method: Networking.Method, parameters: [String: AnyObject]? = nil, encoding: Networking.ParameterEncoding = .URL, headers: [String: String]? = nil, completionHandler: Networking.NetworkingResponseHandler) {
+
         Networking.sharedInstance.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
     }
 
     private func upload(URLString: String, parameters: [String: AnyObject], completionHandler: Networking.NetworkingResponseHandler) {
+
         Networking.sharedInstance.upload(URLString, parameters: parameters, completionHandler: completionHandler)
     }
 
@@ -1370,6 +1372,7 @@ extension MonkeyKing {
     }
 
     private func activityIndicatorViewAction(webView: WKWebView, stop: Bool) {
+
         for subview in webView.scrollView.subviews {
             if let activityIndicatorView = subview as? UIActivityIndicatorView {
                 guard stop else {
@@ -1568,6 +1571,7 @@ private extension NSURL {
         items.forEach {
             infos[$0.name] = $0.value
         }
+
         return infos
     }
 }
