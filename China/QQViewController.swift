@@ -115,7 +115,8 @@ class QQViewController: UIViewController {
             message = MonkeyKing.Message.QQ(.Dataline(info: info))
         case 3:
             message = MonkeyKing.Message.QQ(.Favorites(info: info))
-        default:()
+        default:
+            break
         }
 
         if let message = message{

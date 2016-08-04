@@ -25,7 +25,9 @@ class WeiboViewController: UIViewController {
         // not installed weibo app, must need accessToken
 
         if !account.isAppInstalled {
+
             MonkeyKing.OAuth(.Weibo, completionHandler: { [weak self] (dictionary, response, error) -> Void in
+
                 if let json = dictionary, accessToken = json["access_token"] as? String {
                     self?.accessToken = accessToken
                 }

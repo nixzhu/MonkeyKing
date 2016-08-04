@@ -19,7 +19,7 @@ class AlipayViewController: UIViewController {
     }
 
     @IBAction func shareTextToAlipay(sender: UIButton) {
-        let info =  MonkeyKing.Info(
+        let info = MonkeyKing.Info(
             title: "Friends Text, \(NSUUID().UUIDString)",
             description: nil,
             thumbnail: nil,
@@ -29,7 +29,7 @@ class AlipayViewController: UIViewController {
     }
 
     @IBAction func shareImageToAlipay(sender: UIButton) {
-        let info =  MonkeyKing.Info(
+        let info = MonkeyKing.Info(
             title: nil,
             description: nil,
             thumbnail: nil,
@@ -39,7 +39,7 @@ class AlipayViewController: UIViewController {
     }
 
     @IBAction func shareURLToAlipay(sender: UIButton) {
-        let info =  MonkeyKing.Info(
+        let info = MonkeyKing.Info(
             title: "Friends URL, \(NSUUID().UUIDString)",
             description: "Description URL, \(NSUUID().UUIDString)",
             thumbnail: UIImage(named: "rabbit"),
@@ -69,8 +69,8 @@ class AlipayViewController: UIViewController {
                 print("result: \(result)")
             }
 
-        } catch (let e) {
-            print(e)
+        } catch let error as NSError {
+            print(error.localizedDescription)
         }
     }
 }
