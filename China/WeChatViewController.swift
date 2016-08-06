@@ -112,6 +112,7 @@ extension WeChatViewController {
 
         MonkeyKing.OAuth(.WeChat) { [weak self] (dictionary, response, error) -> Void in
             self?.fetchUserInfo(dictionary)
+            print("error \(error)")
         }
     }
 
@@ -125,6 +126,7 @@ extension WeChatViewController {
 
             // You can use this code to OAuth, if you do not want to keep the weChatAppKey in client.
             print("dictionary \(dictionary)")
+            print("error \(error)")
         }
     }
 }
