@@ -26,6 +26,8 @@ public class MonkeyKing: NSObject {
     private var oauthCompletionHandler: OAuthCompletionHandler?
     private var payCompletionHandler: PayCompletionHandler?
 
+    private var webView: WKWebView?
+    
     // Prevent others from using the default '()' initializer for MonkeyKing.
     private override init() {}
 
@@ -73,7 +75,7 @@ public class MonkeyKing: NSObject {
 
         public var canWebOAuth: Bool {
             switch self {
-            case .QQ, .Weibo, .Pocket:
+            case .QQ, .Weibo, .Pocket, .WeChat:
                 return true
             default:
                 return false
@@ -146,6 +148,27 @@ extension MonkeyKing {
                 fetchWeChatOAuthInfoByCode(code: code) { (info, response, error) -> Void in
                     sharedMonkeyKing.oauthCompletionHandler?(info, response, error)
                 }
+
+                return true
+            }
+            
+            // WeChat SMS OAuth
+            if URL.absoluteString.containsString("wapoauth") {
+                
+                let queryDictionary = URL.monkeyking_queryDictionary
+                guard let m = queryDictionary["m"] as? String, t = queryDictionary["t"] as? String else {
+                    return false
+                }
+                
+                guard let account = sharedMonkeyKing.accountSet[.WeChat] else {
+                    return false
+                }
+                
+                let appID = account.appID
+                
+                let URLString = "https://open.weixin.qq.com/connect/smsauthorize?appid=\(appID)&redirect_uri=\(appID)%3A%2F%2Foauth&response_type=code&scope=snsapi_message,snsapi_userinfo,snsapi_friend,snsapi_contact&state=xxx&uid=1926559385&m=\(m)&t=\(t)"
+                
+                addWebViewByURLString(URLString)
 
                 return true
             }
@@ -921,8 +944,17 @@ extension MonkeyKing {
         case .WeChat(let appID, _):
 
             let scope = scope ?? "snsapi_userinfo"
-            openURL(URLString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth")
+            
+            if !account.isAppInstalled {
+                // SMS OAuth
+                // uid??
+                let accessTokenAPI = "https://open.weixin.qq.com/connect/mobilecheck?appid=\(appID)&uid=1926559385"
+                addWebViewByURLString(accessTokenAPI)
+            } else {
 
+                openURL(URLString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth")
+            }
+            
         case .QQ(let appID):
 
             let scope = scope ?? ""
@@ -1016,7 +1048,7 @@ extension MonkeyKing: WKNavigationDelegate {
 
         // Pocket OAuth
         if let errorString = error.userInfo["NSErrorFailingURLStringKey"] as? String where errorString.hasSuffix(":authorizationFinished") {
-            hideWebView(webView, tuples: (nil, nil, nil))
+            removeWebView(webView, tuples: (nil, nil, nil))
         }
     }
 
@@ -1054,7 +1086,7 @@ extension MonkeyKing: WKNavigationDelegate {
         // Close Button
         if URL.absoluteString.containsString("about:blank") {
             let error = NSError(domain: "User Cancelled", code: -1, userInfo: nil)
-            hideWebView(webView, tuples: (nil, nil, error))
+            removeWebView(webView, tuples: (nil, nil, error))
             return
         }
 
@@ -1068,7 +1100,7 @@ extension MonkeyKing: WKNavigationDelegate {
         }
 
         let queryDictionary = newURL.monkeyking_queryDictionary
-        hideWebView(webView, tuples: (queryDictionary, nil, nil))
+        removeWebView(webView, tuples: (queryDictionary, nil, nil))
     }
 
     public func webView(webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
@@ -1077,32 +1109,48 @@ extension MonkeyKing: WKNavigationDelegate {
             return
         }
 
-        // Weibo OAuth
-        for case let .Weibo(appID, appKey, redirectURL) in accountSet {
-            if URL.absoluteString.lowercaseString.hasPrefix(redirectURL) {
-
-                webView.stopLoading()
-
-                guard let code = URL.monkeyking_queryDictionary["code"] as? String else {
-                    return
-                }
-
-                var accessTokenAPI = "https://api.weibo.com/oauth2/access_token?"
-                accessTokenAPI += "client_id=" + appID
-                accessTokenAPI += "&client_secret=" + appKey
-                accessTokenAPI += "&grant_type=authorization_code&"
-                accessTokenAPI += "redirect_uri=" + redirectURL
-                accessTokenAPI += "&code=" + code
-
-                activityIndicatorViewAction(webView, stop: false)
-
-                request(accessTokenAPI, method: .POST) { [weak self] (JSON, response, error) -> Void in
-                    dispatch_async(dispatch_get_main_queue()) {
-                        self?.hideWebView(webView, tuples: (JSON, response, error))
+        // WeChat OAuth
+        if URL.absoluteString.hasPrefix("wx") {
+            
+            let queryDictionary = URL.monkeyking_queryDictionary
+            guard let code = queryDictionary["code"] as? String else {
+                return
+            }
+            
+            MonkeyKing.fetchWeChatOAuthInfoByCode(code: code) { [weak self] (info, response, error) -> Void in
+                self?.removeWebView(webView, tuples: (info, response, error))
+            }
+            
+        } else {
+            
+            // Weibo OAuth
+            for case let .Weibo(appID, appKey, redirectURL) in accountSet {
+                if URL.absoluteString.lowercaseString.hasPrefix(redirectURL) {
+                    
+                    webView.stopLoading()
+                    
+                    guard let code = URL.monkeyking_queryDictionary["code"] as? String else {
+                        return
+                    }
+                    
+                    var accessTokenAPI = "https://api.weibo.com/oauth2/access_token?"
+                    accessTokenAPI += "client_id=" + appID
+                    accessTokenAPI += "&client_secret=" + appKey
+                    accessTokenAPI += "&grant_type=authorization_code&"
+                    accessTokenAPI += "redirect_uri=" + redirectURL
+                    accessTokenAPI += "&code=" + code
+                    
+                    activityIndicatorViewAction(webView, stop: false)
+                    
+                    request(accessTokenAPI, method: .POST) { [weak self] (JSON, response, error) -> Void in
+                        dispatch_async(dispatch_get_main_queue()) {
+                            self?.removeWebView(webView, tuples: (JSON, response, error))
+                        }
                     }
                 }
             }
         }
+        
     }
 }
 
@@ -1110,6 +1158,22 @@ extension MonkeyKing: WKNavigationDelegate {
 // MARK: Private Methods
 
 extension MonkeyKing {
+    
+    private class func generateWebView() -> WKWebView {
+        
+        let webView = WKWebView()
+        webView.frame = UIScreen.mainScreen().bounds
+        webView.frame.origin.y = UIScreen.mainScreen().bounds.height
+        
+        webView.navigationDelegate = sharedMonkeyKing
+        webView.backgroundColor = UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 1.0)
+        webView.scrollView.frame.origin.y = 20
+        webView.scrollView.backgroundColor = webView.backgroundColor
+        
+        UIApplication.sharedApplication().keyWindow?.addSubview(webView)
+        
+        return webView
+    }
 
     private class func fetchWeChatOAuthInfoByCode(code code: String, completionHandler: OAuthCompletionHandler) {
 
@@ -1329,21 +1393,17 @@ extension MonkeyKing {
     }
 
     private class func addWebViewByURLString(URLString: String) {
-
-        guard let URL = NSURL(string: URLString) else {
-            return
+        
+        if nil == MonkeyKing.sharedMonkeyKing.webView {
+            MonkeyKing.sharedMonkeyKing.webView = generateWebView()
         }
 
-        let webView = WKWebView()
-        webView.frame = UIScreen.mainScreen().bounds
-        webView.frame.origin.y = UIScreen.mainScreen().bounds.height
-
+        guard let URL = NSURL(string: URLString), webView = MonkeyKing.sharedMonkeyKing.webView else {
+            return
+        }
+        
         webView.loadRequest(NSURLRequest(URL: URL))
-        webView.navigationDelegate = sharedMonkeyKing
-        webView.backgroundColor = UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 1.0)
-        webView.scrollView.frame.origin.y = 20
-        webView.scrollView.backgroundColor = webView.backgroundColor
-
+        
         let activityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
         activityIndicatorView.center = CGPoint(x: CGRectGetMidX(webView.bounds), y: CGRectGetMidY(webView.bounds)+30)
         activityIndicatorView.activityIndicatorViewStyle = .Gray
@@ -1351,13 +1411,12 @@ extension MonkeyKing {
         webView.scrollView.addSubview(activityIndicatorView)
         activityIndicatorView.startAnimating()
 
-        UIApplication.sharedApplication().keyWindow?.addSubview(webView)
         UIView.animateWithDuration(0.32, delay: 0.0, options: .CurveEaseOut, animations: {
             webView.frame.origin.y = 0
         }, completion: nil)
     }
 
-    private func hideWebView(webView: WKWebView, tuples: (NSDictionary?, NSURLResponse?, NSError?)?) {
+    private func removeWebView(webView: WKWebView, tuples: (NSDictionary?, NSURLResponse?, NSError?)?) {
 
         activityIndicatorViewAction(webView, stop: true)
         webView.stopLoading()
@@ -1367,6 +1426,7 @@ extension MonkeyKing {
 
         }, completion: {_ in
             webView.removeFromSuperview()
+            MonkeyKing.sharedMonkeyKing.webView = nil
             self.oauthCompletionHandler?(tuples?.0, tuples?.1, tuples?.2)
         })
     }
