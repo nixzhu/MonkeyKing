@@ -42,15 +42,15 @@ public class MonkeyKing: NSObject {
         public var isAppInstalled: Bool {
             switch self {
             case .WeChat:
-                return sharedMonkeyKing.canOpenURL(URLString: "weixin://")
+                return MonkeyKing.canOpenURL(URLString: "weixin://")
             case .QQ:
-                return sharedMonkeyKing.canOpenURL(URLString: "mqqapi://")
+                return MonkeyKing.canOpenURL(URLString: "mqqapi://")
             case .Weibo:
-                return sharedMonkeyKing.canOpenURL(URLString: "weibosdk://request")
+                return MonkeyKing.canOpenURL(URLString: "weibosdk://request")
             case .Pocket:
-                return sharedMonkeyKing.canOpenURL(URLString: "pocket-oauth-v1://")
+                return MonkeyKing.canOpenURL(URLString: "pocket-oauth-v1://")
             case .Alipay:
-                return sharedMonkeyKing.canOpenURL(URLString: "alipayshare://")
+                return MonkeyKing.canOpenURL(URLString: "alipayshare://")
             }
         }
 
@@ -89,6 +89,29 @@ public class MonkeyKing: NSObject {
         case Weibo
         case Pocket(requestToken: String)
         case Alipay
+    }
+    
+    public enum PlatformType: Hashable {
+        case WeChat
+        case QQ
+        case Weibo
+        case Pocket
+        case Alipay
+    }
+    
+    public class func isAppInstalled(type:PlatformType)->Bool {
+        switch type {
+        case .WeChat:
+            return canOpenURL(URLString: "weixin://")
+        case .QQ:
+            return canOpenURL(URLString: "mqqapi://")
+        case .Weibo:
+            return canOpenURL(URLString: "weibosdk://request")
+        case .Pocket:
+            return canOpenURL(URLString: "pocket-oauth-v1://")
+        case .Alipay:
+            return canOpenURL(URLString: "alipayshare://")
+        }
     }
 
     public class func registerAccount(account: Account) {
@@ -699,7 +722,7 @@ extension MonkeyKing {
 
         case .Weibo(let type):
 
-            guard !sharedMonkeyKing.canOpenURL(URLString: "weibosdk://request") else {
+            guard !MonkeyKing.canOpenURL(URLString: "weibosdk://request") else {
 
                 // App Share
 
@@ -891,7 +914,7 @@ extension MonkeyKing {
                 scheme = "weixin://"
             }
             
-            return sharedMonkeyKing.canOpenURL(URLString: scheme)
+            return MonkeyKing.canOpenURL(URLString: scheme)
         }
     }
     
@@ -1453,7 +1476,7 @@ extension MonkeyKing {
         return UIApplication.sharedApplication().openURL(URL)
     }
 
-    private func canOpenURL(URLString URLString: String) -> Bool {
+    class private func canOpenURL(URLString URLString: String) -> Bool {
 
         guard let URL = NSURL(string: URLString) else {
             return false
