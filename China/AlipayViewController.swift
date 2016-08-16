@@ -48,7 +48,7 @@ class AlipayViewController: UIViewController {
         self.shareInfo(info)
     }
 
-    private func shareInfo(info: MonkeyKing.Info){
+    private func shareInfo(info: MonkeyKing.Info) {
         let message = MonkeyKing.Message.Alipay(.Friends(info: info))
         MonkeyKing.shareMessage(message) { result in
             print("result: \(result)")
