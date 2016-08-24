@@ -778,15 +778,7 @@ extension MonkeyKing {
 
             parameters["access_token"] = accessToken
 
-            var statusText = ""
-
-            if let title = info.title {
-                statusText += title
-            }
-
-            if let description = info.description {
-                statusText += description
-            }
+            var status: [String?] = [info.title, info.description]
 
             var mediaType = Media.URL(NSURL())
 
@@ -796,7 +788,7 @@ extension MonkeyKing {
 
                 case .URL(let URL):
 
-                    statusText += URL.absoluteString
+                    status.append(URL.absoluteString)
 
                     mediaType = Media.URL(URL)
 
@@ -819,6 +811,7 @@ extension MonkeyKing {
                 }
             }
 
+            let statusText = status.flatMap({ $0 }).joinWithSeparator(" ")
             parameters["status"] = statusText
             
             switch mediaType {
