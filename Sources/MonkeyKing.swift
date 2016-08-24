@@ -20,6 +20,7 @@ public class MonkeyKing: NSObject {
     public typealias PayCompletionHandler = (result: Bool) -> Void
 
     private static let sharedMonkeyKing = MonkeyKing()
+
     private var accountSet = Set<Account>()
 
     private var sharedCompletionHandler: SharedCompletionHandler?
@@ -28,7 +29,6 @@ public class MonkeyKing: NSObject {
 
     private var webView: WKWebView?
     
-    // Prevent others from using the default '()' initializer for MonkeyKing.
     private override init() {}
 
     public enum Account: Hashable {
@@ -93,37 +93,38 @@ public class MonkeyKing: NSObject {
 
     public class func registerAccount(account: Account) {
 
-        if account.isAppInstalled || account.canWebOAuth {
+        guard account.isAppInstalled || account.canWebOAuth else {
+            return
+        }
 
-            for oldAccount in MonkeyKing.sharedMonkeyKing.accountSet {
+        for oldAccount in MonkeyKing.sharedMonkeyKing.accountSet {
 
-                switch oldAccount {
+            switch oldAccount {
 
-                case .WeChat:
-                    if case .WeChat = account {
-                        sharedMonkeyKing.accountSet.remove(oldAccount)
-                    }
-                case .QQ:
-                    if case .QQ = account {
-                        sharedMonkeyKing.accountSet.remove(oldAccount)
-                    }
-                case .Weibo:
-                    if case .Weibo = account {
-                        sharedMonkeyKing.accountSet.remove(oldAccount)
-                    }
-                case .Pocket:
-                    if case .Pocket = account {
-                        sharedMonkeyKing.accountSet.remove(oldAccount)
-                    }
-                case .Alipay:
-                    if case .Alipay = account {
-                        sharedMonkeyKing.accountSet.remove(oldAccount)
-                    }
+            case .WeChat:
+                if case .WeChat = account {
+                    sharedMonkeyKing.accountSet.remove(oldAccount)
+                }
+            case .QQ:
+                if case .QQ = account {
+                    sharedMonkeyKing.accountSet.remove(oldAccount)
+                }
+            case .Weibo:
+                if case .Weibo = account {
+                    sharedMonkeyKing.accountSet.remove(oldAccount)
+                }
+            case .Pocket:
+                if case .Pocket = account {
+                    sharedMonkeyKing.accountSet.remove(oldAccount)
+                }
+            case .Alipay:
+                if case .Alipay = account {
+                    sharedMonkeyKing.accountSet.remove(oldAccount)
                 }
             }
-
-            sharedMonkeyKing.accountSet.insert(account)
         }
+
+        sharedMonkeyKing.accountSet.insert(account)
     }
 }
 
