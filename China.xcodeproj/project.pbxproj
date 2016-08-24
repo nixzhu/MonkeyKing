@@ -15,7 +15,9 @@
 		3F62B36C1BB6ACE500AABD3C /* SystemShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62B36B1BB6ACE500AABD3C /* SystemShareViewController.swift */; };
 		3F7609431C57B47300FBCB20 /* AlipayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7609421C57B47300FBCB20 /* AlipayViewController.swift */; };
 		3F87FE691C1D3E4F000D2994 /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F87FE681C1D3E4F000D2994 /* Configs.swift */; };
-		3FBCB1BB1BB58A4D00E20A28 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBCB1BA1BB58A4D00E20A28 /* Networking.swift */; };
+		5067D5401D6D814600D3C010 /* AnyActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5067D53D1D6D814600D3C010 /* AnyActivity.swift */; };
+		5067D5411D6D814600D3C010 /* MonkeyKing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5067D53E1D6D814600D3C010 /* MonkeyKing.swift */; };
+		5067D5421D6D814600D3C010 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5067D53F1D6D814600D3C010 /* Networking.swift */; };
 		50FBA6B91BA2AFAE00E69BB3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6B81BA2AFAE00E69BB3 /* AppDelegate.swift */; };
 		50FBA6BB1BA2AFAE00E69BB3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6BA1BA2AFAE00E69BB3 /* ViewController.swift */; };
 		50FBA6BE1BA2AFAE00E69BB3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50FBA6BC1BA2AFAE00E69BB3 /* Main.storyboard */; };
@@ -24,8 +26,6 @@
 		50FBA6D21BA2BBE900E69BB3 /* MonkeyKing.h in Headers */ = {isa = PBXBuildFile; fileRef = 50FBA6D11BA2BBE900E69BB3 /* MonkeyKing.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		50FBA6D61BA2BBE900E69BB3 /* MonkeyKing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FBA6CF1BA2BBE900E69BB3 /* MonkeyKing.framework */; };
 		50FBA6D71BA2BBE900E69BB3 /* MonkeyKing.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 50FBA6CF1BA2BBE900E69BB3 /* MonkeyKing.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		50FBA6DD1BA2BC0A00E69BB3 /* MonkeyKing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6DC1BA2BC0A00E69BB3 /* MonkeyKing.swift */; };
-		50FBA6DF1BA3079D00E69BB3 /* AnyActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6DE1BA3079D00E69BB3 /* AnyActivity.swift */; };
 		50FBA6E11BA56E1C00E69BB3 /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */; };
 		50FBA6E41BA570CD00E69BB3 /* QQActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */; };
 		7840AF1D1C63167C00AD5256 /* pay.php in Resources */ = {isa = PBXBuildFile; fileRef = 7840AF1C1C63167C00AD5256 /* pay.php */; };
@@ -64,7 +64,9 @@
 		3F62B36B1BB6ACE500AABD3C /* SystemShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemShareViewController.swift; sourceTree = "<group>"; };
 		3F7609421C57B47300FBCB20 /* AlipayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlipayViewController.swift; sourceTree = "<group>"; };
 		3F87FE681C1D3E4F000D2994 /* Configs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
-		3FBCB1BA1BB58A4D00E20A28 /* Networking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
+		5067D53D1D6D814600D3C010 /* AnyActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnyActivity.swift; path = Sources/AnyActivity.swift; sourceTree = SOURCE_ROOT; };
+		5067D53E1D6D814600D3C010 /* MonkeyKing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MonkeyKing.swift; path = Sources/MonkeyKing.swift; sourceTree = SOURCE_ROOT; };
+		5067D53F1D6D814600D3C010 /* Networking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Networking.swift; path = Sources/Networking.swift; sourceTree = SOURCE_ROOT; };
 		50FBA6B51BA2AFAD00E69BB3 /* China.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = China.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50FBA6B81BA2AFAE00E69BB3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		50FBA6BA1BA2AFAE00E69BB3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -75,8 +77,6 @@
 		50FBA6CF1BA2BBE900E69BB3 /* MonkeyKing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MonkeyKing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		50FBA6D11BA2BBE900E69BB3 /* MonkeyKing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MonkeyKing.h; sourceTree = "<group>"; };
 		50FBA6D31BA2BBE900E69BB3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		50FBA6DC1BA2BC0A00E69BB3 /* MonkeyKing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeyKing.swift; sourceTree = "<group>"; };
-		50FBA6DE1BA3079D00E69BB3 /* AnyActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyActivity.swift; sourceTree = "<group>"; };
 		50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeChatActivity.swift; path = Activities/WeChatActivity.swift; sourceTree = "<group>"; };
 		50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QQActivity.swift; path = Activities/QQActivity.swift; sourceTree = "<group>"; };
 		7840AF1C1C63167C00AD5256 /* pay.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = pay.php; sourceTree = "<group>"; };
@@ -146,9 +146,9 @@
 			isa = PBXGroup;
 			children = (
 				50FBA6D11BA2BBE900E69BB3 /* MonkeyKing.h */,
-				50FBA6DC1BA2BC0A00E69BB3 /* MonkeyKing.swift */,
-				50FBA6DE1BA3079D00E69BB3 /* AnyActivity.swift */,
-				3FBCB1BA1BB58A4D00E20A28 /* Networking.swift */,
+				5067D53D1D6D814600D3C010 /* AnyActivity.swift */,
+				5067D53E1D6D814600D3C010 /* MonkeyKing.swift */,
+				5067D53F1D6D814600D3C010 /* Networking.swift */,
 				50FBA6D31BA2BBE900E69BB3 /* Info.plist */,
 			);
 			path = MonkeyKing;
@@ -220,7 +220,7 @@
 		50FBA6AD1BA2AFAD00E69BB3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = nixWork;
 				TargetAttributes = {
@@ -296,9 +296,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3FBCB1BB1BB58A4D00E20A28 /* Networking.swift in Sources */,
-				50FBA6DD1BA2BC0A00E69BB3 /* MonkeyKing.swift in Sources */,
-				50FBA6DF1BA3079D00E69BB3 /* AnyActivity.swift in Sources */,
+				5067D5421D6D814600D3C010 /* Networking.swift in Sources */,
+				5067D5401D6D814600D3C010 /* AnyActivity.swift in Sources */,
+				5067D5411D6D814600D3C010 /* MonkeyKing.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
