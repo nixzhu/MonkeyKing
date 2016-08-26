@@ -1678,7 +1678,6 @@ private extension UIImage {
             }
             
             let imageData = UIImageJPEGRepresentation(image, compressionQuality)
-            UIGraphicsEndImageContext()
 
             return imageData
         }
