@@ -135,10 +135,10 @@ extension MonkeyKing {
 
     public class func handleOpenURL(URL: NSURL) -> Bool {
 
-        if URL.scheme.hasPrefix("wx") {
+        if URL.scheme?.hasPrefix("wx") == .Some(true) {
 
             // WeChat OAuth
-            if URL.absoluteString.containsString("&state=Weixinauth") {
+            if URL.absoluteString?.containsString("&state=Weixinauth") == .Some(true) {
 
                 let queryDictionary = URL.monkeyking_queryDictionary
                 guard let code = queryDictionary["code"] as? String else {
@@ -154,7 +154,7 @@ extension MonkeyKing {
             }
             
             // WeChat SMS OAuth
-            if URL.absoluteString.containsString("wapoauth") {
+            if URL.absoluteString?.containsString("wapoauth") == .Some(true) {
                 
                 let queryDictionary = URL.monkeyking_queryDictionary
                 guard let m = queryDictionary["m"] as? String, t = queryDictionary["t"] as? String else {
@@ -174,7 +174,7 @@ extension MonkeyKing {
                 return true
             }
             
-            if URL.absoluteString.containsString("://pay/") {
+            if URL.absoluteString?.containsString("://pay/") == .Some(true) {
 
                 var result = false
 
@@ -213,7 +213,7 @@ extension MonkeyKing {
         }
 
         // QQ Share
-        if URL.scheme.hasPrefix("QQ") {
+        if URL.scheme?.hasPrefix("QQ") == .Some(true) {
 
             guard let error = URL.monkeyking_queryDictionary["error"] as? String else {
                 return false
@@ -227,7 +227,7 @@ extension MonkeyKing {
         }
 
         // QQ OAuth
-        if URL.scheme.hasPrefix("tencent") {
+        if URL.scheme?.hasPrefix("tencent") == .Some(true) {
 
             guard let account = sharedMonkeyKing.accountSet[.QQ] else {
                 return false
@@ -261,11 +261,9 @@ extension MonkeyKing {
         }
 
         // Weibo
-        if URL.scheme.hasPrefix("wb") {
+        if URL.scheme?.hasPrefix("wb") == .Some(true) {
 
-            guard let items = UIPasteboard.generalPasteboard().items as? [[String: AnyObject]] else {
-                return false
-            }
+            let items = UIPasteboard.generalPasteboard().items
 
             var results = [String: AnyObject]()
 
@@ -320,15 +318,15 @@ extension MonkeyKing {
         }
         
         // Pocket OAuth
-        if URL.scheme.hasPrefix("pocketapp") {
+        if URL.scheme?.hasPrefix("pocketapp") == .Some(true) {
             sharedMonkeyKing.oauthCompletionHandler?(nil, nil, nil)
             return true
         }
 
         // Alipay
-        if URL.scheme.hasPrefix("ap") {
+        if URL.scheme?.hasPrefix("ap") == .Some(true) {
 
-            if URL.absoluteString.containsString("//safepay/?") {
+            if URL.absoluteString?.containsString("//safepay/?") == .Some(true) {
 
                 var result = false
 
@@ -626,7 +624,7 @@ extension MonkeyKing {
 
                     qqSchemeURLString += mediaType ?? "news"
 
-                    guard let encodedURLString = URL.absoluteString.monkeyking_base64AndURLEncodedString else {
+                    guard let encodedURLString = URL.absoluteString?.monkeyking_base64AndURLEncodedString else {
                         completionHandler(result: false)
                         return
                     }
@@ -751,7 +749,7 @@ extension MonkeyKing {
                 let uuIDString = CFUUIDCreateString(nil, CFUUIDCreate(nil))
                 let dict = ["__class" : "WBSendMessageToWeiboRequest", "message": messageInfo, "requestID" :uuIDString]
 
-                let messageData: [AnyObject] = [
+                let messageData: [[String: AnyObject]] = [
                     ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(dict)],
                     ["app": NSKeyedArchiver.archivedDataWithRootObject(["appKey": appID, "bundleID": NSBundle.mainBundle().monkeyking_bundleID ?? ""])]
                 ]
@@ -984,7 +982,7 @@ extension MonkeyKing {
 
             guard !account.isAppInstalled else {
                 let uuIDString = CFUUIDCreateString(nil, CFUUIDCreate(nil))
-                let authData = [
+                let authData: [[String: AnyObject]] = [
                     ["transferObject": NSKeyedArchiver.archivedDataWithRootObject(["__class": "WBAuthorizeRequest", "redirectURI": redirectURL, "requestID":uuIDString, "scope": scope])
                     ],
                     ["userInfo": NSKeyedArchiver.archivedDataWithRootObject(["mykey": "as you like", "SSO_From": "SendMessageToWeiboViewController"])],
@@ -1054,7 +1052,9 @@ extension MonkeyKing: WKNavigationDelegate {
             return
         }
 
-        let absoluteString = URL.absoluteString
+        guard let absoluteString = URL.absoluteString else {
+            return
+        }
 
         var scriptString = "var button = document.createElement('a'); button.setAttribute('href', 'about:blank'); button.innerHTML = '关闭'; button.setAttribute('style', 'width: calc(100% - 40px); background-color: gray;display: inline-block;height: 40px;line-height: 40px;text-align: center;color: #777777;text-decoration: none;border-radius: 3px;background: linear-gradient(180deg, white, #f1f1f1);border: 1px solid #CACACA;box-shadow: 0 2px 3px #DEDEDE, inset 0 0 0 1px white;text-shadow: 0 2px 0 white;position: fixed;left: 0;bottom: 0;margin: 20px;font-size: 18px;'); document.body.appendChild(button);"
 
@@ -1078,14 +1078,14 @@ extension MonkeyKing: WKNavigationDelegate {
         }
 
         // Close Button
-        if URL.absoluteString.containsString("about:blank") {
+        if URL.absoluteString?.containsString("about:blank") == .Some(true) {
             let error = NSError(domain: "User Cancelled", code: -1, userInfo: nil)
             removeWebView(webView, tuples: (nil, nil, error))
             return
         }
 
         // QQ Web OAuth
-        guard URL.absoluteString.containsString("&access_token=") && URL.absoluteString.containsString("qq.com") else {
+        guard URL.absoluteString?.containsString("&access_token=") == .Some(true) && URL.absoluteString?.containsString("qq.com") == .Some(true) else {
             return
         }
 
@@ -1104,7 +1104,7 @@ extension MonkeyKing: WKNavigationDelegate {
         }
 
         // WeChat OAuth
-        if URL.absoluteString.hasPrefix("wx") {
+        if URL.absoluteString?.hasPrefix("wx") == .Some(true) {
             
             let queryDictionary = URL.monkeyking_queryDictionary
             guard let code = queryDictionary["code"] as? String else {
@@ -1119,7 +1119,7 @@ extension MonkeyKing: WKNavigationDelegate {
             
             // Weibo OAuth
             for case let .Weibo(appID, appKey, redirectURL) in accountSet {
-                if URL.absoluteString.lowercaseString.hasPrefix(redirectURL) {
+                if URL.absoluteString?.lowercaseString.hasPrefix(redirectURL) == .Some(true) {
                     
                     webView.stopLoading()
                     
@@ -1357,7 +1357,7 @@ extension MonkeyKing {
                 keyClass: [keyUID: 20],
                 "webpageUrl": [keyUID: 19]
             ]
-            let URLObjectsItem19 = URL.absoluteString
+            let URLObjectsItem19 = URL.absoluteString ?? ""
             objectsValue = objectsValue + [
                 URLObjectsItem13, URLObjectsItem14, URLObjectsItem15,
                 URLObjectsItem16, publicObjectsItem14, URLObjectsItem18, URLObjectsItem19
@@ -1668,8 +1668,16 @@ private extension UIImage {
             let rect = CGRectMake(0.0, 0.0, actualWidth, actualHeight)
             UIGraphicsBeginImageContext(rect.size)
             image.drawInRect(rect)
-            let imageData = UIImageJPEGRepresentation(UIGraphicsGetImageFromCurrentImageContext(), compressionQuality)
-            UIGraphicsEndImageContext()
+            
+            defer {
+                UIGraphicsEndImageContext()
+            }
+            
+            guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
+                return nil
+            }
+            
+            let imageData = UIImageJPEGRepresentation(image, compressionQuality)
 
             return imageData
         }
