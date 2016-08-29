@@ -7,7 +7,7 @@
 
 MonkeyKing helps you post messages to Chinese Social Networks, without their buggy SDKs.
 
-MonkeyKing use the same analysis process of [openshare](https://github.com/100apps/openshare), support share **Text**, **URL**, **Image**, **Audio**, **Video**, and **File** to **WeChat**, **QQ**, **Alipay** or **Weibo**. MonkeyKing also can post message to Weibo by webpage. (Note: Auido and Video are only specifically for WeChat or QQ, File is only for QQ Dataline)
+MonkeyKing uses the same analysis process of [openshare](https://github.com/100apps/openshare), support share **Text**, **URL**, **Image**, **Audio**, **Video**, and **File** to **WeChat**, **QQ**, **Alipay** or **Weibo**. MonkeyKing also can post messages to Weibo by webpage. (Note: Audio and Video are only specifically for WeChat or QQ, File is only for QQ Dataline)
 
 One more thing: MonkeyKing supports **OAuth**.
 
@@ -87,7 +87,7 @@ MonkeyKing.OAuth(.Weibo) { (OAuthInfo, response, error) -> Void in
 }
 ```
 
-If user do not installed Weibo App on their devices, MonkeyKing will use web OAuth:
+If user don't have Weibo App installed on their devices then MonkeyKing will use web OAuth:
 
 ![weiboOAuth](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/wbOAuth.png)
 
@@ -110,7 +110,7 @@ MonkeyKing.payOrder(MonkeyKing.Order.Alipay(URLString: "https://example.com/pay.
 
 ### More
 
-If you like use `UIActivityViewController` to share, MonkeyKing has `AnyActivity` can help you.
+If you like to use `UIActivityViewController` for sharing then MonkeyKing has `AnyActivity` which can help you.
 
 ![System Share](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/system_share.png)
 
