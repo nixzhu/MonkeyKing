@@ -15,7 +15,7 @@ And, now MonkeyKing supports **Mobile payment** via WeChat and Alipay!
 
 ## Requirements
 
-Swift 2.0, iOS 8.0
+Swift 2.3, iOS 8.0
 
 ## Example
 
@@ -137,8 +137,8 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 use_frameworks!
 
-target ‘<Your Target Name>’ do
-    pod 'MonkeyKing', '~> 0.9.3'
+target <Your Target Name> do
+    pod 'MonkeyKing', '~> 0.9.4'
 end
 ```
 
@@ -164,7 +164,7 @@ $ brew install carthage
 To integrate MonkeyKing into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "nixzhu/MonkeyKing" >= 0.9.3
+github "nixzhu/MonkeyKing" >= 0.9.4
 ```
 
 Then, run the following command to build the MonkeyKing framework:
