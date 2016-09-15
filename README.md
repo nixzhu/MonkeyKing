@@ -15,7 +15,7 @@ And, now MonkeyKing supports **Mobile payment** via WeChat and Alipay!
 
 ## Requirements
 
-Swift 2.3, iOS 8.0
+Swift 3.0, iOS 8.0
 
 ## Example
 
