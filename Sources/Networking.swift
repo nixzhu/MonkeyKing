@@ -60,7 +60,7 @@ class Networking {
                 }
 
                 if let method = Method(rawValue: mutableURLRequest.httpMethod) , encodesParametersInURL(method) {
-                    if let URLComponents = URLComponents(url: mutableURLRequest.url!, resolvingAgainstBaseURL: false) {
+                    if var URLComponents = URLComponents(url: mutableURLRequest.url!, resolvingAgainstBaseURL: false) {
                         let percentEncodedQuery = (URLComponents.percentEncodedQuery.map { $0 + "&" } ?? "") + query(parameters)
                         URLComponents.percentEncodedQuery = percentEncodedQuery
                         mutableURLRequest.url = URLComponents.url
@@ -130,12 +130,12 @@ class Networking {
                 
                 while index != string.endIndex {
                     let startIndex = index
-                    let endIndex = <#T##Collection corresponding to `index`##Collection#>.index(index, offsetBy: batchSize, limitedBy: string.endIndex)
+                    let endIndex = string.index(index, offsetBy: batchSize, limitedBy: string.endIndex) ?? startIndex
                     let range = startIndex..<endIndex
                     
                     let substring = string.substring(with: range)
                     
-                    escaped += substring.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet) ?? substring
+                    escaped += substring.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet as CharacterSet) ?? substring
                     
                     index = endIndex
                 }

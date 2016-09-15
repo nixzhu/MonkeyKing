@@ -142,9 +142,7 @@ extension MonkeyKing {
         
         if urlScheme.hasPrefix("wx") {
             
-            guard let urlString = URL.absoluteString else {
-                return false
-            }
+            let urlString = URL.absoluteString
             
             // WeChat OAuth
             if urlString.contains("state=Weixinauth") {
@@ -206,16 +204,17 @@ extension MonkeyKing {
                 return false
             }
             
-            if let dic = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) {
+            if let data = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil),
+                let dic = data as? NSDictionary {
                 
                 guard let account = sharedMonkeyKing.accountSet[.weChat],
                     let dic = dic[account.appID] as? NSDictionary,
-                    let result = dic["result"]?.intValue else {
+                    let result = (dic["result"] as? NSNumber)?.intValue else {
                         return false
                 }
                 
                 let success = (result == 0)
-                sharedMonkeyKing.sharedCompletionHandler?(result: success)
+                sharedMonkeyKing.sharedCompletionHandler?(success)
                 
                 return success
             }
@@ -255,7 +254,7 @@ extension MonkeyKing {
                     return false
             }
             
-            guard let result = (dic["ret"]? as AnyObject).intValue , result == 0 else {
+            guard let result = (dic["ret"] as? NSNumber)?.intValue , result == 0 else {
                 if let errorDomatin = dic["user_cancelled"] as? String , errorDomatin == "YES" {
                     error = NSError(domain: "User Cancelled", code: -2, userInfo: nil)
                 } else {
@@ -334,10 +333,7 @@ extension MonkeyKing {
         // Alipay
         if urlScheme.hasPrefix("ap") {
             
-            guard let urlString = URL.absoluteString else {
-                return false
-            }
-            
+            let urlString = URL.absoluteString
             if urlString.contains("//safepay/?") {
                 
                 var result = false
@@ -365,14 +361,15 @@ extension MonkeyKing {
                 // Alipay Share
                 guard let account = sharedMonkeyKing.accountSet[.alipay],
                     let data = UIPasteboard.general.data(forPasteboardType: "com.alipay.openapi.pb.resp.\(account.appID)"),
-                    let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil),
+                    let propertyList = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil),
+                    let dict = propertyList as? NSDictionary,
                     let objects = dict["$objects"] as? NSArray,
                     let result = objects[12] as? Int else {
                         return false
                 }
                 
                 let success = (result == 0)
-                sharedMonkeyKing.sharedCompletionHandler?(result: success)
+                sharedMonkeyKing.sharedCompletionHandler?(success)
                 
                 return success
             }
@@ -563,10 +560,7 @@ extension MonkeyKing {
                     
                 case .url(let URL):
                     weChatMessageInfo["objectType"] = "5" as AnyObject?
-                    
-                    if let urlString = URL.absoluteString {
-                        weChatMessageInfo["mediaUrl"] = urlString
-                    }
+                    weChatMessageInfo["mediaUrl"] = URL.absoluteString as NSString
                     
                 case .image(let image):
                     weChatMessageInfo["objectType"] = "2" as AnyObject?
@@ -579,19 +573,14 @@ extension MonkeyKing {
                     weChatMessageInfo["objectType"] = "3" as AnyObject?
                     
                     if let urlString = linkURL?.absoluteString {
-                        weChatMessageInfo["mediaUrl"] = urlString as AnyObject?
+                        weChatMessageInfo["mediaUrl"] = urlString as NSString
                     }
-                    
-                    if let urlString = audioURL.absoluteString {
-                        weChatMessageInfo["mediaDataUrl"] = urlString
-                    }
+                    weChatMessageInfo["mediaDataUrl"] = audioURL.absoluteString as NSString
                     
                 case .video(let URL):
                     weChatMessageInfo["objectType"] = "4" as AnyObject?
+                    weChatMessageInfo["mediaUrl"] = URL.absoluteString as NSString
                     
-                    if let urlString = URL.absoluteString {
-                        weChatMessageInfo["mediaUrl"] = urlString
-                    }
                     
                 case .file:
                     fatalError("WeChat not supports File type")
@@ -746,17 +735,14 @@ extension MonkeyKing {
                             let thumbnailData = UIImageJPEGRepresentation(thumbnailImage, 0.7) {
                             mediaObject["thumbnailData"] = thumbnailData as AnyObject?
                         }
-                        
-                        if let urlString = URL.absoluteString {
-                            mediaObject["webpageUrl"] = urlString
-                        }
+                        mediaObject["webpageUrl"] = URL.absoluteString as NSString
                         
                         messageInfo["mediaObject"] = mediaObject as AnyObject?
                         
                     case .image(let image):
                         
                         if let imageData = UIImageJPEGRepresentation(image, 1.0) {
-                            messageInfo["imageObject"] = ["imageData": imageData]
+                            messageInfo["imageObject"] = ["imageData": imageData] as NSDictionary
                         }
                         
                     case .audio:
@@ -800,8 +786,7 @@ extension MonkeyKing {
             
             var status: [String?] = [info.title, info.description]
             
-            var mediaType = Media.url(URL())
-            
+            var mediaTypeTemp: Media?
             if let media = info.media {
                 
                 switch media {
@@ -810,7 +795,7 @@ extension MonkeyKing {
                     
                     status.append(URL.absoluteString)
                     
-                    mediaType = Media.url(URL)
+                    mediaTypeTemp = Media.url(URL)
                     
                 case .image(let image):
                     
@@ -820,7 +805,7 @@ extension MonkeyKing {
                     }
                     
                     parameters["pic"] = imageData as AnyObject?
-                    mediaType = Media.image(image)
+                    mediaTypeTemp = Media.image(image)
                     
                 case .audio:
                     fatalError("web Weibo not supports Audio type")
@@ -831,6 +816,9 @@ extension MonkeyKing {
                 }
             }
             
+            guard let mediaType = mediaTypeTemp else {
+                fatalError("Missing Media")
+            }
             let statusText = status.flatMap({ $0 }).joined(separator: " ")
             parameters["status"] = statusText as AnyObject?
             
@@ -842,7 +830,7 @@ extension MonkeyKing {
                 
                 sharedMonkeyKing.request(URLString, method: .POST, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
                     if let JSON = responseData, let _ = JSON["idstr"] as? String {
-                        completionHandler(result: true)
+                        completionHandler(true)
                     } else {
                         if let code = (HTTPResponse as? HTTPURLResponse)?.statusCode {
                             if code == 403 {
@@ -850,7 +838,7 @@ extension MonkeyKing {
                             }
                         }
                         print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
-                        completionHandler(result: false)
+                        completionHandler(false)
                     }
                 }
                 
@@ -860,7 +848,7 @@ extension MonkeyKing {
                 
                 sharedMonkeyKing.upload(URLString, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
                     if let JSON = responseData, let _ = JSON["idstr"] as? String {
-                        completionHandler(result: true)
+                        completionHandler(true)
                     } else {
                         if let code = (HTTPResponse as? HTTPURLResponse)?.statusCode {
                             if code == 403 {
@@ -868,7 +856,7 @@ extension MonkeyKing {
                             }
                         }
                         print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
-                        completionHandler(result: false)
+                        completionHandler(false)
                     }
                 }
                 
@@ -976,7 +964,7 @@ extension MonkeyKing {
                 addWebViewByURLString(accessTokenAPI)
             } else {
                 
-                openURL(URLString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth")
+                _ = openURL(URLString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth")
             }
             
         case .qq(let appID):
@@ -998,7 +986,7 @@ extension MonkeyKing {
                 let data = NSKeyedArchiver.archivedData(withRootObject: dic)
                 UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.tencent\(appID)")
                 
-                openURL(URLString: "mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1")
+                _ = openURL(URLString: "mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1")
                 
                 return
             }
@@ -1022,7 +1010,7 @@ extension MonkeyKing {
                 ]
                 
                 UIPasteboard.general.items = authData
-                openURL(URLString: "weibosdk://request?id=\(uuIDString)&sdkversion=003013000")
+                _ = openURL(URLString: "weibosdk://request?id=\(uuIDString)&sdkversion=003013000")
                 return
             }
             
@@ -1049,7 +1037,7 @@ extension MonkeyKing {
             
             guard !account.isAppInstalled else {
                 let requestTokenAPI = "pocket-oauth-v1:///authorize?request_token=\(requestToken)&redirect_uri=\(redirectURLString)"
-                openURL(URLString: requestTokenAPI)
+                _ = openURL(URLString: requestTokenAPI)
                 return
             }
             
@@ -1071,7 +1059,7 @@ extension MonkeyKing: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         
         // Pocket OAuth
-        if let errorString = error.userInfo["NSErrorFailingURLStringKey"] as? String , errorString.hasSuffix(":authorizationFinished") {
+        if let errorString = (error as NSError).userInfo["NSErrorFailingURLStringKey"] as? String , errorString.hasSuffix(":authorizationFinished") {
             removeWebView(webView, tuples: (nil, nil, nil))
         }
     }
@@ -1101,11 +1089,11 @@ extension MonkeyKing: WKNavigationDelegate {
     
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         
-        guard let URL = webView.url, let urlString = URL.absoluteString else {
+        guard let URL = webView.url else {
             webView.stopLoading()
             return
         }
-        
+        let urlString = URL.absoluteString
         // Close Button
         if urlString.contains("about:blank") {
             let error = NSError(domain: "User Cancelled", code: -1, userInfo: nil)
@@ -1123,15 +1111,15 @@ extension MonkeyKing: WKNavigationDelegate {
         }
         
         let queryDictionary = newURL.monkeyking_queryDictionary
-        removeWebView(webView, tuples: (queryDictionary, nil, nil))
+        removeWebView(webView, tuples: (queryDictionary as NSDictionary, nil, nil))
     }
     
     public func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
         
-        guard let URL = webView.url, let urlString = URL.absoluteString else {
+        guard let URL = webView.url else {
             return
         }
-        
+        let urlString = URL.absoluteString
         // WeChat OAuth
         if urlString.hasPrefix("wx") {
             
@@ -1404,12 +1392,12 @@ extension MonkeyKing {
         return dictionary
     }
     
-    fileprivate func request(_ URLString: String, method: Networking.Method, parameters: [String: AnyObject]? = nil, encoding: Networking.ParameterEncoding = .url, headers: [String: String]? = nil, completionHandler: Networking.NetworkingResponseHandler) {
+    fileprivate func request(_ URLString: String, method: Networking.Method, parameters: [String: AnyObject]? = nil, encoding: Networking.ParameterEncoding = .url, headers: [String: String]? = nil, completionHandler: @escaping Networking.NetworkingResponseHandler) {
         
         Networking.sharedInstance.request(URLString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
     }
     
-    fileprivate func upload(_ URLString: String, parameters: [String: AnyObject], completionHandler: Networking.NetworkingResponseHandler) {
+    fileprivate func upload(_ URLString: String, parameters: [String: AnyObject], completionHandler: @escaping Networking.NetworkingResponseHandler) {
         
         Networking.sharedInstance.upload(URLString, parameters: parameters, completionHandler: completionHandler)
     }
@@ -1613,7 +1601,7 @@ private extension String {
     }
     
     var monkeyking_URLDecodedString: String? {
-        return replacingOccurrences(of: "+", with: " ").stringByRemovingPercentEncoding
+        return replacingOccurrences(of: "+", with: " ").removingPercentEncoding
     }
     
     var monkeyking_QQCallbackName: String {

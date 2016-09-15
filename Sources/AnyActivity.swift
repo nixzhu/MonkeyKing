@@ -33,8 +33,8 @@ open class AnyActivity: UIActivity {
         return .share
     }
 
-    override open var activityType : String? {
-        return type
+    override open var activityType : UIActivityType? {
+        return UIActivityType(rawValue: type)
     }
 
     override open  var activityTitle : String? {
