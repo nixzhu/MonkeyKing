@@ -8,16 +8,16 @@
 
 import UIKit
 
-public class AnyActivity: UIActivity {
+open class AnyActivity: UIActivity {
 
-    private let type: String
-    private let title: String
-    private let image: UIImage
+    fileprivate let type: String
+    fileprivate let title: String
+    fileprivate let image: UIImage
 
-    private let message: MonkeyKing.Message
-    private let sharedCompletionHandler: MonkeyKing.SharedCompletionHandler
+    fileprivate let message: MonkeyKing.Message
+    fileprivate let sharedCompletionHandler: MonkeyKing.SharedCompletionHandler
 
-    public init(type: String, title: String, image: UIImage, message: MonkeyKing.Message, completionHandler: MonkeyKing.SharedCompletionHandler) {
+    public init(type: String, title: String, image: UIImage, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.SharedCompletionHandler) {
 
         self.type = type
         self.title = title
@@ -29,27 +29,27 @@ public class AnyActivity: UIActivity {
         super.init()
     }
 
-    override public class func activityCategory() -> UIActivityCategory {
-        return .Share
+    override open class var activityCategory : UIActivityCategory {
+        return .share
     }
 
-    override public func activityType() -> String? {
-        return type
+    override open var activityType : UIActivityType? {
+        return UIActivityType(rawValue: type)
     }
 
-    override public  func activityTitle() -> String? {
+    override open  var activityTitle : String? {
         return title
     }
 
-    override public func activityImage() -> UIImage? {
+    override open var activityImage : UIImage? {
         return image
     }
 
-    override public func canPerformWithActivityItems(activityItems: [AnyObject]) -> Bool {
+    override open func canPerform(withActivityItems activityItems: [Any]) -> Bool {
         return message.canBeDelivered
     }
 
-    override public func performActivity() {
+    override open func perform() {
         MonkeyKing.shareMessage(message, completionHandler: sharedCompletionHandler)
         activityDidFinish(true)
     }
