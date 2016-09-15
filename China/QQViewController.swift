@@ -11,9 +11,9 @@ import MonkeyKing
 
 class QQViewController: UIViewController {
 
-    let account = MonkeyKing.Account.QQ(appID: Configs.QQ.appID)
+    let account = MonkeyKing.Account.qq(appID: Configs.QQ.appID)
 
-    @IBOutlet private weak var segmentControl: UISegmentedControl!
+    @IBOutlet fileprivate weak var segmentControl: UISegmentedControl!
     
     @IBOutlet weak var fileButton: UIButton!
     
@@ -25,11 +25,11 @@ class QQViewController: UIViewController {
 
     // MARK: QQ Friends
 
-    @IBAction func shareText(sender: UIButton) {
+    @IBAction func shareText(_ sender: UIButton) {
 
         let info = MonkeyKing.Info(
             title: nil,
-            description: "QQ Text: Hello World, \(NSUUID().UUIDString)",
+            description: "QQ Text: Hello World, \(UUID().uuidString)",
             thumbnail: nil,
             media: nil
         )
@@ -37,84 +37,84 @@ class QQViewController: UIViewController {
         shareInfo(info)
     }
 
-    @IBAction func shareURL(sender: UIButton) {
+    @IBAction func shareURL(_ sender: UIButton) {
 
         let info = MonkeyKing.Info(
-            title: "QQ URL, \(NSUUID().UUIDString)",
-            description: "apple.com/cn, \(NSUUID().UUIDString)",
+            title: "QQ URL, \(UUID().uuidString)",
+            description: "apple.com/cn, \(UUID().uuidString)",
             thumbnail: UIImage(named: "rabbit")!,
-            media: .URL(NSURL(string: "http://www.apple.com/cn")!)
+            media: .url(URL(string: "http://www.apple.com/cn")!)
         )
 
         shareInfo(info)
     }
 
-    @IBAction func shareImage(sender: UIButton) {
+    @IBAction func shareImage(_ sender: UIButton) {
 
         let info = MonkeyKing.Info(
-            title: "QQ Image, \(NSUUID().UUIDString)",
-            description: "Hello World, \(NSUUID().UUIDString)",
+            title: "QQ Image, \(UUID().uuidString)",
+            description: "Hello World, \(UUID().uuidString)",
             thumbnail: nil,
-            media: .Image(UIImage(named: "rabbit")!)
+            media: .image(UIImage(named: "rabbit")!)
         )
 
         shareInfo(info)
     }
 
-    @IBAction func shareAudio(sender: UIButton) {
+    @IBAction func shareAudio(_ sender: UIButton) {
 
         let info = MonkeyKing.Info(
-            title: "QQ Audio, \(NSUUID().UUIDString)",
-            description: "Hello World, \(NSUUID().UUIDString)",
+            title: "QQ Audio, \(UUID().uuidString)",
+            description: "Hello World, \(UUID().uuidString)",
             thumbnail: UIImage(named: "rabbit")!,
-            media: .Audio(audioURL: NSURL(string: "http://wfmusic.3g.qq.com/s?g_f=0&fr=&aid=mu_detail&id=2511915")!, linkURL: nil)
+            media: .audio(audioURL: URL(string: "http://wfmusic.3g.qq.com/s?g_f=0&fr=&aid=mu_detail&id=2511915")!, linkURL: nil)
         )
 
         shareInfo(info)
     }
 
-    @IBAction func shareVideo(sender: UIButton) {
+    @IBAction func shareVideo(_ sender: UIButton) {
 
         let info = MonkeyKing.Info(
-            title: "QQ Video, \(NSUUID().UUIDString)",
-            description: "Hello World, \(NSUUID().UUIDString)",
+            title: "QQ Video, \(UUID().uuidString)",
+            description: "Hello World, \(UUID().uuidString)",
             thumbnail: UIImage(named: "rabbit")!,
-            media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XOTU2MzA0NzY4.html")!)
+            media: .video(URL(string: "http://v.youku.com/v_show/id_XOTU2MzA0NzY4.html")!)
         )
 
         shareInfo(info)
     }
 
-    @IBAction func shareFile(sender: AnyObject) {
+    @IBAction func shareFile(_ sender: AnyObject) {
         
         let info = MonkeyKing.Info(
-            title: "Dataline File, \(NSUUID().UUIDString)",
+            title: "Dataline File, \(UUID().uuidString)",
             description: "pay.php",
             thumbnail: nil,
-            media: .File(NSData(contentsOfFile: NSBundle.mainBundle().pathForResource("pay", ofType: "php")!)!)
+            media: .file(try! Data(contentsOf: URL(string: Bundle.main.path(forResource: "pay", ofType: "php")!)!))
         )
 
         shareInfo(info)
     }
 
-    @IBAction func segmentChanged(sender: AnyObject) {
+    @IBAction func segmentChanged(_ sender: AnyObject) {
 
-        fileButton.hidden = (sender.selectedSegmentIndex != 2)
+        fileButton.isHidden = (sender.selectedSegmentIndex != 2)
     }
 
-    private func shareInfo(info: MonkeyKing.Info) {
+    fileprivate func shareInfo(_ info: MonkeyKing.Info) {
 
         var message :MonkeyKing.Message?
 
         switch self.segmentControl.selectedSegmentIndex{
         case 0:
-            message = MonkeyKing.Message.QQ(.Friends(info: info))
+            message = MonkeyKing.Message.qq(.friends(info: info))
         case 1:
-            message = MonkeyKing.Message.QQ(.Zone(info: info))
+            message = MonkeyKing.Message.qq(.zone(info: info))
         case 2:
-            message = MonkeyKing.Message.QQ(.Dataline(info: info))
+            message = MonkeyKing.Message.qq(.dataline(info: info))
         case 3:
-            message = MonkeyKing.Message.QQ(.Favorites(info: info))
+            message = MonkeyKing.Message.qq(.favorites(info: info))
         default:
             break
         }
@@ -129,28 +129,30 @@ class QQViewController: UIViewController {
 
     // MARK: OAuth
 
-    @IBAction func OAuth(sender: UIButton) {
+    @IBAction func OAuth(_ sender: UIButton) {
 
         // "get_user_info,get_simple_userinfo,add_album,add_idol,add_one_blog,add_pic_t,add_share,add_topic,check_page_fans,del_idol,del_t,get_fanslist,get_idollist,get_info,get_other_info,get_repost_list,list_album,upload_pic,get_vip_info,get_vip_rich_info,get_intimate_friends_weibo,match_nick_tips_weibo"
 
-        MonkeyKing.OAuth(.QQ, scope: "get_user_info") { (OAuthInfo, response, error) -> Void in
+        MonkeyKing.oauth(for: .qq, scope: "get_user_info") { (oauthInfo, response, error) -> Void in
 
-            guard let token = OAuthInfo?["access_token"] as? String,
-                let openID = OAuthInfo?["openid"] as? String else {
+            print(oauthInfo)
+            
+            guard let token = oauthInfo?["access_token"] as? String,
+                let openID = oauthInfo?["openid"] as? String else {
                     return
             }
 
             let query = "get_user_info"
             let userInfoAPI = "https://graph.qq.com/user/\(query)"
 
-            let parameters = [
-                "openid": openID,
-                "access_token": token,
-                "oauth_consumer_key": Configs.QQ.appID
+            let parameters: [String: AnyObject] = [
+                "openid": openID as AnyObject,
+                "access_token": token as AnyObject,
+                "oauth_consumer_key": Configs.QQ.appID as AnyObject
             ]
 
             // fetch UserInfo by userInfoAPI
-            SimpleNetworking.sharedInstance.request(userInfoAPI, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
+            SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
                 print("userInfoDictionary \(userInfoDictionary)")
             })
 

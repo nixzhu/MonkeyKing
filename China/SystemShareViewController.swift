@@ -11,23 +11,23 @@ import MonkeyKing
 
 class SystemShareViewController: UIViewController {
 
-    @IBAction func systemShare(sender: UIButton) {
+    @IBAction func systemShare(_ sender: UIButton) {
 
-        MonkeyKing.registerAccount(.WeChat(appID: Configs.Wechat.appID, appKey: Configs.Wechat.appKey))
+        MonkeyKing.registerAccount(.weChat(appID: Configs.Wechat.appID, appKey: Configs.Wechat.appKey))
 
-        let shareURL = NSURL(string: "http://www.apple.com/cn/iphone/compare/")!
+        let shareURL = URL(string: "http://www.apple.com/cn/iphone/compare/")!
 
         let info = MonkeyKing.Info(
             title: "iPhone Compare",
             description: "iPhone 机型比较",
             thumbnail: UIImage(named: "rabbit"),
-            media: .URL(shareURL)
+            media: .url(shareURL)
         )
 
-        let sessionMessage = MonkeyKing.Message.WeChat(.Session(info: info))
+        let sessionMessage = MonkeyKing.Message.weChat(.session(info: info))
 
         let weChatSessionActivity = AnyActivity(
-            type: "com.nixWork.China.WeChat.Session",
+            type: UIActivityType(rawValue: "com.nixWork.China.WeChat.Session"),
             title: NSLocalizedString("WeChat Session", comment: ""),
             image: UIImage(named: "wechat_session")!,
             message: sessionMessage,
@@ -36,10 +36,10 @@ class SystemShareViewController: UIViewController {
             }
         )
 
-        let timelineMessage = MonkeyKing.Message.WeChat(.Timeline(info: info))
+        let timelineMessage = MonkeyKing.Message.weChat(.timeline(info: info))
 
         let weChatTimelineActivity = AnyActivity(
-            type: "com.nixWork.China.WeChat.Timeline",
+            type: UIActivityType(rawValue: "com.nixWork.China.WeChat.Timeline"),
             title: NSLocalizedString("WeChat Timeline", comment: ""),
             image: UIImage(named: "wechat_timeline")!,
             message: timelineMessage,
@@ -50,7 +50,7 @@ class SystemShareViewController: UIViewController {
 
         let activityViewController = UIActivityViewController(activityItems: [shareURL], applicationActivities: [weChatSessionActivity, weChatTimelineActivity])
 
-        presentViewController(activityViewController, animated: true, completion: nil)
+        present(activityViewController, animated: true, completion: nil)
     }
 }
 

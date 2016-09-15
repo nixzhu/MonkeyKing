@@ -10,45 +10,45 @@ import MonkeyKing
 
 class QQActivity: AnyActivity {
 
-    enum Type {
+    enum `Type` {
 
-        case Friends
-        case Zone
+        case friends
+        case zone
 
         var type: String {
             switch self {
-            case .Friends:
+            case .friends:
                 return "com.nixWork.China.QQ.Friends"
-            case .Zone:
+            case .zone:
                 return "com.nixWork.China.QQ.Zone"
             }
         }
 
         var title: String {
             switch self {
-            case .Friends:
+            case .friends:
                 return NSLocalizedString("QQ Friends", comment: "")
-            case .Zone:
+            case .zone:
                 return NSLocalizedString("QQ Zone", comment: "")
             }
         }
 
         var image: UIImage {
             switch self {
-            case .Friends:
+            case .friends:
                 return UIImage(named: "wechat_session")! // TODO:
-            case .Zone:
+            case .zone:
                 return UIImage(named: "wechat_timeline")! // TODO:
             }
         }
     }
 
-    init(type: Type, message: MonkeyKing.Message, completionHandler: MonkeyKing.SharedCompletionHandler) {
+    init(type: Type, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.SharedCompletionHandler) {
 
-        MonkeyKing.registerAccount(.QQ(appID: Configs.QQ.appID))
+        MonkeyKing.registerAccount(.qq(appID: Configs.QQ.appID))
 
         super.init(
-            type: type.type,
+            type: UIActivityType(rawValue: type.type),
             title: type.title,
             image: type.image,
             message: message,

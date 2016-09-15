@@ -11,7 +11,7 @@ import MonkeyKing
 
 class WeiboViewController: UIViewController {
 
-    let account = MonkeyKing.Account.Weibo(appID: Configs.Weibo.appID, appKey: Configs.Weibo.appKey, redirectURL: Configs.Weibo.redirectURL)
+    let account = MonkeyKing.Account.weibo(appID: Configs.Weibo.appID, appKey: Configs.Weibo.appKey, redirectURL: Configs.Weibo.redirectURL)
     var accessToken: String?
 
     override func viewDidLoad() {
@@ -19,16 +19,16 @@ class WeiboViewController: UIViewController {
         MonkeyKing.registerAccount(account)
     }
 
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         // not installed weibo app, must need accessToken
 
         if !account.isAppInstalled {
 
-            MonkeyKing.OAuth(.Weibo, completionHandler: { [weak self] (dictionary, response, error) -> Void in
+            MonkeyKing.oauth(for: .weibo, completionHandler: { [weak self] (dictionary, response, error) -> Void in
 
-                if let json = dictionary, accessToken = json["access_token"] as? String {
+                if let json = dictionary, let accessToken = json["access_token"] as? String {
                     self?.accessToken = accessToken
                 }
 
@@ -37,13 +37,13 @@ class WeiboViewController: UIViewController {
         }
     }
 
-    @IBAction func shareImage(sender: UIButton) {
+    @IBAction func shareImage(_ sender: UIButton) {
 
-        let message = MonkeyKing.Message.Weibo(.Default(info: (
+        let message = MonkeyKing.Message.weibo(.default(info: (
             title: "Image",
             description: "Rabbit",
             thumbnail: nil,
-            media: .Image(UIImage(named: "rabbit")!)
+            media: .image(UIImage(named: "rabbit")!)
         ), accessToken: accessToken))
 
         MonkeyKing.shareMessage(message) { result in
@@ -51,9 +51,9 @@ class WeiboViewController: UIViewController {
         }
     }
 
-    @IBAction func shareText(sender: UIButton) {
+    @IBAction func shareText(_ sender: UIButton) {
 
-        let message = MonkeyKing.Message.Weibo(.Default(info: (
+        let message = MonkeyKing.Message.weibo(.default(info: (
             title: "Title",
             description: "Text",
             thumbnail: nil,
@@ -65,13 +65,13 @@ class WeiboViewController: UIViewController {
         }
     }
 
-    @IBAction func shareURL(sender: UIButton) {
+    @IBAction func shareURL(_ sender: UIButton) {
 
-        let message = MonkeyKing.Message.Weibo(.Default(info: (
+        let message = MonkeyKing.Message.weibo(.default(info: (
             title: "News",
             description: "Hello Yep",
             thumbnail: UIImage(named: "rabbit"),
-            media: .URL(NSURL(string: "http://soyep.com")!)
+            media: .url(URL(string: "http://soyep.com")!)
         ), accessToken: accessToken))
 
         MonkeyKing.shareMessage(message) { result in
@@ -81,12 +81,12 @@ class WeiboViewController: UIViewController {
 
     // MARK: OAuth
 
-    @IBAction func OAuth(sender: UIButton) {
+    @IBAction func OAuth(_ sender: UIButton) {
 
-        MonkeyKing.OAuth(.Weibo) { (OAuthInfo, response, error) -> Void in
+        MonkeyKing.oauth(for: .weibo) { (OAuthInfo, response, error) -> Void in
 
             // App or Web: token & userID
-            guard let token = (OAuthInfo?["access_token"] ?? OAuthInfo?["accessToken"]) as? String, userID = (OAuthInfo?["uid"] ?? OAuthInfo?["userID"]) as? String else {
+            guard let token = (OAuthInfo?["access_token"] ?? OAuthInfo?["accessToken"]) as? String, let userID = (OAuthInfo?["uid"] ?? OAuthInfo?["userID"]) as? String else {
                 return
             }
 
@@ -94,7 +94,7 @@ class WeiboViewController: UIViewController {
             let parameters = ["uid": userID, "access_token": token]
 
             // fetch UserInfo by userInfoAPI
-            SimpleNetworking.sharedInstance.request(userInfoAPI, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
+            SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters as [String : AnyObject]?, completionHandler: { (userInfoDictionary, _, _) -> Void in
                 print("userInfoDictionary \(userInfoDictionary)")
             })
 

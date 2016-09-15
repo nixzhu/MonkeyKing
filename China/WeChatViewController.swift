@@ -11,20 +11,20 @@ import MonkeyKing
 
 class WeChatViewController: UIViewController {
     
-    @IBOutlet private var segmentControl: UISegmentedControl!
+    @IBOutlet fileprivate var segmentControl: UISegmentedControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Should not register account here
-        let account = MonkeyKing.Account.WeChat(appID: Configs.Wechat.appID, appKey: Configs.Wechat.appKey)
+        let account = MonkeyKing.Account.weChat(appID: Configs.Wechat.appID, appKey: Configs.Wechat.appKey)
         MonkeyKing.registerAccount(account)
     }
 
-    @IBAction func shareText(sender: UIButton) {
+    @IBAction func shareText(_ sender: UIButton) {
 
         let info = MonkeyKing.Info(
-            title: "Timeline Text, \(NSUUID().UUIDString)",
+            title: "Timeline Text, \(UUID().uuidString)",
             description: nil,
             thumbnail: nil,
             media: nil
@@ -33,65 +33,65 @@ class WeChatViewController: UIViewController {
         self.shareInfo(info)
     }
 
-    @IBAction func shareURL(sender: UIButton) {
+    @IBAction func shareURL(_ sender: UIButton) {
 
         let info = MonkeyKing.Info(
-            title: "Timeline URL, \(NSUUID().UUIDString)",
-            description: "Description URL, \(NSUUID().UUIDString)",
+            title: "Timeline URL, \(UUID().uuidString)",
+            description: "Description URL, \(UUID().uuidString)",
             thumbnail: UIImage(named: "rabbit"),
-            media: .URL(NSURL(string: "http://soyep.com")!)
+            media: .url(URL(string: "http://soyep.com")!)
         )
 
         self.shareInfo(info)
     }
 
-    @IBAction func shareImage(sender: UIButton) {
+    @IBAction func shareImage(_ sender: UIButton) {
 
         let info = MonkeyKing.Info(
             title: nil,
             description: nil,
             thumbnail: UIImage(named: "rabbit"),
-            media: .Image(UIImage(named: "rabbit")!)
+            media: .image(UIImage(named: "rabbit")!)
         )
 
         self.shareInfo(info)
     }
 
-    @IBAction func shareMusic(sender: UIButton) {
+    @IBAction func shareMusic(_ sender: UIButton) {
 
         let info = MonkeyKing.Info(
-            title: "Timeline Music, \(NSUUID().UUIDString)",
-            description: "Description Music, \(NSUUID().UUIDString)",
+            title: "Timeline Music, \(UUID().uuidString)",
+            description: "Description Music, \(UUID().uuidString)",
             thumbnail: UIImage(named: "rabbit"),
-            media: .Audio(audioURL: NSURL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: NSURL(string: "http://soyep.com")!)
+            media: .audio(audioURL: URL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: URL(string: "http://soyep.com")!)
         )
 
         self.shareInfo(info)
     }
 
-    @IBAction func shareVideo(sender: UIButton) {
+    @IBAction func shareVideo(_ sender: UIButton) {
 
         let info = MonkeyKing.Info(
-            title: "Timeline Video, \(NSUUID().UUIDString)",
-            description: "Description Video, \(NSUUID().UUIDString)",
+            title: "Timeline Video, \(UUID().uuidString)",
+            description: "Description Video, \(UUID().uuidString)",
             thumbnail: UIImage(named: "rabbit"),
-            media: .Video(NSURL(string: "http://v.youku.com/v_show/id_XNTUxNDY1NDY4.html")!)
+            media: .video(URL(string: "http://v.youku.com/v_show/id_XNTUxNDY1NDY4.html")!)
         )
 
         self.shareInfo(info)
     }
     
-    private func shareInfo(info: MonkeyKing.Info) {
+    fileprivate func shareInfo(_ info: MonkeyKing.Info) {
 
         var message :MonkeyKing.Message?
 
         switch self.segmentControl.selectedSegmentIndex{
         case 0:
-            message = MonkeyKing.Message.WeChat(.Session(info: info))
+            message = MonkeyKing.Message.weChat(.session(info: info))
         case 1:
-            message = MonkeyKing.Message.WeChat(.Timeline(info: info))
+            message = MonkeyKing.Message.weChat(.timeline(info: info))
         case 2:
-            message = MonkeyKing.Message.WeChat(.Favorite(info: info))
+            message = MonkeyKing.Message.weChat(.favorite(info: info))
         default:
             break
         }
@@ -108,21 +108,21 @@ class WeChatViewController: UIViewController {
 
 extension WeChatViewController {
 
-    @IBAction func OAuth(sender: UIButton) {
+    @IBAction func OAuth(_ sender: UIButton) {
 
-        MonkeyKing.OAuth(.WeChat) { [weak self] (dictionary, response, error) -> Void in
+        MonkeyKing.oauth(for: .weChat) { [weak self] (dictionary, response, error) -> Void in
             self?.fetchUserInfo(dictionary)
             print("error \(error)")
         }
     }
 
-    @IBAction func OAuthWithoutAppKey(sender: UIButton) {
+    @IBAction func OAuthWithoutAppKey(_ sender: UIButton) {
 
         // Should not register account here
-        let accountWithoutAppKey = MonkeyKing.Account.WeChat(appID: Configs.Wechat.appID, appKey: nil)
+        let accountWithoutAppKey = MonkeyKing.Account.weChat(appID: Configs.Wechat.appID, appKey: nil)
         MonkeyKing.registerAccount(accountWithoutAppKey)
 
-        MonkeyKing.OAuth(.WeChat) { (dictionary, response, error) -> Void in
+        MonkeyKing.oauth(for: .weChat) { (dictionary, response, error) -> Void in
 
             // You can use this code to OAuth, if you do not want to keep the weChatAppKey in client.
             print("dictionary \(dictionary)")
@@ -135,13 +135,13 @@ extension WeChatViewController {
 
 extension WeChatViewController {
 
-    @IBAction func pay(sender: UIButton) {
+    @IBAction func pay(_ sender: UIButton) {
 
         do {
-            let data = try NSURLConnection.sendSynchronousRequest(NSURLRequest(URL: NSURL(string: "http://www.example.com/pay.php?payType=weixin")!), returningResponse: nil)
-            let URLString = String(data: data, encoding: NSUTF8StringEncoding)
+            let data = try NSURLConnection.sendSynchronousRequest(URLRequest(url: URL(string: "http://www.example.com/pay.php?payType=weixin")!), returning: nil)
+            let urlString = String(data: data, encoding: String.Encoding.utf8)
 
-            let order = MonkeyKing.Order.WeChat(URLString: URLString!)
+            let order = MonkeyKing.Order.weChat(urlString: urlString!)
 
             MonkeyKing.payOrder(order) { result in
                 print("result: \(result)")
@@ -157,7 +157,7 @@ extension WeChatViewController {
 
 extension WeChatViewController {
 
-    private func fetchUserInfo(OAuthInfo: NSDictionary?) {
+    fileprivate func fetchUserInfo(_ OAuthInfo: NSDictionary?) {
 
         guard let token = OAuthInfo?["access_token"] as? String,
             let openID = OAuthInfo?["openid"] as? String,
@@ -174,7 +174,7 @@ extension WeChatViewController {
         ]
 
         // fetch UserInfo by userInfoAPI
-        SimpleNetworking.sharedInstance.request(userInfoAPI, method: .GET, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
+        SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters as [String : AnyObject]?, completionHandler: { (userInfoDictionary, _, _) -> Void in
 
             guard let mutableDictionary = userInfoDictionary?.mutableCopy() as? NSMutableDictionary else {
                 return
@@ -192,7 +192,7 @@ extension WeChatViewController {
         // http://mp.weixin.qq.com/wiki/home/index.html
     }
 
-    private func fetchWeChatOAuthInfoByCode(code code: String) {
+    fileprivate func fetchWeChatOAuthInfoByCode(code: String) {
 
         let appID = ""
         let appKey = "" // fetch appKey from server
@@ -203,7 +203,7 @@ extension WeChatViewController {
         accessTokenAPI += "&code=" + code + "&grant_type=authorization_code"
         
         // OAuth
-        SimpleNetworking.sharedInstance.request(accessTokenAPI, method: .GET) { (OAuthJSON, response, error) -> Void in
+        SimpleNetworking.sharedInstance.request(accessTokenAPI, method: .get) { (OAuthJSON, response, error) -> Void in
             print("OAuthJSON \(OAuthJSON)")
         }
     }
