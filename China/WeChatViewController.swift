@@ -97,7 +97,7 @@ class WeChatViewController: UIViewController {
         }
 
         if let message = message{
-            MonkeyKing.shareMessage(message) { result in
+            MonkeyKing.deliver(message) { result in
                 print("result: \(result)")
             }
         }

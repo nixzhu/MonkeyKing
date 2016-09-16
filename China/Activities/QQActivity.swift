@@ -43,7 +43,7 @@ class QQActivity: AnyActivity {
         }
     }
 
-    init(type: Type, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.ShareCompletionHandler) {
+    init(type: Type, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.DeliverCompletionHandler) {
 
         MonkeyKing.registerAccount(.qq(appID: Configs.QQ.appID))
 

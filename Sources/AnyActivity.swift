@@ -15,16 +15,16 @@ open class AnyActivity: UIActivity {
     fileprivate let image: UIImage
 
     fileprivate let message: MonkeyKing.Message
-    fileprivate let shareCompletionHandler: MonkeyKing.ShareCompletionHandler
+    fileprivate let completionHandler: MonkeyKing.DeliverCompletionHandler
 
-    public init(type: UIActivityType, title: String, image: UIImage, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.ShareCompletionHandler) {
+    public init(type: UIActivityType, title: String, image: UIImage, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.DeliverCompletionHandler) {
 
         self.type = type
         self.title = title
         self.image = image
 
         self.message = message
-        self.shareCompletionHandler = completionHandler
+        self.completionHandler = completionHandler
 
         super.init()
     }
@@ -50,7 +50,7 @@ open class AnyActivity: UIActivity {
     }
 
     override open func perform() {
-        MonkeyKing.shareMessage(message, completionHandler: shareCompletionHandler)
+        MonkeyKing.deliver(message, completionHandler: completionHandler)
         activityDidFinish(true)
     }
 }

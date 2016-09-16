@@ -50,7 +50,7 @@ class AlipayViewController: UIViewController {
 
     fileprivate func shareInfo(_ info: MonkeyKing.Info) {
         let message = MonkeyKing.Message.alipay(.friends(info: info))
-        MonkeyKing.shareMessage(message) { result in
+        MonkeyKing.deliver(message) { result in
             print("result: \(result)")
         }
     }

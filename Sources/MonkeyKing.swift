@@ -15,7 +15,7 @@ public func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
 
 open class MonkeyKing: NSObject {
 
-    public typealias ShareCompletionHandler = (_ result: Bool) -> Void
+    public typealias DeliverCompletionHandler = (_ result: Bool) -> Void
     public typealias OAuthCompletionHandler = (NSDictionary?, URLResponse?, NSError?) -> Void
     public typealias PayCompletionHandler = (_ result: Bool) -> Void
 
@@ -23,7 +23,7 @@ open class MonkeyKing: NSObject {
 
     fileprivate var accountSet = Set<Account>()
 
-    fileprivate var shareCompletionHandler: ShareCompletionHandler?
+    fileprivate var deliverCompletionHandler: DeliverCompletionHandler?
     fileprivate var oauthCompletionHandler: OAuthCompletionHandler?
     fileprivate var payCompletionHandler: PayCompletionHandler?
 
@@ -212,7 +212,7 @@ extension MonkeyKing {
                 }
 
                 let success = (result == 0)
-                sharedMonkeyKing.shareCompletionHandler?(success)
+                sharedMonkeyKing.deliverCompletionHandler?(success)
 
                 return success
             }
@@ -227,7 +227,7 @@ extension MonkeyKing {
 
             let success = (error == "0")
 
-            sharedMonkeyKing.shareCompletionHandler?(success)
+            sharedMonkeyKing.deliverCompletionHandler?(success)
 
             return success
         }
@@ -313,7 +313,7 @@ extension MonkeyKing {
             case "WBSendMessageToWeiboResponse":
 
                 let success = (statusCode == 0)
-                sharedMonkeyKing.shareCompletionHandler?(success)
+                sharedMonkeyKing.deliverCompletionHandler?(success)
                 
                 return success
                 
@@ -367,7 +367,7 @@ extension MonkeyKing {
                 }
 
                 let success = (result == 0)
-                sharedMonkeyKing.shareCompletionHandler?(success)
+                sharedMonkeyKing.deliverCompletionHandler?(success)
                 
                 return success
             }
@@ -400,7 +400,7 @@ extension MonkeyKing {
             case session(info: Info)
             case timeline(info: Info)
             case favorite(info: Info)
-            
+
             var scene: String {
                 switch self {
                 case .session:
@@ -511,14 +511,14 @@ extension MonkeyKing {
         }
     }
 
-    public class func shareMessage(_ message: Message, completionHandler: @escaping ShareCompletionHandler) {
+    public class func deliver(_ message: Message, completionHandler: @escaping DeliverCompletionHandler) {
 
         guard message.canBeDelivered else {
             completionHandler(false)
             return
         }
 
-        sharedMonkeyKing.shareCompletionHandler = completionHandler
+        sharedMonkeyKing.deliverCompletionHandler = completionHandler
 
         guard let account = sharedMonkeyKing.accountSet[message] else {
             completionHandler(false)
@@ -877,8 +877,8 @@ extension MonkeyKing {
 extension MonkeyKing {
     
     public enum Order {
+
         case alipay(urlString: String)
-        
         case weChat(urlString: String)
         
         public var canBeDelivered: Bool {
