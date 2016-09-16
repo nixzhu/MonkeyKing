@@ -15,7 +15,7 @@ public func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
 
 open class MonkeyKing: NSObject {
 
-    public typealias SharedCompletionHandler = (_ result: Bool) -> Void
+    public typealias ShareCompletionHandler = (_ result: Bool) -> Void
     public typealias OAuthCompletionHandler = (NSDictionary?, URLResponse?, NSError?) -> Void
     public typealias PayCompletionHandler = (_ result: Bool) -> Void
 
@@ -23,7 +23,7 @@ open class MonkeyKing: NSObject {
 
     fileprivate var accountSet = Set<Account>()
 
-    fileprivate var sharedCompletionHandler: SharedCompletionHandler?
+    fileprivate var shareCompletionHandler: ShareCompletionHandler?
     fileprivate var oauthCompletionHandler: OAuthCompletionHandler?
     fileprivate var payCompletionHandler: PayCompletionHandler?
 
@@ -212,7 +212,7 @@ extension MonkeyKing {
                 }
 
                 let success = (result == 0)
-                sharedMonkeyKing.sharedCompletionHandler?(success)
+                sharedMonkeyKing.shareCompletionHandler?(success)
 
                 return success
             }
@@ -227,7 +227,7 @@ extension MonkeyKing {
 
             let success = (error == "0")
 
-            sharedMonkeyKing.sharedCompletionHandler?(success)
+            sharedMonkeyKing.shareCompletionHandler?(success)
 
             return success
         }
@@ -253,7 +253,7 @@ extension MonkeyKing {
             }
 
             guard let result = dic["ret"] as? Int, result == 0 else {
-                if let errorDomatin = dic["user_cancelled"] as? String , errorDomatin == "YES" {
+                if let errorDomatin = dic["user_cancelled"] as? String, errorDomatin == "YES" {
                     error = NSError(domain: "User Cancelled", code: -2, userInfo: nil)
                 } else {
                     error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
@@ -274,7 +274,7 @@ extension MonkeyKing {
 
             for item in items {
                 for (key, value) in item {
-                    if let valueData = value as? Data , key == "transferObject" {
+                    if let valueData = value as? Data, key == "transferObject" {
                         results[key] = NSKeyedUnarchiver.unarchiveObject(with: valueData) as AnyObject?
                     }
                 }
@@ -313,7 +313,7 @@ extension MonkeyKing {
             case "WBSendMessageToWeiboResponse":
 
                 let success = (statusCode == 0)
-                sharedMonkeyKing.sharedCompletionHandler?(success)
+                sharedMonkeyKing.shareCompletionHandler?(success)
                 
                 return success
                 
@@ -367,7 +367,7 @@ extension MonkeyKing {
                 }
 
                 let success = (result == 0)
-                sharedMonkeyKing.sharedCompletionHandler?(success)
+                sharedMonkeyKing.shareCompletionHandler?(success)
                 
                 return success
             }
@@ -511,14 +511,14 @@ extension MonkeyKing {
         }
     }
 
-    public class func shareMessage(_ message: Message, completionHandler: @escaping SharedCompletionHandler) {
+    public class func shareMessage(_ message: Message, completionHandler: @escaping ShareCompletionHandler) {
 
         guard message.canBeDelivered else {
             completionHandler(false)
             return
         }
 
-        sharedMonkeyKing.sharedCompletionHandler = completionHandler
+        sharedMonkeyKing.shareCompletionHandler = completionHandler
 
         guard let account = sharedMonkeyKing.accountSet[message] else {
             completionHandler(false)
@@ -1054,7 +1054,7 @@ extension MonkeyKing: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
 
         // Pocket OAuth
-        if let errorString = (error as NSError).userInfo["NSErrorFailingURLStringKey"] as? String , errorString.hasSuffix(":authorizationFinished") {
+        if let errorString = (error as NSError).userInfo["NSErrorFailingURLStringKey"] as? String, errorString.hasSuffix(":authorizationFinished") {
             removeWebView(webView, tuples: (nil, nil, nil))
         }
     }
@@ -1565,7 +1565,7 @@ private extension Bundle {
 
         var info = infoDictionary
 
-        if let localizedInfo = localizedInfoDictionary , !localizedInfo.isEmpty {
+        if let localizedInfo = localizedInfoDictionary, !localizedInfo.isEmpty {
             info = localizedInfo
         }
 
@@ -1614,7 +1614,7 @@ private extension Data {
 
     var monkeyking_json: [String: AnyObject]? {
         do {
-            return try JSONSerialization.jsonObject(with: self , options: .allowFragments) as? [String: AnyObject]
+            return try JSONSerialization.jsonObject(with: self, options: .allowFragments) as? [String: AnyObject]
         } catch {
             return nil
         }
