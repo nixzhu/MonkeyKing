@@ -15,12 +15,12 @@ class WeChatActivity: AnyActivity {
         case session
         case timeline
 
-        var type: String {
+        var activityType: UIActivityType {
             switch self {
             case .session:
-                return "com.nixWork.China.WeChat.Session"
+                return UIActivityType(rawValue: "com.nixWork.China.WeChat.Session")
             case .timeline:
-                return "com.nixWork.China.WeChat.Timeline"
+                return UIActivityType(rawValue: "com.nixWork.China.WeChat.Timeline")
             }
         }
 
@@ -48,7 +48,7 @@ class WeChatActivity: AnyActivity {
         MonkeyKing.registerAccount(.weChat(appID: Configs.Wechat.appID, appKey: ""))
 
         super.init(
-            type: UIActivityType(rawValue: type.type),
+            type: type.activityType,
             title: type.title,
             image: type.image,
             message: message,
