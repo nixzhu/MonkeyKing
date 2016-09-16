@@ -65,7 +65,7 @@ class AlipayViewController: UIViewController {
 
             let order = MonkeyKing.Order.alipay(urlString: urlString!)
 
-            MonkeyKing.payOrder(order) { result in
+            MonkeyKing.deliver(order) { result in
                 print("result: \(result)")
             }
 

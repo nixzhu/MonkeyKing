@@ -143,7 +143,7 @@ extension WeChatViewController {
 
             let order = MonkeyKing.Order.weChat(urlString: urlString!)
 
-            MonkeyKing.payOrder(order) { result in
+            MonkeyKing.deliver(order) { result in
                 print("result: \(result)")
             }
 

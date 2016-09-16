@@ -894,7 +894,7 @@ extension MonkeyKing {
         }
     }
     
-    public class func payOrder(_ order: Order, completionHandler: @escaping PayCompletionHandler) {
+    public class func deliver(_ order: Order, completionHandler: @escaping PayCompletionHandler) {
         
         if !order.canBeDelivered {
             completionHandler(false)
