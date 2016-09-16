@@ -17,31 +17,31 @@ And, now MonkeyKing supports **Mobile payment** via WeChat and Alipay!
 
 Swift 3.0, iOS 8.0
 
-## Example
+## Examples
 
-Share to WeChat (微信)：
+### Share
 
-### Basic
+Example: Share to WeChat (微信)：
 
 1. In your Project Target's `Info.plist`, set `URL Type`, `LSApplicationQueriesSchemes`, `NSAppTransportSecurity` as follow:
 
 	![infoList.png](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/infoList.png)
 
-2. Register account
+2. Register account: // it's not necessary to do it here, but for convenient
 
 	```swift
-	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 
-	    MonkeyKing.registerAccount(.weChat(appID: "wxd930ea5d5a258f4f"))
+	    MonkeyKing.registerAccount(.weChat(appID: "xxx", appKey: "yyy"))
 
 	    return true
 	}
 	```
 
-3. If you need handle call back, add following code
+3. If you need to handle call back, add following code:
 
 	```swift
-    func application(application: UIApplication, openURL url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+    func application(_ application: UIApplication, openURL url: URL, sourceApplication: String?, annotation: Any) -> Bool {
 
         if MonkeyKing.handleOpenURL(url) {
             return true
@@ -53,12 +53,12 @@ Share to WeChat (微信)：
 
 	to your AppDelegate.
 
-4. Prepare your message and share it:
+4. Prepare your message and ask MonkeyKing to deliver it:
 
 	```swift
     @IBAction func shareURLToWeChatSession(sender: UIButton) {
 
-        MonkeyKing.registerAccount(.weChat(appID: weChatAppID))
+        MonkeyKing.registerAccount(.weChat(appID: "xxx", appKey: "yyy")) // you can do it here (just before deliver)
 
         let message = MonkeyKing.Message.weChat(.session(info: (
             title: "Session",
@@ -67,7 +67,7 @@ Share to WeChat (微信)：
             media: .url(URL(string: "http://www.apple.com/cn")!)
         )))
 
-        MonkeyKing.shareMessage(message) { success in
+        MonkeyKing.deliver(message) { success in
             print("shareURLToWeChatSession success: \(success)")
         }
     }
@@ -97,7 +97,7 @@ If user don't have Weibo App installed on their devices then MonkeyKing will use
 Example: Alipay
 
 ```swift
-MonkeyKing.payOrder(MonkeyKing.Order.alipay(urlString: "https://example.com/pay.php?payType=alipay")) { result in
+MonkeyKing.deliver(MonkeyKing.Order.alipay(urlString: "https://example.com/pay.php?payType=alipay")) { result in
     print("result: \(result)")
 }
 ```
@@ -132,7 +132,7 @@ $ brew install carthage
 To integrate MonkeyKing into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "nixzhu/MonkeyKing" >= 0.9.4
+github "nixzhu/MonkeyKing" >= 1.0.0
 ```
 
 Then, run the following command to build the MonkeyKing framework:
@@ -177,7 +177,7 @@ platform :ios, '8.0'
 use_frameworks!
 
 target <Your Target Name> do
-    pod 'MonkeyKing', '~> 0.9.4'
+    pod 'MonkeyKing', '~> 1.0.0'
 end
 ```
 

@@ -15,12 +15,12 @@ class QQActivity: AnyActivity {
         case friends
         case zone
 
-        var type: String {
+        var activityType: UIActivityType {
             switch self {
             case .friends:
-                return "com.nixWork.China.QQ.Friends"
+                return UIActivityType(rawValue: "com.nixWork.China.QQ.Friends")
             case .zone:
-                return "com.nixWork.China.QQ.Zone"
+                return UIActivityType(rawValue: "com.nixWork.China.QQ.Zone")
             }
         }
 
@@ -36,19 +36,19 @@ class QQActivity: AnyActivity {
         var image: UIImage {
             switch self {
             case .friends:
-                return UIImage(named: "wechat_session")! // TODO:
+                return UIImage(named: "wechat_session")! // TODO: qq_friends
             case .zone:
-                return UIImage(named: "wechat_timeline")! // TODO:
+                return UIImage(named: "wechat_timeline")! // TODO: qq_zone
             }
         }
     }
 
-    init(type: Type, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.SharedCompletionHandler) {
+    init(type: Type, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.DeliverCompletionHandler) {
 
         MonkeyKing.registerAccount(.qq(appID: Configs.QQ.appID))
 
         super.init(
-            type: UIActivityType(rawValue: type.type),
+            type: type.activityType,
             title: type.title,
             image: type.image,
             message: message,

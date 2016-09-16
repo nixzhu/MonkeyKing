@@ -97,7 +97,7 @@ class WeChatViewController: UIViewController {
         }
 
         if let message = message{
-            MonkeyKing.shareMessage(message) { result in
+            MonkeyKing.deliver(message) { result in
                 print("result: \(result)")
             }
         }
@@ -143,7 +143,7 @@ extension WeChatViewController {
 
             let order = MonkeyKing.Order.weChat(urlString: urlString!)
 
-            MonkeyKing.payOrder(order) { result in
+            MonkeyKing.deliver(order) { result in
                 print("result: \(result)")
             }
 
