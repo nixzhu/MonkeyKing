@@ -110,7 +110,7 @@ extension WeChatViewController {
 
     @IBAction func OAuth(_ sender: UIButton) {
 
-        MonkeyKing.oauth(for: .weChat) { [weak self] (dictionary, response, error) -> Void in
+        MonkeyKing.oauth(for: .weChat) { [weak self] (dictionary, response, error) in
             self?.fetchUserInfo(dictionary)
             print("error \(error)")
         }
@@ -122,7 +122,7 @@ extension WeChatViewController {
         let accountWithoutAppKey = MonkeyKing.Account.weChat(appID: Configs.Wechat.appID, appKey: nil)
         MonkeyKing.registerAccount(accountWithoutAppKey)
 
-        MonkeyKing.oauth(for: .weChat) { (dictionary, response, error) -> Void in
+        MonkeyKing.oauth(for: .weChat) { (dictionary, response, error) in
 
             // You can use this code to OAuth, if you do not want to keep the weChatAppKey in client.
             print("dictionary \(dictionary)")
@@ -139,7 +139,7 @@ extension WeChatViewController {
 
         do {
             let data = try NSURLConnection.sendSynchronousRequest(URLRequest(url: URL(string: "http://www.example.com/pay.php?payType=weixin")!), returning: nil)
-            let urlString = String(data: data, encoding: String.Encoding.utf8)
+            let urlString = String(data: data, encoding: .utf8)
 
             let order = MonkeyKing.Order.weChat(urlString: urlString!)
 
@@ -157,12 +157,13 @@ extension WeChatViewController {
 
 extension WeChatViewController {
 
-    fileprivate func fetchUserInfo(_ OAuthInfo: NSDictionary?) {
+    fileprivate func fetchUserInfo(_ oauthInfo: [String: Any]?) {
 
-        guard let token = OAuthInfo?["access_token"] as? String,
-            let openID = OAuthInfo?["openid"] as? String,
-            let refreshToken = OAuthInfo?["refresh_token"] as? String,
-            let expiresIn = OAuthInfo?["expires_in"] as? Int else {
+        guard
+            let token = oauthInfo?["access_token"] as? String,
+            let openID = oauthInfo?["openid"] as? String,
+            let refreshToken = oauthInfo?["refresh_token"] as? String,
+            let expiresIn = oauthInfo?["expires_in"] as? Int else {
                 return
         }
 
@@ -174,18 +175,18 @@ extension WeChatViewController {
         ]
 
         // fetch UserInfo by userInfoAPI
-        SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters as [String : AnyObject]?, completionHandler: { (userInfoDictionary, _, _) -> Void in
+        SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters, completionHandler: { (userInfo, _, _) in
 
-            guard let mutableDictionary = userInfoDictionary?.mutableCopy() as? NSMutableDictionary else {
+            guard var userInfo = userInfo else {
                 return
             }
 
-            mutableDictionary["access_token"] = token
-            mutableDictionary["openid"] = openID
-            mutableDictionary["refresh_token"] = refreshToken
-            mutableDictionary["expires_in"] = expiresIn
+            userInfo["access_token"] = token
+            userInfo["openid"] = openID
+            userInfo["refresh_token"] = refreshToken
+            userInfo["expires_in"] = expiresIn
 
-            print("userInfoDictionary \(mutableDictionary)")
+            print("userInfo \(userInfo)")
         })
 
         // More API
@@ -203,7 +204,7 @@ extension WeChatViewController {
         accessTokenAPI += "&code=" + code + "&grant_type=authorization_code"
         
         // OAuth
-        SimpleNetworking.sharedInstance.request(accessTokenAPI, method: .get) { (OAuthJSON, response, error) -> Void in
+        SimpleNetworking.sharedInstance.request(accessTokenAPI, method: .get) { (OAuthJSON, response, error) in
             print("OAuthJSON \(OAuthJSON)")
         }
     }

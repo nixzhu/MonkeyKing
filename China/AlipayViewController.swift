@@ -61,7 +61,7 @@ class AlipayViewController: UIViewController {
 
         do {
             let data = try NSURLConnection.sendSynchronousRequest(URLRequest(url: URL(string: "http://www.example.com/pay.php?payType=alipay")!), returning: nil)
-            let urlString = String(data: data, encoding: String.Encoding.utf8)
+            let urlString = String(data: data, encoding: .utf8)
 
             let order = MonkeyKing.Order.alipay(urlString: urlString!)
 
@@ -69,8 +69,8 @@ class AlipayViewController: UIViewController {
                 print("result: \(result)")
             }
 
-        } catch let error as NSError {
-            print(error.localizedDescription)
+        } catch let error {
+            print(error)
         }
     }
 }

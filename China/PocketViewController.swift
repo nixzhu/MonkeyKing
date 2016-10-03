@@ -16,6 +16,7 @@ class PocketViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         MonkeyKing.registerAccount(account)
     }
 
@@ -34,8 +35,8 @@ class PocketViewController: UIViewController {
             "access_token": accessToken
         ]
 
-        SimpleNetworking.sharedInstance.request(addAPI, method: .post, parameters: parameters as [String : AnyObject]?, encoding: .json) { (dict, response, error) -> Void in
-            guard let status = dict?["status"] as? Int , status == 1 else {
+        SimpleNetworking.sharedInstance.request(addAPI, method: .post, parameters: parameters, encoding: .json) { (info, response, error) in
+            guard let status = info?["status"] as? Int, status == 1 else {
                 return
             }
             print("Pocket add url successfully")
@@ -57,15 +58,15 @@ class PocketViewController: UIViewController {
 
         print("S1: fetch requestToken")
 
-        SimpleNetworking.sharedInstance.request(requestAPI, method: .post, parameters: parameters as [String : AnyObject]?, encoding: .json) { [weak self] (dict, response, error) -> Void in
+        SimpleNetworking.sharedInstance.request(requestAPI, method: .post, parameters: parameters, encoding: .json) { [weak self] (info, response, error) in
 
-            guard let strongSelf = self, let requestToken = dict?["code"] as? String else {
+            guard let strongSelf = self, let requestToken = info?["code"] as? String else {
                 return
             }
 
             print("S2: OAuth by requestToken: \(requestToken)")
 
-            MonkeyKing.oauth(for: .pocket(requestToken: requestToken)) { (dictionary, response, error) -> Void in
+            MonkeyKing.oauth(for: .pocket(requestToken: requestToken)) { (dictionary, response, error) in
 
                 guard error == nil else {
                     print(error)
@@ -80,24 +81,21 @@ class PocketViewController: UIViewController {
 
                 print("S3: fetch OAuth state")
 
-                SimpleNetworking.sharedInstance.request(accessTokenAPI, method: .post, parameters: parameters as [String : AnyObject]?, encoding: .json) { (json, response, error) -> Void in
+                SimpleNetworking.sharedInstance.request(accessTokenAPI, method: .post, parameters: parameters, encoding: .json) { (info, response, error) in
 
                     print("S4: OAuth completion")
 
-                    print("JSON: \(json)")
+                    print("JSON: \(info)")
 
                     // If the HTTP status of the response is 200, then the request completed successfully.
                     print("response: \(response)")
 
-                    strongSelf.accessToken = json?["access_token"] as? String
-                    
+                    strongSelf.accessToken = info?["access_token"] as? String
                 }
             }
             
             // More details
             // Pocket Authentication API Documentation: https://getpocket.com/developer/docs/authentication
-            
         }
     }
-    
 }

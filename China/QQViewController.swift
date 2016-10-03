@@ -133,28 +133,29 @@ class QQViewController: UIViewController {
 
         // "get_user_info,get_simple_userinfo,add_album,add_idol,add_one_blog,add_pic_t,add_share,add_topic,check_page_fans,del_idol,del_t,get_fanslist,get_idollist,get_info,get_other_info,get_repost_list,list_album,upload_pic,get_vip_info,get_vip_rich_info,get_intimate_friends_weibo,match_nick_tips_weibo"
 
-        MonkeyKing.oauth(for: .qq, scope: "get_user_info") { (oauthInfo, response, error) -> Void in
+        MonkeyKing.oauth(for: .qq, scope: "get_user_info") { (info, response, error) in
 
-            print(oauthInfo)
+            print(info)
             
-            guard let token = oauthInfo?["access_token"] as? String,
-                let openID = oauthInfo?["openid"] as? String else {
+            guard
+                let token = info?["access_token"] as? String,
+                let openID = info?["openid"] as? String else {
                     return
             }
 
             let query = "get_user_info"
             let userInfoAPI = "https://graph.qq.com/user/\(query)"
 
-            let parameters: [String: AnyObject] = [
-                "openid": openID as AnyObject,
-                "access_token": token as AnyObject,
-                "oauth_consumer_key": Configs.QQ.appID as AnyObject
+            let parameters = [
+                "openid": openID,
+                "access_token": token,
+                "oauth_consumer_key": Configs.QQ.appID
             ]
 
             // fetch UserInfo by userInfoAPI
-            SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters, completionHandler: { (userInfoDictionary, _, _) -> Void in
-                print("userInfoDictionary \(userInfoDictionary)")
-            })
+            SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters) { (userInfo, _, _) in
+                print("userInfo \(userInfo)")
+            }
 
             // More API
             // http://wiki.open.qq.com/wiki/website/API%E5%88%97%E8%A1%A8

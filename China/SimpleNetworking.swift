@@ -14,7 +14,7 @@ class SimpleNetworking {
     static let sharedInstance = SimpleNetworking()
     fileprivate let session = URLSession.shared
 
-    typealias NetworkingResponseHandler = (NSDictionary?, URLResponse?, NSError?) -> Void
+    typealias NetworkingResponseHandler = ([String: Any]?, URLResponse?, Error?) -> Void
 
     enum Method: String {
         case get = "GET"
@@ -26,16 +26,17 @@ class SimpleNetworking {
         case urlEncodedInURL
         case json
 
-        func encode(_ urlRequest: NSMutableURLRequest, parameters: [String: AnyObject]?) -> Foundation.URLRequest {
+        func encode(_ urlRequest: URLRequest, parameters: [String: Any]?) -> URLRequest {
+
             guard let parameters = parameters else {
-                return urlRequest as URLRequest
+                return urlRequest
             }
 
-            var mutableURLRequest = urlRequest.mutableCopy() as! NSMutableURLRequest
+            var mutableURLRequest = urlRequest
 
             switch self {
             case .url, .urlEncodedInURL:
-                func query(_ parameters: [String: AnyObject]) -> String {
+                func query(_ parameters: [String: Any]) -> String {
                     var components: [(String, String)] = []
 
                     for key in parameters.keys.sorted(by: <) {
@@ -62,7 +63,7 @@ class SimpleNetworking {
                     }
                 }
 
-                if let method = Method(rawValue: mutableURLRequest.httpMethod) , encodesParametersInURL(method) {
+                if let method = Method(rawValue: mutableURLRequest.httpMethod!) , encodesParametersInURL(method) {
                     if var urlComponents = URLComponents(url: mutableURLRequest.url!, resolvingAgainstBaseURL: false) {
                         let percentEncodedQuery = (urlComponents.percentEncodedQuery.map { $0 + "&" } ?? "") + query(parameters)
                         urlComponents.percentEncodedQuery = percentEncodedQuery
@@ -76,10 +77,7 @@ class SimpleNetworking {
                         )
                     }
 
-                    mutableURLRequest.httpBody = query(parameters).data(
-                        using: String.Encoding.utf8,
-                        allowLossyConversion: false
-                    )
+                    mutableURLRequest.httpBody = query(parameters).data(using: .utf8, allowLossyConversion: false)
                 }
             case .json:
                 do {
@@ -91,20 +89,19 @@ class SimpleNetworking {
                     mutableURLRequest.httpBody = data
                 } catch {
                 }
-
             }
 
             return mutableURLRequest as URLRequest
         }
 
-        func queryComponents(_ key: String, _ value: AnyObject) -> [(String, String)] {
+        func queryComponents(_ key: String, _ value: Any) -> [(String, String)] {
             var components: [(String, String)] = []
 
-            if let dictionary = value as? [String: AnyObject] {
+            if let dictionary = value as? [String: Any] {
                 for (nestedKey, value) in dictionary {
                     components += queryComponents("\(key)[\(nestedKey)]", value)
                 }
-            } else if let array = value as? [AnyObject] {
+            } else if let array = value as? [Any] {
                 for value in array {
                     components += queryComponents("\(key)[]", value)
                 }
@@ -148,13 +145,13 @@ class SimpleNetworking {
         }
     }
 
-    func request(_ urlString: String, method: Method, parameters: [String: AnyObject]? = nil, encoding: ParameterEncoding = .url, headers: [String: String]? = nil, completionHandler: @escaping NetworkingResponseHandler) {
+    func request(_ urlString: String, method: Method, parameters: [String: Any]? = nil, encoding: ParameterEncoding = .url, headers: [String: String]? = nil, completionHandler: @escaping NetworkingResponseHandler) {
 
         guard let url = URL(string: urlString) else {
             return
         }
 
-        let mutableURLRequest = NSMutableURLRequest(url: url)
+        var mutableURLRequest = URLRequest(url: url)
         mutableURLRequest.httpMethod = method.rawValue
 
         if let headers = headers {
@@ -165,16 +162,17 @@ class SimpleNetworking {
 
         let request = encoding.encode(mutableURLRequest, parameters: parameters)
 
-        let task = session.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+        let task = session.dataTask(with: request, completionHandler: { (data, response, error) in
 
-            var json: NSDictionary?
+            var json: [String: Any]?
 
             defer {
-                completionHandler(json, response, error as NSError?)
+                completionHandler(json, response, error)
             }
 
-            guard let validData = data,
-                let jsonData = try? JSONSerialization.jsonObject(with: validData, options: .allowFragments) as? NSDictionary else {
+            guard
+                let validData = data,
+                let jsonData = try? JSONSerialization.jsonObject(with: validData, options: .allowFragments) as? [String: Any] else {
                     print("sample networking requet failt: JSON could not be serialized because input data was nil.")
                     return
             }
@@ -185,7 +183,7 @@ class SimpleNetworking {
         task.resume()
     }
 
-    func upload(_ urlString: String, parameters: [String: AnyObject], completionHandler: @escaping NetworkingResponseHandler) {
+    func upload(_ urlString: String, parameters: [String: Any], completionHandler: @escaping NetworkingResponseHandler) {
 
         let tuple = urlRequestWithComponents(urlString, parameters: parameters)
 
@@ -193,44 +191,45 @@ class SimpleNetworking {
             return
         }
 
-        let uploadTask = session.uploadTask(with: request, from: data, completionHandler: { (data, response, error) -> Void in
-            var json: NSDictionary?
+        let uploadTask = session.uploadTask(with: request, from: data) { (data, response, error) in
+            var json: [String: Any]?
 
             defer {
-                completionHandler(json, response, error as NSError?)
+                completionHandler(json, response, error)
             }
 
-            guard let validData = data,
-                let jsonData = try? JSONSerialization.jsonObject(with: validData, options: .allowFragments) as? NSDictionary else {
+            guard
+                let validData = data,
+                let jsonData = try? JSONSerialization.jsonObject(with: validData, options: .allowFragments) as? [String: Any] else {
                     print("sample networking upload failt: JSON could not be serialized because input data was nil.")
                     return
             }
 
             json = jsonData
-        }) 
+        }
 
         uploadTask.resume()
     }
 
-    fileprivate func urlRequestWithComponents(_ urlString: String, parameters: [String: AnyObject], encoding: ParameterEncoding = .url) -> (request: URLRequest?, data: Data?) {
+    fileprivate func urlRequestWithComponents(_ urlString: String, parameters: [String: Any], encoding: ParameterEncoding = .url) -> (request: URLRequest?, data: Data?) {
 
         guard let url = URL(string: urlString) else {
             return (nil, nil)
         }
 
         // create url request to send
-        let mutableURLRequest = NSMutableURLRequest(url: url)
+        var mutableURLRequest = URLRequest(url: url)
         mutableURLRequest.httpMethod = Method.post.rawValue
         let boundaryConstant = "NET-POST-boundary-\(arc4random())-\(arc4random())"
-        let contentType = "multipart/form-data;boundary="+boundaryConstant
+        let contentType = "multipart/form-data;boundary=" + boundaryConstant
         mutableURLRequest.setValue(contentType, forHTTPHeaderField: "Content-Type")
 
-        let uploadData = NSMutableData()
+        var uploadData = Data()
 
         // add parameters
         for (key, value) in parameters {
 
-            guard let encodeBoundaryData = "\r\n--\(boundaryConstant)\r\n".data(using: String.Encoding.utf8) else {
+            guard let encodeBoundaryData = "\r\n--\(boundaryConstant)\r\n".data(using: .utf8) else {
                 return (nil, nil)
             }
 
@@ -241,29 +240,27 @@ class SimpleNetworking {
                 let filename = arc4random()
                 let filenameClause = "filename=\"\(filename)\""
                 let contentDispositionString = "Content-Disposition: form-data; name=\"\(key)\";\(filenameClause)\r\n"
-                let contentDispositionData = contentDispositionString.data(using: String.Encoding.utf8)
+                let contentDispositionData = contentDispositionString.data(using: .utf8)
                 uploadData.append(contentDispositionData!)
 
                 // append content type
                 let contentTypeString = "Content-Type: image/JPEG\r\n\r\n"
-                guard let contentTypeData = contentTypeString.data(using: String.Encoding.utf8) else {
+                guard let contentTypeData = contentTypeString.data(using: .utf8) else {
                     return (nil, nil)
                 }
                 uploadData.append(contentTypeData)
                 uploadData.append(imageData)
                 
-            } else{
-                
-                guard let encodeDispositionData = "Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n\(value)".data(using: String.Encoding.utf8) else {
+            } else {
+                guard let encodeDispositionData = "Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n\(value)".data(using: .utf8) else {
                     return (nil, nil)
                 }
                 uploadData.append(encodeDispositionData)
             }
         }
         
-        uploadData.append("\r\n--\(boundaryConstant)--\r\n".data(using: String.Encoding.utf8)!)
+        uploadData.append("\r\n--\(boundaryConstant)--\r\n".data(using: .utf8)!)
         
-        return (encoding.encode(mutableURLRequest, parameters: nil), uploadData as Data)
+        return (encoding.encode(mutableURLRequest, parameters: nil), uploadData)
     }
-    
 }

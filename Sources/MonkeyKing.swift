@@ -16,7 +16,7 @@ public func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
 open class MonkeyKing: NSObject {
 
     public typealias DeliverCompletionHandler = (_ result: Bool) -> Void
-    public typealias OAuthCompletionHandler = (NSDictionary?, URLResponse?, NSError?) -> Void
+    public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Error?) -> Void
     public typealias PayCompletionHandler = (_ result: Bool) -> Void
 
     fileprivate static let sharedMonkeyKing = MonkeyKing()
@@ -152,7 +152,7 @@ extension MonkeyKing {
                 }
 
                 // Login Succcess
-                fetchWeChatOAuthInfoByCode(code: code) { (info, response, error) -> Void in
+                fetchWeChatOAuthInfoByCode(code: code) { (info, response, error) in
                     sharedMonkeyKing.oauthCompletionHandler?(info, response, error)
                 }
 
@@ -203,15 +203,17 @@ extension MonkeyKing {
                 return false
             }
 
-            if let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? NSDictionary {
+            if let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? [String: Any] {
 
-                guard let account = sharedMonkeyKing.accountSet[.weChat],
-                    let dic = dict?[account.appID] as? NSDictionary,
-                    let result = Int(dic["result"] as? String ?? "") else {
+                guard
+                    let account = sharedMonkeyKing.accountSet[.weChat],
+                    let info = dict?[account.appID] as? [String: Any],
+                    let result = info["result"] as? String,
+                    let resultCode = Int(result) else {
                         return false
                 }
 
-                let success = (result == 0)
+                let success = (resultCode == 0)
                 sharedMonkeyKing.deliverCompletionHandler?(success)
 
                 return success
@@ -226,7 +228,6 @@ extension MonkeyKing {
             }
 
             let success = (error == "0")
-
             sharedMonkeyKing.deliverCompletionHandler?(success)
 
             return success
@@ -239,21 +240,22 @@ extension MonkeyKing {
                 return false
             }
 
-            var userInfoDictionary: NSDictionary?
-            var error: NSError?
+            var userInfo: [String: Any]?
+            var error: Error?
 
             defer {
-                sharedMonkeyKing.oauthCompletionHandler?(userInfoDictionary, nil, error)
+                sharedMonkeyKing.oauthCompletionHandler?(userInfo, nil, error)
             }
 
-            guard let data = UIPasteboard.general.data(forPasteboardType: "com.tencent.tencent\(account.appID)"),
-                let dic = NSKeyedUnarchiver.unarchiveObject(with: data) as? NSDictionary else {
+            guard
+                let data = UIPasteboard.general.data(forPasteboardType: "com.tencent.tencent\(account.appID)"),
+                let info = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: Any] else {
                     error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
                     return false
             }
 
-            guard let result = dic["ret"] as? Int, result == 0 else {
-                if let errorDomatin = dic["user_cancelled"] as? String, errorDomatin == "YES" {
+            guard let result = info["ret"] as? Int, result == 0 else {
+                if let errorDomatin = info["user_cancelled"] as? String, errorDomatin == "YES" {
                     error = NSError(domain: "User Cancelled", code: -2, userInfo: nil)
                 } else {
                     error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
@@ -261,7 +263,7 @@ extension MonkeyKing {
                 return false
             }
 
-            userInfoDictionary = dic
+            userInfo = info
 
             return true
         }
@@ -270,22 +272,23 @@ extension MonkeyKing {
         if urlScheme.hasPrefix("wb") {
 
             let items = UIPasteboard.general.items
-            var results = [String: AnyObject]()
+            var results = [String: Any]()
 
             for item in items {
                 for (key, value) in item {
                     if let valueData = value as? Data, key == "transferObject" {
-                        results[key] = NSKeyedUnarchiver.unarchiveObject(with: valueData) as AnyObject?
+                        results[key] = NSKeyedUnarchiver.unarchiveObject(with: valueData)
                     }
                 }
             }
 
-            guard let responseData = results["transferObject"] as? [String: AnyObject],
-                let type = responseData["__class"] as? String else {
+            guard
+                let responseInfo = results["transferObject"] as? [String: Any],
+                let type = responseInfo["__class"] as? String else {
                     return false
             }
 
-            guard let statusCode = responseData["statusCode"] as? Int else {
+            guard let statusCode = responseInfo["statusCode"] as? Int else {
                 return false
             }
 
@@ -294,17 +297,17 @@ extension MonkeyKing {
                 // Weibo OAuth
             case "WBAuthorizeResponse":
 
-                var userInfoDictionary: NSDictionary?
-                var error: NSError?
+                var userInfo: [String: Any]?
+                var error: Error?
 
                 defer {
-                    sharedMonkeyKing.oauthCompletionHandler?(responseData as NSDictionary?, nil, error)
+                    sharedMonkeyKing.oauthCompletionHandler?(responseInfo, nil, error)
                 }
 
-                userInfoDictionary = responseData as NSDictionary?
+                userInfo = responseInfo
 
                 if statusCode != 0 {
-                    error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
+                    error = NSError(domain: "OAuth Error", code: -1, userInfo: userInfo)
                     return false
                 }
                 return true
@@ -341,26 +344,26 @@ extension MonkeyKing {
                     sharedMonkeyKing.payCompletionHandler?(result)
                 }
 
-                guard let query = url.query,
-                    let response = query.monkeyking_urlDecodedString?.data(using: String.Encoding.utf8),
-                    let json = response.monkeyking_json else {
+                guard
+                    let query = url.query,
+                    let response = query.monkeyking_urlDecodedString?.data(using: .utf8),
+                    let json = response.monkeyking_json,
+                    let memo = json["memo"] as? [String: Any],
+                    let status = memo["ResultStatus"] as? String else {
                         return false
                 }
 
-                guard let memo = json["memo"], let status = memo["ResultStatus"] as? String else {
-                    return false
-                }
-
-                result = status == "9000"
+                result = (status == "9000")
 
                 return result
 
             } else {
 
                 // Alipay Share
-                guard let account = sharedMonkeyKing.accountSet[.alipay],
+                guard
+                    let account = sharedMonkeyKing.accountSet[.alipay],
                     let data = UIPasteboard.general.data(forPasteboardType: "com.alipay.openapi.pb.resp.\(account.appID)"),
-                    let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? NSDictionary,
+                    let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? [String: Any],
                     let objects = dict?["$objects"] as? NSArray,
                     let result = objects[12] as? Int else {
                         return false
@@ -531,61 +534,58 @@ extension MonkeyKing {
 
         case .weChat(let type):
 
-            var weChatMessageInfo: [String: AnyObject] = [
-                "result": "1" as AnyObject,
-                "returnFromApp": "0" as AnyObject,
-                "scene": type.scene as AnyObject,
-                "sdkver": "1.5" as AnyObject,
-                "command": "1010" as AnyObject,
+            var weChatMessageInfo: [String: Any] = [
+                "result": "1",
+                "returnFromApp": "0",
+                "scene": type.scene,
+                "sdkver": "1.5",
+                "command": "1010",
             ]
 
             let info = type.info
 
             if let title = info.title {
-                weChatMessageInfo["title"] = title as AnyObject?
+                weChatMessageInfo["title"] = title
             }
 
             if let description = info.description {
-                weChatMessageInfo["description"] = description as AnyObject?
+                weChatMessageInfo["description"] = description
             }
 
             if let thumbnailData = info.thumbnail?.monkeyking_compressedImageData {
-                weChatMessageInfo["thumbData"] = thumbnailData as AnyObject?
+                weChatMessageInfo["thumbData"] = thumbnailData
             }
 
             if let media = info.media {
                 switch media {
 
                 case .url(let url):
-                    weChatMessageInfo["objectType"] = "5" as AnyObject?
-
-                    weChatMessageInfo["mediaUrl"] = url.absoluteString as AnyObject?
+                    weChatMessageInfo["objectType"] = "5"
+                    weChatMessageInfo["mediaUrl"] = url.absoluteString
 
                 case .image(let image):
-                    weChatMessageInfo["objectType"] = "2" as AnyObject?
-
+                    weChatMessageInfo["objectType"] = "2"
                     if let fileImageData = UIImageJPEGRepresentation(image, 1) {
-                        weChatMessageInfo["fileData"] = fileImageData as AnyObject?
+                        weChatMessageInfo["fileData"] = fileImageData
                     }
 
                 case .audio(let audioURL, let linkURL):
-                    weChatMessageInfo["objectType"] = "3" as AnyObject?
-
-                    weChatMessageInfo["mediaUrl"] = linkURL?.absoluteString as AnyObject?
-
-                    weChatMessageInfo["mediaDataUrl"] = audioURL.absoluteString as AnyObject?
+                    weChatMessageInfo["objectType"] = "3"
+                    if let urlString = linkURL?.absoluteString {
+                        weChatMessageInfo["mediaUrl"] = urlString
+                    }
+                    weChatMessageInfo["mediaDataUrl"] = audioURL.absoluteString
 
                 case .video(let url):
-                    weChatMessageInfo["objectType"] = "4" as AnyObject?
-
-                    weChatMessageInfo["mediaUrl"] = url.absoluteString as AnyObject?
+                    weChatMessageInfo["objectType"] = "4"
+                    weChatMessageInfo["mediaUrl"] = url.absoluteString
 
                 case .file:
                     fatalError("WeChat not supports File type")
                 }
 
             } else { // Text Share
-                weChatMessageInfo["command"] = "1020" as AnyObject?
+                weChatMessageInfo["command"] = "1020"
             }
 
             let weChatMessage = [appID: weChatMessageInfo]
@@ -709,39 +709,39 @@ extension MonkeyKing {
 
                 // App Share
 
-                var messageInfo: [String: AnyObject] = ["__class": "WBMessageObject" as AnyObject]
+                var messageInfo: [String: Any] = [
+                    "__class": "WBMessageObject"
+                ]
+
                 let info = type.info
 
                 if let description = info.description {
-                    messageInfo["text"] = description as AnyObject?
+                    messageInfo["text"] = description
                 }
 
                 if let media = info.media {
+
                     switch media {
+
                     case .url(let url):
-
-                        var mediaObject: [String: AnyObject] = [
-                            "__class": "WBWebpageObject" as AnyObject,
-                            "objectID": "identifier1" as AnyObject
+                        var mediaObject: [String: Any] = [
+                            "__class": "WBWebpageObject",
+                            "objectID": "identifier1"
                         ]
-
                         if let title = info.title {
-                            mediaObject["title"] = title as AnyObject?
+                            mediaObject["title"] = title
                         }
-
-                        if let thumbnailImage = info.thumbnail,
-                            let thumbnailData = UIImageJPEGRepresentation(thumbnailImage, 0.7) {
-                                mediaObject["thumbnailData"] = thumbnailData as AnyObject?
+                        if let image = info.thumbnail, let data = UIImageJPEGRepresentation(image, 0.7) {
+                            mediaObject["thumbnailData"] = data
                         }
-
-                        mediaObject["webpageUrl"] = url.absoluteString as AnyObject?
-
-                        messageInfo["mediaObject"] = mediaObject as AnyObject?
+                        mediaObject["webpageUrl"] = url.absoluteString
+                        messageInfo["mediaObject"] = mediaObject
 
                     case .image(let image):
-
                         if let imageData = UIImageJPEGRepresentation(image, 1.0) {
-                            messageInfo["imageObject"] = ["imageData": imageData] as NSDictionary
+                            messageInfo["imageObject"] = [
+                                "imageData": imageData
+                            ]
                         }
 
                     case .audio:
@@ -754,11 +754,19 @@ extension MonkeyKing {
                 }
 
                 let uuidString = UUID().uuidString
-                let dict = ["__class": "WBSendMessageToWeiboRequest", "message": messageInfo, "requestID": uuidString] as [String : Any]
 
-                let messageData: [[String: AnyObject]] = [
-                    ["transferObject": NSKeyedArchiver.archivedData(withRootObject: dict) as AnyObject],
-                    ["app": NSKeyedArchiver.archivedData(withRootObject: ["appKey": appID, "bundleID": Bundle.main.monkeyking_bundleID ?? ""]) as AnyObject]
+                let dict: [String: Any] = [
+                    "__class": "WBSendMessageToWeiboRequest",
+                    "message": messageInfo,
+                    "requestID": uuidString
+                ]
+                let appData = NSKeyedArchiver.archivedData(withRootObject: [
+                    "appKey": appID,
+                    "bundleID": Bundle.main.monkeyking_bundleID ?? ""
+                ])
+                let messageData: [[String: Any]] = [
+                    ["transferObject": NSKeyedArchiver.archivedData(withRootObject: dict)],
+                    ["app": appData]
                 ]
 
                 UIPasteboard.general.items = messageData
@@ -773,7 +781,7 @@ extension MonkeyKing {
             // Weibo Web Share
 
             let info = type.info
-            var parameters = [String: AnyObject]()
+            var parameters = [String: Any]()
 
             guard let accessToken = type.accessToken else {
                 print("When Weibo did not install, accessToken must need")
@@ -781,7 +789,7 @@ extension MonkeyKing {
                 return
             }
 
-            parameters["access_token"] = accessToken as AnyObject?
+            parameters["access_token"] = accessToken
 
             var status: [String?] = [info.title, info.description]
 
@@ -804,7 +812,8 @@ extension MonkeyKing {
                         return
                     }
 
-                    parameters["pic"] = imageData as AnyObject?
+                    parameters["pic"] = imageData
+
                     mediaType = Media.image(image)
 
                 case .audio:
@@ -817,7 +826,7 @@ extension MonkeyKing {
             }
 
             let statusText = status.flatMap({ $0 }).joined(separator: " ")
-            parameters["status"] = statusText as AnyObject?
+            parameters["status"] = statusText
             
             switch mediaType {
                 
@@ -825,7 +834,7 @@ extension MonkeyKing {
                 
                 let urlString = "https://api.weibo.com/2/statuses/update.json"
                 
-                sharedMonkeyKing.request(urlString, method: .post, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
+                sharedMonkeyKing.request(urlString, method: .post, parameters: parameters) { (responseData, HTTPResponse, error) in
                     if let json = responseData, let _ = json["idstr"] as? String {
                         completionHandler(true)
                     } else {
@@ -838,7 +847,7 @@ extension MonkeyKing {
                 
                 let urlString = "https://upload.api.weibo.com/2/statuses/upload.json"
                 
-                sharedMonkeyKing.upload(urlString, parameters: parameters) { (responseData, HTTPResponse, error) -> Void in
+                sharedMonkeyKing.upload(urlString, parameters: parameters) { (responseData, HTTPResponse, error) in
                     if let json = responseData, let _ = json["idstr"] as? String {
                         completionHandler(true)
                     } else {
@@ -864,6 +873,7 @@ extension MonkeyKing {
             }
 
             UIPasteboard.general.setData(data, forPasteboardType: "com.alipay.openapi.pb.req.\(appID)")
+
             if !openURL(urlString: "alipayshare://platformapi/shareService?action=sendReq&shareId=\(appID)") {
                 completionHandler(false)
             }
@@ -915,7 +925,6 @@ extension MonkeyKing {
                 completionHandler(false)
             }
         }
-        
     }
 }
 
@@ -949,8 +958,8 @@ extension MonkeyKing {
                 // uid??
                 let accessTokenAPI = "https://open.weixin.qq.com/connect/mobilecheck?appid=\(appID)&uid=1926559385"
                 addWebView(withURLString: accessTokenAPI)
-            } else {
 
+            } else {
                 if !openURL(urlString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth") {
                     completionHandler(nil, nil, NSError(domain: "OAuth Error, cannot open url weixin://", code: -1, userInfo: nil))
                 }
@@ -961,7 +970,8 @@ extension MonkeyKing {
             let scope = scope ?? ""
             guard !account.isAppInstalled else {
                 let appName = Bundle.main.monkeyking_displayName ?? "nixApp"
-                let dic = ["app_id": appID,
+                let dic = [
+                    "app_id": appID,
                     "app_name": appName,
                     "client_id": appID,
                     "response_type": "token",
@@ -970,8 +980,8 @@ extension MonkeyKing {
                     "sdkv": "2.9",
                     "status_machine": UIDevice.current.model,
                     "status_os": UIDevice.current.systemVersion,
-                    "status_version": UIDevice.current.systemVersion]
-
+                    "status_version": UIDevice.current.systemVersion
+                ]
                 let data = NSKeyedArchiver.archivedData(withRootObject: dic)
                 UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.tencent\(appID)")
 
@@ -992,18 +1002,38 @@ extension MonkeyKing {
             let scope = scope ?? "all"
 
             guard !account.isAppInstalled else {
-                let uuIDString = UUID().uuidString
-                let authData: [[String: AnyObject]] = [
-                    ["transferObject": NSKeyedArchiver.archivedData(withRootObject: ["__class": "WBAuthorizeRequest", "redirectURI": redirectURL, "requestID":uuIDString, "scope": scope]) as AnyObject
-                    ],
-                    ["userInfo": NSKeyedArchiver.archivedData(withRootObject: ["mykey": "as you like", "SSO_From": "SendMessageToWeiboViewController"]) as AnyObject],
-                    ["app": NSKeyedArchiver.archivedData(withRootObject: ["appKey": appID, "bundleID": Bundle.main.monkeyking_bundleID ?? "", "name": Bundle.main.monkeyking_displayName ?? ""]) as AnyObject]
-                ]
 
-                UIPasteboard.general.items = authData
-                if !openURL(urlString: "weibosdk://request?id=\(uuIDString)&sdkversion=003013000") {
+                let uuidString = UUID().uuidString
+
+                let transferObjectData = NSKeyedArchiver.archivedData(withRootObject: [
+                    "__class": "WBAuthorizeRequest",
+                    "redirectURI": redirectURL,
+                    "requestID": uuidString,
+                    "scope": scope
+                    ]
+                )
+                let userInfoData = NSKeyedArchiver.archivedData(withRootObject: [
+                    "mykey": "as you like",
+                    "SSO_From": "SendMessageToWeiboViewController"
+                    ]
+                )
+                let appData = NSKeyedArchiver.archivedData(withRootObject: [
+                    "appKey": appID,
+                    "bundleID": Bundle.main.monkeyking_bundleID ?? "",
+                    "name": Bundle.main.monkeyking_displayName ?? ""
+                    ]
+                )
+                let authItems: [[String: Any]] = [
+                    ["transferObject": transferObjectData],
+                    ["userInfo": userInfoData],
+                    ["app": appData]
+                ]
+                UIPasteboard.general.items = authItems
+
+                if !openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000") {
                     completionHandler(nil, nil, NSError(domain: "OAuth Error, cannot open url weibosdk://", code: -1, userInfo: nil))
                 }
+
                 return
             }
 
@@ -1023,7 +1053,6 @@ extension MonkeyKing {
             if case .pocket(let token) = platform {
                 _requestToken = token
             }
-
             guard let requestToken = _requestToken else {
                 return
             }
@@ -1040,6 +1069,7 @@ extension MonkeyKing {
             DispatchQueue.main.async {
                 addWebView(withURLString: requestTokenAPI)
             }
+
         case .alipay:
             break
         }
@@ -1054,7 +1084,7 @@ extension MonkeyKing: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
 
         // Pocket OAuth
-        if let errorString = (error as NSError).userInfo["NSErrorFailingURLStringKey"] as? String, errorString.hasSuffix(":authorizationFinished") {
+        if let errorString = (error as NSError).userInfo["ErrorFailingURLStringKey"] as? String, errorString.hasSuffix(":authorizationFinished") {
             removeWebView(webView, tuples: (nil, nil, nil))
         }
     }
@@ -1105,7 +1135,7 @@ extension MonkeyKing: WKNavigationDelegate {
             return
         }
 
-        let queryDictionary = newURL.monkeyking_queryDictionary as NSDictionary
+        let queryDictionary = newURL.monkeyking_queryDictionary as [String: Any]
         removeWebView(webView, tuples: (queryDictionary, nil, nil))
     }
 
@@ -1123,14 +1153,14 @@ extension MonkeyKing: WKNavigationDelegate {
                 return
             }
             
-            MonkeyKing.fetchWeChatOAuthInfoByCode(code: code) { [weak self] (info, response, error) -> Void in
+            MonkeyKing.fetchWeChatOAuthInfoByCode(code: code) { [weak self] (info, response, error) in
                 self?.removeWebView(webView, tuples: (info, response, error))
             }
             
         } else {
-            
             // Weibo OAuth
             for case let .weibo(appID, appKey, redirectURL) in accountSet {
+
                 if url.absoluteString.lowercased().hasPrefix(redirectURL) {
                     
                     webView.stopLoading()
@@ -1148,8 +1178,8 @@ extension MonkeyKing: WKNavigationDelegate {
                     
                     activityIndicatorViewAction(webView, stop: false)
                     
-                    request(accessTokenAPI, method: .post) { [weak self] (json, response, error) -> Void in
-                        DispatchQueue.main.async {
+                    request(accessTokenAPI, method: .post) { (json, response, error) in
+                        DispatchQueue.main.async { [weak self] in
                             self?.removeWebView(webView, tuples: (json, response, error))
                         }
                     }
@@ -1184,8 +1214,8 @@ extension MonkeyKing {
 
         var appID = ""
         var appKey = ""
-        for case let .weChat(id, key) in sharedMonkeyKing.accountSet {
 
+        for case let .weChat(id, key) in sharedMonkeyKing.accountSet {
             guard let key = key else {
                 completionHandler(["code": code], nil, nil)
                 return
@@ -1195,18 +1225,19 @@ extension MonkeyKing {
             appKey = key
         }
 
-        var accessTokenAPI = "https://api.weixin.qq.com/sns/oauth2/access_token?"
-        accessTokenAPI += "appid=" + appID
-        accessTokenAPI += "&secret=" + appKey
-        accessTokenAPI += "&code=" + code + "&grant_type=authorization_code"
+        var accessTokenAPI = "https://api.weixin.qq.com/sns/oauth2/access_token"
+        accessTokenAPI += "?grant_type=authorization_code"
+        accessTokenAPI += "&appid=\(appID)"
+        accessTokenAPI += "&secret=\(appKey)"
+        accessTokenAPI += "&code=\(code)"
 
         // OAuth
-        sharedMonkeyKing.request(accessTokenAPI, method: .get) { (json, response, error) -> Void in
+        sharedMonkeyKing.request(accessTokenAPI, method: .get) { (json, response, error) in
             completionHandler(json, response, error)
         }
     }
 
-    fileprivate class func createAlipayMessageDictionary(info: Info, appID: String) -> NSDictionary {
+    fileprivate class func createAlipayMessageDictionary(info: Info, appID: String) -> [String: Any] {
 
         enum AlipayMessageType {
             case text
@@ -1255,7 +1286,7 @@ extension MonkeyKing {
         }
 
         let publicObjectsItem0 = "$null"
-        let publicObjectsItem1: NSDictionary = [
+        let publicObjectsItem1: [String: Any] = [
             keyClass: [keyUID: UIDValue],
             "NS.keys": [
                 [keyUID: 2],
@@ -1268,7 +1299,7 @@ extension MonkeyKing {
         ]
         let publicObjectsItem2 = "app"
         let publicObjectsItem3 = "req"
-        let publicObjectsItem4: NSDictionary = [
+        let publicObjectsItem4: [String: Any] = [
             keyClass: [keyUID: 10],
             "appKey": [keyUID: 6],
             "bundleId": [keyUID: 7],
@@ -1281,52 +1312,52 @@ extension MonkeyKing {
         let publicObjectsItem7 = Bundle.main.monkeyking_bundleID ?? "com.nixWork.China"
         let publicObjectsItem8 = "ap\(appID)"
         let publicObjectsItem9 = "1.0.1.150917" // SDK Version
-        let publicObjectsItem10: NSDictionary = [
+        let publicObjectsItem10: [String: Any] = [
             keyClasses: ["APSdkApp", "NSObject"],
             keyClassname: "APSdkApp"
         ]
-        let publicObjectsItem11: NSDictionary = [
+        let publicObjectsItem11: [String: Any] = [
             keyClass: [keyUID: UIDValue - 1],
             "message": [keyUID: 13],
             "scene": [keyUID: 12],
             "type": [keyUID: 12]
         ]
         let publicObjectsItem12: NSNumber = 0
-        let publicObjectsItem13: NSDictionary = [    // For Text(13) && Image(13)
+        let publicObjectsItem13: [String: Any] = [      // For Text(13) && Image(13)
             keyClass: [keyUID: UIDValue - 2],
             "mediaObject": [keyUID: 14]
         ]
-        let publicObjectsItem14: NSDictionary = [   // For Image(16) && URL(17)
+        let publicObjectsItem14: [String: Any] = [      // For Image(16) && URL(17)
             keyClasses: ["NSMutableData", "NSData", "NSObject"],
             keyClassname: "NSMutableData"
         ]
-        let publicObjectsItem16: NSDictionary = [
+        let publicObjectsItem16: [String: Any] = [
             keyClasses: [APMediaType, "NSObject"],
             keyClassname: APMediaType
         ]
-        let publicObjectsItem17: NSDictionary = [
+        let publicObjectsItem17: [String: Any] = [
             keyClasses: ["APMediaMessage", "NSObject"],
             keyClassname: "APMediaMessage"
         ]
-        let publicObjectsItem18: NSDictionary = [
+        let publicObjectsItem18: [String: Any] = [
             keyClasses: ["APSendMessageToAPReq", "APBaseReq", "NSObject"],
             keyClassname: "APSendMessageToAPReq"
         ]
-        let publicObjectsItem19: NSDictionary = [
-            keyClasses: ["NSMutableDictionary", "NSDictionary", "NSObject"],
+        let publicObjectsItem19: [String: Any] = [
+            keyClasses: ["NSMutableDictionary", "[String: Any]", "NSObject"],
             keyClassname: "NSMutableDictionary"
         ]
 
-        var objectsValue = [
+        var objectsValue: [Any] = [
             publicObjectsItem0, publicObjectsItem1, publicObjectsItem2, publicObjectsItem3,
             publicObjectsItem4, publicObjectsItem5, publicObjectsItem6, publicObjectsItem7,
             publicObjectsItem8, publicObjectsItem9, publicObjectsItem10, publicObjectsItem11,
             publicObjectsItem12
-        ] as [Any]
+        ]
 
         switch messageType {
         case .text:
-            let textObjectsItem14: NSDictionary = [
+            let textObjectsItem14: [String: Any] = [
                 keyClass: [keyUID: 16],
                 "text": [keyUID: 15]
             ]
@@ -1335,20 +1366,20 @@ extension MonkeyKing {
             objectsValue = objectsValue + [publicObjectsItem13, textObjectsItem14, textObjectsItem15]
 
         case .image(let image):
-            let imageObjectsItem14: NSDictionary = [
+            let imageObjectsItem14: [String: Any] = [
                 keyClass: [keyUID: 17],
                 "imageData": [keyUID: 15]
             ]
 
             let imageData = UIImageJPEGRepresentation(image, 0.7) ?? Data()
-            let imageObjectsItem15: NSDictionary = [
+            let imageObjectsItem15: [String: Any] = [
                 keyClass: [keyUID: 16],
                 "NS.data": imageData
             ]
             objectsValue = objectsValue + [publicObjectsItem13, imageObjectsItem14, imageObjectsItem15, publicObjectsItem14]
 
         case .url(let url):
-            let urlObjectsItem13: NSDictionary = [
+            let urlObjectsItem13: [String: Any] = [
                 keyClass: [keyUID: 21],
                 "desc": [keyUID: 15],
                 "mediaObject": [keyUID: 18],
@@ -1360,24 +1391,29 @@ extension MonkeyKing {
 
             let urlObjectsItem14 = info.title ?? "Input Title"
             let urlObjectsItem15 = info.description ?? "Input Description"
-            let urlObjectsItem16: NSDictionary = [
+            let urlObjectsItem16: [String: Any] = [
                 keyClass: [keyUID: 17],
                 "NS.data": thumbnailData
             ]
-            let urlObjectsItem18: NSDictionary = [
+            let urlObjectsItem18: [String: Any] = [
                 keyClass: [keyUID: 20],
                 "webpageUrl": [keyUID: 19]
             ]
             let urlObjectsItem19 = url.absoluteString
             objectsValue = objectsValue + [
-                urlObjectsItem13, urlObjectsItem14, urlObjectsItem15,
-                urlObjectsItem16, publicObjectsItem14, urlObjectsItem18, urlObjectsItem19
+                urlObjectsItem13,
+                urlObjectsItem14,
+                urlObjectsItem15,
+                urlObjectsItem16,
+                publicObjectsItem14,
+                urlObjectsItem18,
+                urlObjectsItem19
             ]
         }
 
         objectsValue += [publicObjectsItem16, publicObjectsItem17, publicObjectsItem18, publicObjectsItem19]
 
-        let dictionary: NSDictionary = [
+        let dictionary: [String: Any] = [
             "$archiver": "NSKeyedArchiver",
             "$objects": objectsValue,
             "$top": ["root" : [keyUID: 1]],
@@ -1387,12 +1423,12 @@ extension MonkeyKing {
         return dictionary
     }
 
-    fileprivate func request(_ urlString: String, method: Networking.Method, parameters: [String: AnyObject]? = nil, encoding: Networking.ParameterEncoding = .url, headers: [String: String]? = nil, completionHandler: @escaping Networking.NetworkingResponseHandler) {
+    fileprivate func request(_ urlString: String, method: Networking.Method, parameters: [String: Any]? = nil, encoding: Networking.ParameterEncoding = .url, headers: [String: String]? = nil, completionHandler: @escaping Networking.NetworkingResponseHandler) {
 
         Networking.sharedInstance.request(urlString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
     }
 
-    fileprivate func upload(_ urlString: String, parameters: [String: AnyObject], completionHandler: @escaping Networking.NetworkingResponseHandler) {
+    fileprivate func upload(_ urlString: String, parameters: [String: Any], completionHandler: @escaping Networking.NetworkingResponseHandler) {
 
         Networking.sharedInstance.upload(urlString, parameters: parameters, completionHandler: completionHandler)
     }
@@ -1421,7 +1457,7 @@ extension MonkeyKing {
         }, completion: nil)
     }
 
-    fileprivate func removeWebView(_ webView: WKWebView, tuples: (NSDictionary?, URLResponse?, NSError?)?) {
+    fileprivate func removeWebView(_ webView: WKWebView, tuples: ([String: Any]?, URLResponse?, Error?)?) {
 
         activityIndicatorViewAction(webView, stop: true)
         webView.stopLoading()
@@ -1554,7 +1590,7 @@ private extension Bundle {
 
     var monkeyking_displayName: String? {
 
-        func getNameByInfo(_ info: [String : AnyObject]) -> String? {
+        func getNameByInfo(_ info: [String : Any]) -> String? {
 
             guard let displayName = info["CFBundleDisplayName"] as? String else {
                 return info["CFBundleName"] as? String
@@ -1573,7 +1609,7 @@ private extension Bundle {
             return nil
         }
 
-        return getNameByInfo(unwrappedInfo as [String : AnyObject])
+        return getNameByInfo(unwrappedInfo)
     }
 
     var monkeyking_bundleID: String? {
@@ -1584,7 +1620,7 @@ private extension Bundle {
 private extension String {
 
     var monkeyking_base64EncodedString: String? {
-        return data(using: String.Encoding.utf8)?.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
+        return data(using: .utf8)?.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
     }
 
     var monkeyking_urlEncodedString: String? {
@@ -1612,9 +1648,9 @@ private extension String {
 
 private extension Data {
 
-    var monkeyking_json: [String: AnyObject]? {
+    var monkeyking_json: [String: Any]? {
         do {
-            return try JSONSerialization.jsonObject(with: self, options: .allowFragments) as? [String: AnyObject]
+            return try JSONSerialization.jsonObject(with: self, options: .allowFragments) as? [String: Any]
         } catch {
             return nil
         }
@@ -1623,18 +1659,20 @@ private extension Data {
 
 private extension URL {
 
-    var monkeyking_queryDictionary: [String: AnyObject] {
-
-        var infos = [String: AnyObject]()
+    var monkeyking_queryDictionary: [String: Any] {
 
         let components = URLComponents(url: self, resolvingAgainstBaseURL: false)
 
         guard let items = components?.queryItems else {
-            return infos
+            return [:]
         }
 
+        var infos = [String: Any]()
+
         items.forEach {
-            infos[$0.name] = $0.value as AnyObject?
+            if let value = $0.value {
+                infos[$0.name] = value
+            }
         }
 
         return infos
@@ -1647,7 +1685,7 @@ private extension UIImage {
 
         var compressionQuality: CGFloat = 0.7
 
-        func compresseImage(_ image: UIImage) -> Data? {
+        func compressedDataOfImage(_ image: UIImage) -> Data? {
 
             let maxHeight: CGFloat = 240.0
             let maxWidth: CGFloat = 240.0
@@ -1689,21 +1727,28 @@ private extension UIImage {
             return imageData
         }
 
-        var imageData = UIImageJPEGRepresentation(self, compressionQuality)
+        let fullImageData = UIImageJPEGRepresentation(self, compressionQuality)
 
-        guard imageData != nil else {
+        guard var imageData = fullImageData else {
             return nil
         }
 
         let minCompressionQuality: CGFloat = 0.01
         let dataLengthCeiling: Int = 31500
 
-        while imageData!.count > dataLengthCeiling && compressionQuality > minCompressionQuality {
+        while imageData.count > dataLengthCeiling && compressionQuality > minCompressionQuality {
+
             compressionQuality -= 0.1
-            guard let image = UIImage(data: imageData!) else {
+
+            guard let image = UIImage(data: imageData) else {
                 break
             }
-            imageData = compresseImage(image)
+
+            if let compressedImageData = compressedDataOfImage(image) {
+                imageData = compressedImageData
+            } else {
+                break
+            }
         }
         
         return imageData

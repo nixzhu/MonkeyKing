@@ -16,6 +16,7 @@ class WeiboViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         MonkeyKing.registerAccount(account)
     }
 
@@ -26,14 +27,14 @@ class WeiboViewController: UIViewController {
 
         if !account.isAppInstalled {
 
-            MonkeyKing.oauth(for: .weibo, completionHandler: { [weak self] (dictionary, response, error) -> Void in
+            MonkeyKing.oauth(for: .weibo) { [weak self] (info, response, error) in
 
-                if let json = dictionary, let accessToken = json["access_token"] as? String {
+                if let accessToken = info?["access_token"] as? String {
                     self?.accessToken = accessToken
                 }
 
-                print("dictionary \(dictionary) error \(error)")
-            })
+                print("MonkeyKing.oauth info: \(info), error: \(error)")
+            }
         }
     }
 
@@ -83,20 +84,25 @@ class WeiboViewController: UIViewController {
 
     @IBAction func OAuth(_ sender: UIButton) {
 
-        MonkeyKing.oauth(for: .weibo) { (OAuthInfo, response, error) -> Void in
+        MonkeyKing.oauth(for: .weibo) { (info, response, error) in
 
             // App or Web: token & userID
-            guard let token = (OAuthInfo?["access_token"] ?? OAuthInfo?["accessToken"]) as? String, let userID = (OAuthInfo?["uid"] ?? OAuthInfo?["userID"]) as? String else {
-                return
+            guard
+                let token = (info?["access_token"] ?? info?["accessToken"]) as? String,
+                let userID = (info?["uid"] ?? info?["userID"]) as? String else {
+                    return
             }
 
             let userInfoAPI = "https://api.weibo.com/2/users/show.json"
-            let parameters = ["uid": userID, "access_token": token]
+            let parameters = [
+                "uid": userID,
+                "access_token": token
+            ]
 
             // fetch UserInfo by userInfoAPI
-            SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters as [String : AnyObject]?, completionHandler: { (userInfoDictionary, _, _) -> Void in
-                print("userInfoDictionary \(userInfoDictionary)")
-            })
+            SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters) { (userInfo, _, _) in
+                print("userInfo \(userInfo)")
+            }
 
             // More API
             // http://open.weibo.com/wiki/%E5%BE%AE%E5%8D%9AAPI
