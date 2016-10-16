@@ -483,17 +483,22 @@ extension MonkeyKing {
 
         public enum AlipaySubtype {
             case friends(info: Info)
-
-            var scene: Int {
+            case timeline(info: Info)
+            
+            var scene: NSNumber {
                 switch self {
                 case .friends:
                     return 0
+                case .timeline:
+                    return 1
                 }
             }
 
             var info: Info {
                 switch self {
                 case .friends(let info):
+                    return info
+                case .timeline(let info):
                     return info
                 }
             }
@@ -866,7 +871,7 @@ extension MonkeyKing {
 
         case .alipay(let type):
 
-            let dictionary = createAlipayMessageDictionary(info: type.info, appID: appID)
+            let dictionary = createAlipayMessageDictionary(withScene: type.scene, info: type.info, appID: appID)
             guard let data = try? PropertyListSerialization.data(fromPropertyList: dictionary, format: .xml, options: 0) else {
                 completionHandler(false)
                 return
@@ -1237,7 +1242,7 @@ extension MonkeyKing {
         }
     }
 
-    fileprivate class func createAlipayMessageDictionary(info: Info, appID: String) -> [String: Any] {
+    fileprivate class func createAlipayMessageDictionary(withScene scene: NSNumber, info: Info, appID: String) -> [String: Any] {
 
         enum AlipayMessageType {
             case text
@@ -1275,13 +1280,13 @@ extension MonkeyKing {
 
         switch messageType {
         case .text:
-            UIDValue = 19
+            UIDValue = 20
             APMediaType = "APShareTextObject"
         case .image:
-            UIDValue = 20
+            UIDValue = 21
             APMediaType = "APShareImageObject"
         case .url:
-            UIDValue = 23
+            UIDValue = 24
             APMediaType = "APShareWebObject"
         }
 
@@ -1311,7 +1316,7 @@ extension MonkeyKing {
         let publicObjectsItem6 = appID
         let publicObjectsItem7 = Bundle.main.monkeyking_bundleID ?? "com.nixWork.China"
         let publicObjectsItem8 = "ap\(appID)"
-        let publicObjectsItem9 = "1.0.1.150917" // SDK Version
+        let publicObjectsItem9 = "1.1.0.151016" // SDK Version
         let publicObjectsItem10: [String: Any] = [
             keyClasses: ["APSdkApp", "NSObject"],
             keyClassname: "APSdkApp"
@@ -1319,12 +1324,12 @@ extension MonkeyKing {
         let publicObjectsItem11: [String: Any] = [
             keyClass: [keyUID: UIDValue - 1],
             "message": [keyUID: 13],
-            "scene": [keyUID: 12],
+            "scene": [keyUID: UIDValue - 2],
             "type": [keyUID: 12]
         ]
         let publicObjectsItem12: NSNumber = 0
         let publicObjectsItem13: [String: Any] = [      // For Text(13) && Image(13)
-            keyClass: [keyUID: UIDValue - 2],
+            keyClass: [keyUID: UIDValue - 3],
             "mediaObject": [keyUID: 14]
         ]
         let publicObjectsItem14: [String: Any] = [      // For Image(16) && URL(17)
@@ -1339,12 +1344,15 @@ extension MonkeyKing {
             keyClasses: ["APMediaMessage", "NSObject"],
             keyClassname: "APMediaMessage"
         ]
-        let publicObjectsItem18: [String: Any] = [
+        
+        let publicObjectsItem18: NSNumber = scene
+        
+        let publicObjectsItem19: [String: Any] = [
             keyClasses: ["APSendMessageToAPReq", "APBaseReq", "NSObject"],
             keyClassname: "APSendMessageToAPReq"
         ]
-        let publicObjectsItem19: [String: Any] = [
-            keyClasses: ["NSMutableDictionary", "[String: Any]", "NSObject"],
+        let publicObjectsItem20: [String: Any] = [
+            keyClasses: ["NSMutableDictionary", "NSDictionary", "NSObject"],
             keyClassname: "NSMutableDictionary"
         ]
 
@@ -1411,7 +1419,7 @@ extension MonkeyKing {
             ]
         }
 
-        objectsValue += [publicObjectsItem16, publicObjectsItem17, publicObjectsItem18, publicObjectsItem19]
+        objectsValue += [publicObjectsItem16, publicObjectsItem17, publicObjectsItem18, publicObjectsItem19, publicObjectsItem20]
 
         let dictionary: [String: Any] = [
             "$archiver": "NSKeyedArchiver",

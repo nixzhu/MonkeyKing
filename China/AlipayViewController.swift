@@ -10,6 +10,8 @@ import UIKit
 import MonkeyKing
 
 class AlipayViewController: UIViewController {
+    
+    @IBOutlet fileprivate var segmentedControl: UISegmentedControl!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,9 +51,26 @@ class AlipayViewController: UIViewController {
     }
 
     fileprivate func shareInfo(_ info: MonkeyKing.Info) {
-        let message = MonkeyKing.Message.alipay(.friends(info: info))
-        MonkeyKing.deliver(message) { result in
-            print("result: \(result)")
+        
+        var message: MonkeyKing.Message?
+        
+        switch segmentedControl.selectedSegmentIndex {
+        case 0:
+            message = MonkeyKing.Message.alipay(.friends(info: info))
+        case 1:
+            guard let _ = info.media else {
+                print("目前支付宝生活圈还不支持纯文本的分享")
+                break
+            }
+            message = MonkeyKing.Message.alipay(.timeline(info: info))
+        default:
+            break
+        }
+        
+        if let message = message {
+            MonkeyKing.deliver(message) { result in
+                print("result: \(result)")
+            }
         }
     }
 
