@@ -58,6 +58,10 @@ class AlipayViewController: UIViewController {
         case 0:
             message = MonkeyKing.Message.alipay(.friends(info: info))
         case 1:
+            guard let _ = info.media else {
+                print("目前支付宝生活圈还不支持纯文本的分享")
+                break
+            }
             message = MonkeyKing.Message.alipay(.timeline(info: info))
         default:
             break

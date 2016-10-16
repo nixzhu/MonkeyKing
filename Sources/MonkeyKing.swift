@@ -496,8 +496,9 @@ extension MonkeyKing {
 
             var info: Info {
                 switch self {
-                case .friends(let info),
-                     .timeline(let info):
+                case .friends(let info):
+                    return info
+                case .timeline(let info):
                     return info
                 }
             }
