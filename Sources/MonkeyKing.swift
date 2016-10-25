@@ -1473,10 +1473,10 @@ extension MonkeyKing {
         UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseOut, animations: {
             webView.frame.origin.y = UIScreen.main.bounds.height
 
-        }, completion: {_ in
+        }, completion: { [weak self] _ in
             webView.removeFromSuperview()
             MonkeyKing.sharedMonkeyKing.webView = nil
-            self.oauthCompletionHandler?(tuples?.0, tuples?.1, tuples?.2)
+            self?.oauthCompletionHandler?(tuples?.0, tuples?.1, tuples?.2)
         })
     }
 
