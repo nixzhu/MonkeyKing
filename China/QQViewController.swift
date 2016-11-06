@@ -67,7 +67,7 @@ class QQViewController: UIViewController {
             title: "QQ Audio, \(UUID().uuidString)",
             description: "Hello World, \(UUID().uuidString)",
             thumbnail: UIImage(named: "rabbit")!,
-            media: .audio(audioURL: URL(string: "http://wfmusic.3g.qq.com/s?g_f=0&fr=&aid=mu_detail&id=2511915")!, linkURL: nil)
+            media: .audio(audioURL: URL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: nil)
         )
 
         shareInfo(info)
