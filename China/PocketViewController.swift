@@ -69,7 +69,7 @@ class PocketViewController: UIViewController {
             MonkeyKing.oauth(for: .pocket(requestToken: requestToken)) { (dictionary, response, error) in
 
                 guard error == nil else {
-                    print(error)
+                    print(error!)
                     return
                 }
 

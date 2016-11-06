@@ -142,11 +142,10 @@ class QQViewController: UIViewController {
 
         MonkeyKing.oauth(for: .qq, scope: "get_user_info") { (info, response, error) in
 
-            print(info)
-            
             guard
-                let token = info?["access_token"] as? String,
-                let openID = info?["openid"] as? String else {
+                let unwrappedInfo = info,
+                let token = unwrappedInfo["access_token"] as? String,
+                let openID = unwrappedInfo["openid"] as? String else {
                     return
             }
 

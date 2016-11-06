@@ -88,8 +88,9 @@ class WeiboViewController: UIViewController {
 
             // App or Web: token & userID
             guard
-                let token = (info?["access_token"] ?? info?["accessToken"]) as? String,
-                let userID = (info?["uid"] ?? info?["userID"]) as? String else {
+                let unwrappedInfo = info,
+                let token = (unwrappedInfo["access_token"] as? String) ?? (unwrappedInfo["accessToken"] as? String),
+                let userID = (unwrappedInfo["uid"] as? String) ?? (unwrappedInfo["userID"] as? String) else {
                     return
             }
 
