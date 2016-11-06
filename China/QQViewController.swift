@@ -86,15 +86,22 @@ class QQViewController: UIViewController {
     }
 
     @IBAction func shareFile(_ sender: AnyObject) {
-        
-        let info = MonkeyKing.Info(
-            title: "Dataline File, \(UUID().uuidString)",
-            description: "pay.php",
-            thumbnail: nil,
-            media: .file(try! Data(contentsOf: URL(string: Bundle.main.path(forResource: "pay", ofType: "php")!)!))
-        )
 
-        shareInfo(info)
+        do {
+
+            let fileData = try Data(contentsOf: URL(fileURLWithPath: Bundle.main.path(forResource: "pay", ofType: "php")!))
+
+            let info = MonkeyKing.Info(
+                title: "Dataline File, \(UUID().uuidString)",
+                description: "pay.php",
+                thumbnail: nil,
+                media: .file(fileData)
+            )
+
+            shareInfo(info)
+        } catch {
+            print(error.localizedDescription)
+        }
     }
 
     @IBAction func segmentChanged(_ sender: AnyObject) {
