@@ -28,7 +28,7 @@ open class MonkeyKing: NSObject {
     fileprivate var payCompletionHandler: PayCompletionHandler?
 
     fileprivate var webView: WKWebView?
-    
+
     fileprivate override init() {}
 
     public enum Account: Hashable {
@@ -1758,7 +1758,7 @@ private extension UIImage {
                 break
             }
         }
-        
+
         return imageData
     }
 }
