@@ -999,7 +999,7 @@ extension MonkeyKing {
 
             // Web OAuth
 
-            let accessTokenAPI = "http://xui.ptlogin2.qq.com/cgi-bin/xlogin?appid=716027609&pt_3rd_aid=209656&style=35&s_url=http%3A%2F%2Fconnect.qq.com&refer_cgi=m_authorize&client_id=\(appID)&redirect_uri=auth%3A%2F%2Fwww.qq.com&response_type=token&scope=\(scope)"
+            let accessTokenAPI = "https://xui.ptlogin2.qq.com/cgi-bin/xlogin?appid=716027609&pt_3rd_aid=209656&style=35&s_url=http%3A%2F%2Fconnect.qq.com&refer_cgi=m_authorize&client_id=\(appID)&redirect_uri=auth%3A%2F%2Fwww.qq.com&response_type=token&scope=\(scope)"
             addWebView(withURLString: accessTokenAPI)
 
         case .weibo(let appID, _, let redirectURL):
@@ -1136,7 +1136,7 @@ extension MonkeyKing: WKNavigationDelegate {
             return
         }
 
-        guard let fragment = url.fragment?.characters.dropFirst(), let newURL = URL(string: "http://qzs.qq.com/?\(String(fragment))") else {
+        guard let fragment = url.fragment?.characters.dropFirst(), let newURL = URL(string: "https://qzs.qq.com/?\(String(fragment))") else {
             return
         }
 
