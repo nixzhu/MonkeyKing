@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="tAd-W5-7vp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="tAd-W5-7vp">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,48 +23,56 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pFI-rc-Qus">
+                                <rect key="frame" x="166.5" y="154" width="42" height="30"/>
                                 <state key="normal" title="URL"/>
                                 <connections>
                                     <action selector="shareURL:" destination="he5-GB-Amc" eventType="touchUpInside" id="0tc-FD-9Jn"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yox-0f-rEK">
+                                <rect key="frame" x="166.5" y="204" width="42" height="30"/>
                                 <state key="normal" title="Image"/>
                                 <connections>
                                     <action selector="shareImage:" destination="he5-GB-Amc" eventType="touchUpInside" id="noZ-rU-3ir"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R1t-qh-QzC">
+                                <rect key="frame" x="166.5" y="104" width="42" height="30"/>
                                 <state key="normal" title="Text"/>
                                 <connections>
                                     <action selector="shareText:" destination="he5-GB-Amc" eventType="touchUpInside" id="6eG-Tv-mv2"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cly-xf-sCw">
+                                <rect key="frame" x="166" y="597" width="43" height="30"/>
                                 <state key="normal" title="OAuth"/>
                                 <connections>
                                     <action selector="OAuth:" destination="he5-GB-Amc" eventType="touchUpInside" id="zRv-DX-lH4"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M2g-P2-GvI">
+                                <rect key="frame" x="166.5" y="304" width="42" height="30"/>
                                 <state key="normal" title="Video"/>
                                 <connections>
                                     <action selector="shareVideo:" destination="he5-GB-Amc" eventType="touchUpInside" id="3X9-yF-cpj"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="94M-dg-nm6">
+                                <rect key="frame" x="166.5" y="254" width="42" height="30"/>
                                 <state key="normal" title="Audio"/>
                                 <connections>
                                     <action selector="shareAudio:" destination="he5-GB-Amc" eventType="touchUpInside" id="Gdx-xV-LfN"/>
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gPU-D2-OrH">
+                                <rect key="frame" x="172.5" y="354" width="30" height="30"/>
                                 <state key="normal" title="File"/>
                                 <connections>
                                     <action selector="shareFile:" destination="he5-GB-Amc" eventType="touchUpInside" id="Dvp-Pp-AcN"/>
                                 </connections>
                             </button>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="HSd-0J-b8h">
+                                <rect key="frame" x="48" y="529" width="279" height="29"/>
                                 <segments>
                                     <segment title="Friends"/>
                                     <segment title="QZone"/>
@@ -127,53 +138,62 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Media" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PJB-1N-QAg">
+                                <rect key="frame" x="164" y="72" width="47" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wyh-QX-rAS">
+                                <rect key="frame" x="164" y="112.5" width="30" height="30"/>
                                 <state key="normal" title="Text"/>
                                 <connections>
                                     <action selector="shareText:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="9Yz-Ba-XFC"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lbo-xY-RTb">
+                                <rect key="frame" x="164" y="162.5" width="30" height="30"/>
                                 <state key="normal" title="URL"/>
                                 <connections>
                                     <action selector="shareURL:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="bW2-Md-Uix"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gS0-c6-rje">
+                                <rect key="frame" x="164" y="212.5" width="42" height="30"/>
                                 <state key="normal" title="Image"/>
                                 <connections>
                                     <action selector="shareImage:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="FH0-3Q-9Rj"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Vz-30-FuV">
+                                <rect key="frame" x="164" y="262.5" width="41" height="30"/>
                                 <state key="normal" title="Music"/>
                                 <connections>
                                     <action selector="shareMusic:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="6n0-tj-oEd"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sOl-Wo-bDF">
+                                <rect key="frame" x="164" y="312.5" width="40" height="30"/>
                                 <state key="normal" title="Video"/>
                                 <connections>
                                     <action selector="shareVideo:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="GVB-wo-9eY"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UWw-uP-3po">
+                                <rect key="frame" x="166" y="517" width="43" height="30"/>
                                 <state key="normal" title="OAuth"/>
                                 <connections>
                                     <action selector="OAuth:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="MMl-eP-Ktg"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oRX-XU-uEu">
+                                <rect key="frame" x="113" y="562" width="149" height="30"/>
                                 <state key="normal" title="OAuthWithoutAppKey"/>
                                 <connections>
                                     <action selector="OAuthWithoutAppKey:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="whf-Mj-u5c"/>
                                 </connections>
                             </button>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="dBn-A2-v5r">
+                                <rect key="frame" x="87.5" y="469" width="200" height="29"/>
                                 <segments>
                                     <segment title="Session"/>
                                     <segment title="Timeline"/>
@@ -181,6 +201,7 @@
                                 </segments>
                             </segmentedControl>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1yl-b1-jyR">
+                                <rect key="frame" x="172.5" y="607" width="30" height="30"/>
                                 <state key="normal" title="Pay"/>
                                 <connections>
                                     <action selector="pay:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="TXf-I7-DAh"/>
@@ -219,11 +240,11 @@
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="RRj-kJ-syX"/>
                                 <exclude reference="xkw-ho-0Yx"/>
                                 <exclude reference="NBp-he-WOd"/>
                                 <exclude reference="fOu-7w-Fbd"/>
                                 <exclude reference="5SP-dc-8Mv"/>
-                                <exclude reference="RRj-kJ-syX"/>
                                 <exclude reference="0Mk-6a-mUF"/>
                                 <exclude reference="7ew-1Y-cIR"/>
                             </mask>
@@ -251,6 +272,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kLV-RC-Vac">
+                                <rect key="frame" x="166" y="554" width="43" height="30"/>
                                 <state key="normal" title="OAuth"/>
                                 <connections>
                                     <action selector="OAuth:" destination="LgQ-W6-Vcr" eventType="touchUpInside" id="PRK-rS-1H1"/>
@@ -258,6 +280,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fRZ-FT-5hS">
+                                <rect key="frame" x="149.5" y="213" width="76" height="30"/>
                                 <state key="normal" title="Weibo URL"/>
                                 <connections>
                                     <action selector="shareURL:" destination="LgQ-W6-Vcr" eventType="touchUpInside" id="nIE-2X-uhn"/>
@@ -265,6 +288,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tyb-i3-0Cn">
+                                <rect key="frame" x="143" y="113" width="89" height="30"/>
                                 <state key="normal" title="Weibo Image"/>
                                 <connections>
                                     <action selector="shareImage:" destination="LgQ-W6-Vcr" eventType="touchUpInside" id="gXp-Qr-fSI"/>
@@ -272,6 +296,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ks6-VB-9Yk">
+                                <rect key="frame" x="149.5" y="163" width="76" height="30"/>
                                 <state key="normal" title="Weibo Text"/>
                                 <connections>
                                     <action selector="shareText:" destination="LgQ-W6-Vcr" eventType="touchUpInside" id="QXy-w6-YNt"/>
@@ -310,30 +335,35 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rib-Zt-LiP">
+                                <rect key="frame" x="150" y="164" width="75" height="30"/>
                                 <state key="normal" title="Alipay Text"/>
                                 <connections>
                                     <action selector="shareTextToAlipay:" destination="enf-fb-fjR" eventType="touchUpInside" id="9yU-Jv-L9Z"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ewo-ab-eI8">
+                                <rect key="frame" x="143.5" y="224" width="88" height="30"/>
                                 <state key="normal" title="Alipay Image"/>
                                 <connections>
                                     <action selector="shareImageToAlipay:" destination="enf-fb-fjR" eventType="touchUpInside" id="2Ag-tS-muB"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ci4-1i-Sib">
+                                <rect key="frame" x="150" y="284" width="75" height="30"/>
                                 <state key="normal" title="Alipay URL"/>
                                 <connections>
                                     <action selector="shareURLToAlipay:" destination="enf-fb-fjR" eventType="touchUpInside" id="gad-oW-rUC"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="orj-LM-NKS">
+                                <rect key="frame" x="152" y="487" width="71" height="30"/>
                                 <state key="normal" title="Alipay Pay"/>
                                 <connections>
                                     <action selector="pay:" destination="enf-fb-fjR" eventType="touchUpInside" id="g0R-Pi-FGM"/>
                                 </connections>
                             </button>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Wdu-6N-jtH">
+                                <rect key="frame" x="121" y="394" width="133" height="29"/>
                                 <segments>
                                     <segment title="Friends"/>
                                     <segment title="Timeline"/>
@@ -347,10 +377,10 @@
                             <constraint firstItem="rib-Zt-LiP" firstAttribute="top" secondItem="4Ei-Fo-sDx" secondAttribute="bottom" constant="100" id="JsV-8r-sGN"/>
                             <constraint firstItem="rib-Zt-LiP" firstAttribute="centerX" secondItem="zQL-2N-wfU" secondAttribute="centerX" id="Rx5-jf-lIb"/>
                             <constraint firstItem="orj-LM-NKS" firstAttribute="centerX" secondItem="rib-Zt-LiP" secondAttribute="centerX" id="TyM-1d-PZh"/>
+                            <constraint firstItem="orj-LM-NKS" firstAttribute="top" secondItem="Wdu-6N-jtH" secondAttribute="bottom" constant="65" id="YMR-gx-8OX"/>
                             <constraint firstItem="ci4-1i-Sib" firstAttribute="top" secondItem="ewo-ab-eI8" secondAttribute="bottom" constant="30" id="e1z-Qu-ZCm"/>
                             <constraint firstItem="Wdu-6N-jtH" firstAttribute="centerX" secondItem="rib-Zt-LiP" secondAttribute="centerX" id="mwx-3z-g4D"/>
                             <constraint firstItem="ci4-1i-Sib" firstAttribute="centerX" secondItem="rib-Zt-LiP" secondAttribute="centerX" id="p3l-RP-XYE"/>
-                            <constraint firstItem="kjq-dE-FQn" firstAttribute="top" secondItem="orj-LM-NKS" secondAttribute="bottom" constant="150" id="p56-Bb-JeV"/>
                             <constraint firstItem="ewo-ab-eI8" firstAttribute="centerX" secondItem="rib-Zt-LiP" secondAttribute="centerX" id="xS1-41-ysW"/>
                         </constraints>
                     </view>
@@ -373,14 +403,14 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" textLabel="Q8C-5T-0Yz" style="IBUITableViewCellStyleDefault" id="07o-kz-uJI">
-                                <rect key="frame" x="0.0" y="128" width="375" height="100"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="100"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="07o-kz-uJI" id="meS-uw-xis">
-                                    <frame key="frameInset" width="375" height="99"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="99.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Q8C-5T-0Yz">
-                                            <frame key="frameInset" minX="15" width="345" height="99"/>
+                                            <rect key="frame" x="15" y="0.0" width="345" height="99.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -424,12 +454,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DeZ-G5-7Ij">
+                                <rect key="frame" x="166" y="496" width="43" height="30"/>
                                 <state key="normal" title="OAuth"/>
                                 <connections>
                                     <action selector="OAuth:" destination="KHj-bA-9ar" eventType="touchUpInside" id="2kA-lY-16f"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="imj-of-vxR">
+                                <rect key="frame" x="154.5" y="318.5" width="66" height="30"/>
                                 <state key="normal" title="Save URL"/>
                                 <connections>
                                     <action selector="saveButtonAction:" destination="KHj-bA-9ar" eventType="touchUpInside" id="kbv-H8-cU1"/>
@@ -463,6 +495,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nFE-X4-kUD">
+                                <rect key="frame" x="140.5" y="317.5" width="94" height="32"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <state key="normal" title="systemShare"/>
                                 <connections>
