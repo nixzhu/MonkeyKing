@@ -158,10 +158,17 @@ extension MonkeyKing {
 
                 return true
             }
-            
+
+            // OAuth Failed
+            if urlString.contains("platformId=wechat") && !urlString.contains("state=Weixinauth") {
+                let error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
+                sharedMonkeyKing.oauthCompletionHandler?(nil, nil, error)
+                return false
+            }
+
             // WeChat SMS OAuth
             if urlString.contains("wapoauth") {
-                
+
                 let queryDictionary = url.monkeyking_queryDictionary
                 guard let m = queryDictionary["m"] as? String, let t = queryDictionary["t"] as? String else {
                     return false
