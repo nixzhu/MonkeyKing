@@ -159,13 +159,6 @@ extension MonkeyKing {
                 return true
             }
 
-            // OAuth Failed
-            if urlString.contains("platformId=wechat") && !urlString.contains("state=Weixinauth") {
-                let error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
-                sharedMonkeyKing.oauthCompletionHandler?(nil, nil, error)
-                return false
-            }
-
             // WeChat SMS OAuth
             if urlString.contains("wapoauth") {
 
@@ -173,15 +166,15 @@ extension MonkeyKing {
                 guard let m = queryDictionary["m"] as? String, let t = queryDictionary["t"] as? String else {
                     return false
                 }
-                
+
                 guard let account = sharedMonkeyKing.accountSet[.weChat] else {
                     return false
                 }
-                
+
                 let appID = account.appID
-                
+
                 let urlString = "https://open.weixin.qq.com/connect/smsauthorize?appid=\(appID)&redirect_uri=\(appID)%3A%2F%2Foauth&response_type=code&scope=snsapi_message,snsapi_userinfo,snsapi_friend,snsapi_contact&state=xxx&uid=1926559385&m=\(m)&t=\(t)"
-                
+
                 addWebView(withURLString: urlString)
 
                 return true
@@ -199,32 +192,40 @@ extension MonkeyKing {
                 guard let ret = queryDictionary["ret"] as? String else {
                     return false
                 }
-                
+
                 result = (ret == "0")
-                
+
                 return result
             }
 
             // WeChat Share
-            guard let data = UIPasteboard.general.data(forPasteboardType: "content") else {
+            if let data = UIPasteboard.general.data(forPasteboardType: "content") {
+                if let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? [String: Any] {
+
+                    guard
+                        let account = sharedMonkeyKing.accountSet[.weChat],
+                        let info = dict?[account.appID] as? [String: Any],
+                        let result = info["result"] as? String,
+                        let resultCode = Int(result) else {
+                            return false
+                    }
+
+                    let success = (resultCode == 0)
+
+                    sharedMonkeyKing.deliverCompletionHandler?(success)
+
+                    return success
+                }
+            }
+
+            // OAuth Failed
+            if urlString.contains("platformId=wechat") && !urlString.contains("state=Weixinauth") {
+                let error = NSError(domain: "WeChat OAuth Error", code: -1, userInfo: nil)
+                sharedMonkeyKing.oauthCompletionHandler?(nil, nil, error)
                 return false
             }
 
-            if let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? [String: Any] {
-
-                guard
-                    let account = sharedMonkeyKing.accountSet[.weChat],
-                    let info = dict?[account.appID] as? [String: Any],
-                    let result = info["result"] as? String,
-                    let resultCode = Int(result) else {
-                        return false
-                }
-
-                let success = (resultCode == 0)
-                sharedMonkeyKing.deliverCompletionHandler?(success)
-
-                return success
-            }
+            return false
         }
 
         // QQ Share
