@@ -636,7 +636,7 @@ extension MonkeyKing {
 
                 func handleNews(with url: URL, mediaType: String?) {
 
-                    if let thumbnail = type.info.thumbnail, let thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
+                    if let thumbnailData = type.info.thumbnail?.monkeyking_compressedImageData {
                         let dic = ["previewimagedata": thumbnailData]
                         let data = NSKeyedArchiver.archivedData(withRootObject: dic)
                         UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
@@ -744,8 +744,8 @@ extension MonkeyKing {
                         if let title = info.title {
                             mediaObject["title"] = title
                         }
-                        if let image = info.thumbnail, let data = UIImageJPEGRepresentation(image, 0.7) {
-                            mediaObject["thumbnailData"] = data
+                        if let thumbnailData = info.thumbnail?.monkeyking_compressedImageData {
+                            mediaObject["thumbnailData"] = thumbnailData
                         }
                         mediaObject["webpageUrl"] = url.absoluteString
                         messageInfo["mediaObject"] = mediaObject
