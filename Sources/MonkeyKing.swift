@@ -26,7 +26,7 @@ open class MonkeyKing: NSObject {
     fileprivate var deliverCompletionHandler: DeliverCompletionHandler?
     fileprivate var oauthCompletionHandler: OAuthCompletionHandler?
     fileprivate var payCompletionHandler: PayCompletionHandler?
-    fileprivate var customAlipayScheme: String?
+    fileprivate var customAlipayOrderScheme: String?
 
     fileprivate var webView: WKWebView?
 
@@ -342,7 +342,7 @@ extension MonkeyKing {
 
         // Alipay
         var canHandleAlipay = false
-        if let customScheme = sharedMonkeyKing.customAlipayScheme {
+        if let customScheme = sharedMonkeyKing.customAlipayOrderScheme {
             if urlScheme == customScheme { canHandleAlipay = true }
         } else if urlScheme.hasPrefix("ap") {
             canHandleAlipay = true
@@ -908,14 +908,15 @@ extension MonkeyKing {
 extension MonkeyKing {
     
     public enum Order {
-        case customAlipay(urlString: String, scheme: String?)
-        case alipay(urlString: String)
+        /// You can custom URL scheme. Default "ap" + String(appID)
+        /// ref: https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.piSRlm&treeId=204&articleId=105295&docType=1
+        case alipay(urlString: String, scheme: String?)
         case weChat(urlString: String)
         
         public var canBeDelivered: Bool {
             var scheme = ""
             switch self {
-            case .alipay, .customAlipay:
+            case .alipay:
                 scheme = "alipay://"
             case .weChat:
                 scheme = "weixin://"
@@ -935,18 +936,14 @@ extension MonkeyKing {
         sharedMonkeyKing.payCompletionHandler = completionHandler
         
         switch order {
-
+            
         case .weChat(let urlString):
             if !openURL(urlString: urlString) {
                 completionHandler(false)
             }
             
-        case .alipay(let urlString):
-            if !openURL(urlString: urlString) {
-                completionHandler(false)
-            }
-        case .customAlipay(let urlString, let scheme):
-            sharedMonkeyKing.customAlipayScheme = scheme
+        case let .alipay(urlString, scheme):
+            sharedMonkeyKing.customAlipayOrderScheme = scheme
             if !openURL(urlString: urlString) {
                 completionHandler(false)
             }
