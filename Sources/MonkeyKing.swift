@@ -26,6 +26,7 @@ open class MonkeyKing: NSObject {
     fileprivate var deliverCompletionHandler: DeliverCompletionHandler?
     fileprivate var oauthCompletionHandler: OAuthCompletionHandler?
     fileprivate var payCompletionHandler: PayCompletionHandler?
+    fileprivate var customAlipayScheme: String?
 
     fileprivate var webView: WKWebView?
 
@@ -340,7 +341,14 @@ extension MonkeyKing {
         }
 
         // Alipay
-        if urlScheme.hasPrefix("ap") {
+        var canHandleAlipay = false
+        if let customScheme = sharedMonkeyKing.customAlipayScheme {
+            if urlScheme == customScheme { canHandleAlipay = true }
+        } else if urlScheme.hasPrefix("ap") {
+            canHandleAlipay = true
+        }
+        
+        if canHandleAlipay {
 
             let urlString = url.absoluteString
 
@@ -900,14 +908,14 @@ extension MonkeyKing {
 extension MonkeyKing {
     
     public enum Order {
-
+        case customAlipay(urlString: String, scheme: String?)
         case alipay(urlString: String)
         case weChat(urlString: String)
         
         public var canBeDelivered: Bool {
             var scheme = ""
             switch self {
-            case .alipay:
+            case .alipay, .customAlipay:
                 scheme = "alipay://"
             case .weChat:
                 scheme = "weixin://"
@@ -937,7 +945,13 @@ extension MonkeyKing {
             if !openURL(urlString: urlString) {
                 completionHandler(false)
             }
+        case .customAlipay(let urlString, let scheme):
+            sharedMonkeyKing.customAlipayScheme = scheme
+            if !openURL(urlString: urlString) {
+                completionHandler(false)
+            }
         }
+        
     }
 }
 
