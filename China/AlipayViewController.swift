@@ -80,15 +80,12 @@ class AlipayViewController: UIViewController {
 
         do {
             let data = try NSURLConnection.sendSynchronousRequest(URLRequest(url: URL(string: "http://www.example.com/pay.php?payType=alipay")!), returning: nil)
-            let urlString = String(data: data, encoding: .utf8)
-
-            let order = MonkeyKing.Order.alipay(urlString: urlString!)
-
+            let urlString = String(data: data, encoding: .utf8)!
+            let order = MonkeyKing.Order.alipay(urlString: urlString, scheme: nil)
             MonkeyKing.deliver(order) { result in
                 print("result: \(result)")
             }
-
-        } catch let error {
+        } catch {
             print(error)
         }
     }
