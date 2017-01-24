@@ -1629,7 +1629,9 @@ private extension Bundle {
         var info = infoDictionary
 
         if let localizedInfo = localizedInfoDictionary, !localizedInfo.isEmpty {
-            info = localizedInfo
+            for (key, value) in localizedInfo {
+                info?[key] = value
+            }
         }
 
         guard let unwrappedInfo = info else {
