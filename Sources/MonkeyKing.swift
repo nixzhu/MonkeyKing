@@ -745,18 +745,22 @@ extension MonkeyKing {
                     switch media {
 
                     case .url(let url):
-                        var mediaObject: [String: Any] = [
-                            "__class": "WBWebpageObject",
-                            "objectID": "identifier1"
-                        ]
-                        if let title = info.title {
-                            mediaObject["title"] = title
-                        }
+
                         if let thumbnailData = info.thumbnail?.monkeyking_compressedImageData {
+                            var mediaObject: [String: Any] = [
+                                "__class": "WBWebpageObject",
+                                "objectID": "identifier1"
+                            ]
+                            mediaObject["webpageUrl"] = url.absoluteString
+                            mediaObject["title"] = info.title ?? ""
                             mediaObject["thumbnailData"] = thumbnailData
+                            messageInfo["mediaObject"] = mediaObject
+
+                        } else {
+                            // Deliver text directly.
+                            let text = info.description ?? ""
+                            messageInfo["text"] = text.isEmpty ? url.absoluteString : text + " " + url.absoluteString
                         }
-                        mediaObject["webpageUrl"] = url.absoluteString
-                        messageInfo["mediaObject"] = mediaObject
 
                     case .image(let image):
                         if let imageData = UIImageJPEGRepresentation(image, 1.0) {
