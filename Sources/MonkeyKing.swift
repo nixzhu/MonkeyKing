@@ -712,8 +712,17 @@ extension MonkeyKing {
                     qqSchemeURLString += "&objectlocation=pasteboard&description=\(encodedDescription)"
                 }
 
+                qqSchemeURLString += "&sdkv=2.9"
+
             } else { // Share Text
-                qqSchemeURLString += "text&file_data="
+
+                // fix #75
+                switch type {
+                case .zone:
+                    qqSchemeURLString += "qzone&title="
+                default:
+                    qqSchemeURLString += "text&file_data="
+                }
 
                 if let encodedDescription = type.info.description?.monkeyking_base64AndURLEncodedString {
                     qqSchemeURLString += "\(encodedDescription)"
