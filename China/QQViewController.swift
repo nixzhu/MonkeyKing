@@ -111,25 +111,22 @@ class QQViewController: UIViewController {
 
     fileprivate func shareInfo(_ info: MonkeyKing.Info) {
 
-        var message :MonkeyKing.Message?
-
-        switch self.segmentControl.selectedSegmentIndex{
+        var _message: MonkeyKing.Message?
+        switch segmentControl.selectedSegmentIndex {
         case 0:
-            message = MonkeyKing.Message.qq(.friends(info: info))
+            _message = .qq(.friends(info: info))
         case 1:
-            message = MonkeyKing.Message.qq(.zone(info: info))
+            _message = .qq(.zone(info: info))
         case 2:
-            message = MonkeyKing.Message.qq(.dataline(info: info))
+            _message = .qq(.dataline(info: info))
         case 3:
-            message = MonkeyKing.Message.qq(.favorites(info: info))
+            _message = .qq(.favorites(info: info))
         default:
             break
         }
-
-        if let message = message{
-            MonkeyKing.deliver(message) { result in
-                print("result: \(result)")
-            }
+        guard let message = _message else { return }
+        MonkeyKing.deliver(message) { result in
+            print("result: \(result)")
         }
     }
 
