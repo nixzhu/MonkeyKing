@@ -134,7 +134,7 @@ $ brew install carthage
 To integrate MonkeyKing into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
-github "nixzhu/MonkeyKing" >= 1.2.1
+github "nixzhu/MonkeyKing"
 ```
 
 Then, run the following command to build the MonkeyKing framework:
@@ -179,7 +179,7 @@ platform :ios, '8.0'
 use_frameworks!
 
 target <Your Target Name> do
-    pod 'MonkeyKing', '~> 1.2.1'
+    pod 'MonkeyKing'
 end
 ```
 
