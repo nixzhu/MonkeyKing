@@ -111,9 +111,9 @@ class QQViewController: UIViewController {
 
     fileprivate func shareInfo(_ info: MonkeyKing.Info) {
 
-        var message :MonkeyKing.Message?
+        var message: MonkeyKing.Message?
 
-        switch self.segmentControl.selectedSegmentIndex{
+        switch self.segmentControl.selectedSegmentIndex {
         case 0:
             message = MonkeyKing.Message.qq(.friends(info: info))
         case 1:
@@ -126,7 +126,7 @@ class QQViewController: UIViewController {
             break
         }
 
-        if let message = message{
+        if let message = message {
             MonkeyKing.deliver(message) { result in
                 print("result: \(result)")
             }
