@@ -55,7 +55,7 @@ class WeiboViewController: UIViewController {
     @IBAction func shareText(_ sender: UIButton) {
 
         let message = MonkeyKing.Message.weibo(.default(info: (
-            title: "Title",
+            title: nil,
             description: "Text",
             thumbnail: nil,
             media: nil
