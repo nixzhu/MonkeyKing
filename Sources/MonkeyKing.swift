@@ -1492,35 +1492,34 @@ extension MonkeyKing {
         guard let url = URL(string: urlString), let webView = MonkeyKing.sharedMonkeyKing.webView else {
             return
         }
-        
+
         webView.load(URLRequest(url: url))
-        
-        let activityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
-        activityIndicatorView.center = CGPoint(x: webView.bounds.midX, y: webView.bounds.midY+30)
+
+        let activityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 0.0, y: 0.0, width: 20.0, height: 20.0))
+        activityIndicatorView.center = CGPoint(x: webView.bounds.midX, y: webView.bounds.midY + 30.0)
         activityIndicatorView.activityIndicatorViewStyle = .gray
 
         webView.scrollView.addSubview(activityIndicatorView)
         activityIndicatorView.startAnimating()
-        
+
         UIView.animate(withDuration: 0.32, delay: 0.0, options: .curveEaseOut, animations: {
-            webView.frame.origin.y = 20
+            webView.frame.origin.y = 20.0
         }, completion: nil)
     }
 
     fileprivate func addCloseButton() {
-        
+
         guard webView != nil else {
             return
         }
-        
+
         let closeButton = CloseButton(type: .custom)
-        closeButton.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.width - 30, y: 12),
-                                   size: CGSize(width: 20, height: 20))
+        closeButton.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.width - 50.0, y: 4.0),
+                                   size: CGSize(width: 44.0, height: 44.0))
         closeButton.addTarget(self, action: #selector(closeOuathView), for: .touchUpInside)
         webView!.addSubview(closeButton)
-        
     }
-    
+
     @objc fileprivate func closeOuathView() {
         guard webView != nil else { return }
         let error = NSError(domain: "User Cancelled", code: -1, userInfo: nil)
@@ -1578,24 +1577,25 @@ extension MonkeyKing {
 class CloseButton: UIButton {
     
     override func draw(_ rect: CGRect) {
-        
-        let side = min(bounds.width, bounds.height)
-        bounds.size = CGSize(width: side, height: side)
-        
-        let circlePath = UIBezierPath(ovalIn: rect)
+
+        let circleWidth: CGFloat = 28.0
+        let circlePathX = (rect.width - circleWidth) / 2.0
+        let circlePathY = (rect.height - circleWidth) / 2.0
+        let circlePathRect = CGRect(x: circlePathX, y: circlePathY, width: circleWidth, height: circleWidth)
+        let circlePath = UIBezierPath(ovalIn: circlePathRect)
         UIColor(white: 0.8, alpha: 1.0).setFill()
         circlePath.fill()
-        let xWidth: CGFloat = 2.0
+
         let xPath = UIBezierPath()
-        xPath.lineWidth = xWidth
-        xPath.move(to: CGPoint(x: side / 4, y: side / 4))
-        xPath.addLine(to: CGPoint(x: 3 * side / 4, y: 3 * side / 4))
-        xPath.move(to: CGPoint(x: side / 4, y: 3 * side / 4))
-        xPath.addLine(to: CGPoint(x: 3 * bounds.width / 4, y: bounds.width / 4))
+        xPath.lineWidth = 2.0
+        let offset: CGFloat = (bounds.width - circleWidth) / 2.0
+        xPath.move(to: CGPoint(x: offset + circleWidth / 4.0, y: offset + circleWidth / 4.0))
+        xPath.addLine(to: CGPoint(x: offset + 3.0 * circleWidth / 4.0, y: offset + 3.0 * circleWidth / 4.0))
+        xPath.move(to: CGPoint(x: offset + circleWidth / 4.0, y: offset + 3.0 * circleWidth / 4.0))
+        xPath.addLine(to: CGPoint(x: offset + 3.0 * circleWidth / 4.0, y: offset + circleWidth / 4.0))
         UIColor.white.setStroke()
         xPath.stroke()
     }
-    
 }
 
 // MARK: Private Extensions
