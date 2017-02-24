@@ -1119,23 +1119,40 @@ extension MonkeyKing {
 extension MonkeyKing: WKNavigationDelegate {
 
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-
+        
         // Pocket OAuth
         if let errorString = (error as NSError).userInfo["ErrorFailingURLStringKey"] as? String, errorString.hasSuffix(":authorizationFinished") {
             removeWebView(webView, tuples: (nil, nil, nil))
+            return
         }
+        
+        // Failed to connect network
+        activityIndicatorViewAction(webView, stop: true)
+        addCloseButton()
+        
+        let detailLabel = UILabel()
+        detailLabel.text = "无法连接，请检查网络后重试"
+        detailLabel.textColor = UIColor.gray
+        detailLabel.translatesAutoresizingMaskIntoConstraints = false
+        let centerX = NSLayoutConstraint(item: detailLabel, attribute: .centerX, relatedBy: .equal, toItem: webView, attribute: .centerX, multiplier: 1.0, constant: 0.0)
+        let centerY = NSLayoutConstraint(item: detailLabel, attribute: .centerY, relatedBy: .equal, toItem: webView, attribute: .centerY, multiplier: 1.0, constant: -50.0)
+        webView.addSubview(detailLabel)
+        webView.addConstraints([centerX,centerY])
+        webView.scrollView.alwaysBounceVertical = false
+        
     }
-
+    
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
 
         activityIndicatorViewAction(webView, stop: true)
+        addCloseButton()
 
         guard let urlString = webView.url?.absoluteString else {
             return
         }
-
-        var scriptString = "var button = document.createElement('a'); button.setAttribute('href', 'about:blank'); button.innerHTML = '关闭'; button.setAttribute('style', 'width: calc(100% - 40px); background-color: gray;display: inline-block;height: 40px;line-height: 40px;text-align: center;color: #777777;text-decoration: none;border-radius: 3px;background: linear-gradient(180deg, white, #f1f1f1);border: 1px solid #CACACA;box-shadow: 0 2px 3px #DEDEDE, inset 0 0 0 1px white;text-shadow: 0 2px 0 white;position: fixed;left: 0;bottom: 0;margin: 20px;font-size: 18px;'); document.body.appendChild(button);"
-
+        
+        var scriptString = ""
+        
         if urlString.contains("getpocket.com") {
             scriptString += "document.querySelector('div.toolbar').style.display = 'none';"
             scriptString += "document.querySelector('a.extra_action').style.display = 'none';"
@@ -1153,13 +1170,6 @@ extension MonkeyKing: WKNavigationDelegate {
 
         guard let url = webView.url else {
             webView.stopLoading()
-            return
-        }
-
-        // Close Button
-        if url.absoluteString.contains("about:blank") {
-            let error = NSError(domain: "User Cancelled", code: -1, userInfo: nil)
-            removeWebView(webView, tuples: (nil, nil, error))
             return
         }
 
@@ -1234,14 +1244,14 @@ extension MonkeyKing {
     fileprivate class func generateWebView() -> WKWebView {
         
         let webView = WKWebView()
-        webView.frame = UIScreen.main.bounds
-        webView.frame.origin.y = UIScreen.main.bounds.height
+        let screenBounds = UIScreen.main.bounds
+        webView.frame = CGRect(origin: CGPoint(x: 0, y: screenBounds.height),
+                               size: CGSize(width: screenBounds.width, height: screenBounds.height - 20))
         
         webView.navigationDelegate = sharedMonkeyKing
         webView.backgroundColor = UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 1.0)
-        webView.scrollView.frame.origin.y = 20
         webView.scrollView.backgroundColor = webView.backgroundColor
-        
+
         UIApplication.shared.keyWindow?.addSubview(webView)
         
         return webView
@@ -1491,12 +1501,32 @@ extension MonkeyKing {
 
         webView.scrollView.addSubview(activityIndicatorView)
         activityIndicatorView.startAnimating()
-
+        
         UIView.animate(withDuration: 0.32, delay: 0.0, options: .curveEaseOut, animations: {
-            webView.frame.origin.y = 0
+            webView.frame.origin.y = 20
         }, completion: nil)
     }
 
+    fileprivate func addCloseButton() {
+        
+        guard webView != nil else {
+            return
+        }
+        
+        let closeButton = CloseButton(type: .custom)
+        closeButton.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.width - 30, y: 12),
+                                   size: CGSize(width: 20, height: 20))
+        closeButton.addTarget(self, action: #selector(closeOuathView), for: .touchUpInside)
+        webView!.addSubview(closeButton)
+        
+    }
+    
+    @objc fileprivate func closeOuathView() {
+        guard webView != nil else { return }
+        let error = NSError(domain: "User Cancelled", code: -1, userInfo: nil)
+        removeWebView(webView!, tuples: (nil, nil, error))
+    }
+    
     fileprivate func removeWebView(_ webView: WKWebView, tuples: ([String: Any]?, URLResponse?, Error?)?) {
 
         activityIndicatorViewAction(webView, stop: true)
@@ -1544,6 +1574,29 @@ extension MonkeyKing {
     }
 }
 
+
+class CloseButton: UIButton {
+    
+    override func draw(_ rect: CGRect) {
+        
+        let side = min(bounds.width, bounds.height)
+        bounds.size = CGSize(width: side, height: side)
+        
+        let circlePath = UIBezierPath(ovalIn: rect)
+        UIColor(white: 0.8, alpha: 1.0).setFill()
+        circlePath.fill()
+        let xWidth: CGFloat = 2.0
+        let xPath = UIBezierPath()
+        xPath.lineWidth = xWidth
+        xPath.move(to: CGPoint(x: side / 4, y: side / 4))
+        xPath.addLine(to: CGPoint(x: 3 * side / 4, y: 3 * side / 4))
+        xPath.move(to: CGPoint(x: side / 4, y: 3 * side / 4))
+        xPath.addLine(to: CGPoint(x: 3 * bounds.width / 4, y: bounds.width / 4))
+        UIColor.white.setStroke()
+        xPath.stroke()
+    }
+    
+}
 
 // MARK: Private Extensions
 
