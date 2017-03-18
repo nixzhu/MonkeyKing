@@ -15,7 +15,7 @@ public func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
 
 open class MonkeyKing: NSObject {
 
-    public typealias DeliverCompletionHandler = (_ result: Bool) -> Void
+    public typealias DeliverCompletionHandler = (_ error: NSError?) -> Void
     public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Error?) -> Void
     public typealias PayCompletionHandler = (_ result: Bool) -> Void
 
@@ -180,7 +180,7 @@ extension MonkeyKing {
 
                 return true
             }
-            
+
             if urlString.contains("://pay/") {
 
                 var result = false
@@ -213,7 +213,14 @@ extension MonkeyKing {
 
                     let success = (resultCode == 0)
 
-                    sharedMonkeyKing.deliverCompletionHandler?(success)
+                    var error: NSError?
+                    if !success {
+                        let userInfo = [NSLocalizedDescriptionKey: "Wechat share failed.",
+                                        NSLocalizedFailureReasonErrorKey: String(resultCode)]
+                        error = NSError(domain: "com.monkeyking.wehcat", code: -4, userInfo: userInfo)
+                    }
+
+                    sharedMonkeyKing.deliverCompletionHandler?(error)
 
                     return success
                 }
@@ -232,12 +239,20 @@ extension MonkeyKing {
         // QQ Share
         if urlScheme.hasPrefix("QQ") {
 
-            guard let error = url.monkeyking_queryDictionary["error"] as? String else {
+            guard let errorDescription = url.monkeyking_queryDictionary["error"] as? String else {
                 return false
             }
 
-            let success = (error == "0")
-            sharedMonkeyKing.deliverCompletionHandler?(success)
+            let success = (errorDescription == "0")
+
+            var error: NSError?
+            if !success {
+                let userInfo = [NSLocalizedDescriptionKey: "QQ share failed.",
+                                NSLocalizedFailureReasonErrorKey: errorDescription]
+                error = NSError(domain: "com.monkeyking.qq", code: -4, userInfo: userInfo)
+            }
+
+            sharedMonkeyKing.deliverCompletionHandler?(error)
 
             return success
         }
@@ -303,7 +318,7 @@ extension MonkeyKing {
 
             switch type {
 
-                // Weibo OAuth
+            // Weibo OAuth
             case "WBAuthorizeResponse":
 
                 var userInfo: [String: Any]?
@@ -321,19 +336,27 @@ extension MonkeyKing {
                 }
                 return true
 
-                // Weibo Share
+            // Weibo Share
             case "WBSendMessageToWeiboResponse":
 
                 let success = (statusCode == 0)
-                sharedMonkeyKing.deliverCompletionHandler?(success)
-                
+
+                var error: NSError?
+                if !success {
+                    let userInfo: [AnyHashable : Any] = [NSLocalizedDescriptionKey: "Weibo share failed.",
+                                                         NSLocalizedFailureReasonErrorKey: responseInfo]
+                    error = NSError(domain: "com.monkeyking.weibo", code: -4, userInfo: userInfo)
+                }
+
+                sharedMonkeyKing.deliverCompletionHandler?(error)
+
                 return success
-                
+
             default:
                 break
             }
         }
-        
+
         // Pocket OAuth
         if urlScheme.hasPrefix("pocketapp") {
             sharedMonkeyKing.oauthCompletionHandler?(nil, nil, nil)
@@ -347,7 +370,7 @@ extension MonkeyKing {
         } else if urlScheme.hasPrefix("ap") {
             canHandleAlipay = true
         }
-        
+
         if canHandleAlipay {
 
             let urlString = url.absoluteString
@@ -386,8 +409,16 @@ extension MonkeyKing {
                 }
 
                 let success = (result == 0)
-                sharedMonkeyKing.deliverCompletionHandler?(success)
-                
+
+                var error: NSError?
+                if !success {
+                    let userInfo: [AnyHashable : Any] = [NSLocalizedDescriptionKey: "Alipay share failed.",
+                                                         NSLocalizedFailureReasonErrorKey: result]
+                    error = NSError(domain: "com.monkeykig.alipay", code: -4, userInfo: userInfo)
+                }
+
+                sharedMonkeyKing.deliverCompletionHandler?(error)
+
                 return success
             }
         }
@@ -500,7 +531,7 @@ extension MonkeyKing {
         public enum AlipaySubtype {
             case friends(info: Info)
             case timeline(info: Info)
-            
+
             var scene: NSNumber {
                 switch self {
                 case .friends:
@@ -530,7 +561,7 @@ extension MonkeyKing {
             if case .weibo = account {
                 return true
             }
-            
+
             return account.isAppInstalled
         }
     }
@@ -538,14 +569,20 @@ extension MonkeyKing {
     public class func deliver(_ message: Message, completionHandler: @escaping DeliverCompletionHandler) {
 
         guard message.canBeDelivered else {
-            completionHandler(false)
+            let userInfo: [AnyHashable: Any] = [NSLocalizedDescriptionKey: "Message can't be delivered",
+                                                NSLocalizedFailureReasonErrorKey: "Developer accout set incorrect."]
+            let error = NSError(domain: "com.monkeyking.error", code: -4, userInfo: userInfo)
+            completionHandler(error)
             return
         }
 
         sharedMonkeyKing.deliverCompletionHandler = completionHandler
 
         guard let account = sharedMonkeyKing.accountSet[message] else {
-            completionHandler(false)
+            let userInfo: [AnyHashable: Any] = [NSLocalizedDescriptionKey: "Message can't be delivered",
+                                                NSLocalizedFailureReasonErrorKey: "Developer accout set incorrect."]
+            let error = NSError(domain: "com.monkeyking.error", code: -4, userInfo: userInfo)
+            completionHandler(error)
             return
         }
 
@@ -561,7 +598,7 @@ extension MonkeyKing {
                 "scene": type.scene,
                 "sdkver": "1.5",
                 "command": "1010",
-            ]
+                ]
 
             let info = type.info
 
@@ -620,7 +657,10 @@ extension MonkeyKing {
             let weChatSchemeURLString = "weixin://app/\(appID)/sendreq/?"
 
             if !openURL(urlString: weChatSchemeURLString) {
-                completionHandler(false)
+                let userInfo: [AnyHashable: Any] = [NSLocalizedDescriptionKey: "Wechat share failed",
+                                                    NSLocalizedFailureReasonErrorKey: "Can't open weChatSchemeURLString"]
+                let error = NSError(domain: "com.monkeyking.wechat", code: -4, userInfo: userInfo)
+                completionHandler(error)
             }
 
         case .qq(let type):
@@ -653,7 +693,9 @@ extension MonkeyKing {
                     qqSchemeURLString += mediaType ?? "news"
 
                     guard let encodedURLString = url.absoluteString.monkeyking_base64AndURLEncodedString else {
-                        completionHandler(false)
+                        let userInfo = [NSLocalizedDescriptionKey: "URLEncode failed."]
+                        let error = NSError(domain: "com.monkeyking.error", code: -5, userInfo: userInfo)
+                        completionHandler(error)
                         return
                     }
 
@@ -669,13 +711,15 @@ extension MonkeyKing {
                 case .image(let image):
 
                     guard let imageData = UIImageJPEGRepresentation(image, 1) else {
-                        completionHandler(false)
+                        let userInfo = [NSLocalizedDescriptionKey: "Represent image failed."]
+                        let error = NSError(domain: "com.monkeyking.error", code: -5, userInfo: userInfo)
+                        completionHandler(error)
                         return
                     }
 
                     var dic = [
                         "file_data": imageData,
-                    ]
+                        ]
                     if let thumbnail = type.info.thumbnail, let thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
                         dic["previewimagedata"] = thumbnailData
                     }
@@ -730,7 +774,9 @@ extension MonkeyKing {
             }
 
             if !openURL(urlString: qqSchemeURLString) {
-                completionHandler(false)
+                let userInfo = [NSLocalizedDescriptionKey: "Open QQ scheme faile."]
+                let error = NSError(domain: "com.monkeyking.qq", code: -5, userInfo: userInfo)
+                completionHandler(error)
             }
 
         case .weibo(let type):
@@ -797,7 +843,7 @@ extension MonkeyKing {
                 let appData = NSKeyedArchiver.archivedData(withRootObject: [
                     "appKey": appID,
                     "bundleID": Bundle.main.monkeyking_bundleID ?? ""
-                ])
+                    ])
                 let messageData: [[String: Any]] = [
                     ["transferObject": NSKeyedArchiver.archivedData(withRootObject: dict)],
                     ["app": appData]
@@ -806,7 +852,9 @@ extension MonkeyKing {
                 UIPasteboard.general.items = messageData
 
                 if !openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000") {
-                    completionHandler(false)
+                    let userInfo = [NSLocalizedDescriptionKey: "Open weibo scheme failed."]
+                    let error = NSError(domain: "com.monkeyking.weibo", code: -5, userInfo: userInfo)
+                    completionHandler(error)
                 }
 
                 return
@@ -819,7 +867,9 @@ extension MonkeyKing {
 
             guard let accessToken = type.accessToken else {
                 print("When Weibo did not install, accessToken must need")
-                completionHandler(false)
+                let userInfo = [NSLocalizedDescriptionKey: "Get accessToken failed."]
+                let error = NSError(domain: "com.monkeyking.weibo", code: -4, userInfo: userInfo)
+                completionHandler(error)
                 return
             }
 
@@ -842,7 +892,9 @@ extension MonkeyKing {
                 case .image(let image):
 
                     guard let imageData = UIImageJPEGRepresentation(image, 0.7) else {
-                        completionHandler(false)
+                        let userInfo = [NSLocalizedDescriptionKey: "Represent image failed."]
+                        let error = NSError(domain: "com.monkeyking.error", code: -5, userInfo: userInfo)
+                        completionHandler(error)
                         return
                     }
 
@@ -861,35 +913,44 @@ extension MonkeyKing {
 
             let statusText = status.flatMap({ $0 }).joined(separator: " ")
             parameters["status"] = statusText
-            
+
             switch mediaType {
-                
+
             case .url(_):
-                
+
                 let urlString = "https://api.weibo.com/2/statuses/update.json"
-                
+
                 sharedMonkeyKing.request(urlString, method: .post, parameters: parameters) { (responseData, HTTPResponse, error) in
-                    if let json = responseData, let _ = json["idstr"] as? String {
-                        completionHandler(true)
-                    } else {
+                    var reponseError: NSError?
+                    if (responseData == nil) || (responseData!["idstr"] as? String == nil) {
+                        let failureReason = responseData ?? ["error": "Can't connect api.weibo.com."]
+                        let userInfo: [AnyHashable: Any]  = [NSLocalizedDescriptionKey: "Weibo share failed.",
+                                                             NSLocalizedFailureReasonErrorKey: failureReason]
+                        reponseError = NSError(domain: "com.monkeyking.weibo", code: -4, userInfo: userInfo)
                         print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
-                        completionHandler(false)
                     }
+                    completionHandler(reponseError)
+
                 }
-                
+
             case .image(_):
-                
+
                 let urlString = "https://upload.api.weibo.com/2/statuses/upload.json"
-                
+
                 sharedMonkeyKing.upload(urlString, parameters: parameters) { (responseData, HTTPResponse, error) in
-                    if let json = responseData, let _ = json["idstr"] as? String {
-                        completionHandler(true)
-                    } else {
+                    var reponseError: NSError?
+
+                    if (responseData == nil) || (responseData!["idstr"] as? String == nil) {
+                        let failureReason = responseData ?? ["error": "Can't connect api.weibo.com."]
+                        let userInfo: [AnyHashable: Any]  = [NSLocalizedDescriptionKey: "Weibo share failed.",
+                                                             NSLocalizedFailureReasonErrorKey: failureReason]
+                        reponseError = NSError(domain: "com.monkeyking.weibo", code: -4, userInfo: userInfo)
                         print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
-                        completionHandler(false)
                     }
+
+                    completionHandler(reponseError)
                 }
-                
+
             case .audio:
                 fatalError("web Weibo not supports Audio type")
             case .video:
@@ -902,14 +963,18 @@ extension MonkeyKing {
 
             let dictionary = createAlipayMessageDictionary(withScene: type.scene, info: type.info, appID: appID)
             guard let data = try? PropertyListSerialization.data(fromPropertyList: dictionary, format: .xml, options: 0) else {
-                completionHandler(false)
+                let userInfo = [NSLocalizedDescriptionKey: "Message can't be delivered"]
+                let error = NSError(domain: "com.monkeyking.error", code: -5, userInfo: userInfo)
+                completionHandler(error)
                 return
             }
 
             UIPasteboard.general.setData(data, forPasteboardType: "com.alipay.openapi.pb.req.\(appID)")
 
             if !openURL(urlString: "alipayshare://platformapi/shareService?action=sendReq&shareId=\(appID)") {
-                completionHandler(false)
+                let userInfo: [AnyHashable: Any] = [NSLocalizedDescriptionKey: "Open Alipay scheme failed."]
+                let error = NSError(domain: "com.monkeyking.alipay", code: -5, userInfo: userInfo)
+                completionHandler(error)
             }
         }
     }
@@ -919,13 +984,13 @@ extension MonkeyKing {
 // MARK: Pay
 
 extension MonkeyKing {
-    
+
     public enum Order {
         /// You can custom URL scheme. Default "ap" + String(appID)
         /// ref: https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.piSRlm&treeId=204&articleId=105295&docType=1
         case alipay(urlString: String, scheme: String?)
         case weChat(urlString: String)
-        
+
         public var canBeDelivered: Bool {
             var scheme = ""
             switch self {
@@ -934,34 +999,34 @@ extension MonkeyKing {
             case .weChat:
                 scheme = "weixin://"
             }
-            
+
             return sharedMonkeyKing.canOpenURL(urlString: scheme)
         }
     }
-    
+
     public class func deliver(_ order: Order, completionHandler: @escaping PayCompletionHandler) {
-        
+
         if !order.canBeDelivered {
             completionHandler(false)
             return
         }
-        
+
         sharedMonkeyKing.payCompletionHandler = completionHandler
-        
+
         switch order {
-            
+
         case .weChat(let urlString):
             if !openURL(urlString: urlString) {
                 completionHandler(false)
             }
-            
+
         case let .alipay(urlString, scheme):
             sharedMonkeyKing.customAlipayOrderScheme = scheme
             if !openURL(urlString: urlString) {
                 completionHandler(false)
             }
         }
-        
+
     }
 }
 
@@ -989,7 +1054,7 @@ extension MonkeyKing {
         case .weChat(let appID, _):
 
             let scope = scope ?? "snsapi_userinfo"
-            
+
             if !account.isAppInstalled {
                 // SMS OAuth
                 // uid??
@@ -1001,7 +1066,7 @@ extension MonkeyKing {
                     completionHandler(nil, nil, NSError(domain: "OAuth Error, cannot open url weixin://", code: -1, userInfo: nil))
                 }
             }
-            
+
         case .qq(let appID):
 
             let scope = scope ?? ""
@@ -1119,17 +1184,17 @@ extension MonkeyKing {
 extension MonkeyKing: WKNavigationDelegate {
 
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        
+
         // Pocket OAuth
         if let errorString = (error as NSError).userInfo["ErrorFailingURLStringKey"] as? String, errorString.hasSuffix(":authorizationFinished") {
             removeWebView(webView, tuples: (nil, nil, nil))
             return
         }
-        
+
         // Failed to connect network
         activityIndicatorViewAction(webView, stop: true)
         addCloseButton()
-        
+
         let detailLabel = UILabel()
         detailLabel.text = "无法连接，请检查网络后重试"
         detailLabel.textColor = UIColor.gray
@@ -1139,9 +1204,9 @@ extension MonkeyKing: WKNavigationDelegate {
         webView.addSubview(detailLabel)
         webView.addConstraints([centerX,centerY])
         webView.scrollView.alwaysBounceVertical = false
-        
+
     }
-    
+
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
 
         activityIndicatorViewAction(webView, stop: true)
@@ -1150,9 +1215,9 @@ extension MonkeyKing: WKNavigationDelegate {
         guard let urlString = webView.url?.absoluteString else {
             return
         }
-        
+
         var scriptString = ""
-        
+
         if urlString.contains("getpocket.com") {
             scriptString += "document.querySelector('div.toolbar').style.display = 'none';"
             scriptString += "document.querySelector('a.extra_action').style.display = 'none';"
@@ -1194,37 +1259,37 @@ extension MonkeyKing: WKNavigationDelegate {
 
         // WeChat OAuth
         if url.absoluteString.hasPrefix("wx") {
-            
+
             let queryDictionary = url.monkeyking_queryDictionary
             guard let code = queryDictionary["code"] as? String else {
                 return
             }
-            
+
             MonkeyKing.fetchWeChatOAuthInfoByCode(code: code) { [weak self] (info, response, error) in
                 self?.removeWebView(webView, tuples: (info, response, error))
             }
-            
+
         } else {
             // Weibo OAuth
             for case let .weibo(appID, appKey, redirectURL) in accountSet {
 
                 if url.absoluteString.lowercased().hasPrefix(redirectURL) {
-                    
+
                     webView.stopLoading()
-                    
+
                     guard let code = url.monkeyking_queryDictionary["code"] as? String else {
                         return
                     }
-                    
+
                     var accessTokenAPI = "https://api.weibo.com/oauth2/access_token?"
                     accessTokenAPI += "client_id=" + appID
                     accessTokenAPI += "&client_secret=" + appKey
                     accessTokenAPI += "&grant_type=authorization_code"
                     accessTokenAPI += "&redirect_uri=" + redirectURL
                     accessTokenAPI += "&code=" + code
-                    
+
                     activityIndicatorViewAction(webView, stop: false)
-                    
+
                     request(accessTokenAPI, method: .post) { (json, response, error) in
                         DispatchQueue.main.async { [weak self] in
                             self?.removeWebView(webView, tuples: (json, response, error))
@@ -1240,20 +1305,20 @@ extension MonkeyKing: WKNavigationDelegate {
 // MARK: Private Methods
 
 extension MonkeyKing {
-    
+
     fileprivate class func generateWebView() -> WKWebView {
-        
+
         let webView = WKWebView()
         let screenBounds = UIScreen.main.bounds
         webView.frame = CGRect(origin: CGPoint(x: 0, y: screenBounds.height),
                                size: CGSize(width: screenBounds.width, height: screenBounds.height - 20))
-        
+
         webView.navigationDelegate = sharedMonkeyKing
         webView.backgroundColor = UIColor(red: 247/255, green: 247/255, blue: 247/255, alpha: 1.0)
         webView.scrollView.backgroundColor = webView.backgroundColor
 
         UIApplication.shared.keyWindow?.addSubview(webView)
-        
+
         return webView
     }
 
@@ -1386,9 +1451,9 @@ extension MonkeyKing {
             keyClasses: ["APMediaMessage", "NSObject"],
             keyClassname: "APMediaMessage"
         ]
-        
+
         let publicObjectsItem18: NSNumber = scene
-        
+
         let publicObjectsItem19: [String: Any] = [
             keyClasses: ["APSendMessageToAPReq", "APBaseReq", "NSObject"],
             keyClassname: "APSendMessageToAPReq"
@@ -1469,7 +1534,7 @@ extension MonkeyKing {
             "$top": ["root" : [keyUID: 1]],
             "$version": 100000
         ]
-        
+
         return dictionary
     }
 
@@ -1484,7 +1549,7 @@ extension MonkeyKing {
     }
 
     fileprivate class func addWebView(withURLString urlString: String) {
-        
+
         if nil == MonkeyKing.sharedMonkeyKing.webView {
             MonkeyKing.sharedMonkeyKing.webView = generateWebView()
         }
@@ -1525,7 +1590,7 @@ extension MonkeyKing {
         let error = NSError(domain: "User Cancelled", code: -1, userInfo: nil)
         removeWebView(webView!, tuples: (nil, nil, error))
     }
-    
+
     fileprivate func removeWebView(_ webView: WKWebView, tuples: ([String: Any]?, URLResponse?, Error?)?) {
 
         activityIndicatorViewAction(webView, stop: true)
@@ -1614,7 +1679,7 @@ private extension Set {
                 }
             }
         }
-        
+
         return nil
     }
 
@@ -1700,7 +1765,7 @@ private extension String {
     var monkeyking_base64AndURLEncodedString: String? {
         return monkeyking_base64EncodedString?.monkeyking_urlEncodedString
     }
-    
+
     var monkeyking_urlDecodedString: String? {
         return replacingOccurrences(of: "+", with: " ").removingPercentEncoding
     }
