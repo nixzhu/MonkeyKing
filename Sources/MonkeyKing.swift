@@ -1903,12 +1903,13 @@ class CloseButton: UIButton {
         circlePath.fill()
 
         let xPath = UIBezierPath()
-        xPath.lineWidth = 2.0
+        xPath.lineCapStyle = .round
+        xPath.lineWidth = 3.0
         let offset: CGFloat = (bounds.width - circleWidth) / 2.0
-        xPath.move(to: CGPoint(x: offset + circleWidth / 4.0, y: offset + circleWidth / 4.0))
-        xPath.addLine(to: CGPoint(x: offset + 3.0 * circleWidth / 4.0, y: offset + 3.0 * circleWidth / 4.0))
-        xPath.move(to: CGPoint(x: offset + circleWidth / 4.0, y: offset + 3.0 * circleWidth / 4.0))
-        xPath.addLine(to: CGPoint(x: offset + 3.0 * circleWidth / 4.0, y: offset + circleWidth / 4.0))
+        xPath.move(to: CGPoint(x: offset + circleWidth / 3.0, y: offset + circleWidth / 3.0))
+        xPath.addLine(to: CGPoint(x: offset + 2.0 * circleWidth / 3.0, y: offset + 2.0 * circleWidth / 3.0))
+        xPath.move(to: CGPoint(x: offset + circleWidth / 3.0, y: offset + 2.0 * circleWidth / 3.0))
+        xPath.addLine(to: CGPoint(x: offset + 2.0 * circleWidth / 3.0, y: offset + circleWidth / 3.0))
         UIColor.white.setStroke()
         xPath.stroke()
     }
