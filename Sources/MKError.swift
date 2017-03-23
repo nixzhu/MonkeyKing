@@ -22,7 +22,8 @@ public enum MKError: Error {
     public struct APIErrorDetails {
 
         public enum type {
-            case undefined
+            case parseResponseFailed
+            case unrecognizedErrorCode
             case connectFailed
             case invalidToken
         }

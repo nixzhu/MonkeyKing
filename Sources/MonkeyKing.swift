@@ -759,6 +759,22 @@ extension MonkeyKing {
 
         case .weibo(let type):
 
+            func parseError(with reponseData: [String: Any]) -> MKError.APIErrorDetails {
+
+                // ref: http://open.weibo.com/wiki/Error_code
+                guard let errorCode = reponseData["error_code"] as? Int else {
+                    return MKError.APIErrorDetails(type: .parseResponseFailed, responseData: reponseData)
+                }
+
+                switch errorCode {
+                case 21314, 21315, 21316, 21317, 21327, 21332:
+                    return MKError.APIErrorDetails(type: .invalidToken, responseData: reponseData)
+                default:
+                    return MKError.APIErrorDetails(type: .unrecognizedErrorCode, responseData: reponseData)
+                }
+
+            }
+
             guard !sharedMonkeyKing.canOpenURL(urlString: "weibosdk://request") else {
 
                 // App Share
@@ -902,9 +918,8 @@ extension MonkeyKing {
 
                     } else if responseData != nil, responseData!["idstr"] as? String == nil {
 
-                        // TODO: 收集微博失败代码
                         print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
-                        deliverError = MKError.APIErrorDetails(type: .undefined, responseData: nil)
+                        deliverError = parseError(with: responseData!)
                         completionHandler(.failure(.apiRequestError(reason: deliverError)))
 
                     } else {
@@ -927,9 +942,8 @@ extension MonkeyKing {
 
                     } else if responseData != nil, responseData!["idstr"] as? String == nil {
 
-                        // TODO: 收集微博失败代码
                         print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
-                        deliverError = MKError.APIErrorDetails(type: .undefined, responseData: nil)
+                        deliverError = parseError(with: responseData!)
                         completionHandler(.failure(.apiRequestError(reason: deliverError)))
 
                     } else {
