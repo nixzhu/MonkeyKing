@@ -29,7 +29,7 @@
 		50FBA6E11BA56E1C00E69BB3 /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */; };
 		50FBA6E41BA570CD00E69BB3 /* QQActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */; };
 		7840AF1D1C63167C00AD5256 /* pay.php in Resources */ = {isa = PBXBuildFile; fileRef = 7840AF1C1C63167C00AD5256 /* pay.php */; };
-		95A841F91E83DF5A0046734A /* MKError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A841F81E83DF5A0046734A /* MKError.swift */; };
+		95A841F91E83DF5A0046734A /* MonkeyKing+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A841F81E83DF5A0046734A /* MonkeyKing+Error.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,7 +81,7 @@
 		50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeChatActivity.swift; path = Activities/WeChatActivity.swift; sourceTree = "<group>"; };
 		50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QQActivity.swift; path = Activities/QQActivity.swift; sourceTree = "<group>"; };
 		7840AF1C1C63167C00AD5256 /* pay.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = pay.php; sourceTree = "<group>"; };
-		95A841F81E83DF5A0046734A /* MKError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MKError.swift; path = Sources/MKError.swift; sourceTree = SOURCE_ROOT; };
+		95A841F81E83DF5A0046734A /* MonkeyKing+Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MonkeyKing+Error.swift"; path = "Sources/MonkeyKing+Error.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,7 +151,7 @@
 				5067D53E1D6D814600D3C010 /* MonkeyKing.swift */,
 				5067D53D1D6D814600D3C010 /* AnyActivity.swift */,
 				5067D53F1D6D814600D3C010 /* Networking.swift */,
-				95A841F81E83DF5A0046734A /* MKError.swift */,
+				95A841F81E83DF5A0046734A /* MonkeyKing+Error.swift */,
 				50FBA6D31BA2BBE900E69BB3 /* Info.plist */,
 			);
 			path = MonkeyKing;
@@ -305,7 +305,7 @@
 			files = (
 				5067D5421D6D814600D3C010 /* Networking.swift in Sources */,
 				5067D5401D6D814600D3C010 /* AnyActivity.swift in Sources */,
-				95A841F91E83DF5A0046734A /* MKError.swift in Sources */,
+				95A841F91E83DF5A0046734A /* MonkeyKing+Error.swift in Sources */,
 				5067D5411D6D814600D3C010 /* MonkeyKing.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

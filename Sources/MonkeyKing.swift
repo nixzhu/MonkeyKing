@@ -16,7 +16,7 @@ public func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
 open class MonkeyKing: NSObject {
 
     public typealias DeliverCompletionHandler = (_ result: DeliverResult) -> Void
-    public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Error?) -> Void
+    public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Swift.Error?) -> Void
     public typealias PayCompletionHandler = (_ result: Bool) -> Void
 
     fileprivate static let sharedMonkeyKing = MonkeyKing()
@@ -94,7 +94,7 @@ open class MonkeyKing: NSObject {
 
     public enum DeliverResult {
         case success
-        case failure(MKError)
+        case failure(Error)
     }
 
     open class func registerAccount(_ account: Account) {
@@ -221,7 +221,7 @@ extension MonkeyKing {
                     if success {
                         sharedMonkeyKing.deliverCompletionHandler?(.success)
                     } else {
-                        sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdkError(reason: .unknownError)))
+                        sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdk(reason: .unknown)))
                     }
 
                     return success
@@ -250,7 +250,7 @@ extension MonkeyKing {
             if success {
                 sharedMonkeyKing.deliverCompletionHandler?(.success)
             } else {
-                sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdkError(reason: .unknownError)))
+                sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdk(reason: .unknown)))
             }
 
             return success
@@ -264,7 +264,7 @@ extension MonkeyKing {
             }
 
             var userInfo: [String: Any]?
-            var error: Error?
+            var error: Swift.Error?
 
             defer {
                 sharedMonkeyKing.oauthCompletionHandler?(userInfo, nil, error)
@@ -321,7 +321,7 @@ extension MonkeyKing {
             case "WBAuthorizeResponse":
 
                 var userInfo: [String: Any]?
-                var error: Error?
+                var error: Swift.Error?
 
                 defer {
                     sharedMonkeyKing.oauthCompletionHandler?(responseInfo, nil, error)
@@ -343,7 +343,7 @@ extension MonkeyKing {
                 if success {
                     sharedMonkeyKing.deliverCompletionHandler?(.success)
                 } else {
-                    sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdkError(reason: .unknownError)))
+                    sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdk(reason: .unknown)))
                 }
 
                 return success
@@ -409,7 +409,7 @@ extension MonkeyKing {
                 if success {
                     sharedMonkeyKing.deliverCompletionHandler?(.success)
                 } else {
-                    sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdkError(reason: .unknownError)))
+                    sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdk(reason: .unknown)))
                 }
 
                 return success
@@ -562,14 +562,14 @@ extension MonkeyKing {
     public class func deliver(_ message: Message, completionHandler: @escaping DeliverCompletionHandler) {
 
         guard message.canBeDelivered else {
-            completionHandler(.failure(.registerError))
+            completionHandler(.failure(.messageCanNotBeDelivered))
             return
         }
 
         sharedMonkeyKing.deliverCompletionHandler = completionHandler
 
         guard let account = sharedMonkeyKing.accountSet[message] else {
-            completionHandler(.failure(.registerError))
+            completionHandler(.failure(.noAccount))
             return
         }
 
@@ -644,7 +644,7 @@ extension MonkeyKing {
             let weChatSchemeURLString = "weixin://app/\(appID)/sendreq/?"
 
             if !openURL(urlString: weChatSchemeURLString) {
-                completionHandler(.failure(.sdkError(reason: .invalidURLScheme)))
+                completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
             }
 
         case .qq(let type):
@@ -677,7 +677,7 @@ extension MonkeyKing {
                     qqSchemeURLString += mediaType ?? "news"
 
                     guard let encodedURLString = url.absoluteString.monkeyking_base64AndURLEncodedString else {
-                        completionHandler(.failure(.sdkError(reason: .urlEncodeFailed)))
+                        completionHandler(.failure(.sdk(reason: .urlEncodeFailed)))
                         return
                     }
 
@@ -754,23 +754,23 @@ extension MonkeyKing {
             }
 
             if !openURL(urlString: qqSchemeURLString) {
-                completionHandler(.failure(.sdkError(reason: .invalidURLScheme)))
+                completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
             }
 
         case .weibo(let type):
 
-            func parseError(with reponseData: [String: Any]) -> MKError.APIErrorDetails {
+            func parseError(with reponseData: [String: Any]) -> Error.APIRequestReason {
 
                 // ref: http://open.weibo.com/wiki/Error_code
                 guard let errorCode = reponseData["error_code"] as? Int else {
-                    return MKError.APIErrorDetails(type: .parseResponseFailed, responseData: reponseData)
+                    return Error.APIRequestReason(type: .parseResponseFailed, responseData: reponseData)
                 }
 
                 switch errorCode {
                 case 21314, 21315, 21316, 21317, 21327, 21332:
-                    return MKError.APIErrorDetails(type: .invalidToken, responseData: reponseData)
+                    return Error.APIRequestReason(type: .invalidToken, responseData: reponseData)
                 default:
-                    return MKError.APIErrorDetails(type: .unrecognizedErrorCode, responseData: reponseData)
+                    return Error.APIRequestReason(type: .unrecognizedErrorCode, responseData: reponseData)
                 }
 
             }
@@ -846,7 +846,7 @@ extension MonkeyKing {
                 UIPasteboard.general.items = messageData
 
                 if !openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000") {
-                    completionHandler(.failure(.sdkError(reason: .invalidURLScheme)))
+                    completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
                 }
 
                 return
@@ -859,7 +859,7 @@ extension MonkeyKing {
 
             guard let accessToken = type.accessToken else {
                 print("When Weibo did not install, accessToken must need")
-                completionHandler(.failure(.registerError))
+                completionHandler(.failure(.noAccount))
                 return
             }
 
@@ -910,17 +910,17 @@ extension MonkeyKing {
 
                 sharedMonkeyKing.request(urlString, method: .post, parameters: parameters) { (responseData, HTTPResponse, error) in
 
-                    var deliverError: MKError.APIErrorDetails
+                    var deliverError: Error.APIRequestReason
                     if error != nil {
 
-                        deliverError = MKError.APIErrorDetails(type: .connectFailed, responseData: nil)
-                        completionHandler(.failure(.apiRequestError(reason: deliverError)))
+                        deliverError = Error.APIRequestReason(type: .connectFailed, responseData: nil)
+                        completionHandler(.failure(.apiRequest(reason: deliverError)))
 
                     } else if responseData != nil, responseData!["idstr"] as? String == nil {
 
                         print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
                         deliverError = parseError(with: responseData!)
-                        completionHandler(.failure(.apiRequestError(reason: deliverError)))
+                        completionHandler(.failure(.apiRequest(reason: deliverError)))
 
                     } else {
                         completionHandler(.success)
@@ -934,17 +934,17 @@ extension MonkeyKing {
 
                 sharedMonkeyKing.upload(urlString, parameters: parameters) { (responseData, HTTPResponse, error) in
 
-                    var deliverError: MKError.APIErrorDetails
+                    var deliverError: Error.APIRequestReason
                     if error != nil {
 
-                        deliverError = MKError.APIErrorDetails(type: .connectFailed, responseData: nil)
-                        completionHandler(.failure(.apiRequestError(reason: deliverError)))
+                        deliverError = Error.APIRequestReason(type: .connectFailed, responseData: nil)
+                        completionHandler(.failure(.apiRequest(reason: deliverError)))
 
                     } else if responseData != nil, responseData!["idstr"] as? String == nil {
 
                         print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
                         deliverError = parseError(with: responseData!)
-                        completionHandler(.failure(.apiRequestError(reason: deliverError)))
+                        completionHandler(.failure(.apiRequest(reason: deliverError)))
 
                     } else {
                         completionHandler(.success)
@@ -964,14 +964,14 @@ extension MonkeyKing {
 
             let dictionary = createAlipayMessageDictionary(withScene: type.scene, info: type.info, appID: appID)
             guard let data = try? PropertyListSerialization.data(fromPropertyList: dictionary, format: .xml, options: 0) else {
-                completionHandler(.failure(.sdkError(reason: .serializeFailed)))
+                completionHandler(.failure(.sdk(reason: .serializeFailed)))
                 return
             }
 
             UIPasteboard.general.setData(data, forPasteboardType: "com.alipay.openapi.pb.req.\(appID)")
 
             if !openURL(urlString: "alipayshare://platformapi/shareService?action=sendReq&shareId=\(appID)") {
-                completionHandler(.failure(.sdkError(reason: .invalidURLScheme)))
+                completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
             }
         }
     }
@@ -1588,7 +1588,7 @@ extension MonkeyKing {
         removeWebView(webView!, tuples: (nil, nil, error))
     }
 
-    fileprivate func removeWebView(_ webView: WKWebView, tuples: ([String: Any]?, URLResponse?, Error?)?) {
+    fileprivate func removeWebView(_ webView: WKWebView, tuples: ([String: Any]?, URLResponse?, Swift.Error?)?) {
 
         activityIndicatorViewAction(webView, stop: true)
         webView.stopLoading()
