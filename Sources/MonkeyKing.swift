@@ -9,12 +9,12 @@
 import UIKit
 import WebKit
 
-public func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
-    return lhs.appID == rhs.appID
-}
-
 open class MonkeyKing: NSObject {
 
+    public enum DeliverResult {
+        case success
+        case failure(Error)
+    }
     public typealias DeliverCompletionHandler = (_ result: DeliverResult) -> Void
     public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Swift.Error?) -> Void
     public typealias PayCompletionHandler = (_ result: Bool) -> Void
@@ -82,6 +82,10 @@ open class MonkeyKing: NSObject {
                 return false
             }
         }
+
+        public static func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
+            return lhs.appID == rhs.appID
+        }
     }
 
     public enum SupportedPlatform {
@@ -90,11 +94,6 @@ open class MonkeyKing: NSObject {
         case weibo
         case pocket(requestToken: String)
         case alipay
-    }
-
-    public enum DeliverResult {
-        case success
-        case failure(Error)
     }
 
     open class func registerAccount(_ account: Account) {
