@@ -11,6 +11,31 @@ import WebKit
 
 open class MonkeyKing: NSObject {
 
+    public enum Error: Swift.Error {
+        case noAccount
+        case messageCanNotBeDelivered
+        case invalidImageData
+
+        public enum SDKReason {
+            case unknown
+            case invalidURLScheme
+            case urlEncodeFailed
+            case serializeFailed
+        }
+        case sdk(reason: SDKReason)
+
+        public struct APIRequestReason {
+            public enum `Type` {
+                case parseResponseFailed
+                case unrecognizedErrorCode
+                case connectFailed
+                case invalidToken
+            }
+            var type: Type
+            var responseData: [String: Any]?
+        }
+        case apiRequest(reason: APIRequestReason)
+    }
     public enum DeliverResult {
         case success
         case failure(Error)
@@ -588,7 +613,7 @@ extension MonkeyKing {
                 completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
             }
         case .weibo(let type):
-            func parseError(with reponseData: [String: Any]) -> Error.APIRequestReason {
+            func errorReason(with reponseData: [String: Any]) -> Error.APIRequestReason {
                 // ref: http://open.weibo.com/wiki/Error_code
                 guard let errorCode = reponseData["error_code"] as? Int else {
                     return Error.APIRequestReason(type: .parseResponseFailed, responseData: reponseData)
@@ -697,14 +722,14 @@ extension MonkeyKing {
             case .url(_):
                 let urlString = "https://api.weibo.com/2/statuses/update.json"
                 sharedMonkeyKing.request(urlString, method: .post, parameters: parameters) { (responseData, HTTPResponse, error) in
-                    var deliverError: Error.APIRequestReason
+                    var reason: Error.APIRequestReason
                     if error != nil {
-                        deliverError = Error.APIRequestReason(type: .connectFailed, responseData: nil)
-                        completionHandler(.failure(.apiRequest(reason: deliverError)))
-                    } else if responseData != nil, responseData!["idstr"] as? String == nil {
-                        print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
-                        deliverError = parseError(with: responseData!)
-                        completionHandler(.failure(.apiRequest(reason: deliverError)))
+                        reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
+                        completionHandler(.failure(.apiRequest(reason: reason)))
+                    } else if let responseData = responseData, (responseData["idstr"] as? String) == nil {
+                        print("responseData: \(responseData), HTTPResponse: \(HTTPResponse)")
+                        reason = errorReason(with: responseData)
+                        completionHandler(.failure(.apiRequest(reason: reason)))
                     } else {
                         completionHandler(.success)
                     }
@@ -712,14 +737,14 @@ extension MonkeyKing {
             case .image(_):
                 let urlString = "https://upload.api.weibo.com/2/statuses/upload.json"
                 sharedMonkeyKing.upload(urlString, parameters: parameters) { (responseData, HTTPResponse, error) in
-                    var deliverError: Error.APIRequestReason
+                    var reason: Error.APIRequestReason
                     if error != nil {
-                        deliverError = Error.APIRequestReason(type: .connectFailed, responseData: nil)
-                        completionHandler(.failure(.apiRequest(reason: deliverError)))
-                    } else if responseData != nil, responseData!["idstr"] as? String == nil {
-                        print("responseData \(responseData) HTTPResponse \(HTTPResponse)")
-                        deliverError = parseError(with: responseData!)
-                        completionHandler(.failure(.apiRequest(reason: deliverError)))
+                        reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
+                        completionHandler(.failure(.apiRequest(reason: reason)))
+                    } else if let responseData = responseData, (responseData["idstr"] as? String) == nil {
+                        print("responseData: \(responseData), HTTPResponse: \(HTTPResponse)")
+                        reason = errorReason(with: responseData)
+                        completionHandler(.failure(.apiRequest(reason: reason)))
                     } else {
                         completionHandler(.success)
                     }
