@@ -112,7 +112,7 @@ extension WeChatViewController {
 
         MonkeyKing.oauth(for: .weChat) { [weak self] (dictionary, response, error) in
             self?.fetchUserInfo(dictionary)
-            print("error \(error)")
+            print("error \(String(describing: error))")
         }
     }
 
@@ -125,8 +125,8 @@ extension WeChatViewController {
         MonkeyKing.oauth(for: .weChat) { (dictionary, response, error) in
 
             // You can use this code to OAuth, if you do not want to keep the weChatAppKey in client.
-            print("dictionary \(dictionary)")
-            print("error \(error)")
+            print("dictionary \(String(describing: dictionary))")
+            print("error \(String(describing: error))")
         }
     }
 }
@@ -205,7 +205,7 @@ extension WeChatViewController {
         
         // OAuth
         SimpleNetworking.sharedInstance.request(accessTokenAPI, method: .get) { (OAuthJSON, response, error) in
-            print("OAuthJSON \(OAuthJSON)")
+            print("OAuthJSON \(String(describing: OAuthJSON))")
         }
     }
 

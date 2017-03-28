@@ -85,10 +85,10 @@ class PocketViewController: UIViewController {
 
                     print("S4: OAuth completion")
 
-                    print("JSON: \(info)")
+                    print("JSON: \(String(describing: info))")
 
                     // If the HTTP status of the response is 200, then the request completed successfully.
-                    print("response: \(response)")
+                    print("response: \(String(describing: response))")
 
                     strongSelf.accessToken = info?["access_token"] as? String
                 }

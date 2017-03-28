@@ -157,7 +157,7 @@ class QQViewController: UIViewController {
 
             // fetch UserInfo by userInfoAPI
             SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters) { (userInfo, _, _) in
-                print("userInfo \(userInfo)")
+                print("userInfo \(String(describing: userInfo))")
             }
 
             // More API

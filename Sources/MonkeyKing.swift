@@ -727,7 +727,6 @@ extension MonkeyKing {
                         reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
                         completionHandler(.failure(.apiRequest(reason: reason)))
                     } else if let responseData = responseData, (responseData["idstr"] as? String) == nil {
-                        print("responseData: \(responseData), HTTPResponse: \(HTTPResponse)")
                         reason = errorReason(with: responseData)
                         completionHandler(.failure(.apiRequest(reason: reason)))
                     } else {
@@ -742,7 +741,6 @@ extension MonkeyKing {
                         reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
                         completionHandler(.failure(.apiRequest(reason: reason)))
                     } else if let responseData = responseData, (responseData["idstr"] as? String) == nil {
-                        print("responseData: \(responseData), HTTPResponse: \(HTTPResponse)")
                         reason = errorReason(with: responseData)
                         completionHandler(.failure(.apiRequest(reason: reason)))
                     } else {
