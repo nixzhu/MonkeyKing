@@ -31,8 +31,8 @@ open class MonkeyKing: NSObject {
                 case connectFailed
                 case invalidToken
             }
-            var type: Type
-            var responseData: [String: Any]?
+            public var type: Type
+            public var responseData: [String: Any]?
         }
         case apiRequest(reason: APIRequestReason)
     }
