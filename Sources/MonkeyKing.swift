@@ -26,8 +26,7 @@ open class MonkeyKing: NSObject {
 
         public struct APIRequestReason {
             public enum `Type` {
-                case parseResponseFailed
-                case unrecognizedErrorCode
+                case unrecognizedError
                 case connectFailed
                 case invalidToken
             }
@@ -616,13 +615,13 @@ extension MonkeyKing {
             func errorReason(with reponseData: [String: Any]) -> Error.APIRequestReason {
                 // ref: http://open.weibo.com/wiki/Error_code
                 guard let errorCode = reponseData["error_code"] as? Int else {
-                    return Error.APIRequestReason(type: .parseResponseFailed, responseData: reponseData)
+                    return Error.APIRequestReason(type: .unrecognizedError, responseData: reponseData)
                 }
                 switch errorCode {
                 case 21314, 21315, 21316, 21317, 21327, 21332:
                     return Error.APIRequestReason(type: .invalidToken, responseData: reponseData)
                 default:
-                    return Error.APIRequestReason(type: .unrecognizedErrorCode, responseData: reponseData)
+                    return Error.APIRequestReason(type: .unrecognizedError, responseData: reponseData)
                 }
             }
             guard !sharedMonkeyKing.canOpenURL(urlString: "weibosdk://request") else {
