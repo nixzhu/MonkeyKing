@@ -2,6 +2,10 @@
 <a href="http://cocoadocs.org/docsets/MonkeyKing"><img src="https://img.shields.io/cocoapods/v/MonkeyKing.svg?style=flat"></a>
 <a href="https://github.com/Carthage/Carthage/"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat"></a>
 </p>
+<p>
+<a href="http://cocoapods.org/pods/MonkeyKing"><img src="https://img.shields.io/cocoapods/at/MonkeyKing.svg?label=Apps%20Using%20MonkeyKing&colorB=28B9FE"></a>
+<a href="http://cocoapods.org/pods/MonkeyKing"><img src="https://img.shields.io/cocoapods/dt/MonkeyKing.svg?label=Total%20Downloads&colorB=28B9FE"></a>
+</p>
 
 # MonkeyKing
 
