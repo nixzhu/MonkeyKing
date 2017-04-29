@@ -187,6 +187,19 @@ class Networking {
                 }
             }
 
+            if let httpResponse = response as? HTTPURLResponse {
+                if data != nil,
+                   httpResponse.statusCode == 200,
+                   httpResponse.url!.absoluteString.contains("api.twitter.com") {
+
+                    let responseText = String(data: data!, encoding: .utf8)
+                    // oauth_token=sample&oauth_token_secret=sample&oauth_callback_confirmed=true
+                    json = responseText?.queryStringParameters
+                    return
+                }
+
+            }
+
             guard let validData = data,
                 let jsonData = try? JSONSerialization.jsonObject(with: validData, options: .allowFragments) as? [String: Any] else {
                     print("requst fail: JSON could not be serialized because input data was nil.")
@@ -194,7 +207,7 @@ class Networking {
             }
 
             json = jsonData
-        }) 
+        })
 
         task.resume()
     }
@@ -359,6 +372,31 @@ extension Dictionary {
 }
 
 extension String {
+
+    var queryStringParameters: Dictionary<String, String> {
+        var parameters = Dictionary<String, String>()
+
+        let scanner = Scanner(string: self)
+
+        var key: NSString?
+        var value: NSString?
+
+        while !scanner.isAtEnd {
+            key = nil
+            scanner.scanUpTo("=", into: &key)
+            scanner.scanString("=", into: nil)
+
+            value = nil
+            scanner.scanUpTo("&", into: &value)
+            scanner.scanString("&", into: nil)
+
+            if let key = key as String?, let value = value as String? {
+                parameters.updateValue(value, forKey: key)
+            }
+        }
+        
+        return parameters
+    }
 
     func urlEncodedString(_ encodeAll: Bool = false) -> String {
         var allowedCharacterSet: CharacterSet = .urlQueryAllowed
