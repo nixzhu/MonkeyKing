@@ -187,14 +187,18 @@ class Networking {
                 }
             }
 
-            if let httpResponse = response as? HTTPURLResponse {
-                if data != nil,
-                   httpResponse.statusCode == 200,
-                   httpResponse.url!.absoluteString.contains("api.twitter.com") {
+            if let httpResponse = response as? HTTPURLResponse,
+               let data = data,
+               httpResponse.url!.absoluteString.contains("api.twitter.com"){
 
-                    let responseText = String(data: data!, encoding: .utf8)
+                let contentType = httpResponse.allHeaderFields["Content-Type"] as? String
+                if contentType == nil || contentType!.contains("application/json") == false {
+
+                    let responseText = String(data: data, encoding: .utf8)
+                    // TWITTER SUCKS. API WILL RETURN <application/html>
                     // oauth_token=sample&oauth_token_secret=sample&oauth_callback_confirmed=true
                     json = responseText?.queryStringParameters
+
                     return
                 }
 
@@ -293,7 +297,7 @@ class Networking {
         return (encoding.encode(mutableURLRequest, parameters: nil), uploadData)
     }
 
-    func authorizationHeader(for method: Method, urlString: String, appID: String, appKey: String, accessToken:String?, parameters: Dictionary<String, Any>, isMediaUpload: Bool) -> String {
+    func authorizationHeader(for method: Method, urlString: String, appID: String, appKey: String, accessToken:String?, accessTokenSecret: String?, parameters: Dictionary<String, Any>?, isMediaUpload: Bool) -> String {
 
         var authorizationParameters = Dictionary<String, Any>()
         authorizationParameters["oauth_version"] = "1.0"
@@ -302,28 +306,28 @@ class Networking {
         authorizationParameters["oauth_timestamp"] = String(Int(Date().timeIntervalSince1970))
         authorizationParameters["oauth_nonce"] = UUID().uuidString
 
-        if let token = accessToken {
-            authorizationParameters["oauth_token"] = token
+        if let accessToken = accessToken {
+            authorizationParameters["oauth_token"] = accessToken
         }
 
-        for (key, value) in parameters where key.hasPrefix("oauth_") {
-            authorizationParameters.updateValue(value, forKey: key)
+        if let parameters = parameters {
+            for (key, value) in parameters where key.hasPrefix("oauth_") {
+                authorizationParameters.updateValue(value, forKey: key)
+            }
         }
 
         var finalParameters = authorizationParameters
         if isMediaUpload {
-            for (k, v) in authorizationParameters {
-                finalParameters[k] = v
-            }
-            for (k, v) in parameters {
-                finalParameters[k] = v
+            if let parameters = parameters {
+                for (k, v) in parameters {
+                    finalParameters[k] = v
+                }
             }
         }
 
-        authorizationParameters["oauth_signature"] = self.oauthSignature(for: method, urlString: urlString, parameters: finalParameters, appKey: appKey, accessToken: accessToken)
+        authorizationParameters["oauth_signature"] = self.oauthSignature(for: method, urlString: urlString, parameters: finalParameters, appKey: appKey, accessTokenSecret: accessTokenSecret)
         let authorizationParameterComponents = authorizationParameters.urlEncodedQueryString(using: .utf8).components(separatedBy: "&").sorted()
         var headerComponents = [String]()
-
         for component in authorizationParameterComponents {
             let subcomponent = component.components(separatedBy: "=")
             if subcomponent.count == 2 {
@@ -335,8 +339,8 @@ class Networking {
     }
 
 
-    func oauthSignature(for method: Method, urlString: String, parameters: Dictionary<String, Any>, appKey: String, accessToken token: String?) -> String {
-        let tokenSecret = token?.urlEncodedString() ?? ""
+    func oauthSignature(for method: Method, urlString: String, parameters: Dictionary<String, Any>, appKey: String, accessTokenSecret tokenSecret: String?) -> String {
+        let tokenSecret = tokenSecret?.urlEncodedString() ?? ""
         let encodedConsumerSecret = appKey.urlEncodedString()
         let signingKey = "\(encodedConsumerSecret)&\(tokenSecret)"
         let parameterComponents = parameters.urlEncodedQueryString(using: .utf8).components(separatedBy: "&").sorted()
