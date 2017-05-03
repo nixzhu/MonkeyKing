@@ -38,6 +38,7 @@ open class MonkeyKing: NSObject {
         case weibo(appID: String, appKey: String, redirectURL: String)
         case pocket(appID: String)
         case alipay(appID: String)
+        case twitter(appID: String, appKey: String, redirectURL: String)
 
         public var isAppInstalled: Bool {
             switch self {
@@ -51,6 +52,8 @@ open class MonkeyKing: NSObject {
                 return sharedMonkeyKing.canOpenURL(urlString: "pocket-oauth-v1://")
             case .alipay:
                 return sharedMonkeyKing.canOpenURL(urlString: "alipayshare://")
+            case .twitter:
+                return sharedMonkeyKing.canOpenURL(urlString: "twitter://")
             }
         }
 
@@ -66,6 +69,8 @@ open class MonkeyKing: NSObject {
                 return appID
             case .alipay(let appID):
                 return appID
+            case .twitter(let appID, _, _):
+                return appID
             }
         }
 
@@ -75,7 +80,7 @@ open class MonkeyKing: NSObject {
 
         public var canWebOAuth: Bool {
             switch self {
-            case .qq, .weibo, .pocket, .weChat:
+            case .qq, .weibo, .pocket, .weChat, .twitter:
                 return true
             default:
                 return false
@@ -93,6 +98,7 @@ open class MonkeyKing: NSObject {
         case weibo
         case pocket(requestToken: String)
         case alipay
+        case twitter
     }
 
     open class func registerAccount(_ account: Account) {
@@ -109,6 +115,8 @@ open class MonkeyKing: NSObject {
                 if case .pocket = account { sharedMonkeyKing.accountSet.remove(oldAccount) }
             case .alipay:
                 if case .alipay = account { sharedMonkeyKing.accountSet.remove(oldAccount) }
+            case .twitter:
+                if case .twitter = account { sharedMonkeyKing.accountSet.remove(oldAccount) }
             }
         }
         sharedMonkeyKing.accountSet.insert(account)
@@ -440,9 +448,41 @@ extension MonkeyKing {
         }
         case alipay(AlipaySubtype)
 
+        public enum TwitterSubtype {
+            case `default`(info: Info, accessToken: String?, accessTokenSecret: String?)
+
+            var info: Info {
+                switch self {
+                case .default(let info, _, _):
+                    return info
+                }
+            }
+
+            var accessToken: String? {
+                switch self {
+                case .default(_, let accessToken, _):
+                    return accessToken
+                }
+            }
+
+            var accessTokenSecret: String? {
+                switch self {
+                case .default(_, _, let accessTokenSecret):
+                    return accessTokenSecret
+                }
+            }
+
+        }
+        case twitter(TwitterSubtype)
+
         public var canBeDelivered: Bool {
             guard let account = sharedMonkeyKing.accountSet[self] else { return false }
-            if case .weibo = account { return true }
+            switch account {
+            case .weibo, .twitter:
+                return true
+            default:
+                break
+            }
             return account.isAppInstalled
         }
     }
@@ -739,6 +779,62 @@ extension MonkeyKing {
             if !openURL(urlString: "alipayshare://platformapi/shareService?action=sendReq&shareId=\(appID)") {
                 completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
             }
+        case .twitter(let type):
+            // MARK: - Twitter Deliver
+            guard let accessToken = type.accessToken,
+                  let accessTokenSecret = type.accessTokenSecret else {
+                completionHandler(.failure(.noAccount))
+                return
+            }
+            let info = type.info
+            var status = [info.title, info.description]
+            var mediaType = Media.url(NSURL() as URL)
+            if let media = info.media {
+                switch media {
+                case .url(let url):
+                    status.append(url.absoluteString)
+                    mediaType = Media.url(url)
+                default:
+                    fatalError("web Twitter not supports this type")
+                }
+            }
+
+            switch mediaType {
+            case .url(_):
+                let statusText = status.flatMap({ $0 }).joined(separator: " ")
+                var urlString = "https://api.twitter.com/1.1/statuses/update.json"
+                guard let account = sharedMonkeyKing.accountSet[.twitter] else { return }
+                if case .twitter(let appID, let appKey, _) = account {
+                    let oauthString = Networking.sharedInstance.authorizationHeader(for: .post, urlString: urlString, appID: appID, appKey: appKey, accessToken: accessToken, accessTokenSecret: accessTokenSecret, parameters: ["status": statusText], isMediaUpload: true)
+                    let headers = ["Authorization": oauthString]
+                    // ref: https://dev.twitter.com/rest/reference/post/statuses/update
+                    urlString = "\(urlString)?status=\(statusText.urlEncodedString())"
+                    sharedMonkeyKing.request(urlString, method: .post, parameters: nil, headers: headers) { (responseData, URLResponse, error) in
+                        var reason: Error.APIRequestReason
+                        if error != nil {
+                            reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
+                            completionHandler(.failure(.apiRequest(reason: reason)))
+                        } else {
+                            if let HTTPResponse = URLResponse as? HTTPURLResponse,
+                                HTTPResponse.statusCode == 200 {
+                                completionHandler(.success)
+                                return
+                            }
+                            if let responseData = responseData,
+                               let _ = responseData["errors"] {
+                                reason = sharedMonkeyKing.errorReason(with: responseData, at: .twitter)
+                                completionHandler(.failure(.apiRequest(reason: reason)))
+                                return
+                            }
+                            let unrecognizedReason = Error.APIRequestReason(type: .unrecognizedError, responseData: responseData)
+                            completionHandler(.failure(.apiRequest(reason: unrecognizedReason)))
+                        }
+                    }
+                }
+            default:
+                fatalError("web Twitter not supports this type")
+            }
+
         }
     }
 }
@@ -895,10 +991,44 @@ extension MonkeyKing {
             DispatchQueue.main.async {
                 addWebView(withURLString: requestTokenAPI)
             }
+        case .twitter(let appID, let appKey, let redirectURL):
+            sharedMonkeyKing.twitterAuthenticate(appID: appID, appKey: appKey, redirectURL: redirectURL)
         case .alipay:
             break
         }
     }
+
+    // Twitter Authenticate
+    // https://dev.twitter.com/web/sign-in/implementing
+
+    fileprivate func twitterAuthenticate(appID: String, appKey: String, redirectURL: String) {
+
+        let requestTokenAPI = "https://api.twitter.com/oauth/request_token"
+        let oauthString = Networking.sharedInstance.authorizationHeader(for: .post, urlString: requestTokenAPI, appID: appID, appKey: appKey, accessToken: nil, accessTokenSecret: nil, parameters: ["oauth_callback": redirectURL], isMediaUpload: false)
+        let oauthHeader = ["Authorization": oauthString]
+        Networking.sharedInstance.request(requestTokenAPI, method: .post, parameters: nil, encoding: .url, headers: oauthHeader) { (responseData, httpResponse, error) in
+            if let responseData = responseData,
+                let requestToken = (responseData["oauth_token"] as? String) {
+                let loginURL = "https://api.twitter.com/oauth/authenticate?oauth_token=\(requestToken)"
+                MonkeyKing.addWebView(withURLString: loginURL)
+            }
+        }
+    }
+
+    fileprivate func twitterAccessToken(requestToken: String, verifer: String) {
+        for case let .twitter(appID, appKey, _) in accountSet {
+            let accessTokenAPI = "https://api.twitter.com/oauth/access_token"
+            let parameters = ["oauth_token": requestToken, "oauth_verifier": verifer]
+            let headerString = Networking.sharedInstance.authorizationHeader(for: .post, urlString: accessTokenAPI, appID: appID, appKey: appKey, accessToken: nil, accessTokenSecret: nil, parameters: parameters, isMediaUpload: false)
+            let oauthHeader = ["Authorization": headerString]
+
+            Networking.sharedInstance.request(accessTokenAPI, method: .post, parameters: nil, encoding: .url, headers: oauthHeader) { (responseData, httpResponse, error) in
+//                MonkeyKing.sharedMonkeyKing.oauthCompletionHandler?(responseData, httpResponse, error)
+
+            }
+        }
+    }
+
 }
 
 // MARK: WKNavigationDelegate
@@ -946,6 +1076,37 @@ extension MonkeyKing: WKNavigationDelegate {
             webView.stopLoading()
             return
         }
+
+        // twitter access token
+        for case let .twitter(appID, appKey, redirectURL) in accountSet {
+            if url.absoluteString.hasPrefix(redirectURL) {
+
+                var parametersString = url.absoluteString
+                for _ in (0...redirectURL.characters.count) {
+                    parametersString.remove(at: parametersString.startIndex)
+                }
+                let params = parametersString.queryStringParameters
+
+                if let token = params["oauth_token"],
+                   let verifer = params["oauth_verifier"] {
+
+                    let accessTokenAPI = "https://api.twitter.com/oauth/access_token"
+                    let parameters = ["oauth_token": token, "oauth_verifier": verifer]
+                    let headerString = Networking.sharedInstance.authorizationHeader(for: .post, urlString: accessTokenAPI, appID: appID, appKey: appKey, accessToken: nil, accessTokenSecret: nil, parameters: parameters, isMediaUpload: false)
+                    let oauthHeader = ["Authorization": headerString]
+
+                    request(accessTokenAPI, method: .post, parameters: nil, encoding: .url, headers: oauthHeader) { [weak self] (responseData, httpResponse, error) in
+                        DispatchQueue.main.async { [weak self] in
+                            self?.removeWebView(webView, tuples: (responseData, httpResponse, error))
+                        }
+                    }
+
+                }
+
+                return
+            }
+        }
+
         // QQ Web OAuth
         guard url.absoluteString.contains("&access_token=") && url.absoluteString.contains("qq.com") else {
             return
@@ -1019,6 +1180,41 @@ extension MonkeyKing {
             public var responseData: [String: Any]?
         }
         case apiRequest(reason: APIRequestReason)
+    }
+
+    func errorReason(with responseData: [String: Any], at platform: SupportedPlatform) -> Error.APIRequestReason {
+
+        let unrecognizedReason = Error.APIRequestReason(type: .unrecognizedError, responseData: responseData)
+        switch platform {
+        case .twitter:
+
+            //ref: https://dev.twitter.com/overview/api/response-codes
+            guard let errorCode = responseData["code"] as? Int else {
+                return unrecognizedReason
+            }
+            switch errorCode {
+            case 89, 99:
+                return Error.APIRequestReason(type: .invalidToken, responseData: responseData)
+            default:
+                return unrecognizedReason
+            }
+
+        case .weibo:
+
+            // ref: http://open.weibo.com/wiki/Error_code
+            guard let errorCode = responseData["error_code"] as? Int else {
+                return unrecognizedReason
+            }
+            switch errorCode {
+            case 21314, 21315, 21316, 21317, 21327, 21332:
+                return Error.APIRequestReason(type: .invalidToken, responseData: responseData)
+            default:
+                return unrecognizedReason
+            }
+
+        default:
+            return unrecognizedReason
+        }
     }
 
 }
@@ -1374,6 +1570,12 @@ private extension Set {
                     return account
                 }
             }
+        case .twitter:
+            for account in accountSet {
+                if case .twitter = account {
+                    return account
+                }
+            }
         }
         return nil
     }
@@ -1402,6 +1604,12 @@ private extension Set {
         case .alipay:
             for account in accountSet {
                 if case .alipay = account {
+                    return account
+                }
+            }
+        case .twitter:
+            for account in accountSet {
+                if case .twitter = account {
                     return account
                 }
             }
