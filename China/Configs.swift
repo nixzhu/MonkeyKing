@@ -33,4 +33,11 @@ struct Configs {
     struct Alipay {
         static let appID = "2016012101112529"
     }
+
+    struct Twitter {
+        static let appID = "bFSwxYoVEFn1G9VhooO3grNv1"
+        static let appKey = "YxBInrlvGoMPJjN9Xa4pBeCVILgz8qTXYlNdvJzzYlt9ingbZ2"
+        static let redirectURL = "https://github.com/fyl00/MonkeyKing"
+    }
+
 }
