@@ -12,9 +12,10 @@ import WebKit
 open class MonkeyKing: NSObject {
 
     public enum DeliverResult {
-        case success
+        case success(ResponseJSON?)
         case failure(Error)
     }
+    public typealias ResponseJSON = [String: Any]
     public typealias DeliverCompletionHandler = (_ result: DeliverResult) -> Void
     public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Swift.Error?) -> Void
     public typealias PayCompletionHandler = (_ result: Bool) -> Void
@@ -53,7 +54,7 @@ open class MonkeyKing: NSObject {
             case .alipay:
                 return sharedMonkeyKing.canOpenURL(urlString: "alipayshare://")
             case .twitter:
-                return sharedMonkeyKing.canOpenURL(urlString: "twitter://")
+                return false
             }
         }
 
@@ -177,7 +178,7 @@ extension MonkeyKing {
                     }
                     let success = (resultCode == 0)
                     if success {
-                        sharedMonkeyKing.deliverCompletionHandler?(.success)
+                        sharedMonkeyKing.deliverCompletionHandler?(.success(nil))
                     } else {
                         sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdk(reason: .unknown))) // TODO: pass resultCode
                     }
@@ -197,7 +198,7 @@ extension MonkeyKing {
             guard let errorDescription = url.monkeyking_queryDictionary["error"] as? String else { return false }
             let success = (errorDescription == "0")
             if success {
-                sharedMonkeyKing.deliverCompletionHandler?(.success)
+                sharedMonkeyKing.deliverCompletionHandler?(.success(nil))
             } else {
                 sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdk(reason: .unknown))) // TODO: pass errorDescription
             }
@@ -265,7 +266,7 @@ extension MonkeyKing {
             case "WBSendMessageToWeiboResponse":
                 let success = (statusCode == 0)
                 if success {
-                    sharedMonkeyKing.deliverCompletionHandler?(.success)
+                    sharedMonkeyKing.deliverCompletionHandler?(.success(nil))
                 } else {
                     sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdk(reason: .unknown)))
                 }
@@ -315,7 +316,7 @@ extension MonkeyKing {
                 }
                 let success = (result == 0)
                 if success {
-                    sharedMonkeyKing.deliverCompletionHandler?(.success)
+                    sharedMonkeyKing.deliverCompletionHandler?(.success(nil))
                 } else {
                     sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdk(reason: .unknown)))
                 }
@@ -449,26 +450,42 @@ extension MonkeyKing {
         case alipay(AlipaySubtype)
 
         public enum TwitterSubtype {
-            case `default`(info: Info, accessToken: String?, accessTokenSecret: String?)
+            case `default`(info: Info, mediaIDs: [String]?, accessToken: String?, accessTokenSecret: String?)
+//            case `photos`(info: Info, accessToken: String?, accessTokenSecret: String?)
 
             var info: Info {
                 switch self {
-                case .default(let info, _, _):
+                case .default(let info, _, _, _):
                     return info
+//                case .photos(_, let info, _, _):
+//                    return info
+                }
+            }
+
+            var mediaIDs: [String]? {
+                switch self {
+                case .default(_, let mediaIDs, _, _):
+                    return mediaIDs
+//                case .photos(let mediaIDs, _, _, _):
+//                    return mediaIDs
                 }
             }
 
             var accessToken: String? {
                 switch self {
-                case .default(_, let accessToken, _):
+                case .default(_, _,let accessToken, _):
                     return accessToken
+//                case .photos(_, _, let accessToken, _):
+//                    return accessToken
                 }
             }
 
             var accessTokenSecret: String? {
                 switch self {
-                case .default(_, _, let accessTokenSecret):
+                case .default(_, _, _,let accessTokenSecret):
                     return accessTokenSecret
+//                case .photos(_, _, _, let accessTokenSecret):
+//                    return accessTokenSecret
                 }
             }
 
@@ -745,7 +762,7 @@ extension MonkeyKing {
                         reason = errorReason(with: responseData)
                         completionHandler(.failure(.apiRequest(reason: reason)))
                     } else {
-                        completionHandler(.success)
+                        completionHandler(.success(nil))
                     }
                 }
             case .image(_):
@@ -759,7 +776,7 @@ extension MonkeyKing {
                         reason = errorReason(with: responseData)
                         completionHandler(.failure(.apiRequest(reason: reason)))
                     } else {
-                        completionHandler(.success)
+                        completionHandler(.success(nil))
                     }
                 }
             case .audio:
@@ -813,11 +830,17 @@ extension MonkeyKing {
             case .url(_):
                 let statusText = status.flatMap({ $0 }).joined(separator: " ")
                 let updateStatusAPI = "https://api.twitter.com/1.1/statuses/update.json"
+
+                var parameters = ["status": statusText]
+                if let mediaIDs = type.mediaIDs {
+                    parameters["media_ids"] = mediaIDs.joined(separator: ",")
+                }
+
                 if case .twitter(let appID, let appKey, _) = account {
-                    let oauthString = Networking.sharedInstance.authorizationHeader(for: .post, urlString: updateStatusAPI, appID: appID, appKey: appKey, accessToken: accessToken, accessTokenSecret: accessTokenSecret, parameters: ["status": statusText], isMediaUpload: true)
+                    let oauthString = Networking.sharedInstance.authorizationHeader(for: .post, urlString: updateStatusAPI, appID: appID, appKey: appKey, accessToken: accessToken, accessTokenSecret: accessTokenSecret, parameters: parameters, isMediaUpload: true)
                     let headers = ["Authorization": oauthString]
                     // ref: https://dev.twitter.com/rest/reference/post/statuses/update
-                    let urlString = "\(updateStatusAPI)?status=\(statusText.urlEncodedString())"
+                    let urlString = "\(updateStatusAPI)?\(parameters.urlEncodedQueryString(using: .utf8))"
                     sharedMonkeyKing.request(urlString, method: .post, parameters: nil, headers: headers) { (responseData, URLResponse, error) in
                         var reason: Error.APIRequestReason
                         if error != nil {
@@ -826,7 +849,7 @@ extension MonkeyKing {
                         } else {
                             if let HTTPResponse = URLResponse as? HTTPURLResponse,
                                 HTTPResponse.statusCode == 200 {
-                                completionHandler(.success)
+                                completionHandler(.success(nil))
                                 return
                             }
                             if let responseData = responseData,
@@ -849,10 +872,19 @@ extension MonkeyKing {
 
                     sharedMonkeyKing.upload(uploadMediaAPI, parameters: parameters, headers: headers) { (responseData, URLResponse, error) in
                         if let statusCode = (URLResponse as? HTTPURLResponse)?.statusCode,
-                            statusCode == 200,
-                            let mediaID = responseData?["media_id_string"] as? String {
-                            print("Upload media successfully. MediaID:\(mediaID)")
+                            statusCode == 200 {
+                            completionHandler(.success(responseData))
+                            return
                         }
+
+                        var reason: Error.APIRequestReason
+                        if let _ = error {
+                            reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
+                        } else {
+                            reason = Error.APIRequestReason(type: .unrecognizedError, responseData: responseData)
+                        }
+
+                        completionHandler(.failure(.apiRequest(reason: reason)))
                     }
 
                 }
