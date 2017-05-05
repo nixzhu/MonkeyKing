@@ -216,7 +216,7 @@ class Networking {
         task.resume()
     }
 
-    func upload(_ urlString: String, parameters: [String: Any], completionHandler: @escaping ([String: Any]?, URLResponse?, Error?) -> Void) {
+    func upload(_ urlString: String, parameters: [String: Any], headers: [String: String]? = nil, completionHandler: @escaping ([String: Any]?, URLResponse?, Error?) -> Void) {
 
         let tuple = urlRequestWithComponents(urlString, parameters: parameters)
 
@@ -224,7 +224,14 @@ class Networking {
             return
         }
 
-        let uploadTask = session.uploadTask(with: request, from: data, completionHandler: { (data, response, error) in
+        var mutableURLRequest = request
+        if let headers = headers {
+            for (headerField, headerValue) in headers {
+                mutableURLRequest.setValue(headerValue, forHTTPHeaderField: headerField)
+            }
+        }
+
+        let uploadTask = session.uploadTask(with: mutableURLRequest, from: data, completionHandler: { (data, response, error) in
             var json: [String: Any]?
 
             defer {

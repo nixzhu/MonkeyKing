@@ -782,18 +782,28 @@ extension MonkeyKing {
         case .twitter(let type):
             // MARK: - Twitter Deliver
             guard let accessToken = type.accessToken,
-                  let accessTokenSecret = type.accessTokenSecret else {
+                  let accessTokenSecret = type.accessTokenSecret,
+                  let account = sharedMonkeyKing.accountSet[.twitter] else {
                 completionHandler(.failure(.noAccount))
                 return
             }
+
             let info = type.info
             var status = [info.title, info.description]
+            var parameters = [String: Any]()
             var mediaType = Media.url(NSURL() as URL)
             if let media = info.media {
                 switch media {
                 case .url(let url):
                     status.append(url.absoluteString)
                     mediaType = Media.url(url)
+                case .image(let image):
+                    guard let imageData = UIImageJPEGRepresentation(image, 0.7) else {
+                        completionHandler(.failure(.invalidImageData))
+                        return
+                    }
+                    parameters["media"] = imageData
+                    mediaType = Media.image(image)
                 default:
                     fatalError("web Twitter not supports this type")
                 }
@@ -802,13 +812,12 @@ extension MonkeyKing {
             switch mediaType {
             case .url(_):
                 let statusText = status.flatMap({ $0 }).joined(separator: " ")
-                var urlString = "https://api.twitter.com/1.1/statuses/update.json"
-                guard let account = sharedMonkeyKing.accountSet[.twitter] else { return }
+                let updateStatusAPI = "https://api.twitter.com/1.1/statuses/update.json"
                 if case .twitter(let appID, let appKey, _) = account {
-                    let oauthString = Networking.sharedInstance.authorizationHeader(for: .post, urlString: urlString, appID: appID, appKey: appKey, accessToken: accessToken, accessTokenSecret: accessTokenSecret, parameters: ["status": statusText], isMediaUpload: true)
+                    let oauthString = Networking.sharedInstance.authorizationHeader(for: .post, urlString: updateStatusAPI, appID: appID, appKey: appKey, accessToken: accessToken, accessTokenSecret: accessTokenSecret, parameters: ["status": statusText], isMediaUpload: true)
                     let headers = ["Authorization": oauthString]
                     // ref: https://dev.twitter.com/rest/reference/post/statuses/update
-                    urlString = "\(urlString)?status=\(statusText.urlEncodedString())"
+                    let urlString = "\(updateStatusAPI)?status=\(statusText.urlEncodedString())"
                     sharedMonkeyKing.request(urlString, method: .post, parameters: nil, headers: headers) { (responseData, URLResponse, error) in
                         var reason: Error.APIRequestReason
                         if error != nil {
@@ -830,6 +839,22 @@ extension MonkeyKing {
                             completionHandler(.failure(.apiRequest(reason: unrecognizedReason)))
                         }
                     }
+                }
+            case .image(_):
+                let uploadMediaAPI = "https://upload.twitter.com/1.1/media/upload.json"
+                if case .twitter(let appID, let appKey, _) = account {
+                    // ref: https://dev.twitter.com/rest/media/uploading-media#keepinmind
+                    let oauthString = Networking.sharedInstance.authorizationHeader(for: .post, urlString: uploadMediaAPI, appID: appID, appKey: appKey, accessToken: accessToken, accessTokenSecret: accessTokenSecret, parameters: nil, isMediaUpload: false)
+                    let headers = ["Authorization": oauthString]
+
+                    sharedMonkeyKing.upload(uploadMediaAPI, parameters: parameters, headers: headers) { (responseData, URLResponse, error) in
+                        if let statusCode = (URLResponse as? HTTPURLResponse)?.statusCode,
+                            statusCode == 200,
+                            let mediaID = responseData?["media_id_string"] as? String {
+                            print("Upload media successfully. MediaID:\(mediaID)")
+                        }
+                    }
+
                 }
             default:
                 fatalError("web Twitter not supports this type")
@@ -1461,8 +1486,8 @@ extension MonkeyKing {
         Networking.sharedInstance.request(urlString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
     }
 
-    fileprivate func upload(_ urlString: String, parameters: [String: Any], completionHandler: @escaping Networking.NetworkingResponseHandler) {
-        Networking.sharedInstance.upload(urlString, parameters: parameters, completionHandler: completionHandler)
+    fileprivate func upload(_ urlString: String, parameters: [String: Any], headers: [String: String]? = nil,completionHandler: @escaping Networking.NetworkingResponseHandler) {
+        Networking.sharedInstance.upload(urlString, parameters: parameters, headers: headers, completionHandler: completionHandler)
     }
 
     fileprivate class func addWebView(withURLString urlString: String) {
