@@ -29,6 +29,7 @@
 		50FBA6E11BA56E1C00E69BB3 /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */; };
 		50FBA6E41BA570CD00E69BB3 /* QQActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */; };
 		7840AF1D1C63167C00AD5256 /* pay.php in Resources */ = {isa = PBXBuildFile; fileRef = 7840AF1C1C63167C00AD5256 /* pay.php */; };
+		955654EB1EB89D5D009444FF /* TwitterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955654EA1EB89D5D009444FF /* TwitterViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +81,7 @@
 		50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeChatActivity.swift; path = Activities/WeChatActivity.swift; sourceTree = "<group>"; };
 		50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QQActivity.swift; path = Activities/QQActivity.swift; sourceTree = "<group>"; };
 		7840AF1C1C63167C00AD5256 /* pay.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = pay.php; sourceTree = "<group>"; };
+		955654EA1EB89D5D009444FF /* TwitterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwitterViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +133,7 @@
 				3F62B3691BB6ACD800AABD3C /* QQViewController.swift */,
 				3F62B36B1BB6ACE500AABD3C /* SystemShareViewController.swift */,
 				3F159F2F1C056B1D00BCB39B /* PocketViewController.swift */,
+				955654EA1EB89D5D009444FF /* TwitterViewController.swift */,
 				3F16EAEF1BF4D1DB005B1799 /* SimpleNetworking.swift */,
 				50FBA6E21BA56E2200E69BB3 /* Activities */,
 				50FBA6BC1BA2AFAE00E69BB3 /* Main.storyboard */,
@@ -289,6 +292,7 @@
 				3F62B3681BB6ACCE00AABD3C /* WeiboViewController.swift in Sources */,
 				50FBA6BB1BA2AFAE00E69BB3 /* ViewController.swift in Sources */,
 				50FBA6E41BA570CD00E69BB3 /* QQActivity.swift in Sources */,
+				955654EB1EB89D5D009444FF /* TwitterViewController.swift in Sources */,
 				3F159F301C056B1D00BCB39B /* PocketViewController.swift in Sources */,
 				50FBA6B91BA2AFAE00E69BB3 /* AppDelegate.swift in Sources */,
 				3F62B36C1BB6ACE500AABD3C /* SystemShareViewController.swift in Sources */,
