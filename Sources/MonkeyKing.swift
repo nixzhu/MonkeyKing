@@ -151,7 +151,7 @@ extension MonkeyKing {
         case .alipay:
             return sharedMonkeyKing.canOpenURL(urlString: "alipayshare://")
         case .twitter:
-            return false // TODO
+            return sharedMonkeyKing.canOpenURL(urlString: "twitter://")
         }
     }
 }
