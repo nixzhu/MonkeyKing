@@ -44,17 +44,17 @@ open class MonkeyKing: NSObject {
         public var isAppInstalled: Bool {
             switch self {
             case .weChat:
-                return sharedMonkeyKing.canOpenURL(urlString: "weixin://")
+                return MonkeyKing.isAppInstalled(app: .weChat)
             case .qq:
-                return sharedMonkeyKing.canOpenURL(urlString: "mqqapi://")
+                return MonkeyKing.isAppInstalled(app: .qq)
             case .weibo:
-                return sharedMonkeyKing.canOpenURL(urlString: "weibosdk://request")
+                return MonkeyKing.isAppInstalled(app: .weibo)
             case .pocket:
-                return sharedMonkeyKing.canOpenURL(urlString: "pocket-oauth-v1://")
+                return MonkeyKing.isAppInstalled(app: .pocket)
             case .alipay:
-                return sharedMonkeyKing.canOpenURL(urlString: "alipayshare://")
+                return MonkeyKing.isAppInstalled(app: .alipay)
             case .twitter:
-                return false
+                return MonkeyKing.isAppInstalled(app: .twitter)
             }
         }
 
@@ -121,6 +121,38 @@ open class MonkeyKing: NSObject {
             }
         }
         sharedMonkeyKing.accountSet.insert(account)
+    }
+}
+
+
+// MARK: Check If App Installed
+
+extension MonkeyKing {
+
+    public enum App {
+        case weChat
+        case qq
+        case weibo
+        case pocket
+        case alipay
+        case twitter
+    }
+
+    public class func isAppInstalled(app: App) -> Bool {
+        switch app {
+        case .weChat:
+            return sharedMonkeyKing.canOpenURL(urlString: "weixin://")
+        case .qq:
+            return sharedMonkeyKing.canOpenURL(urlString: "mqqapi://")
+        case .weibo:
+            return sharedMonkeyKing.canOpenURL(urlString: "weibosdk://request")
+        case .pocket:
+            return sharedMonkeyKing.canOpenURL(urlString: "pocket-oauth-v1://")
+        case .alipay:
+            return sharedMonkeyKing.canOpenURL(urlString: "alipayshare://")
+        case .twitter:
+            return false // TODO
+        }
     }
 }
 
