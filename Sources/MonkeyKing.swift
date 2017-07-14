@@ -784,7 +784,7 @@ extension MonkeyKing {
             parameters["status"] = statusText
             switch mediaType {
             case .url(_):
-                let urlString = "https://api.weibo.com/2/statuses/update.json"
+                let urlString = "https://api.weibo.com/2/statuses/share.json"
                 sharedMonkeyKing.request(urlString, method: .post, parameters: parameters) { (responseData, HTTPResponse, error) in
                     var reason: Error.APIRequestReason
                     if error != nil {
@@ -798,7 +798,7 @@ extension MonkeyKing {
                     }
                 }
             case .image(_):
-                let urlString = "https://upload.api.weibo.com/2/statuses/upload.json"
+                let urlString = "https://api.weibo.com/2/statuses/share.json"
                 sharedMonkeyKing.upload(urlString, parameters: parameters) { (responseData, HTTPResponse, error) in
                     var reason: Error.APIRequestReason
                     if error != nil {
