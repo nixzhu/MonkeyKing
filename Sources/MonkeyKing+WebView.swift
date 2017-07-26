@@ -54,30 +54,30 @@ extension MonkeyKing: WKNavigationDelegate {
 
         // twitter access token
         for case let .twitter(appID, appKey, redirectURL) in accountSet {
-            if url.absoluteString.hasPrefix(redirectURL) {
 
-                var parametersString = url.absoluteString
-                for _ in (0...redirectURL.characters.count) {
-                    parametersString.remove(at: parametersString.startIndex)
-                }
-                let params = parametersString.queryStringParameters
+            guard url.absoluteString.hasPrefix(redirectURL) else { break }
 
-                if let token = params["oauth_token"],
-                    let verifer = params["oauth_verifier"] {
-
-                    let accessTokenAPI = "https://api.twitter.com/oauth/access_token"
-                    let parameters = ["oauth_token": token, "oauth_verifier": verifer]
-                    let headerString = Networking.sharedInstance.authorizationHeader(for: .post, urlString: accessTokenAPI, appID: appID, appKey: appKey, accessToken: nil, accessTokenSecret: nil, parameters: parameters, isMediaUpload: false)
-                    let oauthHeader = ["Authorization": headerString]
-
-                    request(accessTokenAPI, method: .post, parameters: nil, encoding: .url, headers: oauthHeader) { [weak self] (responseData, httpResponse, error) in
-                        DispatchQueue.main.async { [weak self] in
-                            self?.removeWebView(webView, tuples: (responseData, httpResponse, error))
-                        }
-                    }
-                }
-                return
+            var parametersString = url.absoluteString
+            for _ in (0...redirectURL.characters.count) {
+                parametersString.remove(at: parametersString.startIndex)
             }
+
+            let params = parametersString.queryStringParameters
+
+            guard let token = params["oauth_token"], let verifer = params["oauth_verifier"]  else { break }
+
+            let accessTokenAPI = "https://api.twitter.com/oauth/access_token"
+            let parameters = ["oauth_token": token, "oauth_verifier": verifer]
+
+            let headerString = Networking.sharedInstance.authorizationHeader(for: .post, urlString: accessTokenAPI, appID: appID, appKey: appKey, accessToken: nil, accessTokenSecret: nil, parameters: parameters, isMediaUpload: false)
+            let oauthHeader = ["Authorization": headerString]
+
+            request(accessTokenAPI, method: .post, parameters: nil, encoding: .url, headers: oauthHeader) { [weak self] (responseData, httpResponse, error) in
+                DispatchQueue.main.async { [weak self] in
+                    self?.removeWebView(webView, tuples: (responseData, httpResponse, error))
+                }
+            }
+            return
         }
 
         // QQ Web OAuth
