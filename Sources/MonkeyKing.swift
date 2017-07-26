@@ -1070,7 +1070,6 @@ extension MonkeyKing {
 
     // Twitter Authenticate
     // https://dev.twitter.com/web/sign-in/implementing
-
     fileprivate func twitterAuthenticate(appID: String, appKey: String, redirectURL: String) {
 
         let requestTokenAPI = "https://api.twitter.com/oauth/request_token"
@@ -1084,19 +1083,5 @@ extension MonkeyKing {
             }
         }
     }
-
-    fileprivate func twitterAccessToken(requestToken: String, verifer: String) {
-        for case let .twitter(appID, appKey, _) in accountSet {
-            let accessTokenAPI = "https://api.twitter.com/oauth/access_token"
-            let parameters = ["oauth_token": requestToken, "oauth_verifier": verifer]
-            let headerString = Networking.sharedInstance.authorizationHeader(for: .post, urlString: accessTokenAPI, appID: appID, appKey: appKey, accessToken: nil, accessTokenSecret: nil, parameters: parameters, isMediaUpload: false)
-            let oauthHeader = ["Authorization": headerString]
-
-            Networking.sharedInstance.request(accessTokenAPI, method: .post, parameters: nil, encoding: .url, headers: oauthHeader) { (responseData, httpResponse, error) in
-//                MonkeyKing.sharedMonkeyKing.oauthCompletionHandler?(responseData, httpResponse, error)
-            }
-        }
-    }
-
 }
 
