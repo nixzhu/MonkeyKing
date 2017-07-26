@@ -595,9 +595,10 @@ extension MonkeyKing {
             guard let data = try? PropertyListSerialization.data(fromPropertyList: weChatMessage, format: .binary, options: 0) else { return }
             UIPasteboard.general.setData(data, forPasteboardType: "content")
             let weChatSchemeURLString = "weixin://app/\(appID)/sendreq/?"
-            if !openURL(urlString: weChatSchemeURLString) {
+            openURL(urlString: weChatSchemeURLString, completionHandler: { (flag) in
+                if flag { return }
                 completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
-            }
+            })
         case .qq(let type):
             let callbackName = appID.monkeyking_qqCallbackName
             var qqSchemeURLString = "mqqapi://share/to_fri?"
@@ -673,9 +674,10 @@ extension MonkeyKing {
                     qqSchemeURLString += "\(encodedDescription)"
                 }
             }
-            if !openURL(urlString: qqSchemeURLString) {
+            openURL(urlString: qqSchemeURLString, completionHandler: { (flag) in
+                if flag { return }
                 completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
-            }
+            })
         case .weibo(let type):
             func errorReason(with reponseData: [String: Any]) -> Error.APIRequestReason {
                 // ref: http://open.weibo.com/wiki/Error_code
@@ -745,9 +747,10 @@ extension MonkeyKing {
                     ["app": appData]
                 ]
                 UIPasteboard.general.items = messageData
-                if !openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000") {
+                openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000", completionHandler: { (flag) in
+                    if flag { return }
                     completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
-                }
+                })
                 return
             }
             // Weibo Web Share
@@ -825,9 +828,10 @@ extension MonkeyKing {
                 return
             }
             UIPasteboard.general.setData(data, forPasteboardType: "com.alipay.openapi.pb.req.\(appID)")
-            if !openURL(urlString: "alipayshare://platformapi/shareService?action=sendReq&shareId=\(appID)") {
+            openURL(urlString: "alipayshare://platformapi/shareService?action=sendReq&shareId=\(appID)", completionHandler: { (flag) in
+                if flag { return }
                 completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
-            }
+            })
         case .twitter(let type):
             // MARK: - Twitter Deliver
             guard let accessToken = type.accessToken,
@@ -959,14 +963,16 @@ extension MonkeyKing {
         sharedMonkeyKing.payCompletionHandler = completionHandler
         switch order {
         case .weChat(let urlString):
-            if !openURL(urlString: urlString) {
+            openURL(urlString: urlString, completionHandler: { (flag) in
+                if flag { return }
                 completionHandler(false)
-            }
+            })
         case let .alipay(urlString, scheme):
             sharedMonkeyKing.customAlipayOrderScheme = scheme
-            if !openURL(urlString: urlString) {
+            openURL(urlString: urlString, completionHandler: { (flag) in
+                if flag { return }
                 completionHandler(false)
-            }
+            })
         }
     }
 }
@@ -992,9 +998,10 @@ extension MonkeyKing {
                 let accessTokenAPI = "https://open.weixin.qq.com/connect/mobilecheck?appid=\(appID)&uid=1926559385"
                 addWebView(withURLString: accessTokenAPI)
             } else {
-                if !openURL(urlString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth") {
+                openURL(urlString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth", completionHandler: { (flag) in
+                    if flag { return }
                     completionHandler(nil, nil, NSError(domain: "OAuth Error, cannot open url weixin://", code: -1, userInfo: nil))
-                }
+                })
             }
         case .qq(let appID):
             let scope = scope ?? ""
@@ -1014,9 +1021,10 @@ extension MonkeyKing {
                 ]
                 let data = NSKeyedArchiver.archivedData(withRootObject: dic)
                 UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.tencent\(appID)")
-                if !openURL(urlString: "mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1") {
+                openURL(urlString: "mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1", completionHandler: { (flag) in
+                    if flag { return }
                     completionHandler(nil, nil, NSError(domain: "OAuth Error, cannot open url mqqOpensdkSSoLogin://", code: -1, userInfo: nil))
-                }
+                })
                 return
             }
             // Web OAuth
@@ -1050,9 +1058,10 @@ extension MonkeyKing {
                     ["app": appData]
                 ]
                 UIPasteboard.general.items = authItems
-                if !openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000") {
+                openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000", completionHandler: { (flag) in
+                    if flag { return }
                     completionHandler(nil, nil, NSError(domain: "OAuth Error, cannot open url weibosdk://", code: -1, userInfo: nil))
-                }
+                })
                 return
             }
             // Web OAuth
@@ -1071,9 +1080,10 @@ extension MonkeyKing {
             guard let requestToken = _requestToken else { return }
             guard !account.isAppInstalled else {
                 let requestTokenAPI = "pocket-oauth-v1:///authorize?request_token=\(requestToken)&redirect_uri=\(redirectURLString)"
-                if !openURL(urlString: requestTokenAPI) {
+                openURL(urlString: requestTokenAPI, completionHandler: { (flag) in
+                    if flag { return }
                     completionHandler(nil, nil, NSError(domain: "OAuth Error, cannot open url pocket-oauth-v1://", code: -1, userInfo: nil))
-                }
+                })
                 return
             }
             let requestTokenAPI = "https://getpocket.com/auth/authorize?request_token=\(requestToken)&redirect_uri=\(redirectURLString)"
@@ -1608,6 +1618,20 @@ extension MonkeyKing {
                 }
                 activityIndicatorView.stopAnimating()
             }
+        }
+    }
+
+    fileprivate class func openURL(urlString: String, options: [String : Any] = [:], completionHandler completion: ((Bool) -> Swift.Void)? = nil) {
+        guard let url = URL(string: urlString) else {
+            completion?(false)
+            return
+        }
+        if #available(iOS 10.0, *) {
+            UIApplication.shared.open(url, options: options, completionHandler: { (flag) in
+                completion?(flag)
+            })
+        } else {
+            completion?(UIApplication.shared.openURL(url))
         }
     }
 
