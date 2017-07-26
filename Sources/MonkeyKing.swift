@@ -483,14 +483,11 @@ extension MonkeyKing {
 
         public enum TwitterSubtype {
             case `default`(info: Info, mediaIDs: [String]?, accessToken: String?, accessTokenSecret: String?)
-//            case `photos`(info: Info, accessToken: String?, accessTokenSecret: String?)
 
             var info: Info {
                 switch self {
                 case .default(let info, _, _, _):
                     return info
-//                case .photos(_, let info, _, _):
-//                    return info
                 }
             }
 
@@ -498,8 +495,6 @@ extension MonkeyKing {
                 switch self {
                 case .default(_, let mediaIDs, _, _):
                     return mediaIDs
-//                case .photos(let mediaIDs, _, _, _):
-//                    return mediaIDs
                 }
             }
 
@@ -507,8 +502,6 @@ extension MonkeyKing {
                 switch self {
                 case .default(_, _,let accessToken, _):
                     return accessToken
-//                case .photos(_, _, let accessToken, _):
-//                    return accessToken
                 }
             }
 
@@ -516,11 +509,8 @@ extension MonkeyKing {
                 switch self {
                 case .default(_, _, _,let accessTokenSecret):
                     return accessTokenSecret
-//                case .photos(_, _, _, let accessTokenSecret):
-//                    return accessTokenSecret
                 }
             }
-
         }
         case twitter(TwitterSubtype)
 
@@ -1581,20 +1571,18 @@ extension MonkeyKing {
     }
 
     fileprivate func addCloseButton() {
-        guard webView != nil else {
-            return
-        }
+        guard let webView = webView else { return }
         let closeButton = CloseButton(type: .custom)
         closeButton.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.width - 50.0, y: 4.0),
                                    size: CGSize(width: 44.0, height: 44.0))
         closeButton.addTarget(self, action: #selector(closeOuathView), for: .touchUpInside)
-        webView!.addSubview(closeButton)
+        webView.addSubview(closeButton)
     }
 
     @objc fileprivate func closeOuathView() {
-        guard webView != nil else { return }
+        guard let webView = webView else { return }
         let error = NSError(domain: "User Cancelled", code: -1, userInfo: nil)
-        removeWebView(webView!, tuples: (nil, nil, error))
+        removeWebView(webView, tuples: (nil, nil, error))
     }
 
     fileprivate func removeWebView(_ webView: WKWebView, tuples: ([String: Any]?, URLResponse?, Swift.Error?)?) {
@@ -1621,11 +1609,13 @@ extension MonkeyKing {
         }
     }
 
-    fileprivate class func openURL(urlString: String, options: [String : Any] = [:], completionHandler completion: ((Bool) -> Swift.Void)? = nil) {
-        guard let url = URL(string: urlString) else {
+    fileprivate class func openURL(urlString: String, options: [String: Any] = [:], completionHandler completion: ((Bool) -> Swift.Void)? = nil) {
+
+        guard let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) else {
             completion?(false)
             return
         }
+
         if #available(iOS 10.0, *) {
             UIApplication.shared.open(url, options: options, completionHandler: { (flag) in
                 completion?(flag)
