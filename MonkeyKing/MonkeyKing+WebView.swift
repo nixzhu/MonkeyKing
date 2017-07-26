@@ -77,6 +77,7 @@ extension MonkeyKing: WKNavigationDelegate {
                     self?.removeWebView(webView, tuples: (responseData, httpResponse, error))
                 }
             }
+            return
         }
 
         // QQ Web OAuth
