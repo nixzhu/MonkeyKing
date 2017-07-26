@@ -66,7 +66,7 @@ class PocketViewController: UIViewController {
 
             print("S2: OAuth by requestToken: \(requestToken)")
 
-            MonkeyKing.oauth(for: .pocket(requestToken: requestToken)) { (dictionary, response, error) in
+            MonkeyKing.oauth(for: .pocket, requestToken: requestToken) { (dictionary, response, error) in
 
                 guard error == nil else {
                     print(error!)
