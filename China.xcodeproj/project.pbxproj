@@ -30,10 +30,10 @@
 		50FBA6E41BA570CD00E69BB3 /* QQActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */; };
 		7840AF1D1C63167C00AD5256 /* pay.php in Resources */ = {isa = PBXBuildFile; fileRef = 7840AF1C1C63167C00AD5256 /* pay.php */; };
 		955654EB1EB89D5D009444FF /* TwitterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955654EA1EB89D5D009444FF /* TwitterViewController.swift */; };
-		EDA620191F28F637007DF1DF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA620151F28F637007DF1DF /* Extensions.swift */; };
-		EDA6201A1F28F637007DF1DF /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA620161F28F637007DF1DF /* Helpers.swift */; };
-		EDA6201B1F28F637007DF1DF /* MonkeyKing+WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA620171F28F637007DF1DF /* MonkeyKing+WebView.swift */; };
-		EDA6201C1F28F637007DF1DF /* MonkeyKingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA620181F28F637007DF1DF /* MonkeyKingError.swift */; };
+		EDA620311F28F747007DF1DF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA6202D1F28F747007DF1DF /* Extensions.swift */; };
+		EDA620321F28F747007DF1DF /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA6202E1F28F747007DF1DF /* Helpers.swift */; };
+		EDA620331F28F747007DF1DF /* MonkeyKing+WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA6202F1F28F747007DF1DF /* MonkeyKing+WebView.swift */; };
+		EDA620341F28F747007DF1DF /* MonkeyKingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA620301F28F747007DF1DF /* MonkeyKingError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,10 +86,10 @@
 		50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QQActivity.swift; path = Activities/QQActivity.swift; sourceTree = "<group>"; };
 		7840AF1C1C63167C00AD5256 /* pay.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = pay.php; sourceTree = "<group>"; };
 		955654EA1EB89D5D009444FF /* TwitterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwitterViewController.swift; sourceTree = "<group>"; };
-		EDA620151F28F637007DF1DF /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		EDA620161F28F637007DF1DF /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
-		EDA620171F28F637007DF1DF /* MonkeyKing+WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MonkeyKing+WebView.swift"; sourceTree = "<group>"; };
-		EDA620181F28F637007DF1DF /* MonkeyKingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonkeyKingError.swift; sourceTree = "<group>"; };
+		EDA6202D1F28F747007DF1DF /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = Sources/Extensions.swift; sourceTree = SOURCE_ROOT; };
+		EDA6202E1F28F747007DF1DF /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Helpers.swift; path = Sources/Helpers.swift; sourceTree = SOURCE_ROOT; };
+		EDA6202F1F28F747007DF1DF /* MonkeyKing+WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MonkeyKing+WebView.swift"; path = "Sources/MonkeyKing+WebView.swift"; sourceTree = SOURCE_ROOT; };
+		EDA620301F28F747007DF1DF /* MonkeyKingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MonkeyKingError.swift; path = Sources/MonkeyKingError.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,12 +158,12 @@
 			children = (
 				50FBA6D11BA2BBE900E69BB3 /* MonkeyKing.h */,
 				5067D53E1D6D814600D3C010 /* MonkeyKing.swift */,
-				EDA620181F28F637007DF1DF /* MonkeyKingError.swift */,
-				EDA620171F28F637007DF1DF /* MonkeyKing+WebView.swift */,
+				EDA620301F28F747007DF1DF /* MonkeyKingError.swift */,
+				EDA6202F1F28F747007DF1DF /* MonkeyKing+WebView.swift */,
 				5067D53D1D6D814600D3C010 /* AnyActivity.swift */,
 				5067D53F1D6D814600D3C010 /* Networking.swift */,
-				EDA620151F28F637007DF1DF /* Extensions.swift */,
-				EDA620161F28F637007DF1DF /* Helpers.swift */,
+				EDA6202D1F28F747007DF1DF /* Extensions.swift */,
+				EDA6202E1F28F747007DF1DF /* Helpers.swift */,
 				50FBA6D31BA2BBE900E69BB3 /* Info.plist */,
 			);
 			path = MonkeyKing;
@@ -319,10 +319,10 @@
 				5067D5421D6D814600D3C010 /* Networking.swift in Sources */,
 				5067D5401D6D814600D3C010 /* AnyActivity.swift in Sources */,
 				5067D5411D6D814600D3C010 /* MonkeyKing.swift in Sources */,
-				EDA6201B1F28F637007DF1DF /* MonkeyKing+WebView.swift in Sources */,
-				EDA6201C1F28F637007DF1DF /* MonkeyKingError.swift in Sources */,
-				EDA6201A1F28F637007DF1DF /* Helpers.swift in Sources */,
-				EDA620191F28F637007DF1DF /* Extensions.swift in Sources */,
+				EDA620331F28F747007DF1DF /* MonkeyKing+WebView.swift in Sources */,
+				EDA620341F28F747007DF1DF /* MonkeyKingError.swift in Sources */,
+				EDA620321F28F747007DF1DF /* Helpers.swift in Sources */,
+				EDA620311F28F747007DF1DF /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
