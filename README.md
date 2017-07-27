@@ -31,7 +31,7 @@ Example: Share to WeChat (微信)：
 
 1. In your Project Target's `Info.plist`, set `URL Type`, `LSApplicationQueriesSchemes` as follow:
 
-	![infoList.png](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/infoList.png)
+	<img src="https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/infoList.png" width="600">
 
 2. Register account: // it's not necessary to do it here, but for convenient
 
@@ -47,7 +47,7 @@ Example: Share to WeChat (微信)：
 3. If you need to handle call back, add following code:
 
 	```swift
-    func application(_ application: UIApplication, openURL url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
 
         if MonkeyKing.handleOpenURL(url) {
             return true
@@ -95,7 +95,7 @@ MonkeyKing.oauth(for: .weibo) { (oauthInfo, response, error) -> Void in
 
 If user don't have Weibo App installed on their devices then MonkeyKing will use web OAuth:
 
-![weiboOAuth](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/wbOAuth.png)
+<img src="https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/wbOAuth.png" width="240">
 
 
 ### Pay
@@ -103,7 +103,8 @@ If user don't have Weibo App installed on their devices then MonkeyKing will use
 Example: Alipay
 
 ```swift
-MonkeyKing.deliver(MonkeyKing.Order.alipay(urlString: "https://example.com/pay.php?payType=alipay")) { result in
+let order = MonkeyKing.Order.alipay(urlString: urlString, scheme: nil)
+MonkeyKing.deliver(order) { result in
     print("result: \(result)")
 }
 ```
@@ -111,14 +112,14 @@ MonkeyKing.deliver(MonkeyKing.Order.alipay(urlString: "https://example.com/pay.p
 
 <br />
 
-![weiboOAuth](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/alipay.gif)
+<img src="https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/alipay.gif" width="240">
 
 
 ### More
 
 If you like to use `UIActivityViewController` for sharing then MonkeyKing has `AnyActivity` which can help you.
 
-![System Share](https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/system_share.png)
+<img src="https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/system_share.png" width="240">
 
 Check the demo for more information.
 
@@ -200,7 +201,7 @@ For more information about how to use CocoaPods, I suggest [this tutorial](http:
 ## Contact
 
 NIX [@nixzhu](https://twitter.com/nixzhu),
-Limon [@LimonTop](http://weibo.com/u/1783821582),
+Limon [@Limon](http://weibo.com/u/1783821582),
 Lanford [@Lanford3_3](http://weibo.com/accoropitor) or
 Alex [@Xspyhack](http://weibo.com/xspyhack)
 
