@@ -11,12 +11,12 @@ import MonkeyKing
 
 class WeiboViewController: UIViewController {
 
-    let account = MonkeyKing.Account.weibo(appID: Configs.Weibo.appID, appKey: Configs.Weibo.appKey, redirectURL: Configs.Weibo.redirectURL)
     var accessToken: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let account = MonkeyKing.Account.weibo(appID: Configs.Weibo.appID, appKey: Configs.Weibo.appKey, redirectURL: Configs.Weibo.redirectURL)
         MonkeyKing.registerAccount(account)
     }
 
@@ -25,7 +25,7 @@ class WeiboViewController: UIViewController {
 
         // not installed weibo app, must need accessToken
 
-        if !account.isAppInstalled {
+        if !MonkeyKing.SupportedPlatform.weibo.isAppInstalled {
 
             MonkeyKing.oauth(for: .weibo) { [weak self] (info, response, error) in
 
