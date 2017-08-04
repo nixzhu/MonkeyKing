@@ -1040,7 +1040,7 @@ extension MonkeyKing {
                 return
             }
             // Web OAuth
-            let accessTokenAPI = "https://open.weibo.cn/oauth2/authorize?client_id=\(appID)&response_type=code&redirect_uri=\(redirectURL)&scope=\(scope)"
+            let accessTokenAPI = "https://api.weibo.com/oauth2/authorize?client_id=\(appID)&response_type=code&redirect_uri=\(redirectURL)&scope=\(scope)"
             addWebView(withURLString: accessTokenAPI)
         case .pocket(let appID):
             guard let startIndex = appID.range(of: "-")?.lowerBound else {

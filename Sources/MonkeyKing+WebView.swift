@@ -40,7 +40,7 @@ extension MonkeyKing: WKNavigationDelegate {
             scriptString += "document.querySelector('a.extra_action').style.display = 'none';"
             scriptString += "var rightButton = $('.toolbarContents div:last-child');"
             scriptString += "if (rightButton.html() == 'Log In') {rightButton.click()}"
-        } else if urlString.contains("open.weibo.cn") {
+        } else if urlString.contains("api.weibo.com") {
             scriptString += "document.querySelector('aside.logins').style.display = 'none';"
         }
         webView.evaluateJavaScript(scriptString, completionHandler: nil)
