@@ -1,10 +1,3 @@
-//
-//  MonkeyKingError.swift
-//  China
-//
-//  Created by Limon.F on 26/7/2017.
-//  Copyright © 2017年 nixWork. All rights reserved.
-//
 
 import Foundation
 
@@ -36,11 +29,9 @@ extension MonkeyKing {
     }
 
     func errorReason(with responseData: [String: Any], at platform: SupportedPlatform) -> Error.APIRequestReason {
-
         let unrecognizedReason = Error.APIRequestReason(type: .unrecognizedError, responseData: responseData)
         switch platform {
         case .twitter:
-
             //ref: https://dev.twitter.com/overview/api/response-codes
             guard let errorCode = responseData["code"] as? Int else {
                 return unrecognizedReason
@@ -51,9 +42,7 @@ extension MonkeyKing {
             default:
                 return unrecognizedReason
             }
-
         case .weibo:
-
             // ref: http://open.weibo.com/wiki/Error_code
             guard let errorCode = responseData["error_code"] as? Int else {
                 return unrecognizedReason
@@ -64,7 +53,6 @@ extension MonkeyKing {
             default:
                 return unrecognizedReason
             }
-
         default:
             return unrecognizedReason
         }
@@ -82,7 +70,6 @@ extension MonkeyKing.Error: LocalizedError {
         case .messageCanNotBeDelivered:
             return "Message can't be delivered."
         case .apiRequest(reason: let reason):
-
             switch reason.type {
             case .invalidToken:
                 return "The token is invalid or expired."
@@ -91,7 +78,6 @@ extension MonkeyKing.Error: LocalizedError {
             default:
                 return "API invoke failed."
             }
-            
         default:
             return "Some problems happenned in MonkeyKing."
         }

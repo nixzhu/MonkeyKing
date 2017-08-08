@@ -1,10 +1,3 @@
-//
-//  Configs.swift
-//  China
-//
-//  Created by Limon on 15/12/13.
-//  Copyright © 2015年 nixWork. All rights reserved.
-//
 
 import Foundation
 
@@ -39,5 +32,4 @@ struct Configs {
         static let appKey = "YxBInrlvGoMPJjN9Xa4pBeCVILgz8qTXYlNdvJzzYlt9ingbZ2"
         static let redirectURL = "https://github.com/fyl00/MonkeyKing"
     }
-
 }

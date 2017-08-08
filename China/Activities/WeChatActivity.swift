@@ -1,17 +1,9 @@
-//
-//  WeChatActivity.swift
-//  China
-//
-//  Created by NIX on 15/9/13.
-//  Copyright © 2015年 nixWork. All rights reserved.
-//
 
 import MonkeyKing
 
 class WeChatActivity: AnyActivity {
 
     enum `Type` {
-
         case session
         case timeline
 
@@ -44,9 +36,7 @@ class WeChatActivity: AnyActivity {
     }
 
     init(type: Type, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.DeliverCompletionHandler) {
-
         MonkeyKing.registerAccount(.weChat(appID: Configs.Wechat.appID, appKey: ""))
-
         super.init(
             type: type.activityType,
             title: type.title,
@@ -56,4 +46,3 @@ class WeChatActivity: AnyActivity {
         )
     }
 }
-

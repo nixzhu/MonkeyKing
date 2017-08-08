@@ -1,17 +1,10 @@
-//
-//  Extensions.swift
-//  China
-//
-//  Created by Limon.F on 26/7/2017.
-//  Copyright © 2017年 nixWork. All rights reserved.
-//
 
 import Foundation
 
 extension Set {
 
     subscript(platform: MonkeyKing.SupportedPlatform) -> MonkeyKing.Account? {
-        let accountSet = MonkeyKing.sharedMonkeyKing.accountSet
+        let accountSet = MonkeyKing.shared.accountSet
         switch platform {
         case .weChat:
             for account in accountSet {
@@ -54,7 +47,7 @@ extension Set {
     }
 
     subscript(platform: MonkeyKing.Message) -> MonkeyKing.Account? {
-        let accountSet = MonkeyKing.sharedMonkeyKing.accountSet
+        let accountSet = MonkeyKing.shared.accountSet
         switch platform {
         case .weChat:
             for account in accountSet {

@@ -1,37 +1,32 @@
-//
-//  MonkeyKing.swift
-//  MonkeyKing
-//
-//  Created by NIX on 15/9/11.
-//  Copyright © 2015年 nixWork. All rights reserved.
-//
 
 import UIKit
 import WebKit
 
-open class MonkeyKing: NSObject {
+public class MonkeyKing: NSObject {
 
+    public typealias ResponseJSON = [String: Any]
     public enum DeliverResult {
         case success(ResponseJSON?)
         case failure(Error)
     }
-    public typealias ResponseJSON = [String: Any]
     public typealias DeliverCompletionHandler = (_ result: DeliverResult) -> Void
     public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Swift.Error?) -> Void
     public typealias PayCompletionHandler = (_ result: Bool) -> Void
 
-    static let sharedMonkeyKing = MonkeyKing()
+    static let shared = MonkeyKing()
 
     var accountSet = Set<Account>()
 
     var oauthCompletionHandler: OAuthCompletionHandler?
-    fileprivate var deliverCompletionHandler: DeliverCompletionHandler?
-    fileprivate var payCompletionHandler: PayCompletionHandler?
-    fileprivate var customAlipayOrderScheme: String?
+    private var deliverCompletionHandler: DeliverCompletionHandler?
+    private var payCompletionHandler: PayCompletionHandler?
+
+    private var customAlipayOrderScheme: String?
 
     var webView: WKWebView?
 
-    fileprivate override init() {}
+    private override init() {
+    }
 
     public enum Account: Hashable {
         case weChat(appID: String, appKey: String?)
@@ -94,8 +89,8 @@ open class MonkeyKing: NSObject {
     }
 
     public enum SupportedPlatform {
-        case qq
         case weChat
+        case qq
         case weibo
         case pocket
         case alipay
@@ -104,43 +99,42 @@ open class MonkeyKing: NSObject {
         public var isAppInstalled: Bool {
             switch self {
             case .weChat:
-                return sharedMonkeyKing.canOpenURL(urlString: "weixin://")
+                return shared.canOpenURL(urlString: "weixin://")
             case .qq:
-                return sharedMonkeyKing.canOpenURL(urlString: "mqqapi://")
+                return shared.canOpenURL(urlString: "mqqapi://")
             case .weibo:
-                return sharedMonkeyKing.canOpenURL(urlString: "weibosdk://request")
+                return shared.canOpenURL(urlString: "weibosdk://request")
             case .pocket:
-                return sharedMonkeyKing.canOpenURL(urlString: "pocket-oauth-v1://")
+                return shared.canOpenURL(urlString: "pocket-oauth-v1://")
             case .alipay:
-                return sharedMonkeyKing.canOpenURL(urlString: "alipayshare://")
+                return shared.canOpenURL(urlString: "alipayshare://")
             case .twitter:
-                return sharedMonkeyKing.canOpenURL(urlString: "twitter://")
+                return shared.canOpenURL(urlString: "twitter://")
             }
         }
     }
 
-    open class func registerAccount(_ account: Account) {
+    public class func registerAccount(_ account: Account) {
         guard account.isAppInstalled || account.canWebOAuth else { return }
-        for oldAccount in MonkeyKing.sharedMonkeyKing.accountSet {
+        for oldAccount in MonkeyKing.shared.accountSet {
             switch oldAccount {
             case .weChat:
-                if case .weChat = account { sharedMonkeyKing.accountSet.remove(oldAccount) }
+                if case .weChat = account { shared.accountSet.remove(oldAccount) }
             case .qq:
-                if case .qq = account { sharedMonkeyKing.accountSet.remove(oldAccount) }
+                if case .qq = account { shared.accountSet.remove(oldAccount) }
             case .weibo:
-                if case .weibo = account { sharedMonkeyKing.accountSet.remove(oldAccount) }
+                if case .weibo = account { shared.accountSet.remove(oldAccount) }
             case .pocket:
-                if case .pocket = account { sharedMonkeyKing.accountSet.remove(oldAccount) }
+                if case .pocket = account { shared.accountSet.remove(oldAccount) }
             case .alipay:
-                if case .alipay = account { sharedMonkeyKing.accountSet.remove(oldAccount) }
+                if case .alipay = account { shared.accountSet.remove(oldAccount) }
             case .twitter:
-                if case .twitter = account { sharedMonkeyKing.accountSet.remove(oldAccount) }
+                if case .twitter = account { shared.accountSet.remove(oldAccount) }
             }
         }
-        sharedMonkeyKing.accountSet.insert(account)
+        shared.accountSet.insert(account)
     }
 }
-
 
 // MARK: OpenURL Handler
 
@@ -157,7 +151,7 @@ extension MonkeyKing {
                 guard let code = queryDictionary["code"] as? String else { return false }
                 // Login Succcess
                 fetchWeChatOAuthInfoByCode(code: code) { (info, response, error) in
-                    sharedMonkeyKing.oauthCompletionHandler?(info, response, error)
+                    shared.oauthCompletionHandler?(info, response, error)
                 }
                 return true
             }
@@ -166,7 +160,7 @@ extension MonkeyKing {
                 let queryDictionary = url.monkeyking_queryDictionary
                 guard let m = queryDictionary["m"] as? String else { return false }
                 guard let t = queryDictionary["t"] as? String else { return false }
-                guard let account = sharedMonkeyKing.accountSet[.weChat] else { return false }
+                guard let account = shared.accountSet[.weChat] else { return false }
                 let appID = account.appID
                 let urlString = "https://open.weixin.qq.com/connect/smsauthorize?appid=\(appID)&redirect_uri=\(appID)%3A%2F%2Foauth&response_type=code&scope=snsapi_message,snsapi_userinfo,snsapi_friend,snsapi_contact&state=xxx&uid=1926559385&m=\(m)&t=\(t)"
                 addWebView(withURLString: urlString)
@@ -176,7 +170,7 @@ extension MonkeyKing {
             if urlString.contains("://pay/") {
                 var result = false
                 defer {
-                    sharedMonkeyKing.payCompletionHandler?(result)
+                    shared.payCompletionHandler?(result)
                 }
                 let queryDictionary = url.monkeyking_queryDictionary
                 guard let ret = queryDictionary["ret"] as? String else { return false }
@@ -187,7 +181,7 @@ extension MonkeyKing {
             if let data = UIPasteboard.general.data(forPasteboardType: "content") {
                 if let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? [String: Any] {
                     guard
-                        let account = sharedMonkeyKing.accountSet[.weChat],
+                        let account = shared.accountSet[.weChat],
                         let info = dict?[account.appID] as? [String: Any],
                         let result = info["result"] as? String,
                         let resultCode = Int(result) else {
@@ -195,9 +189,9 @@ extension MonkeyKing {
                     }
                     let success = (resultCode == 0)
                     if success {
-                        sharedMonkeyKing.deliverCompletionHandler?(.success(nil))
+                        shared.deliverCompletionHandler?(.success(nil))
                     } else {
-                        sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdk(reason: .unknown))) // TODO: pass resultCode
+                        shared.deliverCompletionHandler?(.failure(.sdk(reason: .unknown))) // TODO: pass resultCode
                     }
                     return success
                 }
@@ -205,7 +199,7 @@ extension MonkeyKing {
             // OAuth Failed
             if urlString.contains("platformId=wechat") && !urlString.contains("state=Weixinauth") {
                 let error = NSError(domain: "WeChat OAuth Error", code: -1, userInfo: nil)
-                sharedMonkeyKing.oauthCompletionHandler?(nil, nil, error)
+                shared.oauthCompletionHandler?(nil, nil, error)
                 return false
             }
             return false
@@ -215,19 +209,19 @@ extension MonkeyKing {
             guard let errorDescription = url.monkeyking_queryDictionary["error"] as? String else { return false }
             let success = (errorDescription == "0")
             if success {
-                sharedMonkeyKing.deliverCompletionHandler?(.success(nil))
+                shared.deliverCompletionHandler?(.success(nil))
             } else {
-                sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdk(reason: .unknown))) // TODO: pass errorDescription
+                shared.deliverCompletionHandler?(.failure(.sdk(reason: .unknown))) // TODO: pass errorDescription
             }
             return success
         }
         // QQ OAuth
         if urlScheme.hasPrefix("tencent") {
-            guard let account = sharedMonkeyKing.accountSet[.qq] else { return false }
+            guard let account = shared.accountSet[.qq] else { return false }
             var userInfo: [String: Any]?
             var error: Swift.Error?
             defer {
-                sharedMonkeyKing.oauthCompletionHandler?(userInfo, nil, error)
+                shared.oauthCompletionHandler?(userInfo, nil, error)
             }
             guard
                 let data = UIPasteboard.general.data(forPasteboardType: "com.tencent.tencent\(account.appID)"),
@@ -271,7 +265,7 @@ extension MonkeyKing {
                 var userInfo: [String: Any]?
                 var error: Swift.Error?
                 defer {
-                    sharedMonkeyKing.oauthCompletionHandler?(responseInfo, nil, error)
+                    shared.oauthCompletionHandler?(responseInfo, nil, error)
                 }
                 userInfo = responseInfo
                 if statusCode != 0 {
@@ -283,9 +277,9 @@ extension MonkeyKing {
             case "WBSendMessageToWeiboResponse":
                 let success = (statusCode == 0)
                 if success {
-                    sharedMonkeyKing.deliverCompletionHandler?(.success(nil))
+                    shared.deliverCompletionHandler?(.success(nil))
                 } else {
-                    sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdk(reason: .unknown)))
+                    shared.deliverCompletionHandler?(.failure(.sdk(reason: .unknown)))
                 }
                 return success
             default:
@@ -294,12 +288,12 @@ extension MonkeyKing {
         }
         // Pocket OAuth
         if urlScheme.hasPrefix("pocketapp") {
-            sharedMonkeyKing.oauthCompletionHandler?(nil, nil, nil)
+            shared.oauthCompletionHandler?(nil, nil, nil)
             return true
         }
         // Alipay
         var canHandleAlipay = false
-        if let customScheme = sharedMonkeyKing.customAlipayOrderScheme {
+        if let customScheme = shared.customAlipayOrderScheme {
             if urlScheme == customScheme { canHandleAlipay = true }
         } else if urlScheme.hasPrefix("ap") {
             canHandleAlipay = true
@@ -309,7 +303,7 @@ extension MonkeyKing {
             if urlString.contains("//safepay/?") {
                 var result = false
                 defer {
-                    sharedMonkeyKing.payCompletionHandler?(result)
+                    shared.payCompletionHandler?(result)
                 }
                 guard
                     let query = url.query,
@@ -324,7 +318,7 @@ extension MonkeyKing {
             } else {
                 // Share
                 guard
-                    let account = sharedMonkeyKing.accountSet[.alipay] ,
+                    let account = shared.accountSet[.alipay] ,
                     let data = UIPasteboard.general.data(forPasteboardType: "com.alipay.openapi.pb.resp.\(account.appID)"),
                     let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? [String: Any],
                     let objects = dict?["$objects"] as? NSArray,
@@ -333,9 +327,9 @@ extension MonkeyKing {
                 }
                 let success = (result == 0)
                 if success {
-                    sharedMonkeyKing.deliverCompletionHandler?(.success(nil))
+                    shared.deliverCompletionHandler?(.success(nil))
                 } else {
-                    sharedMonkeyKing.deliverCompletionHandler?(.failure(.sdk(reason: .unknown)))
+                    shared.deliverCompletionHandler?(.failure(.sdk(reason: .unknown)))
                 }
                 return success
             }
@@ -500,7 +494,7 @@ extension MonkeyKing {
         case twitter(TwitterSubtype)
 
         public var canBeDelivered: Bool {
-            guard let account = sharedMonkeyKing.accountSet[self] else { return false }
+            guard let account = shared.accountSet[self] else { return false }
             switch account {
             case .weibo, .twitter:
                 return true
@@ -516,8 +510,8 @@ extension MonkeyKing {
             completionHandler(.failure(.messageCanNotBeDelivered))
             return
         }
-        sharedMonkeyKing.deliverCompletionHandler = completionHandler
-        guard let account = sharedMonkeyKing.accountSet[message] else {
+        shared.deliverCompletionHandler = completionHandler
+        guard let account = shared.accountSet[message] else {
             completionHandler(.failure(.noAccount))
             return
         }
@@ -570,10 +564,10 @@ extension MonkeyKing {
             guard let data = try? PropertyListSerialization.data(fromPropertyList: weChatMessage, format: .binary, options: 0) else { return }
             UIPasteboard.general.setData(data, forPasteboardType: "content")
             let weChatSchemeURLString = "weixin://app/\(appID)/sendreq/?"
-            openURL(urlString: weChatSchemeURLString, completionHandler: { (flag) in
+            openURL(urlString: weChatSchemeURLString) { flag in
                 if flag { return }
                 completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
-            })
+            }
         case .qq(let type):
             let callbackName = appID.monkeyking_qqCallbackName
             var qqSchemeURLString = "mqqapi://share/to_fri?"
@@ -649,10 +643,10 @@ extension MonkeyKing {
                     qqSchemeURLString += "\(encodedDescription)"
                 }
             }
-            openURL(urlString: qqSchemeURLString, completionHandler: { (flag) in
+            openURL(urlString: qqSchemeURLString) { flag in
                 if flag { return }
                 completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
-            })
+            }
         case .weibo(let type):
             func errorReason(with reponseData: [String: Any]) -> Error.APIRequestReason {
                 // ref: http://open.weibo.com/wiki/Error_code
@@ -666,7 +660,7 @@ extension MonkeyKing {
                     return Error.APIRequestReason(type: .unrecognizedError, responseData: reponseData)
                 }
             }
-            guard !sharedMonkeyKing.canOpenURL(urlString: "weibosdk://request") else {
+            guard !shared.canOpenURL(urlString: "weibosdk://request") else {
                 // App Share
                 var messageInfo: [String: Any] = [
                     "__class": "WBMessageObject"
@@ -722,10 +716,10 @@ extension MonkeyKing {
                     ["app": appData]
                 ]
                 UIPasteboard.general.items = messageData
-                openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000", completionHandler: { (flag) in
+                openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000") { flag in
                     if flag { return }
                     completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
-                })
+                }
                 return
             }
             // Weibo Web Share
@@ -763,7 +757,7 @@ extension MonkeyKing {
             switch mediaType {
             case .url(_):
                 let urlString = "https://api.weibo.com/2/statuses/share.json"
-                sharedMonkeyKing.request(urlString, method: .post, parameters: parameters) { (responseData, HTTPResponse, error) in
+                shared.request(urlString, method: .post, parameters: parameters) { (responseData, HTTPResponse, error) in
                     var reason: Error.APIRequestReason
                     if error != nil {
                         reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
@@ -777,7 +771,7 @@ extension MonkeyKing {
                 }
             case .image(_):
                 let urlString = "https://api.weibo.com/2/statuses/share.json"
-                sharedMonkeyKing.upload(urlString, parameters: parameters) { (responseData, HTTPResponse, error) in
+                shared.upload(urlString, parameters: parameters) { (responseData, HTTPResponse, error) in
                     var reason: Error.APIRequestReason
                     if error != nil {
                         reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
@@ -803,19 +797,18 @@ extension MonkeyKing {
                 return
             }
             UIPasteboard.general.setData(data, forPasteboardType: "com.alipay.openapi.pb.req.\(appID)")
-            openURL(urlString: "alipayshare://platformapi/shareService?action=sendReq&shareId=\(appID)", completionHandler: { (flag) in
+            openURL(urlString: "alipayshare://platformapi/shareService?action=sendReq&shareId=\(appID)") { flag in
                 if flag { return }
                 completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
-            })
+            }
         case .twitter(let type):
             // MARK: - Twitter Deliver
             guard let accessToken = type.accessToken,
                   let accessTokenSecret = type.accessTokenSecret,
-                  let account = sharedMonkeyKing.accountSet[.twitter] else {
+                  let account = shared.accountSet[.twitter] else {
                 completionHandler(.failure(.noAccount))
                 return
             }
-
             let info = type.info
             var status = [info.title, info.description]
             var parameters = [String: Any]()
@@ -836,23 +829,20 @@ extension MonkeyKing {
                     fatalError("web Twitter not supports this type")
                 }
             }
-
             switch mediaType {
             case .url(_):
                 let statusText = status.flatMap({ $0 }).joined(separator: " ")
                 let updateStatusAPI = "https://api.twitter.com/1.1/statuses/update.json"
-
                 var parameters = ["status": statusText]
                 if let mediaIDs = type.mediaIDs {
                     parameters["media_ids"] = mediaIDs.joined(separator: ",")
                 }
-
                 if case .twitter(let appID, let appKey, _) = account {
-                    let oauthString = Networking.sharedInstance.authorizationHeader(for: .post, urlString: updateStatusAPI, appID: appID, appKey: appKey, accessToken: accessToken, accessTokenSecret: accessTokenSecret, parameters: parameters, isMediaUpload: true)
+                    let oauthString = Networking.shared.authorizationHeader(for: .post, urlString: updateStatusAPI, appID: appID, appKey: appKey, accessToken: accessToken, accessTokenSecret: accessTokenSecret, parameters: parameters, isMediaUpload: true)
                     let headers = ["Authorization": oauthString]
                     // ref: https://dev.twitter.com/rest/reference/post/statuses/update
                     let urlString = "\(updateStatusAPI)?\(parameters.urlEncodedQueryString(using: .utf8))"
-                    sharedMonkeyKing.request(urlString, method: .post, parameters: nil, headers: headers) { (responseData, URLResponse, error) in
+                    shared.request(urlString, method: .post, parameters: nil, headers: headers) { (responseData, URLResponse, error) in
                         var reason: Error.APIRequestReason
                         if error != nil {
                             reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
@@ -865,7 +855,7 @@ extension MonkeyKing {
                             }
                             if let responseData = responseData,
                                let _ = responseData["errors"] {
-                                reason = sharedMonkeyKing.errorReason(with: responseData, at: .twitter)
+                                reason = shared.errorReason(with: responseData, at: .twitter)
                                 completionHandler(.failure(.apiRequest(reason: reason)))
                                 return
                             }
@@ -878,31 +868,26 @@ extension MonkeyKing {
                 let uploadMediaAPI = "https://upload.twitter.com/1.1/media/upload.json"
                 if case .twitter(let appID, let appKey, _) = account {
                     // ref: https://dev.twitter.com/rest/media/uploading-media#keepinmind
-                    let oauthString = Networking.sharedInstance.authorizationHeader(for: .post, urlString: uploadMediaAPI, appID: appID, appKey: appKey, accessToken: accessToken, accessTokenSecret: accessTokenSecret, parameters: nil, isMediaUpload: false)
+                    let oauthString = Networking.shared.authorizationHeader(for: .post, urlString: uploadMediaAPI, appID: appID, appKey: appKey, accessToken: accessToken, accessTokenSecret: accessTokenSecret, parameters: nil, isMediaUpload: false)
                     let headers = ["Authorization": oauthString]
-
-                    sharedMonkeyKing.upload(uploadMediaAPI, parameters: parameters, headers: headers) { (responseData, URLResponse, error) in
+                    shared.upload(uploadMediaAPI, parameters: parameters, headers: headers) { (responseData, URLResponse, error) in
                         if let statusCode = (URLResponse as? HTTPURLResponse)?.statusCode,
                             statusCode == 200 {
                             completionHandler(.success(responseData))
                             return
                         }
-
                         var reason: Error.APIRequestReason
                         if let _ = error {
                             reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
                         } else {
                             reason = Error.APIRequestReason(type: .unrecognizedError, responseData: responseData)
                         }
-
                         completionHandler(.failure(.apiRequest(reason: reason)))
                     }
-
                 }
             default:
-                fatalError("web Twitter not supports this type")
+                fatalError("web Twitter not supports this mediaType")
             }
-
         }
     }
 }
@@ -918,15 +903,14 @@ extension MonkeyKing {
         case weChat(urlString: String)
 
         public var canBeDelivered: Bool {
-            var scheme = ""
+            let scheme: String
             switch self {
             case .alipay:
                 scheme = "alipay://"
             case .weChat:
                 scheme = "weixin://"
             }
-            guard !scheme.isEmpty else { return false }
-            return sharedMonkeyKing.canOpenURL(urlString: scheme)
+            return shared.canOpenURL(urlString: scheme)
         }
     }
 
@@ -935,19 +919,19 @@ extension MonkeyKing {
             completionHandler(false)
             return
         }
-        sharedMonkeyKing.payCompletionHandler = completionHandler
+        shared.payCompletionHandler = completionHandler
         switch order {
         case .weChat(let urlString):
-            openURL(urlString: urlString, completionHandler: { (flag) in
+            openURL(urlString: urlString) { flag in
                 if flag { return }
                 completionHandler(false)
-            })
+            }
         case let .alipay(urlString, scheme):
-            sharedMonkeyKing.customAlipayOrderScheme = scheme
-            openURL(urlString: urlString, completionHandler: { (flag) in
+            shared.customAlipayOrderScheme = scheme
+            openURL(urlString: urlString) { flag in
                 if flag { return }
                 completionHandler(false)
-            })
+            }
         }
     }
 }
@@ -957,13 +941,13 @@ extension MonkeyKing {
 extension MonkeyKing {
 
     public class func oauth(for platform: SupportedPlatform, scope: String? = nil, requestToken: String? = nil, completionHandler: @escaping OAuthCompletionHandler) {
-        guard let account = sharedMonkeyKing.accountSet[platform] else { return }
+        guard let account = shared.accountSet[platform] else { return }
         guard account.isAppInstalled || account.canWebOAuth else {
             let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
             completionHandler(nil, nil, error)
             return
         }
-        sharedMonkeyKing.oauthCompletionHandler = completionHandler
+        shared.oauthCompletionHandler = completionHandler
         switch account {
         case .weChat(let appID, _):
             let scope = scope ?? "snsapi_userinfo"
@@ -973,10 +957,10 @@ extension MonkeyKing {
                 let accessTokenAPI = "https://open.weixin.qq.com/connect/mobilecheck?appid=\(appID)&uid=1926559385"
                 addWebView(withURLString: accessTokenAPI)
             } else {
-                openURL(urlString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth", completionHandler: { (flag) in
+                openURL(urlString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth") { flag in
                     if flag { return }
                     completionHandler(nil, nil, NSError(domain: "OAuth Error, cannot open url weixin://", code: -1, userInfo: nil))
-                })
+                }
             }
         case .qq(let appID):
             let scope = scope ?? ""
@@ -996,10 +980,10 @@ extension MonkeyKing {
                 ]
                 let data = NSKeyedArchiver.archivedData(withRootObject: dic)
                 UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.tencent\(appID)")
-                openURL(urlString: "mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1", completionHandler: { (flag) in
+                openURL(urlString: "mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1") { flag in
                     if flag { return }
                     completionHandler(nil, nil, NSError(domain: "OAuth Error, cannot open url mqqOpensdkSSoLogin://", code: -1, userInfo: nil))
-                })
+                }
                 return
             }
             // Web OAuth
@@ -1033,10 +1017,10 @@ extension MonkeyKing {
                     ["app": appData]
                 ]
                 UIPasteboard.general.items = authItems
-                openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000", completionHandler: { (flag) in
+                openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000") { flag in
                     if flag { return }
                     completionHandler(nil, nil, NSError(domain: "OAuth Error, cannot open url weibosdk://", code: -1, userInfo: nil))
-                })
+                }
                 return
             }
             // Web OAuth
@@ -1046,15 +1030,15 @@ extension MonkeyKing {
             guard let startIndex = appID.range(of: "-")?.lowerBound else {
                 return
             }
-            let prefix = appID.substring(to: startIndex)
+            let prefix = appID[..<startIndex]
             let redirectURLString = "pocketapp\(prefix):authorizationFinished"
             guard let requestToken = requestToken else { return }
             guard !account.isAppInstalled else {
                 let requestTokenAPI = "pocket-oauth-v1:///authorize?request_token=\(requestToken)&redirect_uri=\(redirectURLString)"
-                openURL(urlString: requestTokenAPI, completionHandler: { (flag) in
+                openURL(urlString: requestTokenAPI) { flag in
                     if flag { return }
                     completionHandler(nil, nil, NSError(domain: "OAuth Error, cannot open url pocket-oauth-v1://", code: -1, userInfo: nil))
-                })
+                }
                 return
             }
             let requestTokenAPI = "https://getpocket.com/auth/authorize?request_token=\(requestToken)&redirect_uri=\(redirectURLString)"
@@ -1062,7 +1046,7 @@ extension MonkeyKing {
                 addWebView(withURLString: requestTokenAPI)
             }
         case .twitter(let appID, let appKey, let redirectURL):
-            sharedMonkeyKing.twitterAuthenticate(appID: appID, appKey: appKey, redirectURL: redirectURL)
+            shared.twitterAuthenticate(appID: appID, appKey: appKey, redirectURL: redirectURL)
         case .alipay:
             break
         }
@@ -1070,12 +1054,11 @@ extension MonkeyKing {
 
     // Twitter Authenticate
     // https://dev.twitter.com/web/sign-in/implementing
-    fileprivate func twitterAuthenticate(appID: String, appKey: String, redirectURL: String) {
-
+    private func twitterAuthenticate(appID: String, appKey: String, redirectURL: String) {
         let requestTokenAPI = "https://api.twitter.com/oauth/request_token"
-        let oauthString = Networking.sharedInstance.authorizationHeader(for: .post, urlString: requestTokenAPI, appID: appID, appKey: appKey, accessToken: nil, accessTokenSecret: nil, parameters: ["oauth_callback": redirectURL], isMediaUpload: false)
+        let oauthString = Networking.shared.authorizationHeader(for: .post, urlString: requestTokenAPI, appID: appID, appKey: appKey, accessToken: nil, accessTokenSecret: nil, parameters: ["oauth_callback": redirectURL], isMediaUpload: false)
         let oauthHeader = ["Authorization": oauthString]
-        Networking.sharedInstance.request(requestTokenAPI, method: .post, parameters: nil, encoding: .url, headers: oauthHeader) { (responseData, httpResponse, error) in
+        Networking.shared.request(requestTokenAPI, method: .post, parameters: nil, encoding: .url, headers: oauthHeader) { responseData, httpResponse, error in
             if let responseData = responseData,
                 let requestToken = (responseData["oauth_token"] as? String) {
                 let loginURL = "https://api.twitter.com/oauth/authenticate?oauth_token=\(requestToken)"
@@ -1084,4 +1067,3 @@ extension MonkeyKing {
         }
     }
 }
-

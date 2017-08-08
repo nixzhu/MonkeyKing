@@ -1,10 +1,3 @@
-//
-//  Helpers.swift
-//  China
-//
-//  Created by Limon.F on 26/7/2017.
-//  Copyright © 2017年 nixWork. All rights reserved.
-//
 
 import Foundation
 
@@ -13,7 +6,7 @@ extension MonkeyKing {
     class func fetchWeChatOAuthInfoByCode(code: String, completionHandler: @escaping OAuthCompletionHandler) {
         var appID = ""
         var appKey = ""
-        for case let .weChat(id, key) in sharedMonkeyKing.accountSet {
+        for case let .weChat(id, key) in shared.accountSet {
             guard let key = key else {
                 completionHandler(["code": code], nil, nil)
                 return
@@ -27,7 +20,7 @@ extension MonkeyKing {
         accessTokenAPI += "&secret=\(appKey)"
         accessTokenAPI += "&code=\(code)"
         // OAuth
-        sharedMonkeyKing.request(accessTokenAPI, method: .get) { (json, response, error) in
+        shared.request(accessTokenAPI, method: .get) { (json, response, error) in
             completionHandler(json, response, error)
         }
     }
@@ -202,24 +195,22 @@ extension MonkeyKing {
     }
 
     func request(_ urlString: String, method: Networking.Method, parameters: [String: Any]? = nil, encoding: Networking.ParameterEncoding = .url, headers: [String: String]? = nil, completionHandler: @escaping Networking.NetworkingResponseHandler) {
-        Networking.sharedInstance.request(urlString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
+        Networking.shared.request(urlString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
     }
 
     func upload(_ urlString: String, parameters: [String: Any], headers: [String: String]? = nil,completionHandler: @escaping Networking.NetworkingResponseHandler) {
-        Networking.sharedInstance.upload(urlString, parameters: parameters, headers: headers, completionHandler: completionHandler)
+        Networking.shared.upload(urlString, parameters: parameters, headers: headers, completionHandler: completionHandler)
     }
 
     class func openURL(urlString: String, options: [String: Any] = [:], completionHandler completion: ((Bool) -> Swift.Void)? = nil) {
-
         guard let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) else {
             completion?(false)
             return
         }
-
         if #available(iOS 10.0, *) {
-            UIApplication.shared.open(url, options: options, completionHandler: { (flag) in
+            UIApplication.shared.open(url, options: options) { flag in
                 completion?(flag)
-            })
+            }
         } else {
             completion?(UIApplication.shared.openURL(url))
         }
@@ -235,5 +226,3 @@ extension MonkeyKing {
         return UIApplication.shared.canOpenURL(url)
     }
 }
-
-

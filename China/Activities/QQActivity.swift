@@ -1,17 +1,9 @@
-//
-//  QQActivity.swift
-//  China
-//
-//  Created by NIX on 15/9/13.
-//  Copyright © 2015年 nixWork. All rights reserved.
-//
 
 import MonkeyKing
 
 class QQActivity: AnyActivity {
 
     enum `Type` {
-
         case friends
         case zone
 
@@ -44,9 +36,7 @@ class QQActivity: AnyActivity {
     }
 
     init(type: Type, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.DeliverCompletionHandler) {
-
         MonkeyKing.registerAccount(.qq(appID: Configs.QQ.appID))
-
         super.init(
             type: type.activityType,
             title: type.title,
@@ -56,4 +46,3 @@ class QQActivity: AnyActivity {
         )
     }
 }
-

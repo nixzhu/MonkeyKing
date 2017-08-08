@@ -33,7 +33,7 @@
 		EDA620311F28F747007DF1DF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA6202D1F28F747007DF1DF /* Extensions.swift */; };
 		EDA620321F28F747007DF1DF /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA6202E1F28F747007DF1DF /* Helpers.swift */; };
 		EDA620331F28F747007DF1DF /* MonkeyKing+WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA6202F1F28F747007DF1DF /* MonkeyKing+WebView.swift */; };
-		EDA620341F28F747007DF1DF /* MonkeyKingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA620301F28F747007DF1DF /* MonkeyKingError.swift */; };
+		EDA620341F28F747007DF1DF /* MonkeyKing+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA620301F28F747007DF1DF /* MonkeyKing+Error.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,7 +89,7 @@
 		EDA6202D1F28F747007DF1DF /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = Sources/Extensions.swift; sourceTree = SOURCE_ROOT; };
 		EDA6202E1F28F747007DF1DF /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Helpers.swift; path = Sources/Helpers.swift; sourceTree = SOURCE_ROOT; };
 		EDA6202F1F28F747007DF1DF /* MonkeyKing+WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MonkeyKing+WebView.swift"; path = "Sources/MonkeyKing+WebView.swift"; sourceTree = SOURCE_ROOT; };
-		EDA620301F28F747007DF1DF /* MonkeyKingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MonkeyKingError.swift; path = Sources/MonkeyKingError.swift; sourceTree = SOURCE_ROOT; };
+		EDA620301F28F747007DF1DF /* MonkeyKing+Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MonkeyKing+Error.swift"; path = "Sources/MonkeyKing+Error.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,7 +158,7 @@
 			children = (
 				50FBA6D11BA2BBE900E69BB3 /* MonkeyKing.h */,
 				5067D53E1D6D814600D3C010 /* MonkeyKing.swift */,
-				EDA620301F28F747007DF1DF /* MonkeyKingError.swift */,
+				EDA620301F28F747007DF1DF /* MonkeyKing+Error.swift */,
 				EDA6202F1F28F747007DF1DF /* MonkeyKing+WebView.swift */,
 				5067D53D1D6D814600D3C010 /* AnyActivity.swift */,
 				5067D53F1D6D814600D3C010 /* Networking.swift */,
@@ -320,7 +320,7 @@
 				5067D5401D6D814600D3C010 /* AnyActivity.swift in Sources */,
 				5067D5411D6D814600D3C010 /* MonkeyKing.swift in Sources */,
 				EDA620331F28F747007DF1DF /* MonkeyKing+WebView.swift in Sources */,
-				EDA620341F28F747007DF1DF /* MonkeyKingError.swift in Sources */,
+				EDA620341F28F747007DF1DF /* MonkeyKing+Error.swift in Sources */,
 				EDA620321F28F747007DF1DF /* Helpers.swift in Sources */,
 				EDA620311F28F747007DF1DF /* Extensions.swift in Sources */,
 			);
@@ -405,6 +405,8 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -452,6 +454,8 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
