@@ -161,11 +161,11 @@ extension MonkeyKing {
         let closeButton = CloseButton(type: .custom)
         closeButton.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.width - 50.0, y: 4.0),
                                    size: CGSize(width: 44.0, height: 44.0))
-        closeButton.addTarget(self, action: #selector(closeOuathView), for: .touchUpInside)
+        closeButton.addTarget(self, action: #selector(closeOauthView), for: .touchUpInside)
         webView.addSubview(closeButton)
     }
 
-    func closeOuathView() {
+    @objc func closeOauthView() {
         guard let webView = webView else { return }
         let error = NSError(domain: "User Cancelled", code: -1, userInfo: nil)
         removeWebView(webView, tuples: (nil, nil, error))
