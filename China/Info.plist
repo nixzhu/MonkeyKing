@@ -20,6 +20,8 @@
 	<string>1.3.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>23</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -74,10 +76,9 @@
 			</array>
 		</dict>
 	</array>
-	<key>CFBundleVersion</key>
-	<string>23</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>mqqOpensdkSSoLogin</string>
 		<string>pocket-oauth-v1</string>
 		<string>weixin</string>
 		<string>mqqapi</string>
