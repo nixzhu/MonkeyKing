@@ -165,7 +165,7 @@ extension MonkeyKing {
         webView.addSubview(closeButton)
     }
 
-    func closeOuathView() {
+    @objc func closeOuathView() {
         guard let webView = webView else { return }
         let error = NSError(domain: "User Cancelled", code: -1, userInfo: nil)
         removeWebView(webView, tuples: (nil, nil, error))

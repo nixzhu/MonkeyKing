@@ -147,8 +147,8 @@ class Networking {
                     let startIndex = index
                     let endIndex = string.index(index, offsetBy: batchSize, limitedBy: string.endIndex) ?? startIndex
                     let range = startIndex..<endIndex
-                    
-                    let substring = string.substring(with: range)
+                
+                    let substring = String(string[range])
                     
                     escaped += substring.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet) ?? substring
                     
