@@ -10,45 +10,45 @@ import MonkeyKing
 
 class WeChatActivity: AnyActivity {
 
-    enum Type {
+    enum `Type` {
 
-        case Session
-        case Timeline
+        case session
+        case timeline
 
-        var type: String {
+        var activityType: UIActivityType {
             switch self {
-            case .Session:
-                return "com.nixWork.China.WeChat.Session"
-            case .Timeline:
-                return "com.nixWork.China.WeChat.Timeline"
+            case .session:
+                return UIActivityType(rawValue: "com.nixWork.China.WeChat.Session")
+            case .timeline:
+                return UIActivityType(rawValue: "com.nixWork.China.WeChat.Timeline")
             }
         }
 
         var title: String {
             switch self {
-            case .Session:
+            case .session:
                 return NSLocalizedString("WeChat Session", comment: "")
-            case .Timeline:
+            case .timeline:
                 return NSLocalizedString("WeChat Timeline", comment: "")
             }
         }
 
         var image: UIImage {
             switch self {
-            case .Session:
+            case .session:
                 return UIImage(named: "wechat_session")!
-            case .Timeline:
+            case .timeline:
                 return UIImage(named: "wechat_timeline")!
             }
         }
     }
 
-    init(type: Type, message: MonkeyKing.Message, completionHandler: MonkeyKing.SharedCompletionHandler) {
+    init(type: Type, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.DeliverCompletionHandler) {
 
-        MonkeyKing.registerAccount(.WeChat(appID: Configs.Wechat.appID, appKey: ""))
+        MonkeyKing.registerAccount(.weChat(appID: Configs.Wechat.appID, appKey: ""))
 
         super.init(
-            type: type.type,
+            type: type.activityType,
             title: type.title,
             image: type.image,
             message: message,

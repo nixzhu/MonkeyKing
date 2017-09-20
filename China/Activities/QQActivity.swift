@@ -10,45 +10,45 @@ import MonkeyKing
 
 class QQActivity: AnyActivity {
 
-    enum Type {
+    enum `Type` {
 
-        case Friends
-        case Zone
+        case friends
+        case zone
 
-        var type: String {
+        var activityType: UIActivityType {
             switch self {
-            case .Friends:
-                return "com.nixWork.China.QQ.Friends"
-            case .Zone:
-                return "com.nixWork.China.QQ.Zone"
+            case .friends:
+                return UIActivityType(rawValue: "com.nixWork.China.QQ.Friends")
+            case .zone:
+                return UIActivityType(rawValue: "com.nixWork.China.QQ.Zone")
             }
         }
 
         var title: String {
             switch self {
-            case .Friends:
+            case .friends:
                 return NSLocalizedString("QQ Friends", comment: "")
-            case .Zone:
+            case .zone:
                 return NSLocalizedString("QQ Zone", comment: "")
             }
         }
 
         var image: UIImage {
             switch self {
-            case .Friends:
-                return UIImage(named: "wechat_session")! // TODO:
-            case .Zone:
-                return UIImage(named: "wechat_timeline")! // TODO:
+            case .friends:
+                return UIImage(named: "wechat_session")! // TODO: qq_friends
+            case .zone:
+                return UIImage(named: "wechat_timeline")! // TODO: qq_zone
             }
         }
     }
 
-    init(type: Type, message: MonkeyKing.Message, completionHandler: MonkeyKing.SharedCompletionHandler) {
+    init(type: Type, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.DeliverCompletionHandler) {
 
-        MonkeyKing.registerAccount(.QQ(appID: Configs.QQ.appID))
+        MonkeyKing.registerAccount(.qq(appID: Configs.QQ.appID))
 
         super.init(
-            type: type.type,
+            type: type.activityType,
             title: type.title,
             image: type.image,
             message: message,

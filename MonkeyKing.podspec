@@ -1,8 +1,8 @@
 Pod::Spec.new do |s|
 
   s.name        = "MonkeyKing"
-  s.version     = "0.8"
-  s.summary     = "MonkeyKing helps you post messages to Chinese Social Networks, or do OAuth."
+  s.version     = "1.3.0"
+  s.summary     = "MonkeyKing helps you to post messages to Chinese Social Networks, or do OAuth."
 
   s.description = <<-DESC
                    You just want to share some information to WeChat, QQ, ...
@@ -17,10 +17,9 @@ Pod::Spec.new do |s|
   s.social_media_url  = "https://twitter.com/nixzhu"
 
   s.ios.deployment_target   = "8.0"
-  # s.osx.deployment_target = "10.7"
 
   s.source          = { :git => "https://github.com/nixzhu/MonkeyKing.git", :tag => s.version }
-  s.source_files    = "MonkeyKing/*.swift"
+  s.source_files    = "Sources/*.swift"
   s.requires_arc    = true
 
 end
