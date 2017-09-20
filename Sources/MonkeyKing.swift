@@ -1046,7 +1046,7 @@ extension MonkeyKing {
             guard let startIndex = appID.range(of: "-")?.lowerBound else {
                 return
             }
-            let prefix = appID.substring(to: startIndex)
+            let prefix = appID.prefix(upTo: startIndex)
             let redirectURLString = "pocketapp\(prefix):authorizationFinished"
             guard let requestToken = requestToken else { return }
             guard !account.isAppInstalled else {
