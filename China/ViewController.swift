@@ -4,56 +4,39 @@ import MonkeyKing
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+    struct Item {
+        let title: String
+
+        var segueIdentifier: String {
+            return title
+        }
+    }
+
+    let items: [Item] = [
+        Item(title: "WeChat"),
+        Item(title: "Weibo"),
+        Item(title: "QQ"),
+        Item(title: "Alipay"),
+        Item(title: "Twitter"),
+        Item(title: "Pocket"),
+        Item(title: "System")
+    ]
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 7
+        return items.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-
-        switch (indexPath as NSIndexPath).row {
-        case 0:
-            cell.textLabel!.text = "WeChat"
-        case 1:
-            cell.textLabel!.text = "Weibo"
-        case 2:
-            cell.textLabel!.text = "QQ"
-        case 3:
-            cell.textLabel!.text = "System"
-        case 4:
-            cell.textLabel!.text = "Pocket"
-        case 5:
-            cell.textLabel!.text = "Alipay"
-        case 6:
-            cell.textLabel!.text = "Twitter"
-        default:
-            break
-        }
-
+        cell.textLabel?.text = items[indexPath.row].title
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        switch (indexPath as NSIndexPath).row {
-        case 0:
-            performSegue(withIdentifier: "WeChat", sender: nil)
-        case 1:
-            performSegue(withIdentifier: "Weibo", sender: nil)
-        case 2:
-            performSegue(withIdentifier: "QQ", sender: nil)
-        case 3:
-            performSegue(withIdentifier: "System", sender: nil)
-        case 4:
-            performSegue(withIdentifier: "Pocket", sender: nil)
-        case 5:
-            performSegue(withIdentifier: "Alipay", sender: nil)
-        case 6:
-            performSegue(withIdentifier: "Twitter", sender: nil)
-        default:
-            break
+        defer {
+            tableView.deselectRow(at: indexPath, animated: true)
         }
+        let segueIdentifier = items[indexPath.row].segueIdentifier
+        performSegue(withIdentifier: segueIdentifier, sender: nil)
     }
 }
