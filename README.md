@@ -17,9 +17,9 @@ MonkeyKing also supports **OAuth** and **Mobile payment** via WeChat and Alipay!
 
 ## Requirements
 
-Swift 3, iOS 8
+Swift 4, iOS 8
 
-Swift 4, `pod 'MonkeyKing', :git => 'https://github.com/nixzhu/MonkeyKing.git', :branch => 'swift-4'`
+(For Swift 3, use version 1.3.0)
 
 ## Examples
 
@@ -123,7 +123,7 @@ Check the demo for more information.
 
 ## Installation
 
-We recommend using Carthage instead of CocoaPods.
+Using Carthage or CocoaPods.
 
 ### Carthage
 
@@ -212,5 +212,4 @@ WeChat logos from [WeChat-Logo](https://github.com/RayPS/WeChat-Logo) by Ray.
 MonkeyKing is available under the [MIT License][mitLink]. See the LICENSE file for more info.
 
 [mitLink]:http://opensource.org/licenses/MIT
-
 
