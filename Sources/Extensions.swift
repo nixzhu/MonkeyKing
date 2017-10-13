@@ -130,7 +130,7 @@ extension String {
 
     var monkeyking_qqCallbackName: String {
         var hexString = String(format: "%02llx", (self as NSString).longLongValue)
-        while hexString.characters.count < 8 {
+        while hexString.count < 8 {
             hexString = "0" + hexString
         }
         return "QQ" + hexString

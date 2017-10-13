@@ -48,7 +48,7 @@ extension MonkeyKing: WKNavigationDelegate {
         for case let .twitter(appID, appKey, redirectURL) in accountSet {
             guard url.absoluteString.hasPrefix(redirectURL) else { break }
             var parametersString = url.absoluteString
-            for _ in (0...redirectURL.characters.count) {
+            for _ in (0...redirectURL.count) {
                 parametersString.remove(at: parametersString.startIndex)
             }
             let params = parametersString.queryStringParameters
@@ -68,7 +68,7 @@ extension MonkeyKing: WKNavigationDelegate {
         guard url.absoluteString.contains("&access_token=") && url.absoluteString.contains("qq.com") else {
             return
         }
-        guard let fragment = url.fragment?.characters.dropFirst(), let newURL = URL(string: "https://qzs.qq.com/?\(String(fragment))") else {
+        guard let fragment = url.fragment?.dropFirst(), let newURL = URL(string: "https://qzs.qq.com/?\(String(fragment))") else {
             return
         }
         let queryDictionary = newURL.monkeyking_queryDictionary as [String: Any]
