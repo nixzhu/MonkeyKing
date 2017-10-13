@@ -1,12 +1,12 @@
 Pod::Spec.new do |s|
 
   s.name        = "MonkeyKing"
-  s.version     = "1.4.0"
-  s.summary     = "MonkeyKing helps you to post messages to Chinese Social Networks, or do OAuth."
+  s.version     = "1.4.1"
+  s.summary     = "MonkeyKing helps you to post messages to Chinese Social Networks, or do OAuth and Payment."
 
   s.description = <<-DESC
-                   You just want to share some information to WeChat, QQ, ...
-                   Why use their buggy SDKs?
+                   You just want to share some information to WeChat, QQ, Weibo ...
+                   Why do we need to use their buggy SDKs?
                    DESC
 
   s.homepage    = "https://github.com/nixzhu/MonkeyKing"
