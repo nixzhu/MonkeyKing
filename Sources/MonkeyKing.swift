@@ -177,9 +177,11 @@ extension MonkeyKing {
                 result = (ret == "0")
                 return result
             }
+
             // Share
             if let data = UIPasteboard.general.data(forPasteboardType: "content") {
                 if let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? [String: Any] {
+
                     guard
                         let account = shared.accountSet[.weChat],
                         let info = dict?[account.appID] as? [String: Any],
@@ -187,21 +189,26 @@ extension MonkeyKing {
                         let resultCode = Int(result) else {
                             return false
                     }
+
+                    // OAuth Failed
+                    if let state = info["state"] as? String, state == "Weixinauth", resultCode != 0 {
+                        let error = NSError(domain: "WeChat OAuth Error", code: -1, userInfo: nil)
+                        shared.oauthCompletionHandler?(nil, nil, error)
+                        return false
+                    }
+
                     let success = (resultCode == 0)
+
                     if success {
                         shared.deliverCompletionHandler?(.success(nil))
                     } else {
-                        shared.deliverCompletionHandler?(.failure(.sdk(reason: .unknown))) // TODO: pass resultCode
+                        shared.deliverCompletionHandler?(.failure(.sdk(reason: .unknown)))
                     }
+
                     return success
                 }
             }
-            // OAuth Failed
-            if urlString.contains("platformId=wechat") && !urlString.contains("state=Weixinauth") {
-                let error = NSError(domain: "WeChat OAuth Error", code: -1, userInfo: nil)
-                shared.oauthCompletionHandler?(nil, nil, error)
-                return false
-            }
+
             return false
         }
         // QQ Share
