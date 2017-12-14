@@ -29,7 +29,7 @@ public class MonkeyKing: NSObject {
     }
 
     public enum Account: Hashable {
-        case weChat(appID: String, appKey: String?)
+        case weChat(appID: String, appKey: String?, miniProgramID: String?)
         case qq(appID: String)
         case weibo(appID: String, appKey: String, redirectURL: String)
         case pocket(appID: String)
@@ -55,7 +55,7 @@ public class MonkeyKing: NSObject {
 
         public var appID: String {
             switch self {
-            case .weChat(let appID, _):
+            case .weChat(let appID, _, _):
                 return appID
             case .qq(let appID):
                 return appID
@@ -355,6 +355,7 @@ extension MonkeyKing {
         case audio(audioURL: URL, linkURL: URL?)
         case video(URL)
         case file(Data)
+        case miniProgram(mediaUrl: URL, appBrandPath: String)
     }
 
     public typealias Info = (title: String?, description: String?, thumbnail: UIImage?, media: Media?)
@@ -561,6 +562,19 @@ extension MonkeyKing {
                 case .video(let url):
                     weChatMessageInfo["objectType"] = "4"
                     weChatMessageInfo["mediaUrl"] = url.absoluteString
+                case .miniProgram(let mediaUrl, let appBrandPath):
+                    if case .weChat(let appID, _, let miniProgramID) = account {
+                        weChatMessageInfo["objectType"] = "36"
+                        weChatMessageInfo["mediaUrl"] = mediaUrl.absoluteString
+                        weChatMessageInfo["appBrandPath"] = appBrandPath
+                        weChatMessageInfo["withShareTicket"] = false
+                        weChatMessageInfo["miniprogramType"] = 0
+                        if miniProgramID == nil {
+                            fatalError("Oh,No! You forgot to set `miniprogramID`!")
+                        } else {
+                            weChatMessageInfo["appBrandUserName"] = miniProgramID
+                        }
+                    } 
                 case .file:
                     fatalError("WeChat not supports File type")
                 }
@@ -629,6 +643,8 @@ extension MonkeyKing {
                     if let filename = type.info.description?.monkeyking_urlEncodedString {
                         qqSchemeURLString += "&fileName=\(filename)"
                     }
+                case .miniProgram(_):
+                    fatalError("QQ not supports mini Program")
                 }
                 if let encodedTitle = type.info.title?.monkeyking_base64AndURLEncodedString {
                     qqSchemeURLString += "&title=\(encodedTitle)"
@@ -705,6 +721,8 @@ extension MonkeyKing {
                         fatalError("Weibo not supports Video type")
                     case .file:
                         fatalError("Weibo not supports File type")
+                    case .miniProgram(_):
+                        fatalError("Weibo not supports mini Program")
                     }
                 }
                 let uuidString = UUID().uuidString
@@ -757,6 +775,8 @@ extension MonkeyKing {
                     fatalError("web Weibo not supports Video type")
                 case .file:
                     fatalError("web Weibo not supports File type")
+                case .miniProgram(_):
+                    fatalError("web Weibo not supports mini Program")
                 }
             }
             let statusText = status.flatMap({ $0 }).joined(separator: " ")
@@ -796,6 +816,8 @@ extension MonkeyKing {
                 fatalError("web Weibo not supports Video type")
             case .file:
                 fatalError("web Weibo not supports File type")
+            case .miniProgram(_):
+                fatalError("web Weibo not supports mini Program")
             }
         case .alipay(let type):
             let dictionary = createAlipayMessageDictionary(withScene: type.scene, info: type.info, appID: appID)
@@ -956,7 +978,7 @@ extension MonkeyKing {
         }
         shared.oauthCompletionHandler = completionHandler
         switch account {
-        case .weChat(let appID, _):
+        case .weChat(let appID, _, _):
             let scope = scope ?? "snsapi_userinfo"
             if !account.isAppInstalled {
                 // SMS OAuth

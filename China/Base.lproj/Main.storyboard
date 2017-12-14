@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="tAd-W5-7vp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="tAd-W5-7vp">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -193,7 +193,7 @@
                                 </connections>
                             </button>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="dBn-A2-v5r">
-                                <rect key="frame" x="87.5" y="469" width="200" height="29"/>
+                                <rect key="frame" x="89" y="469" width="197" height="29"/>
                                 <segments>
                                     <segment title="Session"/>
                                     <segment title="Timeline"/>
@@ -207,6 +207,13 @@
                                     <action selector="pay:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="TXf-I7-DAh"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7zS-bL-oQf">
+                                <rect key="frame" x="139" y="362.5" width="90" height="30"/>
+                                <state key="normal" title="MINIProgram"/>
+                                <connections>
+                                    <action selector="shareMINIProgram:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="c7h-9J-u19"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -215,9 +222,11 @@
                             <constraint firstItem="oRX-XU-uEu" firstAttribute="centerX" secondItem="UWw-uP-3po" secondAttribute="centerX" id="5SP-dc-8Mv"/>
                             <constraint firstItem="wfw-9a-DtS" firstAttribute="top" secondItem="UWw-uP-3po" secondAttribute="bottom" constant="120" id="7ew-1Y-cIR"/>
                             <constraint firstItem="oRX-XU-uEu" firstAttribute="top" secondItem="UWw-uP-3po" secondAttribute="bottom" constant="15" id="8SX-ii-Vch"/>
+                            <constraint firstItem="7zS-bL-oQf" firstAttribute="centerX" secondItem="sOl-Wo-bDF" secondAttribute="centerX" id="AT9-On-bDV"/>
                             <constraint firstItem="Wyh-QX-rAS" firstAttribute="top" secondItem="PJB-1N-QAg" secondAttribute="bottom" constant="20" id="F43-wv-ZDN"/>
                             <constraint firstItem="oRX-XU-uEu" firstAttribute="centerX" secondItem="UWw-uP-3po" secondAttribute="centerX" id="LMc-TR-Xjx"/>
                             <constraint firstItem="UWw-uP-3po" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="NBp-he-WOd"/>
+                            <constraint firstItem="7zS-bL-oQf" firstAttribute="top" secondItem="sOl-Wo-bDF" secondAttribute="bottom" constant="20" id="Nd9-fc-p7C"/>
                             <constraint firstItem="Wyh-QX-rAS" firstAttribute="leading" secondItem="lbo-xY-RTb" secondAttribute="leading" id="OM2-Wf-fce"/>
                             <constraint firstItem="1yl-b1-jyR" firstAttribute="top" secondItem="oRX-XU-uEu" secondAttribute="bottom" constant="15" id="OSU-xS-X21"/>
                             <constraint firstItem="gS0-c6-rje" firstAttribute="top" secondItem="lbo-xY-RTb" secondAttribute="bottom" constant="20" id="Pmt-IQ-Wmy"/>
@@ -412,7 +421,7 @@
                                 </connections>
                             </button>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Wdu-6N-jtH">
-                                <rect key="frame" x="121" y="394" width="133" height="29"/>
+                                <rect key="frame" x="122" y="394" width="131" height="29"/>
                                 <segments>
                                     <segment title="Friends"/>
                                     <segment title="Timeline"/>
@@ -459,7 +468,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Q8C-5T-0Yz">
-                                            <rect key="frame" x="15" y="0.0" width="345" height="79.5"/>
+                                            <rect key="frame" x="16" y="0.0" width="343" height="79.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -571,7 +580,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="tAd-W5-7vp" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="5P4-mA-2xy">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>

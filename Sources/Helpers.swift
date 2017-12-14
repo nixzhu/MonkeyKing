@@ -6,7 +6,7 @@ extension MonkeyKing {
     class func fetchWeChatOAuthInfoByCode(code: String, completionHandler: @escaping OAuthCompletionHandler) {
         var appID = ""
         var appKey = ""
-        for case let .weChat(id, key) in shared.accountSet {
+        for case let .weChat(id, key, _) in shared.accountSet {
             guard let key = key else {
                 completionHandler(["code": code], nil, nil)
                 return
@@ -48,6 +48,8 @@ extension MonkeyKing {
                 fatalError("Alipay not supports Video type")
             case .file:
                 fatalError("Alipay not supports File type")
+            case .miniProgram(_):
+                fatalError("Alipay not supports mini Program")
             }
         } else { // Text
             messageType = .text
