@@ -167,7 +167,7 @@ extension URL {
 
 extension UIImage {
 
-    var monkeyking_compressedImageData: Data? {
+    func monkeyking_compressedImageData(dataLengthCeiling: Int = 31500) -> Data? {
         var compressionQuality: CGFloat = 0.7
         func compressedDataOfImage(_ image: UIImage) -> Data? {
             let maxHeight: CGFloat = 240.0
@@ -204,7 +204,7 @@ extension UIImage {
         let fullImageData = UIImageJPEGRepresentation(self, compressionQuality)
         guard var imageData = fullImageData else { return nil }
         let minCompressionQuality: CGFloat = 0.01
-        let dataLengthCeiling: Int = 31500
+        let dataLengthCeiling: Int = dataLengthCeiling
         while imageData.count > dataLengthCeiling && compressionQuality > minCompressionQuality {
             compressionQuality -= 0.1
             guard let image = UIImage(data: imageData) else { break }
