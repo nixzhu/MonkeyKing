@@ -10,7 +10,7 @@ class WeChatViewController: UIViewController {
         super.viewDidLoad()
 
         // Should not register account here
-        let account = MonkeyKing.Account.weChat(appID: Configs.Wechat.appID, appKey: Configs.Wechat.appKey)
+        let account = MonkeyKing.Account.weChat(appID: Configs.Wechat.appID, appKey: Configs.Wechat.appKey, miniProgramID: Configs.Wechat.miniProgramID)
         MonkeyKing.registerAccount(account)
     }
 
@@ -63,6 +63,16 @@ class WeChatViewController: UIViewController {
         )
         shareInfo(info)
     }
+
+    @IBAction func shareMINIProgram(_ sender: UIButton) {
+        let info = MonkeyKing.Info(
+            title: "Timeline URL, \(UUID().uuidString)",
+            description: nil,
+            thumbnail: UIImage(named: "rabbit"),
+            media: .miniProgram(webPageURL: URL(string: "http://soyep.com")!, appBrandPath: "",withShareTicket: true, miniprogramType: .release)
+        )
+        shareInfo(info)
+    }
     
     private func shareInfo(_ info: MonkeyKing.Info) {
         var message: MonkeyKing.Message?
@@ -97,7 +107,7 @@ extension WeChatViewController {
 
     @IBAction func OAuthWithoutAppKey(_ sender: UIButton) {
         // Should not register account here
-        let accountWithoutAppKey = MonkeyKing.Account.weChat(appID: Configs.Wechat.appID, appKey: nil)
+        let accountWithoutAppKey = MonkeyKing.Account.weChat(appID: Configs.Wechat.appID, appKey: nil, miniProgramID: nil)
         MonkeyKing.registerAccount(accountWithoutAppKey)
 
         MonkeyKing.oauth(for: .weChat) { (dictionary, response, error) in

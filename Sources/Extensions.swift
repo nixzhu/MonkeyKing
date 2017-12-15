@@ -216,4 +216,89 @@ extension UIImage {
         }
         return imageData
     }
+
+    func monkeyking_resetSizeOfImageData(maxSize: Int) -> Data? {
+
+        if let imageData = UIImageJPEGRepresentation(self,1.0),
+            imageData.count <= maxSize {
+            return imageData
+        }
+
+        func compressedDataOfImage(_ image: UIImage?) -> Data? {
+
+            guard let image = image else {
+                return nil
+            }
+
+            let imageData = image.binaryCompression(to: maxSize)
+
+            if imageData == nil {
+                let currentMiniIamgeDataSize = UIImageJPEGRepresentation(self,0.01)?.count ?? 0
+                let proportion = CGFloat(currentMiniIamgeDataSize / maxSize)
+                let newWidth = image.size.width * scale / proportion
+                let newHeight = image.size.height * scale / proportion
+                let newSize = CGSize(width: newWidth, height: newHeight)
+
+                UIGraphicsBeginImageContext(newSize)
+                image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+                let newImage = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+
+                return compressedDataOfImage(newImage)
+            }
+            return imageData
+        }
+        return compressedDataOfImage(self)
+    }
+
+    private func binaryCompression(to maxSize: Int) -> Data? {
+
+        var compressionQualitys = [CGFloat](repeating: 0, count: 100)
+        var i = compressionQualitys.count + 1
+        compressionQualitys = compressionQualitys.map { (_) -> CGFloat in
+            let newValue = CGFloat(i) / CGFloat(compressionQualitys.count + 1)
+            i -= 1
+
+            return newValue
+        }
+
+        var imageData: Data? = UIImageJPEGRepresentation(self, 1)
+
+        var outPutImageData: Data? = nil
+
+        var start = 0
+        var end = compressionQualitys.count - 1
+        var index = 0
+
+        var difference = Int.max
+
+        while start <= end {
+
+            index = start + (end - start) / 2
+
+            imageData = UIImageJPEGRepresentation(self, compressionQualitys[index])
+
+            let imageDataSize = imageData?.count ?? 0
+
+            if imageDataSize > maxSize {
+
+                start = index + 1
+
+            } else if imageDataSize < maxSize {
+
+                if (maxSize - imageDataSize) < difference {
+                    difference = (maxSize - imageDataSize)
+                    outPutImageData = imageData
+                }
+
+                if index <= 0 {
+                    break
+                }
+                end = index - 1
+            } else {
+                break
+            }
+        }
+        return outPutImageData
+    }
 }
