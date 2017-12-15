@@ -233,7 +233,7 @@ extension UIImage {
             let imageData = image.binaryCompression(to: maxSize)
 
             if imageData == nil {
-                var currentMiniIamgeDataSize = UIImageJPEGRepresentation(self,0.01)?.count ?? 0
+                let currentMiniIamgeDataSize = UIImageJPEGRepresentation(self,0.01)?.count ?? 0
                 let proportion = CGFloat(currentMiniIamgeDataSize / maxSize)
                 let newWidth = image.size.width * scale / proportion
                 let newHeight = image.size.height * scale / proportion

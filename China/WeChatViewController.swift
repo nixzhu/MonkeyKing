@@ -69,7 +69,7 @@ class WeChatViewController: UIViewController {
             title: "Timeline URL, \(UUID().uuidString)",
             description: nil,
             thumbnail: UIImage(named: "rabbit"),
-            media: .miniProgram(mediaUrl: URL(string: "http://soyep.com")!, appBrandPath: "")
+            media: .miniProgram(webPageURL: URL(string: "http://soyep.com")!, appBrandPath: "",withShareTicket: true, miniprogramType: .release)
         )
         shareInfo(info)
     }

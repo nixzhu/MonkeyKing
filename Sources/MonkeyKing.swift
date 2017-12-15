@@ -355,7 +355,13 @@ extension MonkeyKing {
         case audio(audioURL: URL, linkURL: URL?)
         case video(URL)
         case file(Data)
-        case miniProgram(mediaUrl: URL, appBrandPath: String)
+        case miniProgram(webPageURL: URL, appBrandPath: String,withShareTicket:Bool,miniprogramType:MiniprogramType)
+    }
+
+    public enum MiniprogramType: Int {
+        case release = 0
+        case test = 1
+        case preview = 2
     }
 
     public typealias Info = (title: String?, description: String?, thumbnail: UIImage?, media: Media?)
@@ -562,16 +568,16 @@ extension MonkeyKing {
                 case .video(let url):
                     weChatMessageInfo["objectType"] = "4"
                     weChatMessageInfo["mediaUrl"] = url.absoluteString
-                case .miniProgram(let mediaUrl, let appBrandPath):
+                case .miniProgram(let webPageURL, let appBrandPath, let withShareTicket,let miniprogramType):
                     if case .weChat(let appID, _, let miniProgramID) = account {
                         weChatMessageInfo["objectType"] = "36"
                         if let hdThumbnailImage = info.thumbnail {
                             weChatMessageInfo["hdThumbData"] = hdThumbnailImage.monkeyking_resetSizeOfImageData(maxSize: 127 * 1024)
                         }
-                        weChatMessageInfo["mediaUrl"] = mediaUrl.absoluteString
+                        weChatMessageInfo["mediaUrl"] = webPageURL.absoluteString
                         weChatMessageInfo["appBrandPath"] = appBrandPath
-                        weChatMessageInfo["withShareTicket"] = false
-                        weChatMessageInfo["miniprogramType"] = 0
+                        weChatMessageInfo["withShareTicket"] = withShareTicket
+                        weChatMessageInfo["miniprogramType"] = miniprogramType.rawValue
                         if miniProgramID == nil {
                             fatalError("Oh,No! You forgot to set `miniprogramID`!")
                         } else {
