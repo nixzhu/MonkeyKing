@@ -165,7 +165,7 @@ extension MonkeyKing {
                 "title": [keyUID: 14]
             ]
 
-            let thumbnailData = info.thumbnail?.monkeyking_compressedImageData() ?? Data()
+            let thumbnailData = info.thumbnail?.monkeyking_compressedImageData ?? Data()
             let urlObjectsItem14 = info.title ?? "Input Title"
             let urlObjectsItem15 = info.description ?? "Input Description"
             let urlObjectsItem16: [String: Any] = [

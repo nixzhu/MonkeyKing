@@ -540,8 +540,8 @@ extension MonkeyKing {
             if let description = info.description {
                 weChatMessageInfo["description"] = description
             }
-            if let thumbnailData = info.thumbnail?.monkeyking_compressedImageData() {
-                weChatMessageInfo["thumbData"] = thumbnailData
+            if let thumbnailImage = info.thumbnail {
+                weChatMessageInfo["thumbData"] = thumbnailImage.monkeyking_compressedImageData
             }
             if let media = info.media {
                 switch media {
@@ -565,7 +565,9 @@ extension MonkeyKing {
                 case .miniProgram(let mediaUrl, let appBrandPath):
                     if case .weChat(let appID, _, let miniProgramID) = account {
                         weChatMessageInfo["objectType"] = "36"
-                        weChatMessageInfo["hdThumbData"] = info.thumbnail?.monkeyking_compressedImageData(dataLengthCeiling: 127500)
+                        if let hdThumbnailImage = info.thumbnail {
+                            weChatMessageInfo["hdThumbData"] = hdThumbnailImage.monkeyking_resetSizeOfImageData(maxSize: 127 * 1024)
+                        }
                         weChatMessageInfo["mediaUrl"] = mediaUrl.absoluteString
                         weChatMessageInfo["appBrandPath"] = appBrandPath
                         weChatMessageInfo["withShareTicket"] = false
@@ -604,7 +606,7 @@ extension MonkeyKing {
             qqSchemeURLString += "&src_type=app&shareType=0&file_type="
             if let media = type.info.media {
                 func handleNews(with url: URL, mediaType: String?) {
-                    if let thumbnailData = type.info.thumbnail?.monkeyking_compressedImageData() {
+                    if let thumbnailData = type.info.thumbnail?.monkeyking_compressedImageData {
                         let dic = ["previewimagedata": thumbnailData]
                         let data = NSKeyedArchiver.archivedData(withRootObject: dic)
                         UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
@@ -696,7 +698,7 @@ extension MonkeyKing {
                 if let media = info.media {
                     switch media {
                     case .url(let url):
-                        if let thumbnailData = info.thumbnail?.monkeyking_compressedImageData() {
+                        if let thumbnailData = info.thumbnail?.monkeyking_compressedImageData {
                             var mediaObject: [String: Any] = [
                                 "__class": "WBWebpageObject",
                                 "objectID": "identifier1"

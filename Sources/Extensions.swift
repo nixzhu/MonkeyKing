@@ -167,7 +167,7 @@ extension URL {
 
 extension UIImage {
 
-    func monkeyking_compressedImageData(dataLengthCeiling: Int = 31500) -> Data? {
+    var monkeyking_compressedImageData: Data? {
         var compressionQuality: CGFloat = 0.7
         func compressedDataOfImage(_ image: UIImage) -> Data? {
             let maxHeight: CGFloat = 240.0
@@ -204,7 +204,7 @@ extension UIImage {
         let fullImageData = UIImageJPEGRepresentation(self, compressionQuality)
         guard var imageData = fullImageData else { return nil }
         let minCompressionQuality: CGFloat = 0.01
-        let dataLengthCeiling: Int = dataLengthCeiling
+        let dataLengthCeiling: Int = 31500
         while imageData.count > dataLengthCeiling && compressionQuality > minCompressionQuality {
             compressionQuality -= 0.1
             guard let image = UIImage(data: imageData) else { break }
@@ -215,5 +215,90 @@ extension UIImage {
             }
         }
         return imageData
+    }
+
+    func monkeyking_resetSizeOfImageData(maxSize: Int) -> Data? {
+
+        if let imageData = UIImageJPEGRepresentation(self,1.0),
+            imageData.count <= maxSize {
+            return imageData
+        }
+
+        func compressedDataOfImage(_ image: UIImage?) -> Data? {
+
+            guard let image = image else {
+                return nil
+            }
+
+            let imageData = image.binaryCompression(to: maxSize)
+
+            if imageData == nil {
+                var currentMiniIamgeDataSize = UIImageJPEGRepresentation(self,0.01)?.count ?? 0
+                let proportion = CGFloat(currentMiniIamgeDataSize / maxSize)
+                let newWidth = image.size.width * scale / proportion
+                let newHeight = image.size.height * scale / proportion
+                let newSize = CGSize(width: newWidth, height: newHeight)
+
+                UIGraphicsBeginImageContext(newSize)
+                image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+                let newImage = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+
+                return compressedDataOfImage(newImage)
+            }
+            return imageData
+        }
+        return compressedDataOfImage(self)
+    }
+
+    private func binaryCompression(to maxSize: Int) -> Data? {
+
+        var compressionQualitys = [CGFloat](repeating: 0, count: 100)
+        var i = compressionQualitys.count + 1
+        compressionQualitys = compressionQualitys.map { (_) -> CGFloat in
+            let newValue = CGFloat(i) / CGFloat(compressionQualitys.count + 1)
+            i -= 1
+
+            return newValue
+        }
+
+        var imageData: Data? = UIImageJPEGRepresentation(self, 1)
+
+        var outPutImageData: Data? = nil
+
+        var start = 0
+        var end = compressionQualitys.count - 1
+        var index = 0
+
+        var difference = Int.max
+
+        while start <= end {
+
+            index = start + (end - start) / 2
+
+            imageData = UIImageJPEGRepresentation(self, compressionQualitys[index])
+
+            let imageDataSize = imageData?.count ?? 0
+
+            if imageDataSize > maxSize {
+
+                start = index + 1
+
+            } else if imageDataSize < maxSize {
+
+                if (maxSize - imageDataSize) < difference {
+                    difference = (maxSize - imageDataSize)
+                    outPutImageData = imageData
+                }
+
+                if index <= 0 {
+                    break
+                }
+                end = index - 1
+            } else {
+                break
+            }
+        }
+        return outPutImageData
     }
 }
