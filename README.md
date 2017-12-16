@@ -11,7 +11,7 @@
 
 MonkeyKing helps you post messages to Chinese Social Networks, without their buggy SDKs.
 
-MonkeyKing uses the same analysis process of [openshare](https://github.com/100apps/openshare), support share **Text**, **URL**, **Image**, **Audio**, **Video**, and **File** to **WeChat**, **QQ**, **Alipay** or **Weibo**. MonkeyKing also can post messages to Weibo by webpage. (Note: Audio and Video are only specifically for WeChat or QQ, File is only for QQ Dataline)
+MonkeyKing uses the same analysis process of [openshare](https://github.com/100apps/openshare), support share **Text**, **URL**, **Image**, **Audio**, **Video**, and **File** to **WeChat**, **QQ**, **Alipay** or **Weibo**. MonkeyKing also can post messages to Weibo by webpage. (Note: Audio and Video are specifically for WeChat or QQ, File is only for QQ Dataline)
 
 MonkeyKing also supports **OAuth** and **Mobile payment** via WeChat and Alipay!
 
@@ -36,7 +36,7 @@ Example: Share to WeChat (微信)：
 	```swift
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 
-	    MonkeyKing.registerAccount(.weChat(appID: "xxx", appKey: "yyy"))
+	    MonkeyKing.registerAccount(.weChat(appID: "xxx", appKey: "yyy", miniAppID: nil))
 
 	    return true
 	}
@@ -62,7 +62,7 @@ Example: Share to WeChat (微信)：
 	```swift
     @IBAction func shareURLToWeChatSession(sender: UIButton) {
 
-        MonkeyKing.registerAccount(.weChat(appID: "xxx", appKey: "yyy")) // you can do it here (just before deliver)
+        MonkeyKing.registerAccount(.weChat(appID: "xxx", appKey: "yyy", miniAppID: nil)) // you can do it here (just before deliver)
 
         let message = MonkeyKing.Message.weChat(.session(info: (
             title: "Session",
@@ -212,4 +212,3 @@ WeChat logos from [WeChat-Logo](https://github.com/RayPS/WeChat-Logo) by Ray.
 MonkeyKing is available under the [MIT License][mitLink]. See the LICENSE file for more info.
 
 [mitLink]:http://opensource.org/licenses/MIT
-
