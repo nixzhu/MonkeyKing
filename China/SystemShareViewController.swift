@@ -5,7 +5,7 @@ import MonkeyKing
 class SystemShareViewController: UIViewController {
 
     @IBAction func systemShare(_ sender: UIButton) {
-        MonkeyKing.registerAccount(.weChat(appID: Configs.Wechat.appID, appKey: Configs.Wechat.appKey, miniProgramID: nil))
+        MonkeyKing.registerAccount(.weChat(appID: Configs.WeChat.appID, appKey: Configs.WeChat.appKey, miniAppID: nil))
         let shareURL = URL(string: "http://www.apple.com/cn/iphone/compare/")!
         let info = MonkeyKing.Info(
             title: "iPhone Compare",

@@ -241,7 +241,7 @@
 				TargetAttributes = {
 					50FBA6B41BA2AFAD00E69BB3 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = Y2VDUB37Q5;
+						DevelopmentTeam = 8D957V42M6;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
@@ -469,7 +469,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = Y2VDUB37Q5;
+				DEVELOPMENT_TEAM = 8D957V42M6;
 				INFOPLIST_FILE = China/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nixWork.China;
@@ -487,7 +487,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = Y2VDUB37Q5;
+				DEVELOPMENT_TEAM = 8D957V42M6;
 				INFOPLIST_FILE = China/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nixWork.China;

@@ -29,7 +29,7 @@ public class MonkeyKing: NSObject {
     }
 
     public enum Account: Hashable {
-        case weChat(appID: String, appKey: String?, miniProgramID: String?)
+        case weChat(appID: String, appKey: String?, miniAppID: String?)
         case qq(appID: String)
         case weibo(appID: String, appKey: String, redirectURL: String)
         case pocket(appID: String)
@@ -355,13 +355,12 @@ extension MonkeyKing {
         case audio(audioURL: URL, linkURL: URL?)
         case video(URL)
         case file(Data)
-        case miniProgram(webPageURL: URL, appBrandPath: String,withShareTicket:Bool,miniprogramType:MiniprogramType)
-    }
-
-    public enum MiniprogramType: Int {
-        case release = 0
-        case test = 1
-        case preview = 2
+        public enum MiniAppType: Int {
+            case release    = 0
+            case test       = 1
+            case preview    = 2
+        }
+        case miniApp(url: URL, path: String, withShareTicket: Bool, type: MiniAppType)
     }
 
     public typealias Info = (title: String?, description: String?, thumbnail: UIImage?, media: Media?)
@@ -568,20 +567,20 @@ extension MonkeyKing {
                 case .video(let url):
                     weChatMessageInfo["objectType"] = "4"
                     weChatMessageInfo["mediaUrl"] = url.absoluteString
-                case .miniProgram(let webPageURL, let appBrandPath, let withShareTicket,let miniprogramType):
+                case .miniApp(let url, let path, let withShareTicket, let type):
                     if case .weChat(let appID, _, let miniProgramID) = account {
                         weChatMessageInfo["objectType"] = "36"
                         if let hdThumbnailImage = info.thumbnail {
                             weChatMessageInfo["hdThumbData"] = hdThumbnailImage.monkeyking_resetSizeOfImageData(maxSize: 127 * 1024)
                         }
-                        weChatMessageInfo["mediaUrl"] = webPageURL.absoluteString
-                        weChatMessageInfo["appBrandPath"] = appBrandPath
+                        weChatMessageInfo["mediaUrl"] = url.absoluteString
+                        weChatMessageInfo["appBrandPath"] = path
                         weChatMessageInfo["withShareTicket"] = withShareTicket
-                        weChatMessageInfo["miniprogramType"] = miniprogramType.rawValue
-                        if miniProgramID == nil {
-                            fatalError("Oh,No! You forgot to set `miniprogramID`!")
-                        } else {
+                        weChatMessageInfo["miniprogramType"] = type.rawValue
+                        if let miniProgramID = miniProgramID {
                             weChatMessageInfo["appBrandUserName"] = miniProgramID
+                        } else {
+                            fatalError("Missing `miniProgramID`!")
                         }
                     } 
                 case .file:
@@ -652,8 +651,8 @@ extension MonkeyKing {
                     if let filename = type.info.description?.monkeyking_urlEncodedString {
                         qqSchemeURLString += "&fileName=\(filename)"
                     }
-                case .miniProgram(_):
-                    fatalError("QQ not supports mini Program")
+                case .miniApp:
+                    fatalError("QQ not supports Mini App type")
                 }
                 if let encodedTitle = type.info.title?.monkeyking_base64AndURLEncodedString {
                     qqSchemeURLString += "&title=\(encodedTitle)"
@@ -730,8 +729,8 @@ extension MonkeyKing {
                         fatalError("Weibo not supports Video type")
                     case .file:
                         fatalError("Weibo not supports File type")
-                    case .miniProgram(_):
-                        fatalError("Weibo not supports mini Program")
+                    case .miniApp:
+                        fatalError("Weibo not supports Mini App type")
                     }
                 }
                 let uuidString = UUID().uuidString
@@ -784,8 +783,8 @@ extension MonkeyKing {
                     fatalError("web Weibo not supports Video type")
                 case .file:
                     fatalError("web Weibo not supports File type")
-                case .miniProgram(_):
-                    fatalError("web Weibo not supports mini Program")
+                case .miniApp:
+                    fatalError("web Weibo not supports Mini App type")
                 }
             }
             let statusText = status.flatMap({ $0 }).joined(separator: " ")
@@ -825,8 +824,8 @@ extension MonkeyKing {
                 fatalError("web Weibo not supports Video type")
             case .file:
                 fatalError("web Weibo not supports File type")
-            case .miniProgram(_):
-                fatalError("web Weibo not supports mini Program")
+            case .miniApp:
+                fatalError("web Weibo not supports Mini App type")
             }
         case .alipay(let type):
             let dictionary = createAlipayMessageDictionary(withScene: type.scene, info: type.info, appID: appID)

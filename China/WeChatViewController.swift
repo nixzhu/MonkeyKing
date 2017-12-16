@@ -10,13 +10,13 @@ class WeChatViewController: UIViewController {
         super.viewDidLoad()
 
         // Should not register account here
-        let account = MonkeyKing.Account.weChat(appID: Configs.Wechat.appID, appKey: Configs.Wechat.appKey, miniProgramID: Configs.Wechat.miniProgramID)
+        let account = MonkeyKing.Account.weChat(appID: Configs.WeChat.appID, appKey: Configs.WeChat.appKey, miniAppID: Configs.WeChat.miniAppID)
         MonkeyKing.registerAccount(account)
     }
 
     @IBAction func shareText(_ sender: UIButton) {
         let info = MonkeyKing.Info(
-            title: "Timeline Text, \(UUID().uuidString)",
+            title: "Text, \(UUID().uuidString)",
             description: nil,
             thumbnail: nil,
             media: nil
@@ -26,7 +26,7 @@ class WeChatViewController: UIViewController {
 
     @IBAction func shareURL(_ sender: UIButton) {
         let info = MonkeyKing.Info(
-            title: "Timeline URL, \(UUID().uuidString)",
+            title: "URL, \(UUID().uuidString)",
             description: "Description URL, \(UUID().uuidString)",
             thumbnail: UIImage(named: "rabbit"),
             media: .url(URL(string: "http://soyep.com")!)
@@ -46,7 +46,7 @@ class WeChatViewController: UIViewController {
 
     @IBAction func shareMusic(_ sender: UIButton) {
         let info = MonkeyKing.Info(
-            title: "Timeline Music, \(UUID().uuidString)",
+            title: "Music, \(UUID().uuidString)",
             description: "Description Music, \(UUID().uuidString)",
             thumbnail: UIImage(named: "rabbit"),
             media: .audio(audioURL: URL(string: "http://stream20.qqmusic.qq.com/32464723.mp3")!, linkURL: URL(string: "http://soyep.com")!)
@@ -56,7 +56,7 @@ class WeChatViewController: UIViewController {
 
     @IBAction func shareVideo(_ sender: UIButton) {
         let info = MonkeyKing.Info(
-            title: "Timeline Video, \(UUID().uuidString)",
+            title: "Video, \(UUID().uuidString)",
             description: "Description Video, \(UUID().uuidString)",
             thumbnail: UIImage(named: "rabbit"),
             media: .video(URL(string: "http://v.youku.com/v_show/id_XNTUxNDY1NDY4.html")!)
@@ -64,12 +64,12 @@ class WeChatViewController: UIViewController {
         shareInfo(info)
     }
 
-    @IBAction func shareMINIProgram(_ sender: UIButton) {
+    @IBAction func shareMiniApp(_ sender: UIButton) {
         let info = MonkeyKing.Info(
-            title: "Timeline URL, \(UUID().uuidString)",
+            title: "Mini App, \(UUID().uuidString)",
             description: nil,
             thumbnail: UIImage(named: "rabbit"),
-            media: .miniProgram(webPageURL: URL(string: "http://soyep.com")!, appBrandPath: "",withShareTicket: true, miniprogramType: .release)
+            media: .miniApp(url: URL(string: "http://soyep.com")!, path: "", withShareTicket: true, type: .release)
         )
         shareInfo(info)
     }
@@ -107,7 +107,7 @@ extension WeChatViewController {
 
     @IBAction func OAuthWithoutAppKey(_ sender: UIButton) {
         // Should not register account here
-        let accountWithoutAppKey = MonkeyKing.Account.weChat(appID: Configs.Wechat.appID, appKey: nil, miniProgramID: nil)
+        let accountWithoutAppKey = MonkeyKing.Account.weChat(appID: Configs.WeChat.appID, appKey: nil, miniAppID: nil)
         MonkeyKing.registerAccount(accountWithoutAppKey)
 
         MonkeyKing.oauth(for: .weChat) { (dictionary, response, error) in

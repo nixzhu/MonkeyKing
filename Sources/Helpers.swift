@@ -48,8 +48,8 @@ extension MonkeyKing {
                 fatalError("Alipay not supports Video type")
             case .file:
                 fatalError("Alipay not supports File type")
-            case .miniProgram(_):
-                fatalError("Alipay not supports mini Program")
+            case .miniApp:
+                fatalError("Alipay not supports Mini App type")
             }
         } else { // Text
             messageType = .text
