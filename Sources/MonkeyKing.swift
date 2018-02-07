@@ -590,7 +590,7 @@ extension MonkeyKing {
                 weChatMessageInfo["command"] = "1020"
             }
             var weChatMessage: [String: Any] = [appID: weChatMessageInfo]
-            if let oldText = UIPasteboard.oldText {
+            if let oldText = UIPasteboard.general.oldText {
                 weChatMessage["old_text"] = oldText
             }
             guard let data = try? PropertyListSerialization.data(fromPropertyList: weChatMessage, format: .binary, options: 0) else { return }
@@ -616,7 +616,7 @@ extension MonkeyKing {
                 func handleNews(with url: URL, mediaType: String?) {
                     if let thumbnailData = type.info.thumbnail?.monkeyking_compressedImageData {
                         var dic: [String: Any] = ["previewimagedata": thumbnailData]
-                        if let oldText = UIPasteboard.oldText {
+                        if let oldText = UIPasteboard.general.oldText {
                             dic["pasted_string"] = oldText
                         }
                         let data = NSKeyedArchiver.archivedData(withRootObject: dic)
@@ -641,7 +641,7 @@ extension MonkeyKing {
                     if let thumbnail = type.info.thumbnail, let thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
                         dic["previewimagedata"] = thumbnailData
                     }
-                    if let oldText = UIPasteboard.oldText {
+                    if let oldText = UIPasteboard.general.oldText {
                         dic["pasted_string"] = oldText
                     }
                     let data = NSKeyedArchiver.archivedData(withRootObject: dic)
@@ -653,7 +653,7 @@ extension MonkeyKing {
                     handleNews(with: url, mediaType: nil) // No video type, default is news type.
                 case .file(let fileData):
                     var dic: [String: Any] = ["file_data": fileData]
-                    if let oldText = UIPasteboard.oldText {
+                    if let oldText = UIPasteboard.general.oldText {
                         dic["pasted_string"] = oldText
                     }
                     let data = NSKeyedArchiver.archivedData(withRootObject: dic)
