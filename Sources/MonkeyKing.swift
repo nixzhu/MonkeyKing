@@ -589,7 +589,7 @@ extension MonkeyKing {
             } else { // Text Share
                 weChatMessageInfo["command"] = "1020"
             }
-            var weChatMessage: [String : Any] = [appID: weChatMessageInfo]
+            var weChatMessage: [String: Any] = [appID: weChatMessageInfo]
             if let oldText = UIPasteboard.oldText {
                 weChatMessage["old_text"] = oldText
             }

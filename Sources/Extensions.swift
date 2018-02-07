@@ -305,7 +305,7 @@ extension UIImage {
 }
 
 extension UIPasteboard {
-    /// Fetch old text in pasteboard
+    /// Fetch old text on pasteboard
     static var oldText: String? {
         let utf8PlainText = kUTTypeUTF8PlainText as String
         guard let firstItem = UIPasteboard.general.items.first else { return nil }
