@@ -517,7 +517,7 @@ extension MonkeyKing {
             return account.isAppInstalled
         }
     }
-
+    
     public class func deliver(_ message: Message, completionHandler: @escaping DeliverCompletionHandler) {
         guard message.canBeDelivered else {
             completionHandler(.failure(.messageCanNotBeDelivered))
@@ -589,7 +589,10 @@ extension MonkeyKing {
             } else { // Text Share
                 weChatMessageInfo["command"] = "1020"
             }
-            let weChatMessage = [appID: weChatMessageInfo]
+            var weChatMessage: [String : Any] = [appID: weChatMessageInfo]
+            if let oldText = UIPasteboard.oldText {
+                weChatMessage["old_text"] = oldText
+            }
             guard let data = try? PropertyListSerialization.data(fromPropertyList: weChatMessage, format: .binary, options: 0) else { return }
             UIPasteboard.general.setData(data, forPasteboardType: "content")
             let weChatSchemeURLString = "weixin://app/\(appID)/sendreq/?"
@@ -612,7 +615,10 @@ extension MonkeyKing {
             if let media = type.info.media {
                 func handleNews(with url: URL, mediaType: String?) {
                     if let thumbnailData = type.info.thumbnail?.monkeyking_compressedImageData {
-                        let dic = ["previewimagedata": thumbnailData]
+                        var dic: [String: Any] = ["previewimagedata": thumbnailData]
+                        if let oldText = UIPasteboard.oldText {
+                            dic["pasted_string"] = oldText
+                        }
                         let data = NSKeyedArchiver.archivedData(withRootObject: dic)
                         UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
                     }
@@ -631,11 +637,12 @@ extension MonkeyKing {
                         completionHandler(.failure(.invalidImageData))
                         return
                     }
-                    var dic = [
-                        "file_data": imageData
-                    ]
+                    var dic: [String: Any] = ["file_data": imageData]
                     if let thumbnail = type.info.thumbnail, let thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
                         dic["previewimagedata"] = thumbnailData
+                    }
+                    if let oldText = UIPasteboard.oldText {
+                        dic["pasted_string"] = oldText
                     }
                     let data = NSKeyedArchiver.archivedData(withRootObject: dic)
                     UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
@@ -645,7 +652,11 @@ extension MonkeyKing {
                 case .video(let url):
                     handleNews(with: url, mediaType: nil) // No video type, default is news type.
                 case .file(let fileData):
-                    let data = NSKeyedArchiver.archivedData(withRootObject: ["file_data": fileData])
+                    var dic: [String: Any] = ["file_data": fileData]
+                    if let oldText = UIPasteboard.oldText {
+                        dic["pasted_string"] = oldText
+                    }
+                    let data = NSKeyedArchiver.archivedData(withRootObject: dic)
                     UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
                     qqSchemeURLString += "localFile"
                     if let filename = type.info.description?.monkeyking_urlEncodedString {
