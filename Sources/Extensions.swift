@@ -1,5 +1,6 @@
 
 import Foundation
+import MobileCoreServices
 
 extension Set {
 
@@ -300,5 +301,15 @@ extension UIImage {
             }
         }
         return outPutImageData
+    }
+}
+
+extension UIPasteboard {
+    /// Fetch old text on pasteboard
+    var oldText: String? {
+        let utf8PlainText = kUTTypeUTF8PlainText as String
+        guard let firstItem = items.first else { return nil }
+        guard let plainText = firstItem[utf8PlainText] as? String else { return nil }
+        return plainText
     }
 }
