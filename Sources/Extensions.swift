@@ -307,9 +307,9 @@ extension UIImage {
 extension UIPasteboard {
     /// Fetch old text on pasteboard
     var oldText: String? {
-        let utf8PlainText = kUTTypeUTF8PlainText as String
-        guard let firstItem = items.first else { return nil }
-        guard let plainText = firstItem[utf8PlainText] as? String else { return nil }
-        return plainText
+        /// From iOS 8 to iOS 11, UIPasteboardTypeListString contains two elements: public.text, public.utf8-plain-text
+        guard let typeListString = UIPasteboardTypeListString as? [String] else { return nil }
+        guard UIPasteboard.general.contains(pasteboardTypes: typeListString) else { return nil }
+        return UIPasteboard.general.string
     }
 }
