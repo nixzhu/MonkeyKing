@@ -474,20 +474,25 @@ func arrayOfBytes<T>(_ value:T, length: Int? = nil) -> [UInt8] {
     for j in 0..<min(MemoryLayout<T>.size,totalBytes) {
         bytes[totalBytes - 1 - j] = (bytesPointer + j).pointee
     }
+    #if swift(>=4.1)
+    valuePointer.deinitialize(count: totalBytes)
+    valuePointer.deallocate()
+    #else
     valuePointer.deinitialize()
     valuePointer.deallocate(capacity: 1)
+    #endif
     return bytes
 }
 
-func rotateLeft(_ v:UInt16, n:UInt16) -> UInt16 {
+func rotateLeft(_ v: UInt16, n: UInt16) -> UInt16 {
     return ((v << n) & 0xFFFF) | (v >> (16 - n))
 }
 
-func rotateLeft(_ v:UInt32, n:UInt32) -> UInt32 {
+func rotateLeft(_ v: UInt32, n: UInt32) -> UInt32 {
     return ((v << n) & 0xFFFFFFFF) | (v >> (32 - n))
 }
 
-func rotateLeft(_ x:UInt64, n:UInt64) -> UInt64 {
+func rotateLeft(_ x: UInt64, n: UInt64) -> UInt64 {
     return (x << n) | (x >> (64 - n))
 }
 

@@ -787,7 +787,11 @@ extension MonkeyKing {
                     fatalError("web Weibo not supports Mini App type")
                 }
             }
+            #if swift(>=4.1)
+            let statusText = status.compactMap({ $0 }).joined(separator: " ")
+            #else
             let statusText = status.flatMap({ $0 }).joined(separator: " ")
+            #endif
             parameters["status"] = statusText
             switch mediaType {
             case .url(_):
@@ -867,8 +871,12 @@ extension MonkeyKing {
                 }
             }
             switch mediaType {
-            case .url(_):
+            case .url:
+                #if swift(>=4.1)
+                let statusText = status.compactMap({ $0 }).joined(separator: " ")
+                #else
                 let statusText = status.flatMap({ $0 }).joined(separator: " ")
+                #endif
                 let updateStatusAPI = "https://api.twitter.com/1.1/statuses/update.json"
                 var parameters = ["status": statusText]
                 if let mediaIDs = type.mediaIDs {

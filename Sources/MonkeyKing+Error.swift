@@ -59,9 +59,10 @@ extension MonkeyKing {
     }
 }
 
+#if swift(>=4.1)
 extension MonkeyKing.Error: LocalizedError {
 
-    public var errorDescription: String {
+    public var errorDescription: String? {
         switch self {
         case .invalidImageData:
             return "Convert image to data failed."
@@ -83,3 +84,4 @@ extension MonkeyKing.Error: LocalizedError {
         }
     }
 }
+#endif
