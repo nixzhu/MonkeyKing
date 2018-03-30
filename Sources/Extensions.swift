@@ -1,5 +1,6 @@
 
 import Foundation
+import MobileCoreServices
 
 extension Set {
 
@@ -300,5 +301,15 @@ extension UIImage {
             }
         }
         return outPutImageData
+    }
+}
+
+extension UIPasteboard {
+    /// Fetch old text on pasteboard
+    var oldText: String? {
+        /// From iOS 8 to iOS 11, UIPasteboardTypeListString contains two elements: public.text, public.utf8-plain-text
+        guard let typeListString = UIPasteboardTypeListString as? [String] else { return nil }
+        guard UIPasteboard.general.contains(pasteboardTypes: typeListString) else { return nil }
+        return UIPasteboard.general.string
     }
 }
