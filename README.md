@@ -45,7 +45,8 @@ Example: Share to WeChat (微信)：
 3. If you need to handle call back, add following code:
 
 	```swift
-    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+    //func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool { // only for iOS 8
 
         if MonkeyKing.handleOpenURL(url) {
             return true
