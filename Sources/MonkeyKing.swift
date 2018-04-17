@@ -192,7 +192,8 @@ extension MonkeyKing {
 
                     // OAuth Failed
                     if let state = info["state"] as? String, state == "Weixinauth", resultCode != 0 {
-                        let error = NSError(domain: "WeChat OAuth Error", code: -1, userInfo: nil)
+                        let error: Swift.Error = resultCode == -2 ? Error.userCancelled : NSError(domain: "WeChat OAuth Error", code: resultCode, userInfo: nil)
+                        
                         shared.oauthCompletionHandler?(nil, nil, error)
                         return false
                     }
@@ -238,7 +239,7 @@ extension MonkeyKing {
             }
             guard let result = info["ret"] as? Int, result == 0 else {
                 if let errorDomatin = info["user_cancelled"] as? String, errorDomatin == "YES" {
-                    error = NSError(domain: "User Cancelled", code: -2, userInfo: nil)
+                    error = Error.userCancelled
                 } else {
                     error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
                 }
