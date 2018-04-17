@@ -7,6 +7,7 @@ extension MonkeyKing {
         case noAccount
         case messageCanNotBeDelivered
         case invalidImageData
+        case userCancelled
 
         public enum SDKReason {
             case unknown
@@ -70,6 +71,8 @@ extension MonkeyKing.Error: LocalizedError {
             return "There no invalid developer account."
         case .messageCanNotBeDelivered:
             return "Message can't be delivered."
+        case .userCancelled:
+            return "User Cancelled"
         case .apiRequest(reason: let reason):
             switch reason.type {
             case .invalidToken:
