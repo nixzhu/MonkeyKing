@@ -29,6 +29,7 @@ extension MonkeyKing {
         enum AlipayMessageType {
             case text
             case image(UIImage)
+            case imageData(Data)
             case url(URL)
         }
         let keyUID = "CF$UID"
@@ -42,6 +43,8 @@ extension MonkeyKing {
                 messageType = .url(url)
             case .image(let image):
                 messageType = .image(image)
+            case .imageData(let imageData):
+                messageType = .imageData(imageData)
             case .audio:
                 fatalError("Alipay not supports Audio type")
             case .video:
@@ -61,7 +64,7 @@ extension MonkeyKing {
         case .text:
             UIDValue = 20
             APMediaType = "APShareTextObject"
-        case .image:
+        case .image, .imageData:
             UIDValue = 21
             APMediaType = "APShareImageObject"
         case .url:
@@ -150,7 +153,17 @@ extension MonkeyKing {
                 keyClass: [keyUID: 17],
                 "imageData": [keyUID: 15]
             ]
-            let imageData = UIImageJPEGRepresentation(image, 0.7) ?? Data()
+            let imageData = UIImageJPEGRepresentation(image, 0.9) ?? Data()
+            let imageObjectsItem15: [String: Any] = [
+                keyClass: [keyUID: 16],
+                "NS.data": imageData
+            ]
+            objectsValue = objectsValue + [publicObjectsItem13, imageObjectsItem14, imageObjectsItem15, publicObjectsItem14]
+        case .imageData(let imageData):
+            let imageObjectsItem14: [String: Any] = [
+                keyClass: [keyUID: 17],
+                "imageData": [keyUID: 15]
+            ]
             let imageObjectsItem15: [String: Any] = [
                 keyClass: [keyUID: 16],
                 "NS.data": imageData
@@ -164,7 +177,6 @@ extension MonkeyKing {
                 "thumbData": [keyUID: 16],
                 "title": [keyUID: 14]
             ]
-
             let thumbnailData = info.thumbnail?.monkeyking_compressedImageData ?? Data()
             let urlObjectsItem14 = info.title ?? "Input Title"
             let urlObjectsItem15 = info.description ?? "Input Description"
