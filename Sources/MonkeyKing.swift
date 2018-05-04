@@ -353,6 +353,7 @@ extension MonkeyKing {
     public enum Media {
         case url(URL)
         case image(UIImage)
+        case imageData(Data)
         case audio(audioURL: URL, linkURL: URL?)
         case video(URL)
         case file(Data)
@@ -556,9 +557,12 @@ extension MonkeyKing {
                     weChatMessageInfo["mediaUrl"] = url.absoluteString
                 case .image(let image):
                     weChatMessageInfo["objectType"] = "2"
-                    if let fileImageData = UIImageJPEGRepresentation(image, 1) {
-                        weChatMessageInfo["fileData"] = fileImageData
+                    if let imageData = UIImageJPEGRepresentation(image, 0.9) {
+                        weChatMessageInfo["fileData"] = imageData
                     }
+                case .imageData(let imageData):
+                    weChatMessageInfo["objectType"] = "2"
+                    weChatMessageInfo["fileData"] = imageData
                 case .audio(let audioURL, let linkURL):
                     weChatMessageInfo["objectType"] = "3"
                     if let urlString = linkURL?.absoluteString {
@@ -634,12 +638,23 @@ extension MonkeyKing {
                 case .url(let url):
                     handleNews(with: url, mediaType: "news")
                 case .image(let image):
-                    guard let imageData = UIImageJPEGRepresentation(image, 1) else {
+                    guard let imageData = UIImageJPEGRepresentation(image, 0.9) else {
                         completionHandler(.failure(.invalidImageData))
                         return
                     }
                     var dic: [String: Any] = ["file_data": imageData]
-                    if let thumbnail = type.info.thumbnail, let thumbnailData = UIImageJPEGRepresentation(thumbnail, 1) {
+                    if let thumbnail = type.info.thumbnail, let thumbnailData = UIImageJPEGRepresentation(thumbnail, 0.9) {
+                        dic["previewimagedata"] = thumbnailData
+                    }
+                    if let oldText = UIPasteboard.general.oldText {
+                        dic["pasted_string"] = oldText
+                    }
+                    let data = NSKeyedArchiver.archivedData(withRootObject: dic)
+                    UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
+                    qqSchemeURLString += "img"
+                case .imageData(let imageData):
+                    var dic: [String: Any] = ["file_data": imageData]
+                    if let thumbnail = type.info.thumbnail, let thumbnailData = UIImageJPEGRepresentation(thumbnail, 0.9) {
                         dic["previewimagedata"] = thumbnailData
                     }
                     if let oldText = UIPasteboard.general.oldText {
@@ -730,11 +745,15 @@ extension MonkeyKing {
                             messageInfo["text"] = text.isEmpty ? url.absoluteString : text + " " + url.absoluteString
                         }
                     case .image(let image):
-                        if let imageData = UIImageJPEGRepresentation(image, 1.0) {
+                        if let imageData = UIImageJPEGRepresentation(image, 0.9) {
                             messageInfo["imageObject"] = [
                                 "imageData": imageData
                             ]
                         }
+                    case .imageData(let imageData):
+                        messageInfo["imageObject"] = [
+                            "imageData": imageData
+                        ]
                     case .audio:
                         fatalError("Weibo not supports Audio type")
                     case .video:
@@ -783,12 +802,15 @@ extension MonkeyKing {
                     status.append(url.absoluteString)
                     mediaType = Media.url(url)
                 case .image(let image):
-                    guard let imageData = UIImageJPEGRepresentation(image, 0.7) else {
+                    guard let imageData = UIImageJPEGRepresentation(image, 0.9) else {
                         completionHandler(.failure(.invalidImageData))
                         return
                     }
                     parameters["pic"] = imageData
                     mediaType = Media.image(image)
+                case .imageData(let imageData):
+                    parameters["pic"] = imageData
+                    mediaType = Media.imageData(imageData)
                 case .audio:
                     fatalError("web Weibo not supports Audio type")
                 case .video:
@@ -806,7 +828,7 @@ extension MonkeyKing {
             #endif
             parameters["status"] = statusText
             switch mediaType {
-            case .url(_):
+            case .url:
                 let urlString = "https://api.weibo.com/2/statuses/share.json"
                 shared.request(urlString, method: .post, parameters: parameters) { (responseData, HTTPResponse, error) in
                     var reason: Error.APIRequestReason
@@ -820,7 +842,7 @@ extension MonkeyKing {
                         completionHandler(.success(nil))
                     }
                 }
-            case .image(_):
+            case .image, .imageData:
                 let urlString = "https://api.weibo.com/2/statuses/share.json"
                 shared.upload(urlString, parameters: parameters) { (responseData, HTTPResponse, error) in
                     var reason: Error.APIRequestReason
@@ -872,12 +894,15 @@ extension MonkeyKing {
                     status.append(url.absoluteString)
                     mediaType = Media.url(url)
                 case .image(let image):
-                    guard let imageData = UIImageJPEGRepresentation(image, 0.7) else {
+                    guard let imageData = UIImageJPEGRepresentation(image, 0.9) else {
                         completionHandler(.failure(.invalidImageData))
                         return
                     }
                     parameters["media"] = imageData
                     mediaType = Media.image(image)
+                case .imageData(let imageData):
+                    parameters["media"] = imageData
+                    mediaType = Media.imageData(imageData)
                 default:
                     fatalError("web Twitter not supports this type")
                 }
@@ -921,7 +946,7 @@ extension MonkeyKing {
                         }
                     }
                 }
-            case .image(_):
+            case .image, .imageData:
                 let uploadMediaAPI = "https://upload.twitter.com/1.1/media/upload.json"
                 if case .twitter(let appID, let appKey, _) = account {
                     // ref: https://dev.twitter.com/rest/media/uploading-media#keepinmind
