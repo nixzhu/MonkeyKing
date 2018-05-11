@@ -92,6 +92,17 @@ MonkeyKing.oauth(for: .weibo) { (oauthInfo, response, error) -> Void in
 }
 ```
 
+or, WeChat OAuth for code only
+
+``` swift
+MonkeyKing.weChatOAuthForCode { [weak self] (code, error) in
+    guard let code = code else {
+        return
+    }
+    // TODO: fetch info with code
+}
+```
+
 If user don't have Weibo App installed on their devices then MonkeyKing will use web OAuth:
 
 <img src="https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/wbOAuth.png" width="240">
