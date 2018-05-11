@@ -116,6 +116,16 @@ extension WeChatViewController {
             print("error \(String(describing: error))")
         }
     }
+
+    @IBAction func OAuthForCode(_ sender: UIButton) {
+        MonkeyKing.weChatOAuthForCode { [weak self] (code, error) in
+            guard let code = code else {
+                print("error \(String(describing: error))")
+                return
+            }
+            self?.fetchWeChatOAuthInfoByCode(code: code)
+        }
+    }
 }
 
 // MARK: - Pay
@@ -172,8 +182,8 @@ extension WeChatViewController {
     }
 
     private func fetchWeChatOAuthInfoByCode(code: String) {
-        let appID = ""
-        let appKey = "" // fetch appKey from server
+        let appID = Configs.WeChat.appID // fetch appID from server
+        let appKey = Configs.WeChat.appKey // fetch appKey from server
 
         var accessTokenAPI = "https://api.weixin.qq.com/sns/oauth2/access_token?"
         accessTokenAPI += "appid=" + appID
