@@ -11,6 +11,7 @@ public class MonkeyKing: NSObject {
     }
     public typealias DeliverCompletionHandler = (_ result: DeliverResult) -> Void
     public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Swift.Error?) -> Void
+    public typealias WeChatOAuthForCodeCompletionHandler = (_ code: String?, _ error: Swift.Error?) -> Void
     public typealias PayCompletionHandler = (_ result: Bool) -> Void
 
     static let shared = MonkeyKing()
@@ -18,6 +19,7 @@ public class MonkeyKing: NSObject {
     var accountSet = Set<Account>()
 
     var oauthCompletionHandler: OAuthCompletionHandler?
+    var weChatOAuthForCodeCompletionHandler: WeChatOAuthForCodeCompletionHandler?
     private var deliverCompletionHandler: DeliverCompletionHandler?
     private var payCompletionHandler: PayCompletionHandler?
 
@@ -148,10 +150,18 @@ extension MonkeyKing {
             // OAuth
             if urlString.contains("state=Weixinauth") {
                 let queryDictionary = url.monkeyking_queryDictionary
-                guard let code = queryDictionary["code"] as? String else { return false }
+                guard let code = queryDictionary["code"] as? String else {
+                    shared.weChatOAuthForCodeCompletionHandler = nil
+                    return false
+                }
                 // Login Succcess
-                fetchWeChatOAuthInfoByCode(code: code) { (info, response, error) in
-                    shared.oauthCompletionHandler?(info, response, error)
+                if let halfOauthCompletion = shared.weChatOAuthForCodeCompletionHandler {
+                    halfOauthCompletion(code, nil)
+                    shared.weChatOAuthForCodeCompletionHandler = nil
+                } else {
+                    fetchWeChatOAuthInfoByCode(code: code) { (info, response, error) in
+                        shared.oauthCompletionHandler?(info, response, error)
+                    }
                 }
                 return true
             }
@@ -1130,6 +1140,31 @@ extension MonkeyKing {
         case .twitter(let appID, let appKey, let redirectURL):
             shared.twitterAuthenticate(appID: appID, appKey: appKey, redirectURL: redirectURL)
         case .alipay:
+            break
+        }
+    }
+
+    public class func weChatOAuthForCode(scope: String? = nil, requestToken: String? = nil, completionHandler: @escaping WeChatOAuthForCodeCompletionHandler) {
+        guard let account = shared.accountSet[.weChat] else { return }
+        guard account.isAppInstalled || account.canWebOAuth else {
+            let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
+            completionHandler(nil, error)
+            return
+        }
+        shared.weChatOAuthForCodeCompletionHandler = completionHandler
+        switch account {
+        case .weChat(let appID, _, _):
+            let scope = scope ?? "snsapi_userinfo"
+            guard account.isAppInstalled else {
+                let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
+                completionHandler(nil, error)
+                return
+            }
+            openURL(urlString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth") { flag in
+                if flag { return }
+                completionHandler(nil, NSError(domain: "OAuth Error, cannot open url weixin://", code: -1, userInfo: nil))
+            }
+        default:
             break
         }
     }
