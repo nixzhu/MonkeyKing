@@ -10,6 +10,11 @@ public class MonkeyKing: NSObject {
         case failure(Error)
     }
     public typealias DeliverCompletionHandler = (_ result: DeliverResult) -> Void
+    public enum LaunchResult {
+        case success(ResponseJSON?)
+        case failure(Error)
+    }
+    public typealias LaunchCompletionHandler = (_ result: LaunchResult) -> Void
     public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Swift.Error?) -> Void
     public typealias WeChatOAuthForCodeCompletionHandler = (_ code: String?, _ error: Swift.Error?) -> Void
     public typealias PayCompletionHandler = (_ result: Bool) -> Void
@@ -22,6 +27,7 @@ public class MonkeyKing: NSObject {
     var weChatOAuthForCodeCompletionHandler: WeChatOAuthForCodeCompletionHandler?
     private var deliverCompletionHandler: DeliverCompletionHandler?
     private var payCompletionHandler: PayCompletionHandler?
+    private var launchCompletionHandler: LaunchCompletionHandler?
 
     private var customAlipayOrderScheme: String?
 
@@ -359,6 +365,11 @@ extension MonkeyKing {
 // MARK: Share Message
 
 extension MonkeyKing {
+    public enum MiniAppType: Int {
+        case release    = 0
+        case test       = 1
+        case preview    = 2
+    }
 
     public enum Media {
         case url(URL)
@@ -367,11 +378,6 @@ extension MonkeyKing {
         case audio(audioURL: URL, linkURL: URL?)
         case video(URL)
         case file(Data)
-        public enum MiniAppType: Int {
-            case release    = 0
-            case test       = 1
-            case preview    = 2
-        }
         case miniApp(url: URL, path: String, withShareTicket: Bool, type: MiniAppType)
     }
 
@@ -1180,6 +1186,36 @@ extension MonkeyKing {
                 let requestToken = (responseData["oauth_token"] as? String) {
                 let loginURL = "https://api.twitter.com/oauth/authenticate?oauth_token=\(requestToken)"
                 MonkeyKing.addWebView(withURLString: loginURL)
+            }
+        }
+    }
+}
+
+extension MonkeyKing {
+    public enum Program {
+        public enum WeChatSubType {
+            case miniApp(appID: String, path: String?, type: MiniAppType)
+        }
+
+        case weChat(WeChatSubType)
+    }
+
+    public class func launch(program: Program, completionHandler: @escaping LaunchCompletionHandler) {
+        guard let account = shared.accountSet[.weChat] else {
+            completionHandler(.failure(.noAccount))
+            return
+        }
+
+        shared.launchCompletionHandler = completionHandler
+
+        switch program {
+        case .weChat(let type):
+            switch type {
+            case .miniApp(let appID, let path, let type):
+                openURL(urlString: "weixin://app/\(account.appID)/jumpWxa/?userName=\(appID)&path=\(path ?? "")&miniProgramType=\(type.rawValue)") { flag in
+                    if flag { return }
+                    completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
+                }
             }
         }
     }
