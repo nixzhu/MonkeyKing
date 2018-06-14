@@ -1212,7 +1212,17 @@ extension MonkeyKing {
         case .weChat(let type):
             switch type {
             case .miniApp(let userName, let path, let type):
-                openURL(urlString: "weixin://app/\(account.appID)/jumpWxa/?userName=\(userName)&path=\(path ?? "")&miniProgramType=\(type.rawValue)") { flag in
+                var components = URLComponents(string: "weixin://app/\(account.appID)/jumpWxa/")
+                components?.queryItems = [
+                    URLQueryItem(name: "userName", value: userName),
+                    URLQueryItem(name: "path", value: path),
+                    URLQueryItem(name: "miniProgramType", value: String(type.rawValue)),
+                ]
+                guard let string = components?.url?.absoluteString else {
+                    completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
+                    return
+                }
+                openURL(urlString: string) { flag in
                     if flag { return }
                     completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
                 }
