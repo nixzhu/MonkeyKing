@@ -1194,7 +1194,7 @@ extension MonkeyKing {
 extension MonkeyKing {
     public enum Program {
         public enum WeChatSubType {
-            case miniApp(appID: String, path: String?, type: MiniAppType)
+            case miniApp(userName: String, path: String?, type: MiniAppType)
         }
 
         case weChat(WeChatSubType)
@@ -1211,8 +1211,8 @@ extension MonkeyKing {
         switch program {
         case .weChat(let type):
             switch type {
-            case .miniApp(let appID, let path, let type):
-                openURL(urlString: "weixin://app/\(account.appID)/jumpWxa/?userName=\(appID)&path=\(path ?? "")&miniProgramType=\(type.rawValue)") { flag in
+            case .miniApp(let userName, let path, let type):
+                openURL(urlString: "weixin://app/\(account.appID)/jumpWxa/?userName=\(userName)&path=\(path ?? "")&miniProgramType=\(type.rawValue)") { flag in
                     if flag { return }
                     completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
                 }
