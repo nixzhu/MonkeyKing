@@ -1194,13 +1194,13 @@ extension MonkeyKing {
 extension MonkeyKing {
     public enum Program {
         public enum WeChatSubType {
-            case miniApp(userName: String, path: String?, type: MiniAppType)
+            case miniApp(username: String, path: String?, type: MiniAppType)
         }
 
         case weChat(WeChatSubType)
     }
 
-    public class func launch(program: Program, completionHandler: @escaping LaunchCompletionHandler) {
+    public class func launch(_ program: Program, completionHandler: @escaping LaunchCompletionHandler) {
         guard let account = shared.accountSet[.weChat] else {
             completionHandler(.failure(.noAccount))
             return
@@ -1211,20 +1211,23 @@ extension MonkeyKing {
         switch program {
         case .weChat(let type):
             switch type {
-            case .miniApp(let userName, let path, let type):
+            case .miniApp(let username, let path, let type):
                 var components = URLComponents(string: "weixin://app/\(account.appID)/jumpWxa/")
                 components?.queryItems = [
-                    URLQueryItem(name: "userName", value: userName),
+                    URLQueryItem(name: "userName", value: username),
                     URLQueryItem(name: "path", value: path),
                     URLQueryItem(name: "miniProgramType", value: String(type.rawValue)),
                 ]
-                guard let string = components?.url?.absoluteString else {
+                guard let urlString = components?.url?.absoluteString else {
                     completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
                     return
                 }
-                openURL(urlString: string) { flag in
-                    if flag { return }
-                    completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
+                openURL(urlString: urlString) { flag in
+                    if flag {
+                        completionHandler(.success(nil))
+                    } else {
+                        completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
+                    }
                 }
             }
         }
