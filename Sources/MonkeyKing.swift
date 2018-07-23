@@ -1057,7 +1057,7 @@ extension MonkeyKing {
             } else {
                 openURL(urlString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth") { flag in
                     if flag { return }
-                    completionHandler(nil, nil, NSError(domain: "OAuth Error, cannot open url weixin://", code: -1, userInfo: nil))
+                    completionHandler(nil, nil, Error.userCancelled)
                 }
             }
         case .qq(let appID):
@@ -1080,7 +1080,7 @@ extension MonkeyKing {
                 UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.tencent\(appID)")
                 openURL(urlString: "mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1") { flag in
                     if flag { return }
-                    completionHandler(nil, nil, NSError(domain: "OAuth Error, cannot open url mqqOpensdkSSoLogin://", code: -1, userInfo: nil))
+                    completionHandler(nil, nil, Error.userCancelled)
                 }
                 return
             }
@@ -1117,7 +1117,7 @@ extension MonkeyKing {
                 UIPasteboard.general.items = authItems
                 openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000") { flag in
                     if flag { return }
-                    completionHandler(nil, nil, NSError(domain: "OAuth Error, cannot open url weibosdk://", code: -1, userInfo: nil))
+                    completionHandler(nil, nil, Error.userCancelled)
                 }
                 return
             }
@@ -1135,7 +1135,7 @@ extension MonkeyKing {
                 let requestTokenAPI = "pocket-oauth-v1:///authorize?request_token=\(requestToken)&redirect_uri=\(redirectURLString)"
                 openURL(urlString: requestTokenAPI) { flag in
                     if flag { return }
-                    completionHandler(nil, nil, NSError(domain: "OAuth Error, cannot open url pocket-oauth-v1://", code: -1, userInfo: nil))
+                    completionHandler(nil, nil, Error.userCancelled)
                 }
                 return
             }
