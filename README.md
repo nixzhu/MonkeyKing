@@ -127,7 +127,7 @@ MonkeyKing.deliver(order) { result in
 
 ### Launch WeChat Mini App
 
-``` swit
+``` swift
 let path = "..."
 MonkeyKing.launch(.weChat(.miniApp(username: "gh_XXX", path: path, type: .release))) { result in
     switch result {
