@@ -125,6 +125,22 @@ MonkeyKing.deliver(order) { result in
 <img src="https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/alipay.gif" width="240">
 
 
+### Launch WeChat Mini App
+
+``` swit
+let path = "..."
+MonkeyKing.launch(.weChat(.miniApp(username: "gh_XXX", path: path, type: .release))) { result in
+    switch result {
+    case .success:
+        break
+    case .failure(let error):
+        print("error:", error)
+    }
+}
+```
+
+Note that username has a `gh_` prefix (原始ID).
+
 ### More
 
 If you like to use `UIActivityViewController` for sharing then MonkeyKing has `AnyActivity` which can help you.
