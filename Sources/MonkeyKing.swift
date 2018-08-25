@@ -219,7 +219,8 @@ extension MonkeyKing {
                     if success {
                         shared.deliverCompletionHandler?(.success(nil))
                     } else {
-                        shared.deliverCompletionHandler?(.failure(.sdk(reason: .unknown)))
+                        let error: Error = resultCode == -2 ? Error.userCancelled : .sdk(reason: .unknown)
+                        shared.deliverCompletionHandler?(.failure(error))
                     }
 
                     return success
@@ -235,7 +236,8 @@ extension MonkeyKing {
             if success {
                 shared.deliverCompletionHandler?(.success(nil))
             } else {
-                shared.deliverCompletionHandler?(.failure(.sdk(reason: .unknown))) // TODO: pass errorDescription
+                let error: Error = errorDescription == "-4" ? Error.userCancelled : .sdk(reason: .unknown)
+                shared.deliverCompletionHandler?(.failure(error)) // TODO: pass errorDescription
             }
             return success
         }
@@ -303,7 +305,8 @@ extension MonkeyKing {
                 if success {
                     shared.deliverCompletionHandler?(.success(nil))
                 } else {
-                    shared.deliverCompletionHandler?(.failure(.sdk(reason: .unknown)))
+                    let error: Error = statusCode == -1 ? Error.userCancelled : .sdk(reason: .unknown)
+                    shared.deliverCompletionHandler?(.failure(error))
                 }
                 return success
             default:
