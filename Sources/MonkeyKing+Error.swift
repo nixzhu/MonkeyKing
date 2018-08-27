@@ -10,10 +10,10 @@ extension MonkeyKing {
         case userCancelled
 
         public enum SDKReason {
-            case unknown
             case invalidURLScheme
             case urlEncodeFailed
             case serializeFailed
+            case other(code: String)
         }
         case sdk(reason: SDKReason)
 

@@ -219,7 +219,9 @@ extension MonkeyKing {
                     if success {
                         shared.deliverCompletionHandler?(.success(nil))
                     } else {
-                        let error: Error = resultCode == -2 ? Error.userCancelled : .sdk(reason: .unknown)
+                        let error: Error = resultCode == -2
+                            ? .userCancelled
+                            : .sdk(reason: .other(code: result))
                         shared.deliverCompletionHandler?(.failure(error))
                     }
 
@@ -236,8 +238,10 @@ extension MonkeyKing {
             if success {
                 shared.deliverCompletionHandler?(.success(nil))
             } else {
-                let error: Error = errorDescription == "-4" ? Error.userCancelled : .sdk(reason: .unknown)
-                shared.deliverCompletionHandler?(.failure(error)) // TODO: pass errorDescription
+                let error: Error = errorDescription == "-4"
+                    ? .userCancelled
+                    : .sdk(reason: .other(code: errorDescription))
+                shared.deliverCompletionHandler?(.failure(error))
             }
             return success
         }
@@ -305,7 +309,9 @@ extension MonkeyKing {
                 if success {
                     shared.deliverCompletionHandler?(.success(nil))
                 } else {
-                    let error: Error = statusCode == -1 ? Error.userCancelled : .sdk(reason: .unknown)
+                    let error: Error = statusCode == -1
+                        ? .userCancelled
+                        : .sdk(reason: .other(code: String(statusCode)))
                     shared.deliverCompletionHandler?(.failure(error))
                 }
                 return success
@@ -356,7 +362,7 @@ extension MonkeyKing {
                 if success {
                     shared.deliverCompletionHandler?(.success(nil))
                 } else {
-                    shared.deliverCompletionHandler?(.failure(.sdk(reason: .unknown)))
+                    shared.deliverCompletionHandler?(.failure(.sdk(reason: .other(code: String(result))))) // TODO: user cancelled
                 }
                 return success
             }
