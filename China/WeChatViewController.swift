@@ -94,6 +94,16 @@ class WeChatViewController: UIViewController {
     }
 }
 
+// MARK: - Launch Mini App
+
+extension WeChatViewController {
+    @IBAction func launchMiniApp(_ sender: UIButton) {
+        MonkeyKing.launch(.weChat(.miniApp(username: Configs.WeChat.miniAppID, path: nil, type: .test))) { (result) in
+            print("result: \(result)")
+        }
+    }
+}
+
 // MARK: - OAuth
 
 extension WeChatViewController {
