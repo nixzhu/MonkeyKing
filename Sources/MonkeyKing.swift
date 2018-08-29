@@ -10,14 +10,14 @@ public class MonkeyKing: NSObject {
         case failure(Error)
     }
     public typealias DeliverCompletionHandler = (_ result: DeliverResult) -> Void
+    public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Swift.Error?) -> Void
+    public typealias WeChatOAuthForCodeCompletionHandler = (_ code: String?, _ error: Swift.Error?) -> Void
+    public typealias PayCompletionHandler = (_ result: Bool) -> Void
     public enum LaunchResult {
         case success(ResponseJSON?)
         case failure(Error)
     }
     public typealias LaunchCompletionHandler = (_ result: LaunchResult) -> Void
-    public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Swift.Error?) -> Void
-    public typealias WeChatOAuthForCodeCompletionHandler = (_ code: String?, _ error: Swift.Error?) -> Void
-    public typealias PayCompletionHandler = (_ result: Bool) -> Void
 
     static let shared = MonkeyKing()
 
@@ -28,6 +28,7 @@ public class MonkeyKing: NSObject {
     private var deliverCompletionHandler: DeliverCompletionHandler?
     private var payCompletionHandler: PayCompletionHandler?
     private var launchCompletionHandler: LaunchCompletionHandler?
+    private var launchFromWeChatMiniAppHandler: ((String) -> Void)?
 
     private var customAlipayOrderScheme: String?
 
@@ -142,6 +143,10 @@ public class MonkeyKing: NSObject {
         }
         shared.accountSet.insert(account)
     }
+
+    public class func registerLaunchFromWeChatMiniAppHandler(_ handler: @escaping (String) -> Void) {
+        shared.launchFromWeChatMiniAppHandler = handler
+    }
 }
 
 // MARK: OpenURL Handler
@@ -208,7 +213,6 @@ extension MonkeyKing {
                     // OAuth Failed
                     if let state = info["state"] as? String, state == "Weixinauth", resultCode != 0 {
                         let error: Swift.Error = resultCode == -2 ? Error.userCancelled : NSError(domain: "WeChat OAuth Error", code: resultCode, userInfo: nil)
-                        
                         shared.oauthCompletionHandler?(nil, nil, error)
                         return false
                     }
@@ -217,27 +221,17 @@ extension MonkeyKing {
 
                     // Share or Launch Mini App
                     if success {
-                        if let language = info["language"] as? String,
-                            let country = info["country"] as? String {
-                            shared.deliverCompletionHandler?(.success(["language": language, "country": country]))
+                        if let messageExt = info["messageExt"] as? String {
+                            shared.launchFromWeChatMiniAppHandler?(messageExt)
                         } else {
-                            let messageExt = info["messageExt"] as? String
-                            shared.launchCompletionHandler?(.success(
-                                messageExt == nil
-                                    ? nil
-                                    : ["messageExt": messageExt!]
-                            ))
+                            shared.deliverCompletionHandler?(.success(nil))
                         }
                     } else {
                         let error: Error = resultCode == -2
                             ? .userCancelled
                             : .sdk(reason: .other(code: result))
-                        if let language = info["language"] as? String,
-                            let country = info["country"] as? String {
-                            shared.deliverCompletionHandler?(.failure(error))
-                        } else {
-                            shared.launchCompletionHandler?(.failure(error))
-                        }
+                        shared.deliverCompletionHandler?(.failure(error))
+                        // TODO: launchCompletionHandler error
                     }
 
                     return success

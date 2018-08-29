@@ -7,6 +7,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    func applicationDidFinishLaunching(_ application: UIApplication) {
+        MonkeyKing.registerLaunchFromWeChatMiniAppHandler({ messageExt in
+            print("messageExt:", messageExt)
+        })
+    }
+
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
         if MonkeyKing.handleOpenURL(url) {
             return true
