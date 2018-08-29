@@ -194,7 +194,6 @@ extension MonkeyKing {
                 return result
             }
 
-            // Share
             if let data = UIPasteboard.general.data(forPasteboardType: "content") {
                 if let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? [String: Any] {
 
@@ -216,13 +215,29 @@ extension MonkeyKing {
 
                     let success = (resultCode == 0)
 
+                    // Share or Launch Mini App
                     if success {
-                        shared.deliverCompletionHandler?(.success(nil))
+                        if let language = info["language"] as? String,
+                            let country = info["country"] as? String {
+                            shared.deliverCompletionHandler?(.success(["language": language, "country": country]))
+                        } else {
+                            let messageExt = info["messageExt"] as? String
+                            shared.launchCompletionHandler?(.success(
+                                messageExt == nil
+                                    ? nil
+                                    : ["messageExt": messageExt!]
+                            ))
+                        }
                     } else {
                         let error: Error = resultCode == -2
                             ? .userCancelled
                             : .sdk(reason: .other(code: result))
-                        shared.deliverCompletionHandler?(.failure(error))
+                        if let language = info["language"] as? String,
+                            let country = info["country"] as? String {
+                            shared.deliverCompletionHandler?(.failure(error))
+                        } else {
+                            shared.launchCompletionHandler?(.failure(error))
+                        }
                     }
 
                     return success
@@ -1232,11 +1247,8 @@ extension MonkeyKing {
                     return
                 }
                 openURL(urlString: urlString) { flag in
-                    if flag {
-                        completionHandler(.success(nil))
-                    } else {
-                        completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
-                    }
+                    if flag { return }
+                    completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
                 }
             }
         }

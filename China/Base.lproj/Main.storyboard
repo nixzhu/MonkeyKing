@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="tAd-W5-7vp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="tAd-W5-7vp">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -187,13 +187,20 @@
                                 </connections>
                             </button>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="dBn-A2-v5r">
-                                <rect key="frame" x="89" y="469" width="197" height="29"/>
+                                <rect key="frame" x="89" y="384" width="197" height="29"/>
                                 <segments>
                                     <segment title="Session"/>
                                     <segment title="Timeline"/>
                                     <segment title="Favorite"/>
                                 </segments>
                             </segmentedControl>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0hN-D7-bH1">
+                                <rect key="frame" x="130" y="432" width="115" height="30"/>
+                                <state key="normal" title="Launch Mini App"/>
+                                <connections>
+                                    <action selector="launchMiniApp:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="aMW-2z-D7H"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1yl-b1-jyR">
                                 <rect key="frame" x="172.5" y="597" width="30" height="30"/>
                                 <state key="normal" title="Pay"/>
@@ -228,20 +235,22 @@
                             <constraint firstItem="oRX-XU-uEu" firstAttribute="centerX" secondItem="UWw-uP-3po" secondAttribute="centerX" id="LMc-TR-Xjx"/>
                             <constraint firstItem="w7J-ug-Mpj" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="M4K-Ja-Rwp"/>
                             <constraint firstItem="lbo-xY-RTb" firstAttribute="centerX" secondItem="Wyh-QX-rAS" secondAttribute="centerX" id="MrI-pj-9mk"/>
+                            <constraint firstItem="0hN-D7-bH1" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="MvH-Kt-ya6"/>
                             <constraint firstItem="UWw-uP-3po" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="NBp-he-WOd"/>
                             <constraint firstItem="gS0-c6-rje" firstAttribute="centerX" secondItem="lbo-xY-RTb" secondAttribute="centerX" id="Nta-9O-HKg"/>
                             <constraint firstItem="1yl-b1-jyR" firstAttribute="top" secondItem="oRX-XU-uEu" secondAttribute="bottom" constant="10" id="OSU-xS-X21"/>
                             <constraint firstItem="1yl-b1-jyR" firstAttribute="centerX" secondItem="UWw-uP-3po" secondAttribute="centerX" id="RRj-kJ-syX"/>
                             <constraint firstItem="wfw-9a-DtS" firstAttribute="top" secondItem="UWw-uP-3po" secondAttribute="bottom" constant="120" id="YEu-E9-jJo"/>
                             <constraint firstItem="1yl-b1-jyR" firstAttribute="centerX" secondItem="UWw-uP-3po" secondAttribute="centerX" id="YU9-Gv-G45"/>
+                            <constraint firstItem="0hN-D7-bH1" firstAttribute="top" secondItem="dBn-A2-v5r" secondAttribute="bottom" constant="20" id="ZFV-D8-Uvf"/>
                             <constraint firstItem="dBn-A2-v5r" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="dhe-dT-Uhd"/>
                             <constraint firstItem="UWw-uP-3po" firstAttribute="top" secondItem="dBn-A2-v5r" secondAttribute="bottom" constant="20" id="fOu-7w-Fbd"/>
                             <constraint firstItem="lbo-xY-RTb" firstAttribute="top" secondItem="Wyh-QX-rAS" secondAttribute="bottom" constant="20" id="gen-7W-LYS"/>
                             <constraint firstItem="UWw-uP-3po" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="jIt-83-Fy3"/>
+                            <constraint firstItem="dBn-A2-v5r" firstAttribute="top" secondItem="7zS-bL-oQf" secondAttribute="bottom" constant="20" id="kAH-v7-D9X"/>
                             <constraint firstItem="8Vz-30-FuV" firstAttribute="top" secondItem="gS0-c6-rje" secondAttribute="bottom" constant="20" id="max-eJ-rXa"/>
                             <constraint firstItem="w7J-ug-Mpj" firstAttribute="top" secondItem="1yl-b1-jyR" secondAttribute="bottom" constant="10" id="oXn-g8-g7x"/>
                             <constraint firstItem="gS0-c6-rje" firstAttribute="top" secondItem="lbo-xY-RTb" secondAttribute="bottom" constant="20" id="qXk-3V-jIb"/>
-                            <constraint firstItem="UWw-uP-3po" firstAttribute="top" secondItem="dBn-A2-v5r" secondAttribute="bottom" constant="20" id="qZP-HK-Fz5"/>
                             <constraint firstItem="Wyh-QX-rAS" firstAttribute="top" secondItem="ERE-md-U1h" secondAttribute="bottom" constant="20" id="rjE-EK-f7i"/>
                             <constraint firstItem="8Vz-30-FuV" firstAttribute="centerX" secondItem="gS0-c6-rje" secondAttribute="centerX" id="skr-A7-ryL"/>
                             <constraint firstItem="sOl-Wo-bDF" firstAttribute="top" secondItem="8Vz-30-FuV" secondAttribute="bottom" constant="20" id="usH-ig-rrG"/>
@@ -265,7 +274,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BNf-UK-3XK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1548" y="409"/>
+            <point key="canvasLocation" x="1548" y="408.84557721139436"/>
         </scene>
         <!--Twitter-->
         <scene sceneID="QXs-KY-Zps">
