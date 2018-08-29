@@ -220,18 +220,22 @@ extension MonkeyKing {
                     let success = (resultCode == 0)
 
                     // Share or Launch Mini App
+                    let messageExtKey = "messageExt"
                     if success {
-                        if let messageExt = info["messageExt"] as? String {
+                        if let messageExt = info[messageExtKey] as? String {
                             shared.launchFromWeChatMiniAppHandler?(messageExt)
                         } else {
                             shared.deliverCompletionHandler?(.success(nil))
                         }
                     } else {
-                        let error: Error = resultCode == -2
-                            ? .userCancelled
-                            : .sdk(reason: .other(code: result))
-                        shared.deliverCompletionHandler?(.failure(error))
-                        // TODO: launchCompletionHandler error
+                        if let messageExt = info[messageExtKey] as? String {
+                            shared.launchFromWeChatMiniAppHandler?(messageExt)
+                        } else {
+                            let error: Error = resultCode == -2
+                                ? .userCancelled
+                                : .sdk(reason: .other(code: result))
+                            shared.deliverCompletionHandler?(.failure(error))
+                        }
                     }
 
                     return success
