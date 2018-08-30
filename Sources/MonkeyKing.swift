@@ -230,6 +230,7 @@ extension MonkeyKing {
                     } else {
                         if let messageExt = info[messageExtKey] as? String {
                             shared.launchFromWeChatMiniAppHandler?(messageExt)
+                            return true
                         } else {
                             let error: Error = resultCode == -2
                                 ? .userCancelled
