@@ -45,6 +45,8 @@ extension MonkeyKing {
                 messageType = .image(image)
             case .imageData(let imageData):
                 messageType = .imageData(imageData)
+            case .gif:
+                fatalError("Alipay not supports GIF type")
             case .audio:
                 fatalError("Alipay not supports Audio type")
             case .video:

@@ -26,14 +26,15 @@
 		50FBA6D21BA2BBE900E69BB3 /* MonkeyKing.h in Headers */ = {isa = PBXBuildFile; fileRef = 50FBA6D11BA2BBE900E69BB3 /* MonkeyKing.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		50FBA6D61BA2BBE900E69BB3 /* MonkeyKing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50FBA6CF1BA2BBE900E69BB3 /* MonkeyKing.framework */; };
 		50FBA6D71BA2BBE900E69BB3 /* MonkeyKing.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 50FBA6CF1BA2BBE900E69BB3 /* MonkeyKing.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		50FBA6E11BA56E1C00E69BB3 /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */; };
-		50FBA6E41BA570CD00E69BB3 /* QQActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */; };
 		7840AF1D1C63167C00AD5256 /* pay.php in Resources */ = {isa = PBXBuildFile; fileRef = 7840AF1C1C63167C00AD5256 /* pay.php */; };
 		955654EB1EB89D5D009444FF /* TwitterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955654EA1EB89D5D009444FF /* TwitterViewController.swift */; };
 		EDA620311F28F747007DF1DF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA6202D1F28F747007DF1DF /* Extensions.swift */; };
 		EDA620321F28F747007DF1DF /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA6202E1F28F747007DF1DF /* Helpers.swift */; };
 		EDA620331F28F747007DF1DF /* MonkeyKing+WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA6202F1F28F747007DF1DF /* MonkeyKing+WebView.swift */; };
 		EDA620341F28F747007DF1DF /* MonkeyKing+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA620301F28F747007DF1DF /* MonkeyKing+Error.swift */; };
+		EDD0A28C213E6F7B003EB202 /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD0A28A213E6F7B003EB202 /* WeChatActivity.swift */; };
+		EDD0A28D213E6F7B003EB202 /* QQActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD0A28B213E6F7B003EB202 /* QQActivity.swift */; };
+		EDD0A28F213E6FB2003EB202 /* gif.gif in Resources */ = {isa = PBXBuildFile; fileRef = EDD0A28E213E6FB2003EB202 /* gif.gif */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,14 +83,15 @@
 		50FBA6CF1BA2BBE900E69BB3 /* MonkeyKing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MonkeyKing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		50FBA6D11BA2BBE900E69BB3 /* MonkeyKing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MonkeyKing.h; sourceTree = "<group>"; };
 		50FBA6D31BA2BBE900E69BB3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeChatActivity.swift; path = Activities/WeChatActivity.swift; sourceTree = "<group>"; };
-		50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QQActivity.swift; path = Activities/QQActivity.swift; sourceTree = "<group>"; };
 		7840AF1C1C63167C00AD5256 /* pay.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = pay.php; sourceTree = "<group>"; };
 		955654EA1EB89D5D009444FF /* TwitterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwitterViewController.swift; sourceTree = "<group>"; };
 		EDA6202D1F28F747007DF1DF /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = Sources/Extensions.swift; sourceTree = SOURCE_ROOT; };
 		EDA6202E1F28F747007DF1DF /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Helpers.swift; path = Sources/Helpers.swift; sourceTree = SOURCE_ROOT; };
 		EDA6202F1F28F747007DF1DF /* MonkeyKing+WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MonkeyKing+WebView.swift"; path = "Sources/MonkeyKing+WebView.swift"; sourceTree = SOURCE_ROOT; };
 		EDA620301F28F747007DF1DF /* MonkeyKing+Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MonkeyKing+Error.swift"; path = "Sources/MonkeyKing+Error.swift"; sourceTree = SOURCE_ROOT; };
+		EDD0A28A213E6F7B003EB202 /* WeChatActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatActivity.swift; sourceTree = "<group>"; };
+		EDD0A28B213E6F7B003EB202 /* QQActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QQActivity.swift; sourceTree = "<group>"; };
+		EDD0A28E213E6FB2003EB202 /* gif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif.gif; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,6 +146,7 @@
 				3F62B36B1BB6ACE500AABD3C /* SystemShareViewController.swift */,
 				3F16EAEF1BF4D1DB005B1799 /* SimpleNetworking.swift */,
 				50FBA6E21BA56E2200E69BB3 /* Activities */,
+				EDD0A289213E6F55003EB202 /* Resources */,
 				50FBA6BC1BA2AFAE00E69BB3 /* Main.storyboard */,
 				50FBA6BF1BA2AFAE00E69BB3 /* Assets.xcassets */,
 				50FBA6C11BA2AFAE00E69BB3 /* LaunchScreen.storyboard */,
@@ -172,10 +175,18 @@
 		50FBA6E21BA56E2200E69BB3 /* Activities */ = {
 			isa = PBXGroup;
 			children = (
-				50FBA6E01BA56E1C00E69BB3 /* WeChatActivity.swift */,
-				50FBA6E31BA570CD00E69BB3 /* QQActivity.swift */,
+				EDD0A28B213E6F7B003EB202 /* QQActivity.swift */,
+				EDD0A28A213E6F7B003EB202 /* WeChatActivity.swift */,
 			);
-			name = Activities;
+			path = Activities;
+			sourceTree = "<group>";
+		};
+		EDD0A289213E6F55003EB202 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				EDD0A28E213E6FB2003EB202 /* gif.gif */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -241,6 +252,7 @@
 				TargetAttributes = {
 					50FBA6B41BA2AFAD00E69BB3 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = 5RGHWN8FRF;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
@@ -278,6 +290,7 @@
 				7840AF1D1C63167C00AD5256 /* pay.php in Resources */,
 				50FBA6C01BA2AFAE00E69BB3 /* Assets.xcassets in Resources */,
 				50FBA6BE1BA2AFAE00E69BB3 /* Main.storyboard in Resources */,
+				EDD0A28F213E6FB2003EB202 /* gif.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,14 +308,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				50FBA6E11BA56E1C00E69BB3 /* WeChatActivity.swift in Sources */,
+				EDD0A28D213E6F7B003EB202 /* QQActivity.swift in Sources */,
+				EDD0A28C213E6F7B003EB202 /* WeChatActivity.swift in Sources */,
 				3F62B3661BB6ACBB00AABD3C /* WeChatViewController.swift in Sources */,
 				3F16EAF01BF4D1DB005B1799 /* SimpleNetworking.swift in Sources */,
 				3F62B36A1BB6ACD800AABD3C /* QQViewController.swift in Sources */,
 				3F7609431C57B47300FBCB20 /* AlipayViewController.swift in Sources */,
 				3F62B3681BB6ACCE00AABD3C /* WeiboViewController.swift in Sources */,
 				50FBA6BB1BA2AFAE00E69BB3 /* ViewController.swift in Sources */,
-				50FBA6E41BA570CD00E69BB3 /* QQActivity.swift in Sources */,
 				955654EB1EB89D5D009444FF /* TwitterViewController.swift in Sources */,
 				3F159F301C056B1D00BCB39B /* PocketViewController.swift in Sources */,
 				50FBA6B91BA2AFAE00E69BB3 /* AppDelegate.swift in Sources */,
@@ -472,7 +485,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5RGHWN8FRF;
 				INFOPLIST_FILE = China/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nixWork.China;
@@ -490,7 +503,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 5RGHWN8FRF;
 				INFOPLIST_FILE = China/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nixWork.China;

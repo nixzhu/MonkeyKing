@@ -145,28 +145,28 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lbo-xY-RTb">
-                                <rect key="frame" x="172.5" y="134" width="30" height="30"/>
+                                <rect key="frame" x="172.5" y="124" width="30" height="30"/>
                                 <state key="normal" title="URL"/>
                                 <connections>
                                     <action selector="shareURL:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="bW2-Md-Uix"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gS0-c6-rje">
-                                <rect key="frame" x="166.5" y="184" width="42" height="30"/>
+                                <rect key="frame" x="166.5" y="164" width="42" height="30"/>
                                 <state key="normal" title="Image"/>
                                 <connections>
                                     <action selector="shareImage:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="FH0-3Q-9Rj"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Vz-30-FuV">
-                                <rect key="frame" x="167" y="234" width="41" height="30"/>
+                                <rect key="frame" x="167" y="244" width="41" height="30"/>
                                 <state key="normal" title="Music"/>
                                 <connections>
                                     <action selector="shareMusic:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="6n0-tj-oEd"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sOl-Wo-bDF">
-                                <rect key="frame" x="167.5" y="284" width="40" height="30"/>
+                                <rect key="frame" x="167.5" y="294" width="40" height="30"/>
                                 <state key="normal" title="Video"/>
                                 <connections>
                                     <action selector="shareVideo:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="GVB-wo-9eY"/>
@@ -187,7 +187,7 @@
                                 </connections>
                             </button>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="dBn-A2-v5r">
-                                <rect key="frame" x="89" y="384" width="197" height="29"/>
+                                <rect key="frame" x="89" y="394" width="197" height="29"/>
                                 <segments>
                                     <segment title="Session"/>
                                     <segment title="Timeline"/>
@@ -195,7 +195,7 @@
                                 </segments>
                             </segmentedControl>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0hN-D7-bH1">
-                                <rect key="frame" x="130" y="432" width="115" height="30"/>
+                                <rect key="frame" x="130" y="442" width="115" height="30"/>
                                 <state key="normal" title="Launch Mini App"/>
                                 <connections>
                                     <action selector="launchMiniApp:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="aMW-2z-D7H"/>
@@ -209,7 +209,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7zS-bL-oQf">
-                                <rect key="frame" x="157.5" y="334" width="60" height="30"/>
+                                <rect key="frame" x="157.5" y="344" width="60" height="30"/>
                                 <state key="normal" title="Mini App"/>
                                 <connections>
                                     <action selector="shareMiniApp:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="lXz-1b-nkR"/>
@@ -222,15 +222,24 @@
                                     <action selector="OAuthForCode:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="mzN-Fo-B67"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wO8-N9-PEd">
+                                <rect key="frame" x="173" y="204" width="30" height="30"/>
+                                <state key="normal" title="GIF"/>
+                                <connections>
+                                    <action selector="shareGIF:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="7Ze-ed-bfb"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="wfw-9a-DtS" firstAttribute="top" secondItem="oRX-XU-uEu" secondAttribute="bottom" constant="80" id="0Mk-6a-mUF"/>
                             <constraint firstItem="7zS-bL-oQf" firstAttribute="centerX" secondItem="sOl-Wo-bDF" secondAttribute="centerX" id="0fR-sH-h1h"/>
                             <constraint firstItem="oRX-XU-uEu" firstAttribute="centerX" secondItem="UWw-uP-3po" secondAttribute="centerX" id="5SP-dc-8Mv"/>
+                            <constraint firstItem="8Vz-30-FuV" firstAttribute="top" secondItem="wO8-N9-PEd" secondAttribute="bottom" constant="10" id="6GL-1W-ojD"/>
                             <constraint firstItem="wfw-9a-DtS" firstAttribute="top" secondItem="UWw-uP-3po" secondAttribute="bottom" constant="120" id="7ew-1Y-cIR"/>
                             <constraint firstItem="oRX-XU-uEu" firstAttribute="top" secondItem="UWw-uP-3po" secondAttribute="bottom" constant="10" id="8SX-ii-Vch"/>
                             <constraint firstItem="7zS-bL-oQf" firstAttribute="top" secondItem="sOl-Wo-bDF" secondAttribute="bottom" constant="20" id="Bnu-ad-MWc"/>
+                            <constraint firstItem="wO8-N9-PEd" firstAttribute="top" secondItem="gS0-c6-rje" secondAttribute="bottom" constant="10" id="HbP-Tg-KBy"/>
                             <constraint firstItem="Wyh-QX-rAS" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="JGx-Bi-lsD"/>
                             <constraint firstItem="oRX-XU-uEu" firstAttribute="centerX" secondItem="UWw-uP-3po" secondAttribute="centerX" id="LMc-TR-Xjx"/>
                             <constraint firstItem="w7J-ug-Mpj" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="M4K-Ja-Rwp"/>
@@ -245,16 +254,16 @@
                             <constraint firstItem="0hN-D7-bH1" firstAttribute="top" secondItem="dBn-A2-v5r" secondAttribute="bottom" constant="20" id="ZFV-D8-Uvf"/>
                             <constraint firstItem="dBn-A2-v5r" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="dhe-dT-Uhd"/>
                             <constraint firstItem="UWw-uP-3po" firstAttribute="top" secondItem="dBn-A2-v5r" secondAttribute="bottom" constant="20" id="fOu-7w-Fbd"/>
-                            <constraint firstItem="lbo-xY-RTb" firstAttribute="top" secondItem="Wyh-QX-rAS" secondAttribute="bottom" constant="20" id="gen-7W-LYS"/>
+                            <constraint firstItem="lbo-xY-RTb" firstAttribute="top" secondItem="Wyh-QX-rAS" secondAttribute="bottom" constant="10" id="gen-7W-LYS"/>
                             <constraint firstItem="UWw-uP-3po" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="jIt-83-Fy3"/>
                             <constraint firstItem="dBn-A2-v5r" firstAttribute="top" secondItem="7zS-bL-oQf" secondAttribute="bottom" constant="20" id="kAH-v7-D9X"/>
-                            <constraint firstItem="8Vz-30-FuV" firstAttribute="top" secondItem="gS0-c6-rje" secondAttribute="bottom" constant="20" id="max-eJ-rXa"/>
                             <constraint firstItem="w7J-ug-Mpj" firstAttribute="top" secondItem="1yl-b1-jyR" secondAttribute="bottom" constant="10" id="oXn-g8-g7x"/>
-                            <constraint firstItem="gS0-c6-rje" firstAttribute="top" secondItem="lbo-xY-RTb" secondAttribute="bottom" constant="20" id="qXk-3V-jIb"/>
+                            <constraint firstItem="gS0-c6-rje" firstAttribute="top" secondItem="lbo-xY-RTb" secondAttribute="bottom" constant="10" id="qXk-3V-jIb"/>
                             <constraint firstItem="Wyh-QX-rAS" firstAttribute="top" secondItem="ERE-md-U1h" secondAttribute="bottom" constant="20" id="rjE-EK-f7i"/>
                             <constraint firstItem="8Vz-30-FuV" firstAttribute="centerX" secondItem="gS0-c6-rje" secondAttribute="centerX" id="skr-A7-ryL"/>
                             <constraint firstItem="sOl-Wo-bDF" firstAttribute="top" secondItem="8Vz-30-FuV" secondAttribute="bottom" constant="20" id="usH-ig-rrG"/>
                             <constraint firstItem="sOl-Wo-bDF" firstAttribute="centerX" secondItem="8Vz-30-FuV" secondAttribute="centerX" id="vL5-cw-5pA"/>
+                            <constraint firstItem="wO8-N9-PEd" firstAttribute="centerX" secondItem="gS0-c6-rje" secondAttribute="centerX" id="z26-s2-TzW"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">

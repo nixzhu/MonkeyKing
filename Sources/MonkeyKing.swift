@@ -398,6 +398,7 @@ extension MonkeyKing {
         case url(URL)
         case image(UIImage)
         case imageData(Data)
+        case gif(Data)
         case audio(audioURL: URL, linkURL: URL?)
         case video(URL)
         case file(Data)
@@ -602,6 +603,9 @@ extension MonkeyKing {
                 case .imageData(let imageData):
                     weChatMessageInfo["objectType"] = "2"
                     weChatMessageInfo["fileData"] = imageData
+                case .gif(let data):
+                    weChatMessageInfo["objectType"] = "8"
+                    weChatMessageInfo["fileData"] = data
                 case .audio(let audioURL, let linkURL):
                     weChatMessageInfo["objectType"] = "3"
                     if let urlString = linkURL?.absoluteString {
@@ -691,16 +695,16 @@ extension MonkeyKing {
                     let data = NSKeyedArchiver.archivedData(withRootObject: dic)
                     UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
                     qqSchemeURLString += "img"
-                case .imageData(let imageData):
-                    var dic: [String: Any] = ["file_data": imageData]
+                case .imageData(let data), .gif(let data):
+                    var dic: [String: Any] = ["file_data": data]
                     if let thumbnail = type.info.thumbnail, let thumbnailData = UIImageJPEGRepresentation(thumbnail, 0.9) {
                         dic["previewimagedata"] = thumbnailData
                     }
                     if let oldText = UIPasteboard.general.oldText {
                         dic["pasted_string"] = oldText
                     }
-                    let data = NSKeyedArchiver.archivedData(withRootObject: dic)
-                    UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
+                    let archivedData = NSKeyedArchiver.archivedData(withRootObject: dic)
+                    UIPasteboard.general.setData(archivedData, forPasteboardType: "com.tencent.mqq.api.apiLargeData")
                     qqSchemeURLString += "img"
                 case .audio(let audioURL, _):
                     handleNews(with: audioURL, mediaType: "audio")
@@ -785,14 +789,12 @@ extension MonkeyKing {
                         }
                     case .image(let image):
                         if let imageData = UIImageJPEGRepresentation(image, 0.9) {
-                            messageInfo["imageObject"] = [
-                                "imageData": imageData
-                            ]
+                            messageInfo["imageObject"] = ["imageData": imageData]
                         }
                     case .imageData(let imageData):
-                        messageInfo["imageObject"] = [
-                            "imageData": imageData
-                        ]
+                        messageInfo["imageObject"] = ["imageData": imageData]
+                    case .gif:
+                        fatalError("Weibo not supports GIF type")
                     case .audio:
                         fatalError("Weibo not supports Audio type")
                     case .video:
@@ -850,6 +852,8 @@ extension MonkeyKing {
                 case .imageData(let imageData):
                     parameters["pic"] = imageData
                     mediaType = Media.imageData(imageData)
+                case .gif:
+                    fatalError("web Weibo not supports GIF type")
                 case .audio:
                     fatalError("web Weibo not supports Audio type")
                 case .video:
@@ -895,6 +899,8 @@ extension MonkeyKing {
                         completionHandler(.success(nil))
                     }
                 }
+            case .gif:
+                fatalError("web Weibo not supports GIF type")
             case .audio:
                 fatalError("web Weibo not supports Audio type")
             case .video:
