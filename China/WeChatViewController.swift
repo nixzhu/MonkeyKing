@@ -44,6 +44,20 @@ class WeChatViewController: UIViewController {
         shareInfo(info)
     }
 
+    @IBAction func shareGIF(_ sender: UIButton) {
+
+        let url = Bundle.main.url(forResource: "gif", withExtension: "gif")!
+        let data = try! Data(contentsOf: url)
+
+        let info = MonkeyKing.Info(
+            title: nil,
+            description: nil,
+            thumbnail: UIImage(data: data)!,
+            media: .gif(data)
+        )
+        shareInfo(info)
+    }
+
     @IBAction func shareMusic(_ sender: UIButton) {
         let info = MonkeyKing.Info(
             title: "Music, \(UUID().uuidString)",
