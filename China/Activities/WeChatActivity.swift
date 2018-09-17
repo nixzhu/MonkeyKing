@@ -7,12 +7,12 @@ class WeChatActivity: AnyActivity {
         case session
         case timeline
 
-        var activityType: UIActivityType {
+        var activityType: UIActivity.ActivityType {
             switch self {
             case .session:
-                return UIActivityType(rawValue: "com.nixWork.China.WeChat.Session")
+                return UIActivity.ActivityType(rawValue: "com.nixWork.China.WeChat.Session")
             case .timeline:
-                return UIActivityType(rawValue: "com.nixWork.China.WeChat.Timeline")
+                return UIActivity.ActivityType(rawValue: "com.nixWork.China.WeChat.Timeline")
             }
         }
 

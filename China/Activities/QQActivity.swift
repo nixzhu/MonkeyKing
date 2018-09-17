@@ -7,12 +7,12 @@ class QQActivity: AnyActivity {
         case friends
         case zone
 
-        var activityType: UIActivityType {
+        var activityType: UIActivity.ActivityType {
             switch self {
             case .friends:
-                return UIActivityType(rawValue: "com.nixWork.China.QQ.Friends")
+                return UIActivity.ActivityType(rawValue: "com.nixWork.China.QQ.Friends")
             case .zone:
-                return UIActivityType(rawValue: "com.nixWork.China.QQ.Zone")
+                return UIActivity.ActivityType(rawValue: "com.nixWork.China.QQ.Zone")
             }
         }
 
