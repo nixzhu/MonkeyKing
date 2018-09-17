@@ -150,7 +150,8 @@ extension MonkeyKing {
                 keyClass: [keyUID: 17],
                 "imageData": [keyUID: 15]
             ]
-            let imageData = UIImageJPEGRepresentation(image, 0.7) ?? Data()
+            let imageData = image.jpegData(compressionQuality: 0.7) ?? Data()
+            
             let imageObjectsItem15: [String: Any] = [
                 keyClass: [keyUID: 16],
                 "NS.data": imageData
@@ -205,7 +206,7 @@ extension MonkeyKing {
         Networking.shared.upload(urlString, parameters: parameters, headers: headers, completionHandler: completionHandler)
     }
 
-    class func openURL(urlString: String, options: [String: Any] = [:], completionHandler completion: ((Bool) -> Swift.Void)? = nil) {
+    class func openURL(urlString: String, options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:], completionHandler completion: ((Bool) -> Swift.Void)? = nil) {
         guard let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) else {
             completion?(false)
             return
