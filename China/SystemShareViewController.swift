@@ -15,7 +15,7 @@ class SystemShareViewController: UIViewController {
         )
         let sessionMessage = MonkeyKing.Message.weChat(.session(info: info))
         let weChatSessionActivity = AnyActivity(
-            type: UIActivityType(rawValue: "com.nixWork.China.WeChat.Session"),
+            type: UIActivity.ActivityType(rawValue: "com.nixWork.China.WeChat.Session"),
             title: NSLocalizedString("WeChat Session", comment: ""),
             image: UIImage(named: "wechat_session")!,
             message: sessionMessage,
@@ -25,7 +25,7 @@ class SystemShareViewController: UIViewController {
         )
         let timelineMessage = MonkeyKing.Message.weChat(.timeline(info: info))
         let weChatTimelineActivity = AnyActivity(
-            type: UIActivityType(rawValue: "com.nixWork.China.WeChat.Timeline"),
+            type: UIActivity.ActivityType(rawValue: "com.nixWork.China.WeChat.Timeline"),
             title: NSLocalizedString("WeChat Timeline", comment: ""),
             image: UIImage(named: "wechat_timeline")!,
             message: timelineMessage,
