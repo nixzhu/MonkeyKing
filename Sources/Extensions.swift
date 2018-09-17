@@ -198,11 +198,11 @@ extension UIImage {
             }
             image.draw(in: rect)
             let imageData = UIGraphicsGetImageFromCurrentImageContext().flatMap({
-                UIImageJPEGRepresentation($0, compressionQuality)
+                $0.jpegData(compressionQuality: compressionQuality)
             })
             return imageData
         }
-        let fullImageData = UIImageJPEGRepresentation(self, compressionQuality)
+        let fullImageData = self.jpegData(compressionQuality: compressionQuality)
         guard var imageData = fullImageData else { return nil }
         let minCompressionQuality: CGFloat = 0.01
         let dataLengthCeiling: Int = 31500
@@ -220,7 +220,7 @@ extension UIImage {
 
     func monkeyking_resetSizeOfImageData(maxSize: Int) -> Data? {
 
-        if let imageData = UIImageJPEGRepresentation(self,1.0),
+        if let imageData = self.jpegData(compressionQuality: 1.0),
             imageData.count <= maxSize {
             return imageData
         }
@@ -234,7 +234,7 @@ extension UIImage {
             let imageData = image.binaryCompression(to: maxSize)
 
             if imageData == nil {
-                let currentMiniIamgeDataSize = UIImageJPEGRepresentation(self,0.01)?.count ?? 0
+                let currentMiniIamgeDataSize = self.jpegData(compressionQuality: 0.01)?.count ?? 0
                 let proportion = CGFloat(currentMiniIamgeDataSize / maxSize)
                 let newWidth = image.size.width * scale / proportion
                 let newHeight = image.size.height * scale / proportion
@@ -263,7 +263,7 @@ extension UIImage {
             return newValue
         }
 
-        var imageData: Data? = UIImageJPEGRepresentation(self, 1)
+        var imageData: Data? = self.jpegData(compressionQuality: 1)
 
         var outPutImageData: Data? = nil
 
@@ -277,7 +277,7 @@ extension UIImage {
 
             index = start + (end - start) / 2
 
-            imageData = UIImageJPEGRepresentation(self, compressionQualitys[index])
+            imageData = self.jpegData(compressionQuality: compressionQualitys[index])
 
             let imageDataSize = imageData?.count ?? 0
 
@@ -308,7 +308,7 @@ extension UIPasteboard {
     /// Fetch old text on pasteboard
     var oldText: String? {
         /// From iOS 8 to iOS 11, UIPasteboardTypeListString contains two elements: public.text, public.utf8-plain-text
-        guard let typeListString = UIPasteboardTypeListString as? [String] else { return nil }
+        guard let typeListString = UIPasteboard.typeListString as? [String] else { return nil }
         guard UIPasteboard.general.contains(pasteboardTypes: typeListString) else { return nil }
         return UIPasteboard.general.string
     }

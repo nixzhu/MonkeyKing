@@ -597,7 +597,7 @@ extension MonkeyKing {
                     weChatMessageInfo["mediaUrl"] = url.absoluteString
                 case .image(let image):
                     weChatMessageInfo["objectType"] = "2"
-                    if let imageData = UIImageJPEGRepresentation(image, 0.9) {
+                    if let imageData = image.jpegData(compressionQuality: 0.9) {
                         weChatMessageInfo["fileData"] = imageData
                     }
                 case .imageData(let imageData):
@@ -681,12 +681,12 @@ extension MonkeyKing {
                 case .url(let url):
                     handleNews(with: url, mediaType: "news")
                 case .image(let image):
-                    guard let imageData = UIImageJPEGRepresentation(image, 0.9) else {
+                    guard let imageData = image.jpegData(compressionQuality: 0.9) else {
                         completionHandler(.failure(.invalidImageData))
                         return
                     }
                     var dic: [String: Any] = ["file_data": imageData]
-                    if let thumbnail = type.info.thumbnail, let thumbnailData = UIImageJPEGRepresentation(thumbnail, 0.9) {
+                    if let thumbnail = type.info.thumbnail, let thumbnailData = thumbnail.jpegData(compressionQuality: 0.9) {
                         dic["previewimagedata"] = thumbnailData
                     }
                     if let oldText = UIPasteboard.general.oldText {
@@ -697,7 +697,7 @@ extension MonkeyKing {
                     qqSchemeURLString += "img"
                 case .imageData(let data), .gif(let data):
                     var dic: [String: Any] = ["file_data": data]
-                    if let thumbnail = type.info.thumbnail, let thumbnailData = UIImageJPEGRepresentation(thumbnail, 0.9) {
+                    if let thumbnail = type.info.thumbnail, let thumbnailData = thumbnail.jpegData(compressionQuality: 0.9) {
                         dic["previewimagedata"] = thumbnailData
                     }
                     if let oldText = UIPasteboard.general.oldText {
@@ -788,7 +788,7 @@ extension MonkeyKing {
                             messageInfo["text"] = text.isEmpty ? url.absoluteString : text + " " + url.absoluteString
                         }
                     case .image(let image):
-                        if let imageData = UIImageJPEGRepresentation(image, 0.9) {
+                        if let imageData = image.jpegData(compressionQuality: 0.9) {
                             messageInfo["imageObject"] = ["imageData": imageData]
                         }
                     case .imageData(let imageData):
@@ -843,7 +843,7 @@ extension MonkeyKing {
                     status.append(url.absoluteString)
                     mediaType = Media.url(url)
                 case .image(let image):
-                    guard let imageData = UIImageJPEGRepresentation(image, 0.9) else {
+                    guard let imageData = image.jpegData(compressionQuality: 0.9) else {
                         completionHandler(.failure(.invalidImageData))
                         return
                     }
@@ -939,7 +939,7 @@ extension MonkeyKing {
                     status.append(url.absoluteString)
                     mediaType = Media.url(url)
                 case .image(let image):
-                    guard let imageData = UIImageJPEGRepresentation(image, 0.9) else {
+                    guard let imageData = image.jpegData(compressionQuality: 0.9) else {
                         completionHandler(.failure(.invalidImageData))
                         return
                     }
