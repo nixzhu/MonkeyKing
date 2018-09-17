@@ -3,14 +3,14 @@ import UIKit
 
 open class AnyActivity: UIActivity {
 
-    private let type: UIActivityType
+    private let type: UIActivity.ActivityType
     private let title: String
     private let image: UIImage
 
     private let message: MonkeyKing.Message
     private let completionHandler: MonkeyKing.DeliverCompletionHandler
 
-    public init(type: UIActivityType, title: String, image: UIImage, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.DeliverCompletionHandler) {
+    public init(type: UIActivity.ActivityType, title: String, image: UIImage, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.DeliverCompletionHandler) {
         self.type = type
         self.title = title
         self.image = image
@@ -19,11 +19,11 @@ open class AnyActivity: UIActivity {
         super.init()
     }
 
-    override open class var activityCategory : UIActivityCategory {
+    override open class var activityCategory : UIActivity.Category {
         return .share
     }
 
-    override open var activityType: UIActivityType? {
+    override open var activityType: UIActivity.ActivityType? {
         return type
     }
 

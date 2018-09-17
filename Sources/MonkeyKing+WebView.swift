@@ -132,7 +132,7 @@ extension MonkeyKing {
         webView.load(URLRequest(url: url))
         let activityIndicatorView = UIActivityIndicatorView(frame: CGRect(x: 0.0, y: 0.0, width: 20.0, height: 20.0))
         activityIndicatorView.center = CGPoint(x: webView.bounds.midX, y: webView.bounds.midY + 30.0)
-        activityIndicatorView.activityIndicatorViewStyle = .gray
+        activityIndicatorView.style = .gray
         webView.scrollView.addSubview(activityIndicatorView)
         activityIndicatorView.startAnimating()
         UIView.animate(withDuration: 0.32, delay: 0.0, options: .curveEaseOut, animations: {
