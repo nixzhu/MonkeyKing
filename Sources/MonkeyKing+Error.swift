@@ -59,32 +59,3 @@ extension MonkeyKing {
         }
     }
 }
-
-#if swift(>=4.1)
-extension MonkeyKing.Error: LocalizedError {
-
-    public var errorDescription: String? {
-        switch self {
-        case .invalidImageData:
-            return "Convert image to data failed."
-        case .noAccount:
-            return "There no invalid developer account."
-        case .messageCanNotBeDelivered:
-            return "Message can't be delivered."
-        case .userCancelled:
-            return "User Cancelled"
-        case .apiRequest(reason: let reason):
-            switch reason.type {
-            case .invalidToken:
-                return "The token is invalid or expired."
-            case .connectFailed:
-                return "Can't open the API link."
-            default:
-                return "API invoke failed."
-            }
-        default:
-            return "Some problems happenned in MonkeyKing."
-        }
-    }
-}
-#endif

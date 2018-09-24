@@ -474,13 +474,8 @@ func arrayOfBytes<T>(_ value:T, length: Int? = nil) -> [UInt8] {
     for j in 0..<min(MemoryLayout<T>.size,totalBytes) {
         bytes[totalBytes - 1 - j] = (bytesPointer + j).pointee
     }
-    #if swift(>=4.1)
     valuePointer.deinitialize(count: totalBytes)
     valuePointer.deallocate()
-    #else
-    valuePointer.deinitialize()
-    valuePointer.deallocate(capacity: 1)
-    #endif
     return bytes
 }
 
