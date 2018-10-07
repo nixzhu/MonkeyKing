@@ -88,22 +88,10 @@ extension Set {
 extension Bundle {
 
     var monkeyking_displayName: String? {
-        func getNameByInfo(_ info: [String : Any]) -> String? {
-            guard let displayName = info["CFBundleDisplayName"] as? String else {
-                return info["CFBundleName"] as? String
-            }
-            return displayName
-        }
-        var info = infoDictionary
-        if let localizedInfo = localizedInfoDictionary, !localizedInfo.isEmpty {
-            for (key, value) in localizedInfo {
-                info?[key] = value
-            }
-        }
-        guard let unwrappedInfo = info else {
-            return nil
-        }
-        return getNameByInfo(unwrappedInfo)
+        let CFBundleDisplayName = (localizedInfoDictionary?["CFBundleDisplayName"] ?? infoDictionary?["CFBundleDisplayName"]) as? String
+        let CFBundleName = (localizedInfoDictionary?["CFBundleName"] ?? infoDictionary?["CFBundleName"]) as? String
+
+        return CFBundleDisplayName ?? CFBundleName
     }
 
     var monkeyking_bundleID: String? {
@@ -114,11 +102,11 @@ extension Bundle {
 extension String {
 
     var monkeyking_base64EncodedString: String? {
-        return data(using: .utf8)?.base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
+        return data(using: .utf8)?.base64EncodedString()
     }
 
     var monkeyking_urlEncodedString: String? {
-        return addingPercentEncoding(withAllowedCharacters: CharacterSet.urlHostAllowed)
+        return addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
     }
 
     var monkeyking_base64AndURLEncodedString: String? {
@@ -130,10 +118,8 @@ extension String {
     }
 
     var monkeyking_qqCallbackName: String {
-        var hexString = String(format: "%02llx", (self as NSString).longLongValue)
-        while hexString.count < 8 {
-            hexString = "0" + hexString
-        }
+        let hexString = String(format: "%08llx", (self as NSString).longLongValue)
+
         return "QQ" + hexString
     }
 }
