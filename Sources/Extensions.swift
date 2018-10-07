@@ -102,7 +102,7 @@ extension Bundle {
 extension String {
 
     var monkeyking_base64EncodedString: String? {
-        return data(using: .utf8)?.base64EncodedString(options: .lineLength64Characters)
+        return data(using: .utf8)?.base64EncodedString()
     }
 
     var monkeyking_urlEncodedString: String? {
