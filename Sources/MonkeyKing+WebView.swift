@@ -26,15 +26,18 @@ extension MonkeyKing: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         activityIndicatorViewAction(webView, stop: true)
         addCloseButton()
-        guard let urlString = webView.url?.absoluteString else { return }
+        guard let host = webView.url?.host else { return }
         var scriptString = ""
-        if urlString.contains("getpocket.com") {
+        switch host {
+        case "getpocket.com":
             scriptString += "document.querySelector('div.toolbar').style.display = 'none';"
             scriptString += "document.querySelector('a.extra_action').style.display = 'none';"
             scriptString += "var rightButton = $('.toolbarContents div:last-child');"
             scriptString += "if (rightButton.html() == 'Log In') {rightButton.click()}"
-        } else if urlString.contains("api.weibo.com") {
+        case "api.weibo.com":
             scriptString += "document.querySelector('aside.logins').style.display = 'none';"
+        default:
+            break
         }
         webView.evaluateJavaScript(scriptString, completionHandler: nil)
     }
