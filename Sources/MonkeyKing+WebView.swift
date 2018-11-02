@@ -50,12 +50,8 @@ extension MonkeyKing: WKNavigationDelegate {
         // twitter access token
         for case let .twitter(appID, appKey, redirectURL) in accountSet {
             guard url.absoluteString.hasPrefix(redirectURL) else { break }
-            var parametersString = url.absoluteString
-            for _ in (0...redirectURL.count) {
-                parametersString.remove(at: parametersString.startIndex)
-            }
-            let params = parametersString.queryStringParameters
-            guard let token = params["oauth_token"], let verifer = params["oauth_verifier"]  else { break }
+            let params = url.monkeyking_queryDictionary
+            guard let token = params["oauth_token"] as? String, let verifer = params["oauth_verifier"] as? String else { break }
             let accessTokenAPI = "https://api.twitter.com/oauth/access_token"
             let parameters = ["oauth_token": token, "oauth_verifier": verifer]
             let headerString = Networking.shared.authorizationHeader(for: .post, urlString: accessTokenAPI, appID: appID, appKey: appKey, accessToken: nil, accessTokenSecret: nil, parameters: parameters, isMediaUpload: false)
