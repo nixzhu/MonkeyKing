@@ -87,21 +87,11 @@ extension MonkeyKing: WKNavigationDelegate {
             }
         } else {
             // Weibo OAuth
-            for case let .weibo(appID, appKey, redirectURL) in accountSet {
-                if url.absoluteString.lowercased().hasPrefix(redirectURL) {
-                    webView.stopLoading()
+            for case let .weibo(_, _, redirectURL) in accountSet {
+                if url.absoluteString.hasPrefix(redirectURL) {
                     guard let code = url.monkeyking_queryDictionary["code"] as? String else { return }
-                    var accessTokenAPI = "https://api.weibo.com/oauth2/access_token?"
-                    accessTokenAPI += "client_id=" + appID
-                    accessTokenAPI += "&client_secret=" + appKey
-                    accessTokenAPI += "&grant_type=authorization_code"
-                    accessTokenAPI += "&redirect_uri=" + redirectURL
-                    accessTokenAPI += "&code=" + code
-                    activityIndicatorViewAction(webView, stop: false)
-                    request(accessTokenAPI, method: .post) { [weak self] (json, response, error) in
-                        DispatchQueue.main.async { [weak self] in
-                            self?.removeWebView(webView, tuples: (json, response, error))
-                        }
+                    MonkeyKing.fetchWeiboOAuthInfoByCode(code: code) { [weak self] info, response, error in
+                        self?.removeWebView(webView, tuples: (info, response, error))
                     }
                 }
             }

@@ -25,6 +25,36 @@ extension MonkeyKing {
         }
     }
 
+    class func fetchWeiboOAuthInfoByCode(code: String, completionHandler: @escaping OAuthCompletionHandler) {
+        var appID = ""
+        var appKey = ""
+        var redirectURL = ""
+
+        for case let .weibo(id, key, url) in shared.accountSet {
+            appID = id
+            appKey = key
+            redirectURL = url
+        }
+
+        var urlComponents = URLComponents(string: "https://api.weibo.com/oauth2/access_token")
+        urlComponents?.queryItems = [
+            URLQueryItem(name: "client_id", value: appID),
+            URLQueryItem(name: "client_secret", value: appKey),
+            URLQueryItem(name: "grant_type", value: "authorization_code"),
+            URLQueryItem(name: "redirect_uri", value: redirectURL),
+            URLQueryItem(name: "code", value: code),
+        ]
+
+        guard let accessTokenAPI = urlComponents?.string else {
+            completionHandler(["code": code], nil, nil)
+            return
+        }
+
+        shared.request(accessTokenAPI, method: .post) { json, response, error in
+            completionHandler(json, response, error)
+        }
+    }
+
     class func createAlipayMessageDictionary(withScene scene: NSNumber, info: Info, appID: String) -> [String: Any] {
         enum AlipayMessageType {
             case text
