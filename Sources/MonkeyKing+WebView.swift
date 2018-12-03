@@ -26,15 +26,18 @@ extension MonkeyKing: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         activityIndicatorViewAction(webView, stop: true)
         addCloseButton()
-        guard let urlString = webView.url?.absoluteString else { return }
+        guard let host = webView.url?.host else { return }
         var scriptString = ""
-        if urlString.contains("getpocket.com") {
+        switch host {
+        case "getpocket.com":
             scriptString += "document.querySelector('div.toolbar').style.display = 'none';"
             scriptString += "document.querySelector('a.extra_action').style.display = 'none';"
             scriptString += "var rightButton = $('.toolbarContents div:last-child');"
             scriptString += "if (rightButton.html() == 'Log In') {rightButton.click()}"
-        } else if urlString.contains("api.weibo.com") {
+        case "api.weibo.com":
             scriptString += "document.querySelector('aside.logins').style.display = 'none';"
+        default:
+            break
         }
         webView.evaluateJavaScript(scriptString, completionHandler: nil)
     }
@@ -47,12 +50,8 @@ extension MonkeyKing: WKNavigationDelegate {
         // twitter access token
         for case let .twitter(appID, appKey, redirectURL) in accountSet {
             guard url.absoluteString.hasPrefix(redirectURL) else { break }
-            var parametersString = url.absoluteString
-            for _ in (0...redirectURL.count) {
-                parametersString.remove(at: parametersString.startIndex)
-            }
-            let params = parametersString.queryStringParameters
-            guard let token = params["oauth_token"], let verifer = params["oauth_verifier"]  else { break }
+            let params = url.monkeyking_queryDictionary
+            guard let token = params["oauth_token"] as? String, let verifer = params["oauth_verifier"] as? String else { break }
             let accessTokenAPI = "https://api.twitter.com/oauth/access_token"
             let parameters = ["oauth_token": token, "oauth_verifier": verifer]
             let headerString = Networking.shared.authorizationHeader(for: .post, urlString: accessTokenAPI, appID: appID, appKey: appKey, accessToken: nil, accessTokenSecret: nil, parameters: parameters, isMediaUpload: false)
@@ -88,21 +87,11 @@ extension MonkeyKing: WKNavigationDelegate {
             }
         } else {
             // Weibo OAuth
-            for case let .weibo(appID, appKey, redirectURL) in accountSet {
-                if url.absoluteString.lowercased().hasPrefix(redirectURL) {
-                    webView.stopLoading()
+            for case let .weibo(_, _, redirectURL) in accountSet {
+                if url.absoluteString.hasPrefix(redirectURL) {
                     guard let code = url.monkeyking_queryDictionary["code"] as? String else { return }
-                    var accessTokenAPI = "https://api.weibo.com/oauth2/access_token?"
-                    accessTokenAPI += "client_id=" + appID
-                    accessTokenAPI += "&client_secret=" + appKey
-                    accessTokenAPI += "&grant_type=authorization_code"
-                    accessTokenAPI += "&redirect_uri=" + redirectURL
-                    accessTokenAPI += "&code=" + code
-                    activityIndicatorViewAction(webView, stop: false)
-                    request(accessTokenAPI, method: .post) { [weak self] (json, response, error) in
-                        DispatchQueue.main.async { [weak self] in
-                            self?.removeWebView(webView, tuples: (json, response, error))
-                        }
+                    MonkeyKing.fetchWeiboOAuthInfoByCode(code: code) { [weak self] info, response, error in
+                        self?.removeWebView(webView, tuples: (info, response, error))
                     }
                 }
             }
