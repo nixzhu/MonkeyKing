@@ -30,8 +30,6 @@ public class MonkeyKing: NSObject {
     private var launchCompletionHandler: LaunchCompletionHandler?
     private var launchFromWeChatMiniAppHandler: ((String) -> Void)?
 
-    private var customAlipayOrderScheme: String?
-
     var webView: WKWebView?
 
     private override init() {
@@ -42,7 +40,7 @@ public class MonkeyKing: NSObject {
         case qq(appID: String)
         case weibo(appID: String, appKey: String, redirectURL: String)
         case pocket(appID: String)
-        case alipay(appID: String)
+        case alipay(appID: String, pid: String?)
         case twitter(appID: String, appKey: String, redirectURL: String)
 
         public var isAppInstalled: Bool {
@@ -72,7 +70,7 @@ public class MonkeyKing: NSObject {
                 return appID
             case .pocket(let appID):
                 return appID
-            case .alipay(let appID):
+            case .alipay(let appID, _):
                 return appID
             case .twitter(let appID, _, _):
                 return appID
@@ -87,7 +85,7 @@ public class MonkeyKing: NSObject {
             switch self {
             case .qq, .weibo, .pocket, .weChat, .twitter:
                 return true
-            default:
+            case .alipay:
                 return false
             }
         }
@@ -338,35 +336,56 @@ extension MonkeyKing {
             shared.oauthCompletionHandler?(nil, nil, nil)
             return true
         }
+
         // Alipay
-        var canHandleAlipay = false
-        if let customScheme = shared.customAlipayOrderScheme {
-            if urlScheme == customScheme { canHandleAlipay = true }
-        } else if urlScheme.hasPrefix("ap") {
-            canHandleAlipay = true
-        }
-        if canHandleAlipay {
+        let account = shared.accountSet[.alipay]
+        if let appID = account?.appID, urlScheme == "ap" + appID || urlScheme == "apoauth" + appID {
             let urlString = url.absoluteString
             if urlString.contains("//safepay/?") {
-                var result = false
-                defer {
-                    shared.payCompletionHandler?(result)
-                }
+
                 guard
                     let query = url.query,
                     let response = query.monkeyking_urlDecodedString?.data(using: .utf8),
                     let json = response.monkeyking_json,
                     let memo = json["memo"] as? [String: Any],
                     let status = memo["ResultStatus"] as? String else {
+                        let memo = "Unknow Error"
+                        let error = NSError(domain: memo, code: -1, userInfo: nil)
+                        shared.oauthCompletionHandler?(nil, nil, error)
+                        shared.payCompletionHandler?(false)
                         return false
                 }
-                result = (status == "9000")
-                return result
-            } else {
-                // Share
+
+                if status != "9000" {
+                    let memo = memo["memo"] as? String ?? "Unknow Error"
+                    let error = NSError(domain: memo, code: -1, userInfo: nil)
+                    shared.oauthCompletionHandler?(nil, nil, error)
+                    shared.payCompletionHandler?(false)
+                    return false
+                }
+
+                if urlScheme == "apoauth" + appID { // OAuth
+                    let resultStr = memo["result"] as? String ?? ""
+                    let urlStr = "https://www.example.com?" + resultStr
+                    let resultDic = URL(string: urlStr)?.monkeyking_queryDictionary ?? [:]
+                    var error: Swift.Error?
+                    defer {
+                        shared.oauthCompletionHandler?(resultDic, nil, error)
+                    }
+                    if let _ = resultDic["auth_code"], let _ = resultDic["scope"] as? String {
+                        return true
+                    }
+                    error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
+                    return false
+                } else { // Pay
+                    defer {
+                        shared.payCompletionHandler?(true)
+                    }
+                }
+                return true
+            } else { // Share
                 guard
-                    let account = shared.accountSet[.alipay] ,
-                    let data = UIPasteboard.general.data(forPasteboardType: "com.alipay.openapi.pb.resp.\(account.appID)"),
+                    let data = UIPasteboard.general.data(forPasteboardType: "com.alipay.openapi.pb.resp.\(appID)"),
                     let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? [String: Any],
                     let objects = dict?["$objects"] as? NSArray,
                     let result = objects[12] as? Int else {
@@ -381,6 +400,7 @@ extension MonkeyKing {
                 return success
             }
         }
+
         return false
     }
 }
@@ -565,11 +585,15 @@ extension MonkeyKing {
             completionHandler(.failure(.messageCanNotBeDelivered))
             return
         }
-        shared.deliverCompletionHandler = completionHandler
         guard let account = shared.accountSet[message] else {
             completionHandler(.failure(.noAccount))
             return
         }
+
+        shared.deliverCompletionHandler = completionHandler
+        shared.payCompletionHandler = nil
+        shared.oauthCompletionHandler = nil
+
         let appID = account.appID
         switch message {
         case .weChat(let type):
@@ -1018,7 +1042,7 @@ extension MonkeyKing {
     public enum Order {
         /// You can custom URL scheme. Default "ap" + String(appID)
         /// ref: https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.piSRlm&treeId=204&articleId=105295&docType=1
-        case alipay(urlString: String, scheme: String?)
+        case alipay(urlString: String)
         case weChat(urlString: String)
 
         public var canBeDelivered: Bool {
@@ -1039,14 +1063,15 @@ extension MonkeyKing {
             return
         }
         shared.payCompletionHandler = completionHandler
+        shared.oauthCompletionHandler = nil
+        shared.deliverCompletionHandler = nil
         switch order {
         case .weChat(let urlString):
             openURL(urlString: urlString) { flag in
                 if flag { return }
                 completionHandler(false)
             }
-        case let .alipay(urlString, scheme):
-            shared.customAlipayOrderScheme = scheme
+        case let .alipay(urlString):
             openURL(urlString: urlString) { flag in
                 if flag { return }
                 completionHandler(false)
@@ -1059,15 +1084,94 @@ extension MonkeyKing {
 
 extension MonkeyKing {
 
-    public class func oauth(for platform: SupportedPlatform, scope: String? = nil, requestToken: String? = nil, completionHandler: @escaping OAuthCompletionHandler) {
-        guard let account = shared.accountSet[platform] else { return }
+    public class func oauth(for platform: SupportedPlatform, scope: String? = nil, requestToken: String? = nil, signType: String? = nil, sign: String? = nil, appUrlScheme: String? = nil, completionHandler: @escaping OAuthCompletionHandler) {
+
+        guard let account = shared.accountSet[platform] else {
+            let error = NSError(domain: "No have platform account", code: -2, userInfo: nil)
+            completionHandler(nil, nil, error)
+            return
+        }
+
         guard account.isAppInstalled || account.canWebOAuth else {
             let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
             completionHandler(nil, nil, error)
             return
         }
+
         shared.oauthCompletionHandler = completionHandler
+        shared.payCompletionHandler = nil
+        shared.deliverCompletionHandler = nil
+
         switch account {
+        case let .alipay(appID, pid):
+            guard let pid = pid else {
+                let error = NSError(domain: "Alipay's pid is nil", code: -2, userInfo: nil)
+                completionHandler(nil, nil, error)
+                return
+            }
+
+            guard let signType = signType, let sign = sign, let appUrlScheme = appUrlScheme else {
+                let error = NSError(domain: "Alipay's pid is nil", code: -2, userInfo: nil)
+                completionHandler(nil, nil, error)
+                return
+            }
+
+            let appName = Bundle.main.monkeyking_displayName ?? "nixApp"
+            let dataDic: [String: String] = ["av": "1", "ty": "ios_lite", "appkey": "2014052600006128", "sv": "h.a.3.2.1", "an": appName]
+
+            guard let str = dataDic.toString else {
+                let error = NSError(domain: "Alipay oauth error", code: -2, userInfo: nil)
+                completionHandler(nil, nil, error)
+                return
+            }
+
+            let dic: [String: String] = [
+                "apiname": "com.alipay.account.auth",
+                "app_id": appID,
+                "app_name": "mc",
+                "auth_type": "AUTHACCOUNT",
+                "biz_type": "openservice",
+                "method": "alipay.open.auth.sdk.code.get",
+                "pid": pid,
+                "product_id": "APP_FAST_LOGIN",
+                "scope": "kuaijie",
+                "target_id": "\(Int(Date().timeIntervalSince1970 * 1000.0))",
+                "sign": sign,
+                "sign_type": signType
+            ]
+
+            let keys = dic.keys.sorted { $0 < $1 }
+
+            var array: [String] = []
+            for k in keys {
+                if let v = dic[k] {
+                    array.append(k + "=" + v)
+                }
+            }
+
+            var dataString: String = array.joined(separator: "&")
+            dataString += "&sign=\(sign)"
+            dataString += "&sign_type=\(signType)"
+            dataString += "&bizcontext="
+            dataString += str.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: " ", with: "")
+
+            let resultDic: [String: String] = ["fromAppUrlScheme": appUrlScheme, "requestType": "SafePay", "dataString": dataString]
+
+            guard var resultStr = resultDic.toString else {
+                let error = NSError(domain: "Alipay oauth error", code: -2, userInfo: nil)
+                completionHandler(nil, nil, error)
+                return
+            }
+
+            resultStr = resultStr.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: " ", with: "")
+            resultStr = resultStr.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? resultStr
+            resultStr = "alipay://alipayclient/?" + resultStr
+
+            openURL(urlString: resultStr) { flag in
+                if flag { return }
+                completionHandler(nil, nil, Error.userCancelled)
+            }
+
         case .weChat(let appID, _, _):
             let scope = scope ?? "snsapi_userinfo"
             if !account.isAppInstalled {
@@ -1166,8 +1270,6 @@ extension MonkeyKing {
             }
         case .twitter(let appID, let appKey, let redirectURL):
             shared.twitterAuthenticate(appID: appID, appKey: appKey, redirectURL: redirectURL)
-        case .alipay:
-            break
         }
     }
 
