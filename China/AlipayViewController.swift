@@ -8,8 +8,11 @@ class AlipayViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
 
-        let account = MonkeyKing.Account.alipay(appID: Configs.Alipay.appID)
+    private func registerAccount() {
+        // Distinguish from authorization
+        let account = MonkeyKing.Account.alipay(appID: Configs.Alipay.appID, pid: nil)
         MonkeyKing.registerAccount(account)
     }
 
@@ -46,6 +49,9 @@ class AlipayViewController: UIViewController {
     }
 
     private func shareInfo(_ info: MonkeyKing.Info) {
+
+        registerAccount()
+
         var message: MonkeyKing.Message?
         switch segmentedControl.selectedSegmentIndex {
         case 0:
@@ -70,14 +76,34 @@ class AlipayViewController: UIViewController {
 
     @IBAction func pay(_ sender: UIButton) {
         do {
-            let data = try NSURLConnection.sendSynchronousRequest(URLRequest(url: URL(string: "http://www.example.com/pay.php?payType=alipay")!), returning: nil)
+            registerAccount()
+            let data = try NSURLConnection.sendSynchronousRequest(URLRequest(url: URL(string: "https://www.example.com/pay.php?payType=alipay")!), returning: nil)
             let urlString = String(data: data, encoding: .utf8)!
-            let order = MonkeyKing.Order.alipay(urlString: urlString, scheme: nil)
+            let order = MonkeyKing.Order.alipay(urlString: urlString)
             MonkeyKing.deliver(order) { result in
                 print("result: \(result)")
             }
         } catch {
             print(error)
         }
+    }
+
+    // MARK: Oauth
+
+    @IBAction func oauth(_ sender: UIButton) {
+
+        let account = MonkeyKing.Account.alipay(appID: Configs.Alipay.oauthID, pid: Configs.Alipay.pid)
+        MonkeyKing.registerAccount(account)
+
+        // ref: https://docs.open.alipay.com/218/105327
+        let signType: String = "RSA"
+        let sign: String = "RIJ7binMneL9f1OITLXeGfTeDJwgPeZ5Aqk1nPlCHfL1q1hnSUx4x%2BgmmnxDpzJ%2F9K6fzdytkDFlsgcnAUQx2jzAysniUDSFdbKzpacsLXSFJvINUNYowUfR%2FgaY%2FiDV9PICo%2B8Zs4az%2FChoTvxLUbZrFVufSthf2ySBbBNDlck%3D"
+        let appUrlScheme: String = "apoauth" + Configs.Alipay.oauthID
+
+        MonkeyKing.oauth(for: .alipay, signType: signType, sign: sign, appUrlScheme: appUrlScheme) { (dictionary, response, error) in
+            print("dictionary \(String(describing: dictionary))")
+            print("error \(String(describing: error))")
+        }
+
     }
 }

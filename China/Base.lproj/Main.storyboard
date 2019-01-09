@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="tAd-W5-7vp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="tAd-W5-7vp">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -216,14 +215,14 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w7J-ug-Mpj">
-                                <rect key="frame" x="136" y="637" width="102" height="30"/>
+                                <rect key="frame" x="136.5" y="637" width="102" height="30"/>
                                 <state key="normal" title="OAuthForCode"/>
                                 <connections>
                                     <action selector="OAuthForCode:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="mzN-Fo-B67"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wO8-N9-PEd">
-                                <rect key="frame" x="173" y="204" width="30" height="30"/>
+                                <rect key="frame" x="172.5" y="204" width="30" height="30"/>
                                 <state key="normal" title="GIF"/>
                                 <connections>
                                     <action selector="shareGIF:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="7Ze-ed-bfb"/>
@@ -305,14 +304,14 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dng-YW-vJ4">
-                                <rect key="frame" x="172" y="104" width="30" height="30"/>
+                                <rect key="frame" x="172.5" y="104" width="30" height="30"/>
                                 <state key="normal" title="Text"/>
                                 <connections>
                                     <action selector="shareText:" destination="KnQ-vr-BqU" eventType="touchUpInside" id="bMZ-Nc-7Lb"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xvp-ds-PwN">
-                                <rect key="frame" x="166" y="142" width="42" height="30"/>
+                                <rect key="frame" x="166.5" y="142" width="42" height="30"/>
                                 <state key="normal" title="Image"/>
                                 <connections>
                                     <action selector="shareImage:" destination="KnQ-vr-BqU" eventType="touchUpInside" id="ceh-lJ-ft5"/>
@@ -444,6 +443,13 @@
                                     <segment title="Timeline"/>
                                 </segments>
                             </segmentedControl>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bVT-of-v1G">
+                                <rect key="frame" x="166" y="537" width="43" height="30"/>
+                                <state key="normal" title="OAuth"/>
+                                <connections>
+                                    <action selector="oauth:" destination="enf-fb-fjR" eventType="touchUpInside" id="Gkv-J7-cus"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -454,8 +460,10 @@
                             <constraint firstItem="orj-LM-NKS" firstAttribute="centerX" secondItem="rib-Zt-LiP" secondAttribute="centerX" id="TyM-1d-PZh"/>
                             <constraint firstItem="orj-LM-NKS" firstAttribute="top" secondItem="Wdu-6N-jtH" secondAttribute="bottom" constant="65" id="YMR-gx-8OX"/>
                             <constraint firstItem="ci4-1i-Sib" firstAttribute="top" secondItem="ewo-ab-eI8" secondAttribute="bottom" constant="30" id="e1z-Qu-ZCm"/>
+                            <constraint firstItem="bVT-of-v1G" firstAttribute="top" secondItem="orj-LM-NKS" secondAttribute="bottom" constant="20" id="ls6-LI-12t"/>
                             <constraint firstItem="Wdu-6N-jtH" firstAttribute="centerX" secondItem="rib-Zt-LiP" secondAttribute="centerX" id="mwx-3z-g4D"/>
                             <constraint firstItem="ci4-1i-Sib" firstAttribute="centerX" secondItem="rib-Zt-LiP" secondAttribute="centerX" id="p3l-RP-XYE"/>
+                            <constraint firstItem="bVT-of-v1G" firstAttribute="centerX" secondItem="orj-LM-NKS" secondAttribute="centerX" id="qRD-0T-Awo"/>
                             <constraint firstItem="ewo-ab-eI8" firstAttribute="centerX" secondItem="rib-Zt-LiP" secondAttribute="centerX" id="xS1-41-ysW"/>
                         </constraints>
                     </view>
