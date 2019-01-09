@@ -26,6 +26,8 @@ struct Configs {
 
     struct Alipay {
         static let appID = "2016012101112529"
+        static let oauthID = "2017010804921689"
+        static let pid = "2088612252056908"
     }
 
     struct Twitter {
