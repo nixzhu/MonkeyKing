@@ -299,3 +299,14 @@ extension UIPasteboard {
         return UIPasteboard.general.string
     }
 }
+
+extension Dictionary {
+
+    var toString: String? {
+        guard
+            let jsonData = try? JSONSerialization.data(withJSONObject: self, options: .prettyPrinted),
+            let theJSONText = String(data: jsonData, encoding: .utf8)
+            else { return nil }
+        return theJSONText
+    }
+}
