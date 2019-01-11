@@ -5,35 +5,39 @@ import WebKit
 public class MonkeyKing: NSObject {
 
     public typealias ResponseJSON = [String: Any]
+
     public enum DeliverResult {
         case success(ResponseJSON?)
         case failure(Error)
     }
+
     public typealias DeliverCompletionHandler = (_ result: DeliverResult) -> Void
     public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Swift.Error?) -> Void
     public typealias WeChatOAuthForCodeCompletionHandler = (_ code: String?, _ error: Swift.Error?) -> Void
     public typealias PayCompletionHandler = (_ result: Bool) -> Void
+    public typealias LaunchCompletionHandler = (_ result: LaunchResult) -> Void
+
     public enum LaunchResult {
         case success(ResponseJSON?)
         case failure(Error)
     }
-    public typealias LaunchCompletionHandler = (_ result: LaunchResult) -> Void
 
     static let shared = MonkeyKing()
+
+    var webView: WKWebView?
 
     var accountSet = Set<Account>()
 
     var oauthCompletionHandler: OAuthCompletionHandler?
     var weChatOAuthForCodeCompletionHandler: WeChatOAuthForCodeCompletionHandler?
+
     private var deliverCompletionHandler: DeliverCompletionHandler?
     private var payCompletionHandler: PayCompletionHandler?
     private var launchCompletionHandler: LaunchCompletionHandler?
     private var launchFromWeChatMiniAppHandler: ((String) -> Void)?
+    private var openSchemeCompletionHandler: ((URL?) -> Void)?
 
-    var webView: WKWebView?
-
-    private override init() {
-    }
+    private override init() {}
 
     public enum Account: Hashable {
         case weChat(appID: String, appKey: String?, miniAppID: String?)
@@ -152,7 +156,9 @@ public class MonkeyKing: NSObject {
 extension MonkeyKing {
 
     public class func handleOpenURL(_ url: URL) -> Bool {
+
         guard let urlScheme = url.scheme else { return false }
+
         // WeChat
         if urlScheme.hasPrefix("wx") {
             let urlString = url.absoluteString
@@ -243,6 +249,7 @@ extension MonkeyKing {
 
             return false
         }
+
         // QQ Share
         if urlScheme.hasPrefix("QQ") {
             guard let errorDescription = url.monkeyking_queryDictionary["error"] as? String else { return false }
@@ -257,6 +264,7 @@ extension MonkeyKing {
             }
             return success
         }
+
         // QQ OAuth
         if urlScheme.hasPrefix("tencent") {
             guard let account = shared.accountSet[.qq] else { return false }
@@ -282,6 +290,7 @@ extension MonkeyKing {
             userInfo = info
             return true
         }
+
         // Weibo
         if urlScheme.hasPrefix("wb") {
             let items = UIPasteboard.general.items
@@ -331,6 +340,7 @@ extension MonkeyKing {
                 break
             }
         }
+
         // Pocket OAuth
         if urlScheme.hasPrefix("pocketapp") {
             shared.oauthCompletionHandler?(nil, nil, nil)
@@ -399,6 +409,11 @@ extension MonkeyKing {
                 }
                 return success
             }
+        }
+
+        if let handler = shared.openSchemeCompletionHandler {
+            handler(url)
+            return true
         }
 
         return false
@@ -593,6 +608,7 @@ extension MonkeyKing {
         shared.deliverCompletionHandler = completionHandler
         shared.payCompletionHandler = nil
         shared.oauthCompletionHandler = nil
+        shared.openSchemeCompletionHandler = nil
 
         let appID = account.appID
         switch message {
@@ -1065,6 +1081,8 @@ extension MonkeyKing {
         shared.payCompletionHandler = completionHandler
         shared.oauthCompletionHandler = nil
         shared.deliverCompletionHandler = nil
+        shared.openSchemeCompletionHandler = nil
+
         switch order {
         case .weChat(let urlString):
             openURL(urlString: urlString) { flag in
@@ -1101,6 +1119,7 @@ extension MonkeyKing {
         shared.oauthCompletionHandler = completionHandler
         shared.payCompletionHandler = nil
         shared.deliverCompletionHandler = nil
+        shared.openSchemeCompletionHandler = nil
 
         switch account {
         case let .alipay(appID):
@@ -1272,6 +1291,7 @@ extension MonkeyKing {
 }
 
 extension MonkeyKing {
+
     public enum Program {
         public enum WeChatSubType {
             case miniApp(username: String, path: String?, type: MiniAppType)
@@ -1309,4 +1329,35 @@ extension MonkeyKing {
             }
         }
     }
+}
+
+// MARK: Open URL
+
+extension MonkeyKing {
+
+    public class func openScheme(_ scheme: String, options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:], completionHandler: ((URL?) -> Void)? = nil) {
+
+        shared.openSchemeCompletionHandler = completionHandler
+        shared.deliverCompletionHandler = nil
+        shared.payCompletionHandler = nil
+        shared.deliverCompletionHandler = nil
+
+        if let url = URL(string: scheme) {
+            if #available(iOS 10.0, *) {
+                UIApplication.shared.open(url, options: options) { flag in
+                    if !flag {
+                        shared.openSchemeCompletionHandler = nil
+                        completionHandler?(nil)
+                    }
+                }
+            } else {
+                let resutl = UIApplication.shared.openURL(url)
+                if !resutl {
+                    shared.openSchemeCompletionHandler = nil
+                    completionHandler?(nil)
+                }
+            }
+        }
+    }
+
 }
