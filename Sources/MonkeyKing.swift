@@ -40,7 +40,7 @@ public class MonkeyKing: NSObject {
         case qq(appID: String)
         case weibo(appID: String, appKey: String, redirectURL: String)
         case pocket(appID: String)
-        case alipay(appID: String, pid: String?)
+        case alipay(appID: String)
         case twitter(appID: String, appKey: String, redirectURL: String)
 
         public var isAppInstalled: Bool {
@@ -70,7 +70,7 @@ public class MonkeyKing: NSObject {
                 return appID
             case .pocket(let appID):
                 return appID
-            case .alipay(let appID, _):
+            case .alipay(let appID):
                 return appID
             case .twitter(let appID, _, _):
                 return appID
@@ -1084,7 +1084,7 @@ extension MonkeyKing {
 
 extension MonkeyKing {
 
-    public class func oauth(for platform: SupportedPlatform, scope: String? = nil, requestToken: String? = nil, signType: String? = nil, sign: String? = nil, appUrlScheme: String? = nil, completionHandler: @escaping OAuthCompletionHandler) {
+    public class func oauth(for platform: SupportedPlatform, scope: String? = nil, requestToken: String? = nil, dataString: String? = nil, completionHandler: @escaping OAuthCompletionHandler) {
 
         guard let account = shared.accountSet[platform] else {
             let error = NSError(domain: "No have platform account", code: -2, userInfo: nil)
@@ -1103,59 +1103,16 @@ extension MonkeyKing {
         shared.deliverCompletionHandler = nil
 
         switch account {
-        case let .alipay(appID, pid):
-            guard let pid = pid else {
+        case let .alipay(appID):
+
+            guard let dataStr = dataString else {
                 let error = NSError(domain: "Alipay's pid is nil", code: -2, userInfo: nil)
                 completionHandler(nil, nil, error)
                 return
             }
 
-            guard let signType = signType, let sign = sign, let appUrlScheme = appUrlScheme else {
-                let error = NSError(domain: "Alipay's pid is nil", code: -2, userInfo: nil)
-                completionHandler(nil, nil, error)
-                return
-            }
-
-            let appName = Bundle.main.monkeyking_displayName ?? "nixApp"
-            let dataDic: [String: String] = ["av": "1", "ty": "ios_lite", "appkey": "2014052600006128", "sv": "h.a.3.2.1", "an": appName]
-
-            guard let str = dataDic.toString else {
-                let error = NSError(domain: "Alipay oauth error", code: -2, userInfo: nil)
-                completionHandler(nil, nil, error)
-                return
-            }
-
-            let dic: [String: String] = [
-                "apiname": "com.alipay.account.auth",
-                "app_id": appID,
-                "app_name": "mc",
-                "auth_type": "AUTHACCOUNT",
-                "biz_type": "openservice",
-                "method": "alipay.open.auth.sdk.code.get",
-                "pid": pid,
-                "product_id": "APP_FAST_LOGIN",
-                "scope": "kuaijie",
-                "target_id": "\(Int(Date().timeIntervalSince1970 * 1000.0))",
-                "sign": sign,
-                "sign_type": signType
-            ]
-
-            let keys = dic.keys.sorted { $0 < $1 }
-
-            var array: [String] = []
-            for k in keys {
-                if let v = dic[k] {
-                    array.append(k + "=" + v)
-                }
-            }
-
-            var dataString: String = array.joined(separator: "&")
-            dataString += "&sign=\(sign)"
-            dataString += "&sign_type=\(signType)"
-            dataString += "&bizcontext="
-            dataString += str.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: " ", with: "")
-
-            let resultDic: [String: String] = ["fromAppUrlScheme": appUrlScheme, "requestType": "SafePay", "dataString": dataString]
+            let appUrlScheme = "apoauth" + appID
+            let resultDic: [String: String] = ["fromAppUrlScheme": appUrlScheme, "requestType": "SafePay", "dataString": dataStr]
 
             guard var resultStr = resultDic.toString else {
                 let error = NSError(domain: "Alipay oauth error", code: -2, userInfo: nil)
