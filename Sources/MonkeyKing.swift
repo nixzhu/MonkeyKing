@@ -1340,23 +1340,28 @@ extension MonkeyKing {
         shared.openSchemeCompletionHandler = completionHandler
         shared.deliverCompletionHandler = nil
         shared.payCompletionHandler = nil
-        shared.deliverCompletionHandler = nil
+        shared.oauthCompletionHandler = nil
+
+        let handleErrorResult: () -> Void = {
+            shared.openSchemeCompletionHandler = nil
+            completionHandler?(nil)
+        }
 
         if let url = URL(string: scheme) {
             if #available(iOS 10.0, *) {
                 UIApplication.shared.open(url, options: options) { flag in
                     if !flag {
-                        shared.openSchemeCompletionHandler = nil
-                        completionHandler?(nil)
+                        handleErrorResult()
                     }
                 }
             } else {
                 let resutl = UIApplication.shared.openURL(url)
                 if !resutl {
-                    shared.openSchemeCompletionHandler = nil
-                    completionHandler?(nil)
+                    handleErrorResult()
                 }
             }
+        } else {
+            handleErrorResult()
         }
     }
 
