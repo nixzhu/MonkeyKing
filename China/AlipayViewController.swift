@@ -136,6 +136,24 @@ class AlipayViewController: UIViewController {
             print("error \(String(describing: error))")
         }
     }
+
+    @IBAction func certify() {
+
+        // REF: https://docs.open.alipay.com/271/dz10yd
+
+        let urlStr = "https://openapi.alipay.com/gateway.do?alipay_sdk=alipay-sdk-java-dynamicVersionNo&app_id=2015111100758155&biz_content=%7B%22biz_no%22%3A%22ZM201611253000000121200404215172%22%7D&charset=GBK&format=json&method=zhima.customer.certification.certify&return_url=http%3A%2F%2Fwww.taobao.com&sign=MhtfosO8AKbwctDgfGitzLvhbcvi%2FMv3iBES7fRnIXn%2BHcdwq9UWltTs6mEvjk2UoHdLoFrvcSJipiE3sL8kdJMd51t87vcwPCfk7BA5KPwa4%2B1IYzYaK6WwbqOoQB%2FqiJVfni602HiE%2BZAomW7WA3Tjhjy3D%2B9xrLFCipiroDQ%3D&sign_type=RSA2&timestamp=2016-11-25+15%3A00%3A59&version=1.0&sign=MhtfosO8AKbwctDgfGitzLvhbcvi%2FMv3iBES7fRnIXn%2BHcdwq9UWltTs6mEvjk2UoHdLoFrvcSJipiE3sL8kdJMd51t87vcwPCfk7BA5KPwa4%2B1IYzYaK6WwbqOoQB%2FqiJVfni602HiE%2BZAomW7WA3Tjhjy3D%2B9xrLFCipiroDQ%3D"
+
+        var allowedCharacterSet = CharacterSet.urlQueryAllowed
+        allowedCharacterSet.remove(charactersIn: "!*'();:@&=+$,%#[]|")
+
+        let encodingURLStr = urlStr.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)!
+
+        let scheme = "alipays://platformapi/startapp?appId=20000067&url=" + encodingURLStr
+
+        MonkeyKing.openScheme(scheme) { url in
+            print("callback: \(String(describing: url))")
+        }
+    }
 }
 
 extension Dictionary {
