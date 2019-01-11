@@ -430,7 +430,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="orj-LM-NKS">
-                                <rect key="frame" x="152" y="487" width="71" height="30"/>
+                                <rect key="frame" x="152" y="452" width="71" height="30"/>
                                 <state key="normal" title="Alipay Pay"/>
                                 <connections>
                                     <action selector="pay:" destination="enf-fb-fjR" eventType="touchUpInside" id="g0R-Pi-FGM"/>
@@ -444,21 +444,30 @@
                                 </segments>
                             </segmentedControl>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bVT-of-v1G">
-                                <rect key="frame" x="166" y="537" width="43" height="30"/>
+                                <rect key="frame" x="166" y="502" width="43" height="30"/>
                                 <state key="normal" title="OAuth"/>
                                 <connections>
                                     <action selector="oauth:" destination="enf-fb-fjR" eventType="touchUpInside" id="Gkv-J7-cus"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1vs-4n-nAh">
+                                <rect key="frame" x="164" y="552" width="47" height="30"/>
+                                <state key="normal" title="Certify"/>
+                                <connections>
+                                    <action selector="certify" destination="enf-fb-fjR" eventType="touchUpInside" id="ueH-jt-jR4"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="1vs-4n-nAh" firstAttribute="top" secondItem="bVT-of-v1G" secondAttribute="bottom" constant="20" id="2A5-2d-3o0"/>
                             <constraint firstItem="ewo-ab-eI8" firstAttribute="top" secondItem="rib-Zt-LiP" secondAttribute="bottom" constant="30" id="6G9-4q-GA9"/>
                             <constraint firstItem="Wdu-6N-jtH" firstAttribute="top" secondItem="ci4-1i-Sib" secondAttribute="bottom" constant="80" id="EFu-Ut-yHu"/>
                             <constraint firstItem="rib-Zt-LiP" firstAttribute="top" secondItem="4Ei-Fo-sDx" secondAttribute="bottom" constant="100" id="JsV-8r-sGN"/>
+                            <constraint firstItem="1vs-4n-nAh" firstAttribute="centerX" secondItem="bVT-of-v1G" secondAttribute="centerX" id="OMp-vc-h0D"/>
                             <constraint firstItem="rib-Zt-LiP" firstAttribute="centerX" secondItem="zQL-2N-wfU" secondAttribute="centerX" id="Rx5-jf-lIb"/>
                             <constraint firstItem="orj-LM-NKS" firstAttribute="centerX" secondItem="rib-Zt-LiP" secondAttribute="centerX" id="TyM-1d-PZh"/>
-                            <constraint firstItem="orj-LM-NKS" firstAttribute="top" secondItem="Wdu-6N-jtH" secondAttribute="bottom" constant="65" id="YMR-gx-8OX"/>
+                            <constraint firstItem="orj-LM-NKS" firstAttribute="top" secondItem="Wdu-6N-jtH" secondAttribute="bottom" constant="30" id="YMR-gx-8OX"/>
                             <constraint firstItem="ci4-1i-Sib" firstAttribute="top" secondItem="ewo-ab-eI8" secondAttribute="bottom" constant="30" id="e1z-Qu-ZCm"/>
                             <constraint firstItem="bVT-of-v1G" firstAttribute="top" secondItem="orj-LM-NKS" secondAttribute="bottom" constant="20" id="ls6-LI-12t"/>
                             <constraint firstItem="Wdu-6N-jtH" firstAttribute="centerX" secondItem="rib-Zt-LiP" secondAttribute="centerX" id="mwx-3z-g4D"/>
