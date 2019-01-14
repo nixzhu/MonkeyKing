@@ -118,7 +118,7 @@ public class MonkeyKing: NSObject {
             case .pocket:
                 return shared.canOpenURL(urlString: "pocket-oauth-v1://")
             case .alipay:
-                return shared.canOpenURL(urlString: "alipayshare://")
+                return shared.canOpenURL(urlString: "alipayshare://") || shared.canOpenURL(urlString: "alipay://")
             case .twitter:
                 return shared.canOpenURL(urlString: "twitter://")
             }
