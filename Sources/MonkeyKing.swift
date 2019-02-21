@@ -436,7 +436,7 @@ extension MonkeyKing {
         case gif(Data)
         case audio(audioURL: URL, linkURL: URL?)
         case video(URL)
-        case file(Data)
+        case file(Data, fileExt: String?) /// file extension for wechat file share
         case miniApp(url: URL, path: String, withShareTicket: Bool, type: MiniAppType)
     }
 
@@ -671,8 +671,11 @@ extension MonkeyKing {
                             fatalError("Missing `miniProgramID`!")
                         }
                     } 
-                case .file:
-                    fatalError("WeChat not supports File type")
+                case .file(let fileData, let fileExt):
+                    weChatMessageInfo["objectType"] = "6"
+                    weChatMessageInfo["title"] = info.title
+                    weChatMessageInfo["fileData"] = fileData
+                    weChatMessageInfo["fileExt"] = fileExt
                 }
             } else { // Text Share
                 weChatMessageInfo["command"] = "1020"
@@ -750,7 +753,7 @@ extension MonkeyKing {
                     handleNews(with: audioURL, mediaType: "audio")
                 case .video(let url):
                     handleNews(with: url, mediaType: nil) // No video type, default is news type.
-                case .file(let fileData):
+                case .file(let fileData, _):
                     var dic: [String: Any] = ["file_data": fileData]
                     if let oldText = UIPasteboard.general.oldText {
                         dic["pasted_string"] = oldText
