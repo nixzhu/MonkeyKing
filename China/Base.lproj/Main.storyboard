@@ -228,6 +228,13 @@
                                     <action selector="shareGIF:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="7Ze-ed-bfb"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oaF-Tr-K6G">
+                                <rect key="frame" x="172.5" y="480" width="30" height="30"/>
+                                <state key="normal" title="File"/>
+                                <connections>
+                                    <action selector="shareFile:" destination="2Fh-zG-2iM" eventType="touchUpInside" id="LpV-fr-Pbu"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -238,7 +245,9 @@
                             <constraint firstItem="wfw-9a-DtS" firstAttribute="top" secondItem="UWw-uP-3po" secondAttribute="bottom" constant="120" id="7ew-1Y-cIR"/>
                             <constraint firstItem="oRX-XU-uEu" firstAttribute="top" secondItem="UWw-uP-3po" secondAttribute="bottom" constant="10" id="8SX-ii-Vch"/>
                             <constraint firstItem="7zS-bL-oQf" firstAttribute="top" secondItem="sOl-Wo-bDF" secondAttribute="bottom" constant="20" id="Bnu-ad-MWc"/>
+                            <constraint firstItem="oaF-Tr-K6G" firstAttribute="top" secondItem="0hN-D7-bH1" secondAttribute="bottom" constant="8" id="C0u-Xn-Lrc"/>
                             <constraint firstItem="wO8-N9-PEd" firstAttribute="top" secondItem="gS0-c6-rje" secondAttribute="bottom" constant="10" id="HbP-Tg-KBy"/>
+                            <constraint firstItem="oaF-Tr-K6G" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="JDe-vE-dty"/>
                             <constraint firstItem="Wyh-QX-rAS" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="JGx-Bi-lsD"/>
                             <constraint firstItem="oRX-XU-uEu" firstAttribute="centerX" secondItem="UWw-uP-3po" secondAttribute="centerX" id="LMc-TR-Xjx"/>
                             <constraint firstItem="w7J-ug-Mpj" firstAttribute="centerX" secondItem="pco-JT-UnQ" secondAttribute="centerX" id="M4K-Ja-Rwp"/>

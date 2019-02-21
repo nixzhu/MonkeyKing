@@ -87,6 +87,21 @@ class WeChatViewController: UIViewController {
         )
         shareInfo(info)
     }
+
+    @IBAction func shareFile(_ sender: UIButton) {
+        do {
+            let fileData = try Data(contentsOf: URL(fileURLWithPath: Bundle.main.path(forResource: "gif", ofType: "gif")!))
+            let info = MonkeyKing.Info(
+                title: "File, \(UUID().uuidString)",
+                description: "Description File, \(UUID().uuidString)",
+                thumbnail: nil,
+                media: .file(fileData, fileExt: "gif")
+            )
+            shareInfo(info)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
     
     private func shareInfo(_ info: MonkeyKing.Info) {
         var message: MonkeyKing.Message?

@@ -75,7 +75,7 @@ class QQViewController: UIViewController {
                 title: "Dataline File, \(UUID().uuidString)",
                 description: "pay.php",
                 thumbnail: nil,
-                media: .file(fileData)
+                media: .file(fileData, fileExt: nil)
             )
             shareInfo(info)
         } catch {
