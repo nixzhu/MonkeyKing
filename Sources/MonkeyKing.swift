@@ -673,9 +673,13 @@ extension MonkeyKing {
                     } 
                 case .file(let fileData, let fileExt):
                     weChatMessageInfo["objectType"] = "6"
-                    weChatMessageInfo["title"] = info.title
                     weChatMessageInfo["fileData"] = fileData
                     weChatMessageInfo["fileExt"] = fileExt
+
+                    if let fileExt = fileExt, let title = info.title {
+                        let suffix = ".\(fileExt)"
+                        weChatMessageInfo["title"] = title.hasSuffix(suffix) ? title : title + suffix
+                    }
                 }
             } else { // Text Share
                 weChatMessageInfo["command"] = "1020"
