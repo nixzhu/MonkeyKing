@@ -80,9 +80,14 @@ public class MonkeyKing: NSObject {
                 return appID
             }
         }
+        
 
         public var hashValue: Int {
             return appID.hashValue
+        }
+        
+        public func hash(into hasher: inout Hasher) {
+            hasher.combine(appID)
         }
 
         public var canWebOAuth: Bool {
@@ -388,7 +393,7 @@ extension MonkeyKing {
                     error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
                     return false
                 } else { // Pay
-                    defer {
+                    do {
                         shared.payCompletionHandler?(true)
                     }
                 }
