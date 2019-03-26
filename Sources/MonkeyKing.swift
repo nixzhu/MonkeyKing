@@ -80,7 +80,6 @@ public class MonkeyKing: NSObject {
                 return appID
             }
         }
-        
 
         public var hashValue: Int {
             return appID.hashValue
@@ -393,9 +392,7 @@ extension MonkeyKing {
                     error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
                     return false
                 } else { // Pay
-                    do {
-                        shared.payCompletionHandler?(true)
-                    }
+                    shared.payCompletionHandler?(true)
                 }
                 return true
             } else { // Share
