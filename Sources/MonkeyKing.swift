@@ -81,10 +81,6 @@ public class MonkeyKing: NSObject {
             }
         }
 
-        public var hashValue: Int {
-            return appID.hashValue
-        }
-        
         public func hash(into hasher: inout Hasher) {
             hasher.combine(appID)
         }
@@ -212,7 +208,7 @@ extension MonkeyKing {
 
                     guard
                         let account = shared.accountSet[.weChat],
-                        let info = dict?[account.appID] as? [String: Any],
+                        let info = dict[account.appID] as? [String: Any],
                         let result = info["result"] as? String,
                         let resultCode = Int(result) else {
                             return false
@@ -399,7 +395,7 @@ extension MonkeyKing {
                 guard
                     let data = UIPasteboard.general.data(forPasteboardType: "com.alipay.openapi.pb.resp.\(appID)"),
                     let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? [String: Any],
-                    let objects = dict?["$objects"] as? NSArray,
+                    let objects = dict["$objects"] as? NSArray,
                     let result = objects[12] as? Int else {
                         return false
                 }
