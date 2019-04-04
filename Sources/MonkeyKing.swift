@@ -95,7 +95,22 @@ public class MonkeyKing: NSObject {
         }
 
         public static func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
-            return lhs.appID == rhs.appID
+            switch (lhs, rhs) {
+            case (.weChat(let lappID, _, _), .weChat(let rappID, _, _)),
+                 (.qq(let lappID), .qq(let rappID)),
+                 (.weibo(let lappID, _, _), .weibo(let rappID, _, _)),
+                 (.pocket(let lappID), .pocket(let rappID)),
+                 (.alipay(let lappID), .alipay(let rappID)),
+                 (.twitter(let lappID, _, _), .twitter(let rappID, _, _)):
+                return lappID == rappID
+            case (.weChat, _),
+                 (.qq, _),
+                 (.weibo, _),
+                 (.pocket, _),
+                 (.alipay, _),
+                 (.twitter, _):
+                return false
+            }
         }
     }
 
@@ -165,7 +180,7 @@ extension MonkeyKing {
             // OAuth
             if urlString.contains("state=Weixinauth") {
                 let queryDictionary = url.monkeyking_queryDictionary
-                guard let code = queryDictionary["code"] as? String else {
+                guard let code = queryDictionary["code"] else {
                     shared.weChatOAuthForCodeCompletionHandler = nil
                     return false
                 }
@@ -183,8 +198,8 @@ extension MonkeyKing {
             // SMS OAuth
             if urlString.contains("wapoauth") {
                 let queryDictionary = url.monkeyking_queryDictionary
-                guard let m = queryDictionary["m"] as? String else { return false }
-                guard let t = queryDictionary["t"] as? String else { return false }
+                guard let m = queryDictionary["m"] else { return false }
+                guard let t = queryDictionary["t"] else { return false }
                 guard let account = shared.accountSet[.weChat] else { return false }
                 let appID = account.appID
                 let urlString = "https://open.weixin.qq.com/connect/smsauthorize?appid=\(appID)&redirect_uri=\(appID)%3A%2F%2Foauth&response_type=code&scope=snsapi_message,snsapi_userinfo,snsapi_friend,snsapi_contact&state=xxx&uid=1926559385&m=\(m)&t=\(t)"
@@ -198,13 +213,13 @@ extension MonkeyKing {
                     shared.payCompletionHandler?(result)
                 }
                 let queryDictionary = url.monkeyking_queryDictionary
-                guard let ret = queryDictionary["ret"] as? String else { return false }
+                guard let ret = queryDictionary["ret"] else { return false }
                 result = (ret == "0")
                 return result
             }
 
             if let data = UIPasteboard.general.data(forPasteboardType: "content") {
-                if let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? [String: Any] {
+                if let dict = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any] {
 
                     guard
                         let account = shared.accountSet[.weChat],
@@ -252,7 +267,7 @@ extension MonkeyKing {
 
         // QQ Share
         if urlScheme.hasPrefix("QQ") {
-            guard let errorDescription = url.monkeyking_queryDictionary["error"] as? String else { return false }
+            guard let errorDescription = url.monkeyking_queryDictionary["error"] else { return false }
             let success = (errorDescription == "0")
             if success {
                 shared.deliverCompletionHandler?(.success(nil))
@@ -382,7 +397,7 @@ extension MonkeyKing {
                     defer {
                         shared.oauthCompletionHandler?(resultDic, nil, error)
                     }
-                    if let _ = resultDic["auth_code"], let _ = resultDic["scope"] as? String {
+                    if let _ = resultDic["auth_code"], let _ = resultDic["scope"] {
                         return true
                     }
                     error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
@@ -394,7 +409,7 @@ extension MonkeyKing {
             } else { // Share
                 guard
                     let data = UIPasteboard.general.data(forPasteboardType: "com.alipay.openapi.pb.resp.\(appID)"),
-                    let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? [String: Any],
+                    let dict = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any],
                     let objects = dict["$objects"] as? NSArray,
                     let result = objects[12] as? Int else {
                         return false
@@ -686,7 +701,7 @@ extension MonkeyKing {
             if let oldText = UIPasteboard.general.oldText {
                 weChatMessage["old_text"] = oldText
             }
-            guard let data = try? PropertyListSerialization.data(fromPropertyList: weChatMessage, format: .binary, options: 0) else { return }
+            guard let data = try? PropertyListSerialization.data(fromPropertyList: weChatMessage, format: .binary, options: .init()) else { return }
             UIPasteboard.general.setData(data, forPasteboardType: "content")
             let weChatSchemeURLString = "weixin://app/\(appID)/sendreq/?"
             openURL(urlString: weChatSchemeURLString) { flag in
@@ -953,7 +968,7 @@ extension MonkeyKing {
             }
         case .alipay(let type):
             let dictionary = createAlipayMessageDictionary(withScene: type.scene, info: type.info, appID: appID)
-            guard let data = try? PropertyListSerialization.data(fromPropertyList: dictionary, format: .xml, options: 0) else {
+            guard let data = try? PropertyListSerialization.data(fromPropertyList: dictionary, format: .xml, options: .init()) else {
                 completionHandler(.failure(.sdk(reason: .serializeFailed)))
                 return
             }

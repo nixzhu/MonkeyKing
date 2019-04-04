@@ -74,8 +74,7 @@ class Networking {
                 }
             case .json:
                 do {
-                    let options = JSONSerialization.WritingOptions()
-                    let data = try JSONSerialization.data(withJSONObject: parameters, options: options)
+                    let data = try JSONSerialization.data(withJSONObject: parameters)
                     mutableURLRequest.setValue("application/json; charset=UTF-8", forHTTPHeaderField: "Content-Type")
                     mutableURLRequest.setValue("application/json", forHTTPHeaderField: "X-Accept")
                     mutableURLRequest.httpBody = data
@@ -157,7 +156,7 @@ class Networking {
                 }
             }
             guard let validData = data,
-                let jsonData = try? JSONSerialization.jsonObject(with: validData, options: .allowFragments) as? [String: Any] else {
+                let jsonData = validData.monkeyking_json else {
                     print("requst fail: JSON could not be serialized because input data was nil.")
                     return
             }
@@ -185,7 +184,7 @@ class Networking {
                 }
             }
             guard let validData = data,
-                let jsonData = try? JSONSerialization.jsonObject(with: validData, options: .allowFragments) as? [String: Any] else {
+                let jsonData = validData.monkeyking_json else {
                     print("upload fail: JSON could not be serialized because input data was nil.")
                     return
             }
