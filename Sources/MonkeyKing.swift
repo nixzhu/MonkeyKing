@@ -95,7 +95,22 @@ public class MonkeyKing: NSObject {
         }
 
         public static func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
-            return lhs.appID == rhs.appID
+            switch (lhs, rhs) {
+            case (.weChat(let lappID, _, _), .weChat(let rappID, _, _)),
+                 (.qq(let lappID), .qq(let rappID)),
+                 (.weibo(let lappID, _, _), .weibo(let rappID, _, _)),
+                 (.pocket(let lappID), .pocket(let rappID)),
+                 (.alipay(let lappID), .alipay(let rappID)),
+                 (.twitter(let lappID, _, _), .twitter(let rappID, _, _)):
+                return lappID == rappID
+            case (.weChat, _),
+                 (.qq, _),
+                 (.weibo, _),
+                 (.pocket, _),
+                 (.alipay, _),
+                 (.twitter, _):
+                return false
+            }
         }
     }
 
