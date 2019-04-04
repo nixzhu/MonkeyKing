@@ -51,7 +51,7 @@ extension MonkeyKing: WKNavigationDelegate {
         for case let .twitter(appID, appKey, redirectURL) in accountSet {
             guard url.absoluteString.hasPrefix(redirectURL) else { break }
             let params = url.monkeyking_queryDictionary
-            guard let token = params["oauth_token"] as? String, let verifer = params["oauth_verifier"] as? String else { break }
+            guard let token = params["oauth_token"], let verifer = params["oauth_verifier"] else { break }
             let accessTokenAPI = "https://api.twitter.com/oauth/access_token"
             let parameters = ["oauth_token": token, "oauth_verifier": verifer]
             let headerString = Networking.shared.authorizationHeader(for: .post, urlString: accessTokenAPI, appID: appID, appKey: appKey, accessToken: nil, accessTokenSecret: nil, parameters: parameters, isMediaUpload: false)
@@ -79,7 +79,7 @@ extension MonkeyKing: WKNavigationDelegate {
         // WeChat OAuth
         if url.absoluteString.hasPrefix("wx") {
             let queryDictionary = url.monkeyking_queryDictionary
-            guard let code = queryDictionary["code"] as? String else {
+            guard let code = queryDictionary["code"] else {
                 return
             }
             MonkeyKing.fetchWeChatOAuthInfoByCode(code: code) { [weak self] (info, response, error) in
@@ -89,7 +89,7 @@ extension MonkeyKing: WKNavigationDelegate {
             // Weibo OAuth
             for case let .weibo(_, _, redirectURL) in accountSet {
                 if url.absoluteString.hasPrefix(redirectURL) {
-                    guard let code = url.monkeyking_queryDictionary["code"] as? String else { return }
+                    guard let code = url.monkeyking_queryDictionary["code"] else { return }
                     MonkeyKing.fetchWeiboOAuthInfoByCode(code: code) { [weak self] info, response, error in
                         self?.removeWebView(webView, tuples: (info, response, error))
                     }

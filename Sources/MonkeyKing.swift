@@ -165,7 +165,7 @@ extension MonkeyKing {
             // OAuth
             if urlString.contains("state=Weixinauth") {
                 let queryDictionary = url.monkeyking_queryDictionary
-                guard let code = queryDictionary["code"] as? String else {
+                guard let code = queryDictionary["code"] else {
                     shared.weChatOAuthForCodeCompletionHandler = nil
                     return false
                 }
@@ -183,8 +183,8 @@ extension MonkeyKing {
             // SMS OAuth
             if urlString.contains("wapoauth") {
                 let queryDictionary = url.monkeyking_queryDictionary
-                guard let m = queryDictionary["m"] as? String else { return false }
-                guard let t = queryDictionary["t"] as? String else { return false }
+                guard let m = queryDictionary["m"] else { return false }
+                guard let t = queryDictionary["t"] else { return false }
                 guard let account = shared.accountSet[.weChat] else { return false }
                 let appID = account.appID
                 let urlString = "https://open.weixin.qq.com/connect/smsauthorize?appid=\(appID)&redirect_uri=\(appID)%3A%2F%2Foauth&response_type=code&scope=snsapi_message,snsapi_userinfo,snsapi_friend,snsapi_contact&state=xxx&uid=1926559385&m=\(m)&t=\(t)"
@@ -198,7 +198,7 @@ extension MonkeyKing {
                     shared.payCompletionHandler?(result)
                 }
                 let queryDictionary = url.monkeyking_queryDictionary
-                guard let ret = queryDictionary["ret"] as? String else { return false }
+                guard let ret = queryDictionary["ret"] else { return false }
                 result = (ret == "0")
                 return result
             }
@@ -252,7 +252,7 @@ extension MonkeyKing {
 
         // QQ Share
         if urlScheme.hasPrefix("QQ") {
-            guard let errorDescription = url.monkeyking_queryDictionary["error"] as? String else { return false }
+            guard let errorDescription = url.monkeyking_queryDictionary["error"] else { return false }
             let success = (errorDescription == "0")
             if success {
                 shared.deliverCompletionHandler?(.success(nil))
@@ -382,7 +382,7 @@ extension MonkeyKing {
                     defer {
                         shared.oauthCompletionHandler?(resultDic, nil, error)
                     }
-                    if let _ = resultDic["auth_code"], let _ = resultDic["scope"] as? String {
+                    if let _ = resultDic["auth_code"], let _ = resultDic["scope"] {
                         return true
                     }
                     error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)

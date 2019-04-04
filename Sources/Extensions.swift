@@ -137,18 +137,18 @@ extension Data {
 
 extension URL {
 
-    var monkeyking_queryDictionary: [String: Any] {
-        let components = URLComponents(url: self, resolvingAgainstBaseURL: false)
-        guard let items = components?.queryItems else {
+    var monkeyking_queryDictionary: [String: String] {
+        guard
+            let components = URLComponents(url: self, resolvingAgainstBaseURL: false),
+            let queryItems = components.queryItems
+        else {
             return [:]
         }
-        var infos = [String: Any]()
-        items.forEach {
-            if let value = $0.value {
-                infos[$0.name] = value
-            }
-        }
-        return infos
+
+        let items = queryItems.compactMap { $0.value != nil ? ($0.name, $0.value!) : nil }
+        let dict = Dictionary(items, uniquingKeysWith: { _, last in last })
+
+        return dict
     }
 }
 
