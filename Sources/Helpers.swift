@@ -6,21 +6,32 @@ extension MonkeyKing {
     class func fetchWeChatOAuthInfoByCode(code: String, completionHandler: @escaping OAuthCompletionHandler) {
         var appID = ""
         var appKey = ""
+
         for case let .weChat(id, key, _) in shared.accountSet {
             guard let key = key else {
                 completionHandler(["code": code], nil, nil)
                 return
             }
+
             appID = id
             appKey = key
         }
-        var accessTokenAPI = "https://api.weixin.qq.com/sns/oauth2/access_token"
-        accessTokenAPI += "?grant_type=authorization_code"
-        accessTokenAPI += "&appid=\(appID)"
-        accessTokenAPI += "&secret=\(appKey)"
-        accessTokenAPI += "&code=\(code)"
+
+        var urlComponents = URLComponents(string: "https://api.weixin.qq.com/sns/oauth2/access_token")
+        urlComponents?.queryItems = [
+            URLQueryItem(name: "grant_type", value: "authorization_code"),
+            URLQueryItem(name: "appid", value: appID),
+            URLQueryItem(name: "secret", value: appKey),
+            URLQueryItem(name: "code", value: code)
+        ]
+
+        guard let accessTokenAPI = urlComponents?.string else {
+            completionHandler(["code": code], nil, nil)
+            return
+        }
+
         // OAuth
-        shared.request(accessTokenAPI, method: .get) { (json, response, error) in
+        shared.request(accessTokenAPI, method: .get) { json, response, error in
             completionHandler(json, response, error)
         }
     }
