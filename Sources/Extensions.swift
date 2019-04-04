@@ -127,11 +127,9 @@ extension String {
 extension Data {
 
     var monkeyking_json: [String: Any]? {
-        do {
-            return try JSONSerialization.jsonObject(with: self, options: .allowFragments) as? [String: Any]
-        } catch {
-            return nil
-        }
+        let json = try? JSONSerialization.jsonObject(with: self, options: .allowFragments)
+
+        return json as? [String: Any]
     }
 }
 
