@@ -204,7 +204,7 @@ extension MonkeyKing {
             }
 
             if let data = UIPasteboard.general.data(forPasteboardType: "content") {
-                if let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? [String: Any] {
+                if let dict = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any] {
 
                     guard
                         let account = shared.accountSet[.weChat],
@@ -394,7 +394,7 @@ extension MonkeyKing {
             } else { // Share
                 guard
                     let data = UIPasteboard.general.data(forPasteboardType: "com.alipay.openapi.pb.resp.\(appID)"),
-                    let dict = try? PropertyListSerialization.propertyList(from: data, options: PropertyListSerialization.MutabilityOptions(), format: nil) as? [String: Any],
+                    let dict = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any],
                     let objects = dict["$objects"] as? NSArray,
                     let result = objects[12] as? Int else {
                         return false

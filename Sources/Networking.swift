@@ -74,8 +74,7 @@ class Networking {
                 }
             case .json:
                 do {
-                    let options = JSONSerialization.WritingOptions()
-                    let data = try JSONSerialization.data(withJSONObject: parameters, options: options)
+                    let data = try JSONSerialization.data(withJSONObject: parameters)
                     mutableURLRequest.setValue("application/json; charset=UTF-8", forHTTPHeaderField: "Content-Type")
                     mutableURLRequest.setValue("application/json", forHTTPHeaderField: "X-Accept")
                     mutableURLRequest.httpBody = data
