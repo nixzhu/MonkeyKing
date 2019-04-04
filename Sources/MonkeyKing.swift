@@ -686,7 +686,7 @@ extension MonkeyKing {
             if let oldText = UIPasteboard.general.oldText {
                 weChatMessage["old_text"] = oldText
             }
-            guard let data = try? PropertyListSerialization.data(fromPropertyList: weChatMessage, format: .binary, options: 0) else { return }
+            guard let data = try? PropertyListSerialization.data(fromPropertyList: weChatMessage, format: .binary, options: .init()) else { return }
             UIPasteboard.general.setData(data, forPasteboardType: "content")
             let weChatSchemeURLString = "weixin://app/\(appID)/sendreq/?"
             openURL(urlString: weChatSchemeURLString) { flag in
@@ -953,7 +953,7 @@ extension MonkeyKing {
             }
         case .alipay(let type):
             let dictionary = createAlipayMessageDictionary(withScene: type.scene, info: type.info, appID: appID)
-            guard let data = try? PropertyListSerialization.data(fromPropertyList: dictionary, format: .xml, options: 0) else {
+            guard let data = try? PropertyListSerialization.data(fromPropertyList: dictionary, format: .xml, options: .init()) else {
                 completionHandler(.failure(.sdk(reason: .serializeFailed)))
                 return
             }
