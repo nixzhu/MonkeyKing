@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		10CDDF46237A8588005E8DE7 /* MonkeyKing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CDDF3F237A8588005E8DE7 /* MonkeyKing.swift */; };
+		10CDDF47237A8588005E8DE7 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CDDF40237A8588005E8DE7 /* Networking.swift */; };
+		10CDDF48237A8588005E8DE7 /* MonkeyKing+WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CDDF41237A8588005E8DE7 /* MonkeyKing+WebView.swift */; };
+		10CDDF49237A8588005E8DE7 /* AnyActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CDDF42237A8588005E8DE7 /* AnyActivity.swift */; };
+		10CDDF4A237A8588005E8DE7 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CDDF43237A8588005E8DE7 /* Helpers.swift */; };
+		10CDDF4B237A8588005E8DE7 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CDDF44237A8588005E8DE7 /* Extensions.swift */; };
+		10CDDF4C237A8588005E8DE7 /* MonkeyKing+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CDDF45237A8588005E8DE7 /* MonkeyKing+Error.swift */; };
 		3F159F301C056B1D00BCB39B /* PocketViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F159F2F1C056B1D00BCB39B /* PocketViewController.swift */; };
 		3F16EAF01BF4D1DB005B1799 /* SimpleNetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F16EAEF1BF4D1DB005B1799 /* SimpleNetworking.swift */; };
 		3F62B3661BB6ACBB00AABD3C /* WeChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62B3651BB6ACBB00AABD3C /* WeChatViewController.swift */; };
@@ -15,9 +22,6 @@
 		3F62B36C1BB6ACE500AABD3C /* SystemShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62B36B1BB6ACE500AABD3C /* SystemShareViewController.swift */; };
 		3F7609431C57B47300FBCB20 /* AlipayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7609421C57B47300FBCB20 /* AlipayViewController.swift */; };
 		3F87FE691C1D3E4F000D2994 /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F87FE681C1D3E4F000D2994 /* Configs.swift */; };
-		5067D5401D6D814600D3C010 /* AnyActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5067D53D1D6D814600D3C010 /* AnyActivity.swift */; };
-		5067D5411D6D814600D3C010 /* MonkeyKing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5067D53E1D6D814600D3C010 /* MonkeyKing.swift */; };
-		5067D5421D6D814600D3C010 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5067D53F1D6D814600D3C010 /* Networking.swift */; };
 		50FBA6B91BA2AFAE00E69BB3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6B81BA2AFAE00E69BB3 /* AppDelegate.swift */; };
 		50FBA6BB1BA2AFAE00E69BB3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50FBA6BA1BA2AFAE00E69BB3 /* ViewController.swift */; };
 		50FBA6BE1BA2AFAE00E69BB3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 50FBA6BC1BA2AFAE00E69BB3 /* Main.storyboard */; };
@@ -28,10 +32,6 @@
 		50FBA6D71BA2BBE900E69BB3 /* MonkeyKing.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 50FBA6CF1BA2BBE900E69BB3 /* MonkeyKing.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7840AF1D1C63167C00AD5256 /* pay.php in Resources */ = {isa = PBXBuildFile; fileRef = 7840AF1C1C63167C00AD5256 /* pay.php */; };
 		955654EB1EB89D5D009444FF /* TwitterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955654EA1EB89D5D009444FF /* TwitterViewController.swift */; };
-		EDA620311F28F747007DF1DF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA6202D1F28F747007DF1DF /* Extensions.swift */; };
-		EDA620321F28F747007DF1DF /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA6202E1F28F747007DF1DF /* Helpers.swift */; };
-		EDA620331F28F747007DF1DF /* MonkeyKing+WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA6202F1F28F747007DF1DF /* MonkeyKing+WebView.swift */; };
-		EDA620341F28F747007DF1DF /* MonkeyKing+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDA620301F28F747007DF1DF /* MonkeyKing+Error.swift */; };
 		EDD0A28C213E6F7B003EB202 /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD0A28A213E6F7B003EB202 /* WeChatActivity.swift */; };
 		EDD0A28D213E6F7B003EB202 /* QQActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD0A28B213E6F7B003EB202 /* QQActivity.swift */; };
 		EDD0A28F213E6FB2003EB202 /* gif.gif in Resources */ = {isa = PBXBuildFile; fileRef = EDD0A28E213E6FB2003EB202 /* gif.gif */; };
@@ -62,6 +62,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		10CDDF3F237A8588005E8DE7 /* MonkeyKing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MonkeyKing.swift; path = Sources/MonkeyKing/MonkeyKing.swift; sourceTree = SOURCE_ROOT; };
+		10CDDF40237A8588005E8DE7 /* Networking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Networking.swift; path = Sources/MonkeyKing/Networking.swift; sourceTree = SOURCE_ROOT; };
+		10CDDF41237A8588005E8DE7 /* MonkeyKing+WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MonkeyKing+WebView.swift"; path = "Sources/MonkeyKing/MonkeyKing+WebView.swift"; sourceTree = SOURCE_ROOT; };
+		10CDDF42237A8588005E8DE7 /* AnyActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnyActivity.swift; path = Sources/MonkeyKing/AnyActivity.swift; sourceTree = SOURCE_ROOT; };
+		10CDDF43237A8588005E8DE7 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Helpers.swift; path = Sources/MonkeyKing/Helpers.swift; sourceTree = SOURCE_ROOT; };
+		10CDDF44237A8588005E8DE7 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = Sources/MonkeyKing/Extensions.swift; sourceTree = SOURCE_ROOT; };
+		10CDDF45237A8588005E8DE7 /* MonkeyKing+Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MonkeyKing+Error.swift"; path = "Sources/MonkeyKing/MonkeyKing+Error.swift"; sourceTree = SOURCE_ROOT; };
 		3F159F2F1C056B1D00BCB39B /* PocketViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PocketViewController.swift; sourceTree = "<group>"; };
 		3F16EAEF1BF4D1DB005B1799 /* SimpleNetworking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleNetworking.swift; sourceTree = "<group>"; };
 		3F62B3651BB6ACBB00AABD3C /* WeChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatViewController.swift; sourceTree = "<group>"; };
@@ -70,9 +77,6 @@
 		3F62B36B1BB6ACE500AABD3C /* SystemShareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemShareViewController.swift; sourceTree = "<group>"; };
 		3F7609421C57B47300FBCB20 /* AlipayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlipayViewController.swift; sourceTree = "<group>"; };
 		3F87FE681C1D3E4F000D2994 /* Configs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
-		5067D53D1D6D814600D3C010 /* AnyActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnyActivity.swift; path = Sources/AnyActivity.swift; sourceTree = SOURCE_ROOT; };
-		5067D53E1D6D814600D3C010 /* MonkeyKing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MonkeyKing.swift; path = Sources/MonkeyKing.swift; sourceTree = SOURCE_ROOT; };
-		5067D53F1D6D814600D3C010 /* Networking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Networking.swift; path = Sources/Networking.swift; sourceTree = SOURCE_ROOT; };
 		50FBA6B51BA2AFAD00E69BB3 /* China.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = China.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50FBA6B81BA2AFAE00E69BB3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		50FBA6BA1BA2AFAE00E69BB3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -85,10 +89,6 @@
 		50FBA6D31BA2BBE900E69BB3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7840AF1C1C63167C00AD5256 /* pay.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = pay.php; sourceTree = "<group>"; };
 		955654EA1EB89D5D009444FF /* TwitterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwitterViewController.swift; sourceTree = "<group>"; };
-		EDA6202D1F28F747007DF1DF /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = Sources/Extensions.swift; sourceTree = SOURCE_ROOT; };
-		EDA6202E1F28F747007DF1DF /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Helpers.swift; path = Sources/Helpers.swift; sourceTree = SOURCE_ROOT; };
-		EDA6202F1F28F747007DF1DF /* MonkeyKing+WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MonkeyKing+WebView.swift"; path = "Sources/MonkeyKing+WebView.swift"; sourceTree = SOURCE_ROOT; };
-		EDA620301F28F747007DF1DF /* MonkeyKing+Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MonkeyKing+Error.swift"; path = "Sources/MonkeyKing+Error.swift"; sourceTree = SOURCE_ROOT; };
 		EDD0A28A213E6F7B003EB202 /* WeChatActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatActivity.swift; sourceTree = "<group>"; };
 		EDD0A28B213E6F7B003EB202 /* QQActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QQActivity.swift; sourceTree = "<group>"; };
 		EDD0A28E213E6FB2003EB202 /* gif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif.gif; sourceTree = "<group>"; };
@@ -159,14 +159,14 @@
 		50FBA6D01BA2BBE900E69BB3 /* MonkeyKing */ = {
 			isa = PBXGroup;
 			children = (
+				10CDDF42237A8588005E8DE7 /* AnyActivity.swift */,
+				10CDDF44237A8588005E8DE7 /* Extensions.swift */,
+				10CDDF43237A8588005E8DE7 /* Helpers.swift */,
+				10CDDF3F237A8588005E8DE7 /* MonkeyKing.swift */,
+				10CDDF45237A8588005E8DE7 /* MonkeyKing+Error.swift */,
+				10CDDF41237A8588005E8DE7 /* MonkeyKing+WebView.swift */,
+				10CDDF40237A8588005E8DE7 /* Networking.swift */,
 				50FBA6D11BA2BBE900E69BB3 /* MonkeyKing.h */,
-				5067D53E1D6D814600D3C010 /* MonkeyKing.swift */,
-				EDA620301F28F747007DF1DF /* MonkeyKing+Error.swift */,
-				EDA6202F1F28F747007DF1DF /* MonkeyKing+WebView.swift */,
-				5067D53D1D6D814600D3C010 /* AnyActivity.swift */,
-				5067D53F1D6D814600D3C010 /* Networking.swift */,
-				EDA6202D1F28F747007DF1DF /* Extensions.swift */,
-				EDA6202E1F28F747007DF1DF /* Helpers.swift */,
 				50FBA6D31BA2BBE900E69BB3 /* Info.plist */,
 			);
 			path = MonkeyKing;
@@ -257,7 +257,7 @@
 					};
 					50FBA6CE1BA2BBE900E69BB3 = {
 						CreatedOnToolsVersion = 7.0;
-						LastSwiftMigration = 1020;
+						LastSwiftMigration = 1120;
 					};
 				};
 			};
@@ -328,13 +328,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5067D5421D6D814600D3C010 /* Networking.swift in Sources */,
-				5067D5401D6D814600D3C010 /* AnyActivity.swift in Sources */,
-				5067D5411D6D814600D3C010 /* MonkeyKing.swift in Sources */,
-				EDA620331F28F747007DF1DF /* MonkeyKing+WebView.swift in Sources */,
-				EDA620341F28F747007DF1DF /* MonkeyKing+Error.swift in Sources */,
-				EDA620321F28F747007DF1DF /* Helpers.swift in Sources */,
-				EDA620311F28F747007DF1DF /* Extensions.swift in Sources */,
+				10CDDF48237A8588005E8DE7 /* MonkeyKing+WebView.swift in Sources */,
+				10CDDF4C237A8588005E8DE7 /* MonkeyKing+Error.swift in Sources */,
+				10CDDF4B237A8588005E8DE7 /* Extensions.swift in Sources */,
+				10CDDF49237A8588005E8DE7 /* AnyActivity.swift in Sources */,
+				10CDDF46237A8588005E8DE7 /* MonkeyKing.swift in Sources */,
+				10CDDF4A237A8588005E8DE7 /* Helpers.swift in Sources */,
+				10CDDF47237A8588005E8DE7 /* Networking.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
