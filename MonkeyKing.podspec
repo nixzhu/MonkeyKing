@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
   s.swift_version = '5.0'
 
   s.source          = { :git => "https://github.com/nixzhu/MonkeyKing.git", :tag => s.version }
-  s.source_files    = "Sources/*.swift"
+  s.source_files    = "Sources/MonkeyKing/*.swift"
   s.requires_arc    = true
 
 end
