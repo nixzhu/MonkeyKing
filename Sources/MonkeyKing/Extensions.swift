@@ -1,6 +1,6 @@
 
-import UIKit
 import MobileCoreServices
+import UIKit
 
 extension Set {
 
@@ -159,8 +159,8 @@ extension UIImage {
             let maxWidth: CGFloat = 240.0
             var actualHeight: CGFloat = image.size.height
             var actualWidth: CGFloat = image.size.width
-            var imgRatio: CGFloat = actualWidth/actualHeight
-            let maxRatio: CGFloat = maxWidth/maxHeight
+            var imgRatio: CGFloat = actualWidth / actualHeight
+            let maxRatio: CGFloat = maxWidth / maxHeight
             if actualHeight > maxHeight || actualWidth > maxWidth {
                 if imgRatio < maxRatio { // adjust width according to maxHeight
                     imgRatio = maxHeight / actualHeight
@@ -181,16 +181,16 @@ extension UIImage {
                 UIGraphicsEndImageContext()
             }
             image.draw(in: rect)
-            let imageData = UIGraphicsGetImageFromCurrentImageContext().flatMap({
+            let imageData = UIGraphicsGetImageFromCurrentImageContext().flatMap {
                 $0.jpegData(compressionQuality: compressionQuality)
-            })
+            }
             return imageData
         }
-        let fullImageData = self.jpegData(compressionQuality: compressionQuality)
+        let fullImageData = jpegData(compressionQuality: compressionQuality)
         guard var imageData = fullImageData else { return nil }
         let minCompressionQuality: CGFloat = 0.01
         let dataLengthCeiling: Int = 31500
-        while imageData.count > dataLengthCeiling && compressionQuality > minCompressionQuality {
+        while imageData.count > dataLengthCeiling, compressionQuality > minCompressionQuality {
             compressionQuality -= 0.1
             guard let image = UIImage(data: imageData) else { break }
             if let compressedImageData = compressedDataOfImage(image) {
@@ -218,7 +218,7 @@ extension UIImage {
             let imageData = image.binaryCompression(to: maxSize)
 
             if imageData == nil {
-                let currentMiniIamgeDataSize = self.jpegData(compressionQuality: 0.01)?.count ?? 0
+                let currentMiniIamgeDataSize = jpegData(compressionQuality: 0.01)?.count ?? 0
                 let proportion = CGFloat(currentMiniIamgeDataSize / maxSize)
                 let newWidth = image.size.width * scale / proportion
                 let newHeight = image.size.height * scale / proportion
@@ -247,9 +247,9 @@ extension UIImage {
             return newValue
         }
 
-        var imageData: Data? = self.jpegData(compressionQuality: 1)
+        var imageData: Data? = jpegData(compressionQuality: 1)
 
-        var outPutImageData: Data? = nil
+        var outPutImageData: Data?
 
         var start = 0
         var end = compressionQualitys.count - 1
@@ -261,7 +261,7 @@ extension UIImage {
 
             index = start + (end - start) / 2
 
-            imageData = self.jpegData(compressionQuality: compressionQualitys[index])
+            imageData = jpegData(compressionQuality: compressionQualitys[index])
 
             let imageDataSize = imageData?.count ?? 0
 
@@ -304,7 +304,7 @@ extension Dictionary {
         guard
             let jsonData = try? JSONSerialization.data(withJSONObject: self, options: .prettyPrinted),
             let theJSONText = String(data: jsonData, encoding: .utf8)
-            else { return nil }
+        else { return nil }
         return theJSONText
     }
 }

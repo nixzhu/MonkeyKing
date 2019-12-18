@@ -1,5 +1,5 @@
-import XCTest
 @testable import MonkeyKing
+import XCTest
 
 final class MonkeyKingTests: XCTestCase {
     func testExample() {

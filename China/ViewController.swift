@@ -1,6 +1,6 @@
 
-import UIKit
 import MonkeyKing
+import UIKit
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -19,7 +19,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         Item(title: "Alipay"),
         Item(title: "Twitter"),
         Item(title: "Pocket"),
-        Item(title: "System")
+        Item(title: "System"),
     ]
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

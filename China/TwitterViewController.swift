@@ -1,6 +1,6 @@
 
-import UIKit
 import MonkeyKing
+import UIKit
 
 class TwitterViewController: UIViewController {
 
@@ -17,7 +17,7 @@ class TwitterViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        MonkeyKing.oauth(for: .twitter) { [weak self] (info, response, error) in
+        MonkeyKing.oauth(for: .twitter) { [weak self] info, _, error in
             if let accessToken = info?["oauth_token"] as? String,
                 let accessTokenSecret = info?["oauth_token_secret"] as? String {
                 self?.accessToken = accessToken
@@ -52,8 +52,8 @@ class TwitterViewController: UIViewController {
             uploadMediaGroup.enter()
             MonkeyKing.deliver(message) { result in
                 if case .success(let reponse) = result,
-                   let json = reponse,
-                   let mediaIDString = json["media_id_string"] as? String{
+                    let json = reponse,
+                    let mediaIDString = json["media_id_string"] as? String {
                     mediaIDs.append(mediaIDString)
                     print("Successfully upload media to twitter. Media ID:\(mediaIDString)")
                 }
@@ -61,7 +61,7 @@ class TwitterViewController: UIViewController {
             }
             uploadMediaGroup.wait()
             DispatchQueue.main.sync {
-                guard mediaIDs.count > 0  else {
+                guard mediaIDs.count > 0 else {
                     print("Failed to upload media to Twitter.")
                     return
                 }
@@ -71,7 +71,7 @@ class TwitterViewController: UIViewController {
                     thumbnail: nil,
                     media: nil
                 ), mediaIDs: mediaIDs, accessToken: self.accessToken, accessTokenSecret: self.accessTokenSecret))
-                MonkeyKing.deliver(mediaMessage){ result in
+                MonkeyKing.deliver(mediaMessage) { result in
                     print(result)
                 }
             }
@@ -81,7 +81,7 @@ class TwitterViewController: UIViewController {
     // MARK: OAuth
 
     @IBAction func OAuth(_ sender: UIButton) {
-        MonkeyKing.oauth(for: .twitter) { [weak self] (info, response, error) in
+        MonkeyKing.oauth(for: .twitter) { [weak self] info, _, error in
             if let accessToken = info?["oauth_token"] as? String,
                 let accessTokenSecret = info?["oauth_token_secret"] as? String {
                 self?.accessToken = accessToken

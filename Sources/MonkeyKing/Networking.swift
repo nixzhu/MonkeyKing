@@ -8,7 +8,7 @@ class Networking {
     private let session = URLSession.shared
 
     typealias NetworkingResponseHandler = ([String: Any]?, URLResponse?, Error?) -> Void
-    
+
     enum Method: String {
         case get = "GET"
         case post = "POST"
@@ -78,7 +78,7 @@ class Networking {
                     mutableURLRequest.setValue("application/json; charset=UTF-8", forHTTPHeaderField: "Content-Type")
                     mutableURLRequest.setValue("application/json", forHTTPHeaderField: "X-Accept")
                     mutableURLRequest.httpBody = data
-                } catch let error {
+                } catch {
                     print("error: \(error)")
                 }
             }
@@ -115,7 +115,7 @@ class Networking {
                 while index != string.endIndex {
                     let startIndex = index
                     let endIndex = string.index(index, offsetBy: batchSize, limitedBy: string.endIndex) ?? startIndex
-                    let substring = string[startIndex..<endIndex]
+                    let substring = string[startIndex ..< endIndex]
                     escaped += (substring.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet as CharacterSet) ?? String(substring))
                     index = endIndex
                 }
@@ -144,8 +144,8 @@ class Networking {
                 }
             }
             if let httpResponse = response as? HTTPURLResponse,
-               let data = data,
-               httpResponse.url!.absoluteString.contains("api.twitter.com") {
+                let data = data,
+                httpResponse.url!.absoluteString.contains("api.twitter.com") {
                 let contentType = httpResponse.allHeaderFields["Content-Type"] as? String
                 if contentType == nil || contentType!.contains("application/json") == false {
                     let responseText = String(data: data, encoding: .utf8)
@@ -157,8 +157,8 @@ class Networking {
             }
             guard let validData = data,
                 let jsonData = validData.monkeyking_json else {
-                    print("requst fail: JSON could not be serialized because input data was nil.")
-                    return
+                print("requst fail: JSON could not be serialized because input data was nil.")
+                return
             }
             json = jsonData
         }
@@ -185,8 +185,8 @@ class Networking {
             }
             guard let validData = data,
                 let jsonData = validData.monkeyking_json else {
-                    print("upload fail: JSON could not be serialized because input data was nil.")
-                    return
+                print("upload fail: JSON could not be serialized because input data was nil.")
+                return
             }
             json = jsonData
         }
@@ -200,7 +200,7 @@ class Networking {
         var mutableURLRequest = URLRequest(url: url)
         mutableURLRequest.httpMethod = Method.post.rawValue
         let boundaryConstant = "NET-POST-boundary-\(arc4random())-\(arc4random())"
-        let contentType = "multipart/form-data;boundary="+boundaryConstant
+        let contentType = "multipart/form-data;boundary=" + boundaryConstant
         mutableURLRequest.setValue(contentType, forHTTPHeaderField: "Content-Type")
 
         var uploadData = Data()
@@ -234,10 +234,10 @@ class Networking {
         return (encoding.encode(mutableURLRequest, parameters: nil), uploadData)
     }
 
-    func authorizationHeader(for method: Method, urlString: String, appID: String, appKey: String, accessToken:String?, accessTokenSecret: String?, parameters: Dictionary<String, Any>?, isMediaUpload: Bool) -> String {
-        var authorizationParameters = Dictionary<String, Any>()
+    func authorizationHeader(for method: Method, urlString: String, appID: String, appKey: String, accessToken: String?, accessTokenSecret: String?, parameters: [String: Any]?, isMediaUpload: Bool) -> String {
+        var authorizationParameters = [String: Any]()
         authorizationParameters["oauth_version"] = "1.0"
-        authorizationParameters["oauth_signature_method"] =  "HMAC-SHA1"
+        authorizationParameters["oauth_signature_method"] = "HMAC-SHA1"
         authorizationParameters["oauth_consumer_key"] = appID
         authorizationParameters["oauth_timestamp"] = String(Int(Date().timeIntervalSince1970))
         authorizationParameters["oauth_nonce"] = UUID().uuidString
@@ -257,7 +257,7 @@ class Networking {
                 }
             }
         }
-        authorizationParameters["oauth_signature"] = self.oauthSignature(for: method, urlString: urlString, parameters: finalParameters, appKey: appKey, accessTokenSecret: accessTokenSecret)
+        authorizationParameters["oauth_signature"] = oauthSignature(for: method, urlString: urlString, parameters: finalParameters, appKey: appKey, accessTokenSecret: accessTokenSecret)
         let authorizationParameterComponents = authorizationParameters.urlEncodedQueryString(using: .utf8).components(separatedBy: "&").sorted()
         var headerComponents = [String]()
         for component in authorizationParameterComponents {
@@ -269,7 +269,7 @@ class Networking {
         return "OAuth " + headerComponents.joined(separator: ", ")
     }
 
-    func oauthSignature(for method: Method, urlString: String, parameters: Dictionary<String, Any>, appKey: String, accessTokenSecret tokenSecret: String?) -> String {
+    func oauthSignature(for method: Method, urlString: String, parameters: [String: Any], appKey: String, accessTokenSecret tokenSecret: String?) -> String {
         let tokenSecret = tokenSecret?.urlEncodedString() ?? ""
         let encodedConsumerSecret = appKey.urlEncodedString()
         let signingKey = "\(encodedConsumerSecret)&\(tokenSecret)"
@@ -303,8 +303,8 @@ extension Dictionary {
 
 extension String {
 
-    var queryStringParameters: Dictionary<String, String> {
-        var parameters = Dictionary<String, String>()
+    var queryStringParameters: [String: String] {
+        var parameters = [String: String]()
         let scanner = Scanner(string: self)
         var key: NSString?
         var value: NSString?
@@ -328,7 +328,7 @@ extension String {
         if !encodeAll {
             allowedCharacterSet.insert(charactersIn: "[]")
         }
-        return self.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)!
+        return addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)!
     }
 }
 
@@ -341,10 +341,10 @@ public struct HMAC {
         if key.count > 64 {
             key = SHA1(message: Data(bytes: key)).calculate().rawBytes
         }
-        if (key.count < 64) {
+        if key.count < 64 {
             key = key + [UInt8](repeating: 0, count: 64 - key.count)
         }
-        var opad = [UInt8](repeating: 0x5c, count: 64)
+        var opad = [UInt8](repeating: 0x5C, count: 64)
         for (idx, _) in key.enumerated() {
             opad[idx] = key[idx] ^ opad[idx]
         }
@@ -352,7 +352,7 @@ public struct HMAC {
         for (idx, _) in key.enumerated() {
             ipad[idx] = key[idx] ^ ipad[idx]
         }
-        let ipadAndMessageHash = SHA1(message: Data(bytes: (ipad + message))).calculate().rawBytes
+        let ipadAndMessageHash = SHA1(message: Data(bytes: ipad + message)).calculate().rawBytes
         let finalHash = SHA1(message: Data(bytes: opad + ipadAndMessageHash)).calculate().rawBytes
         let mac = finalHash
         return Data(bytes: UnsafePointer<UInt8>(mac), count: mac.count)
@@ -366,8 +366,8 @@ struct SHA1 {
     var message: Data
 
     /** Common part for hash calculation. Prepare header data. */
-    func prepare(_ len:Int = 64) -> Data {
-        var tmpMessage: Data = self.message
+    func prepare(_ len: Int = 64) -> Data {
+        var tmpMessage: Data = message
         // Step 1. Append Padding Bits
         tmpMessage.append([0x80]) // append one bit (Byte with one bit) to message
         // append "0" bit until message length in bits ≡ 448 (mod 512)
@@ -378,10 +378,10 @@ struct SHA1 {
     }
 
     func calculate() -> Data {
-        //var tmpMessage = self.prepare()
+        // var tmpMessage = self.prepare()
         let len = 64
-        let h: [UInt32] = [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0]
-        var tmpMessage: Data = self.message
+        let h: [UInt32] = [0x6745_2301, 0xEFCD_AB89, 0x98BA_DCFE, 0x1032_5476, 0xC3D2_E1F0]
+        var tmpMessage: Data = message
         // Step 1. Append Padding Bits
         tmpMessage.append([0x80]) // append one bit (Byte with one bit) to message
         // append "0" bit until message length in bits ≡ 448 (mod 512)
@@ -391,66 +391,60 @@ struct SHA1 {
         // hash values
         var hh = h
         // append message length, in a 64-bit big-endian integer. So now the message length is a multiple of 512 bits.
-        tmpMessage.append((self.message.count * 8).bytes(64 / 8))
+        tmpMessage.append((message.count * 8).bytes(64 / 8))
         // Process the message in successive 512-bit chunks:
         let chunkSizeBytes = 512 / 8 // 64
         var leftMessageBytes = tmpMessage.count
-        var i = 0;
+        var i = 0
         while i < tmpMessage.count {
-            let chunk = tmpMessage.subdata(in: i..<i+min(chunkSizeBytes, leftMessageBytes))
+            let chunk = tmpMessage.subdata(in: i ..< i + min(chunkSizeBytes, leftMessageBytes))
             // break chunk into sixteen 32-bit words M[j], 0 ≤ j ≤ 15, big-endian
             // Extend the sixteen 32-bit words into eighty 32-bit words:
             var M = [UInt32](repeating: 0, count: 80)
-            for x in 0..<M.count {
-                switch (x) {
-                case 0...15:
+            for x in 0 ..< M.count {
+                switch x {
+                case 0 ... 15:
                     var le: UInt32 = 0
-                    let range = NSRange(location:x * MemoryLayout<UInt32>.size, length: MemoryLayout<UInt32>.size)
+                    let range = NSRange(location: x * MemoryLayout<UInt32>.size, length: MemoryLayout<UInt32>.size)
                     (chunk as NSData).getBytes(&le, range: range)
                     M[x] = le.bigEndian
-                    break
                 default:
-                    M[x] = rotateLeft(M[x-3] ^ M[x-8] ^ M[x-14] ^ M[x-16], n: 1)
-                    break
+                    M[x] = rotateLeft(M[x - 3] ^ M[x - 8] ^ M[x - 14] ^ M[x - 16], n: 1)
                 }
             }
             var A = hh[0], B = hh[1], C = hh[2], D = hh[3], E = hh[4]
             // Main loop
-            for j in 0...79 {
+            for j in 0 ... 79 {
                 var f: UInt32 = 0
                 var k: UInt32 = 0
                 switch j {
-                case 0...19:
+                case 0 ... 19:
                     f = (B & C) | ((~B) & D)
-                    k = 0x5A827999
-                    break
-                case 20...39:
+                    k = 0x5A82_7999
+                case 20 ... 39:
                     f = B ^ C ^ D
-                    k = 0x6ED9EBA1
-                    break
-                case 40...59:
+                    k = 0x6ED9_EBA1
+                case 40 ... 59:
                     f = (B & C) | (B & D) | (C & D)
-                    k = 0x8F1BBCDC
-                    break
-                case 60...79:
+                    k = 0x8F1B_BCDC
+                case 60 ... 79:
                     f = B ^ C ^ D
-                    k = 0xCA62C1D6
-                    break
+                    k = 0xCA62_C1D6
                 default:
                     break
                 }
-                let temp = (rotateLeft(A,n: 5) &+ f &+ E &+ M[j] &+ k) & 0xffffffff
+                let temp = (rotateLeft(A, n: 5) &+ f &+ E &+ M[j] &+ k) & 0xFFFF_FFFF
                 E = D
                 D = C
                 C = rotateLeft(B, n: 30)
                 B = A
                 A = temp
             }
-            hh[0] = (hh[0] &+ A) & 0xffffffff
-            hh[1] = (hh[1] &+ B) & 0xffffffff
-            hh[2] = (hh[2] &+ C) & 0xffffffff
-            hh[3] = (hh[3] &+ D) & 0xffffffff
-            hh[4] = (hh[4] &+ E) & 0xffffffff
+            hh[0] = (hh[0] &+ A) & 0xFFFF_FFFF
+            hh[1] = (hh[1] &+ B) & 0xFFFF_FFFF
+            hh[2] = (hh[2] &+ C) & 0xFFFF_FFFF
+            hh[3] = (hh[3] &+ D) & 0xFFFF_FFFF
+            hh[4] = (hh[4] &+ E) & 0xFFFF_FFFF
             i = i + chunkSizeBytes
             leftMessageBytes -= chunkSizeBytes
         }
@@ -464,13 +458,13 @@ struct SHA1 {
     }
 }
 
-func arrayOfBytes<T>(_ value:T, length: Int? = nil) -> [UInt8] {
+func arrayOfBytes<T>(_ value: T, length: Int? = nil) -> [UInt8] {
     let totalBytes = length ?? (MemoryLayout<T>.size * 8)
     let valuePointer = UnsafeMutablePointer<T>.allocate(capacity: 1)
     valuePointer.pointee = value
     let bytesPointer = valuePointer.withMemoryRebound(to: UInt8.self, capacity: 1) { $0 }
     var bytes = [UInt8](repeating: 0, count: totalBytes)
-    for j in 0..<min(MemoryLayout<T>.size,totalBytes) {
+    for j in 0 ..< min(MemoryLayout<T>.size, totalBytes) {
         bytes[totalBytes - 1 - j] = (bytesPointer + j).pointee
     }
     valuePointer.deinitialize(count: totalBytes)
@@ -483,7 +477,7 @@ func rotateLeft(_ v: UInt16, n: UInt16) -> UInt16 {
 }
 
 func rotateLeft(_ v: UInt32, n: UInt32) -> UInt32 {
-    return ((v << n) & 0xFFFFFFFF) | (v >> (32 - n))
+    return ((v << n) & 0xFFFF_FFFF) | (v >> (32 - n))
 }
 
 func rotateLeft(_ x: UInt64, n: UInt64) -> UInt64 {
@@ -491,7 +485,7 @@ func rotateLeft(_ x: UInt64, n: UInt64) -> UInt64 {
 }
 
 extension Int {
-    
+
     public func bytes(_ totalBytes: Int = MemoryLayout<Int>.size) -> [UInt8] {
         return arrayOfBytes(self, length: totalBytes)
     }
@@ -502,7 +496,7 @@ extension Data {
     var rawBytes: [UInt8] {
         let count = self.count / MemoryLayout<UInt8>.size
         var bytesArray = [UInt8](repeating: 0, count: count)
-        (self as NSData).getBytes(&bytesArray, length:count * MemoryLayout<UInt8>.size)
+        (self as NSData).getBytes(&bytesArray, length: count * MemoryLayout<UInt8>.size)
         return bytesArray
     }
 
@@ -511,6 +505,6 @@ extension Data {
     }
 
     mutating func append(_ bytes: [UInt8]) {
-        self.append(UnsafePointer<UInt8>(bytes), count: bytes.count)
+        append(UnsafePointer<UInt8>(bytes), count: bytes.count)
     }
 }

@@ -15,6 +15,7 @@ extension MonkeyKing {
             case serializeFailed
             case other(code: String)
         }
+
         case sdk(reason: SDKReason)
 
         public struct APIRequestReason {
@@ -23,9 +24,11 @@ extension MonkeyKing {
                 case connectFailed
                 case invalidToken
             }
+
             public var type: Type
             public var responseData: [String: Any]?
         }
+
         case apiRequest(reason: APIRequestReason)
     }
 
@@ -33,7 +36,7 @@ extension MonkeyKing {
         let unrecognizedReason = Error.APIRequestReason(type: .unrecognizedError, responseData: responseData)
         switch platform {
         case .twitter:
-            //ref: https://dev.twitter.com/overview/api/response-codes
+            // ref: https://dev.twitter.com/overview/api/response-codes
             guard let errorCode = responseData["code"] as? Int else {
                 return unrecognizedReason
             }
