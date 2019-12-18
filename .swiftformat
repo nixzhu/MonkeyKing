@@ -1,0 +1,6 @@
+--disable blankLinesAroundMark,blankLinesAtStartOfScope
+--patternlet inline
+--stripunusedargs closure-only
+--swiftversion 5.0
+--wraparguments beforefirst
+--wrapcollections beforefirst
