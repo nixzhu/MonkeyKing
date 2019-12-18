@@ -1,6 +1,6 @@
 
-import UIKit
 import MonkeyKing
+import UIKit
 
 class WeiboViewController: UIViewController {
 
@@ -18,7 +18,7 @@ class WeiboViewController: UIViewController {
 
         // not installed weibo app, must need accessToken
         if !MonkeyKing.SupportedPlatform.weibo.isAppInstalled {
-            MonkeyKing.oauth(for: .weibo) { [weak self] (info, response, error) in
+            MonkeyKing.oauth(for: .weibo) { [weak self] info, _, error in
                 if let accessToken = info?["access_token"] as? String {
                     self?.accessToken = accessToken
                 }
@@ -66,21 +66,21 @@ class WeiboViewController: UIViewController {
     // MARK: OAuth
 
     @IBAction func OAuth(_ sender: UIButton) {
-        MonkeyKing.oauth(for: .weibo) { (info, response, error) in
+        MonkeyKing.oauth(for: .weibo) { info, _, _ in
             // App or Web: token & userID
             guard
                 let unwrappedInfo = info,
                 let token = (unwrappedInfo["access_token"] as? String) ?? (unwrappedInfo["accessToken"] as? String),
                 let userID = (unwrappedInfo["uid"] as? String) ?? (unwrappedInfo["userID"] as? String) else {
-                    return
+                return
             }
             let userInfoAPI = "https://api.weibo.com/2/users/show.json"
             let parameters = [
                 "uid": userID,
-                "access_token": token
+                "access_token": token,
             ]
             // fetch UserInfo by userInfoAPI
-            SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters) { (userInfo, _, _) in
+            SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters) { userInfo, _, _ in
                 print("userInfo \(String(describing: userInfo))")
             }
             // More API

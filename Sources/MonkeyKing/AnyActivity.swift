@@ -19,27 +19,27 @@ open class AnyActivity: UIActivity {
         super.init()
     }
 
-    override open class var activityCategory : UIActivity.Category {
+    open override class var activityCategory: UIActivity.Category {
         return .share
     }
 
-    override open var activityType: UIActivity.ActivityType? {
+    open override var activityType: UIActivity.ActivityType? {
         return type
     }
 
-    override open  var activityTitle : String? {
+    open override var activityTitle: String? {
         return title
     }
 
-    override open var activityImage : UIImage? {
+    open override var activityImage: UIImage? {
         return image
     }
 
-    override open func canPerform(withActivityItems activityItems: [Any]) -> Bool {
+    open override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
         return message.canBeDelivered
     }
 
-    override open func perform() {
+    open override func perform() {
         MonkeyKing.deliver(message, completionHandler: completionHandler)
         activityDidFinish(true)
     }

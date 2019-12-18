@@ -7,7 +7,7 @@ extension MonkeyKing {
         var appID = ""
         var appKey = ""
 
-        for case let .weChat(id, key, _) in shared.accountSet {
+        for case .weChat(let id, let key, _) in shared.accountSet {
             guard let key = key else {
                 completionHandler(["code": code], nil, nil)
                 return
@@ -22,7 +22,7 @@ extension MonkeyKing {
             URLQueryItem(name: "grant_type", value: "authorization_code"),
             URLQueryItem(name: "appid", value: appID),
             URLQueryItem(name: "secret", value: appKey),
-            URLQueryItem(name: "code", value: code)
+            URLQueryItem(name: "code", value: code),
         ]
 
         guard let accessTokenAPI = urlComponents?.string else {
@@ -41,7 +41,7 @@ extension MonkeyKing {
         var appKey = ""
         var redirectURL = ""
 
-        for case let .weibo(id, key, url) in shared.accountSet {
+        for case .weibo(let id, let key, let url) in shared.accountSet {
             appID = id
             appKey = key
             redirectURL = url
@@ -119,12 +119,12 @@ extension MonkeyKing {
             keyClass: [keyUID: UIDValue],
             "NS.keys": [
                 [keyUID: 2],
-                [keyUID: 3]
+                [keyUID: 3],
             ],
             "NS.objects": [
                 [keyUID: 4],
-                [keyUID: 11]
-            ]
+                [keyUID: 11],
+            ],
         ]
         let publicObjectsItem2 = "app"
         let publicObjectsItem3 = "req"
@@ -134,7 +134,7 @@ extension MonkeyKing {
             "bundleId": [keyUID: 7],
             "name": [keyUID: 5],
             "scheme": [keyUID: 8],
-            "sdkVersion": [keyUID: 9]
+            "sdkVersion": [keyUID: 9],
         ]
         let publicObjectsItem5 = Bundle.main.monkeyking_displayName ?? "China"
         let publicObjectsItem6 = appID
@@ -143,73 +143,73 @@ extension MonkeyKing {
         let publicObjectsItem9 = "1.1.0.151016" // SDK Version
         let publicObjectsItem10: [String: Any] = [
             keyClasses: ["APSdkApp", "NSObject"],
-            keyClassname: "APSdkApp"
+            keyClassname: "APSdkApp",
         ]
         let publicObjectsItem11: [String: Any] = [
             keyClass: [keyUID: UIDValue - 1],
             "message": [keyUID: 13],
             "scene": [keyUID: UIDValue - 2],
-            "type": [keyUID: 12]
+            "type": [keyUID: 12],
         ]
         let publicObjectsItem12: NSNumber = 0
-        let publicObjectsItem13: [String: Any] = [      // For Text(13) && Image(13)
+        let publicObjectsItem13: [String: Any] = [ // For Text(13) && Image(13)
             keyClass: [keyUID: UIDValue - 3],
-            "mediaObject": [keyUID: 14]
+            "mediaObject": [keyUID: 14],
         ]
-        let publicObjectsItem14: [String: Any] = [      // For Image(16) && URL(17)
+        let publicObjectsItem14: [String: Any] = [ // For Image(16) && URL(17)
             keyClasses: ["NSMutableData", "NSData", "NSObject"],
-            keyClassname: "NSMutableData"
+            keyClassname: "NSMutableData",
         ]
         let publicObjectsItem16: [String: Any] = [
             keyClasses: [APMediaType, "NSObject"],
-            keyClassname: APMediaType
+            keyClassname: APMediaType,
         ]
         let publicObjectsItem17: [String: Any] = [
             keyClasses: ["APMediaMessage", "NSObject"],
-            keyClassname: "APMediaMessage"
+            keyClassname: "APMediaMessage",
         ]
         let publicObjectsItem18: NSNumber = scene
         let publicObjectsItem19: [String: Any] = [
             keyClasses: ["APSendMessageToAPReq", "APBaseReq", "NSObject"],
-            keyClassname: "APSendMessageToAPReq"
+            keyClassname: "APSendMessageToAPReq",
         ]
         let publicObjectsItem20: [String: Any] = [
             keyClasses: ["NSMutableDictionary", "NSDictionary", "NSObject"],
-            keyClassname: "NSMutableDictionary"
+            keyClassname: "NSMutableDictionary",
         ]
         var objectsValue: [Any] = [
             publicObjectsItem0, publicObjectsItem1, publicObjectsItem2, publicObjectsItem3,
             publicObjectsItem4, publicObjectsItem5, publicObjectsItem6, publicObjectsItem7,
             publicObjectsItem8, publicObjectsItem9, publicObjectsItem10, publicObjectsItem11,
-            publicObjectsItem12
+            publicObjectsItem12,
         ]
         switch messageType {
         case .text:
             let textObjectsItem14: [String: Any] = [
                 keyClass: [keyUID: 16],
-                "text": [keyUID: 15]
+                "text": [keyUID: 15],
             ]
             let textObjectsItem15 = info.title ?? "Input Text"
             objectsValue = objectsValue + [publicObjectsItem13, textObjectsItem14, textObjectsItem15]
         case .image(let image):
             let imageObjectsItem14: [String: Any] = [
                 keyClass: [keyUID: 17],
-                "imageData": [keyUID: 15]
+                "imageData": [keyUID: 15],
             ]
             let imageData = image.jpegData(compressionQuality: 0.9) ?? Data()
             let imageObjectsItem15: [String: Any] = [
                 keyClass: [keyUID: 16],
-                "NS.data": imageData
+                "NS.data": imageData,
             ]
             objectsValue = objectsValue + [publicObjectsItem13, imageObjectsItem14, imageObjectsItem15, publicObjectsItem14]
         case .imageData(let imageData):
             let imageObjectsItem14: [String: Any] = [
                 keyClass: [keyUID: 17],
-                "imageData": [keyUID: 15]
+                "imageData": [keyUID: 15],
             ]
             let imageObjectsItem15: [String: Any] = [
                 keyClass: [keyUID: 16],
-                "NS.data": imageData
+                "NS.data": imageData,
             ]
             objectsValue = objectsValue + [publicObjectsItem13, imageObjectsItem14, imageObjectsItem15, publicObjectsItem14]
         case .url(let url):
@@ -218,18 +218,18 @@ extension MonkeyKing {
                 "desc": [keyUID: 15],
                 "mediaObject": [keyUID: 18],
                 "thumbData": [keyUID: 16],
-                "title": [keyUID: 14]
+                "title": [keyUID: 14],
             ]
             let thumbnailData = info.thumbnail?.monkeyking_compressedImageData ?? Data()
             let urlObjectsItem14 = info.title ?? "Input Title"
             let urlObjectsItem15 = info.description ?? "Input Description"
             let urlObjectsItem16: [String: Any] = [
                 keyClass: [keyUID: 17],
-                "NS.data": thumbnailData
+                "NS.data": thumbnailData,
             ]
             let urlObjectsItem18: [String: Any] = [
                 keyClass: [keyUID: 20],
-                "webpageUrl": [keyUID: 19]
+                "webpageUrl": [keyUID: 19],
             ]
             let urlObjectsItem19 = url.absoluteString
             objectsValue = objectsValue + [
@@ -239,15 +239,15 @@ extension MonkeyKing {
                 urlObjectsItem16,
                 publicObjectsItem14,
                 urlObjectsItem18,
-                urlObjectsItem19
+                urlObjectsItem19,
             ]
         }
         objectsValue += [publicObjectsItem16, publicObjectsItem17, publicObjectsItem18, publicObjectsItem19, publicObjectsItem20]
         let dictionary: [String: Any] = [
             "$archiver": "NSKeyedArchiver",
             "$objects": objectsValue,
-            "$top": ["root" : [keyUID: 1]],
-            "$version": 100000
+            "$top": ["root": [keyUID: 1]],
+            "$version": 100_000,
         ]
         return dictionary
     }
@@ -256,7 +256,7 @@ extension MonkeyKing {
         Networking.shared.request(urlString, method: method, parameters: parameters, encoding: encoding, headers: headers, completionHandler: completionHandler)
     }
 
-    func upload(_ urlString: String, parameters: [String: Any], headers: [String: String]? = nil,completionHandler: @escaping Networking.NetworkingResponseHandler) {
+    func upload(_ urlString: String, parameters: [String: Any], headers: [String: String]? = nil, completionHandler: @escaping Networking.NetworkingResponseHandler) {
         Networking.shared.upload(urlString, parameters: parameters, headers: headers, completionHandler: completionHandler)
     }
 

@@ -1,9 +1,9 @@
 
-import UIKit
 import MonkeyKing
+import UIKit
 
 class AlipayViewController: UIViewController {
-    
+
     @IBOutlet private var segmentedControl: UISegmentedControl!
 
     override func viewDidLoad() {
@@ -115,7 +115,7 @@ class AlipayViewController: UIViewController {
             "scope": "kuaijie",
             "target_id": "\(Int(Date().timeIntervalSince1970 * 1000.0))",
             "sign": sign,
-            "sign_type": signType
+            "sign_type": signType,
         ]
 
         let keys = dic.keys.sorted { $0 < $1 }
@@ -131,7 +131,7 @@ class AlipayViewController: UIViewController {
         dataString += "&sign=\(sign)"
         dataString += "&sign_type=\(signType)"
 
-        MonkeyKing.oauth(for: .alipay, dataString: dataString) { (dictionary, response, error) in
+        MonkeyKing.oauth(for: .alipay, dataString: dataString) { dictionary, _, error in
             print("dictionary \(String(describing: dictionary))")
             print("error \(String(describing: error))")
         }
@@ -162,7 +162,7 @@ extension Dictionary {
         guard
             let jsonData = try? JSONSerialization.data(withJSONObject: self, options: .prettyPrinted),
             let theJSONText = String(data: jsonData, encoding: .utf8)
-            else { return nil }
+        else { return nil }
         return theJSONText
     }
 }

@@ -48,7 +48,7 @@ class SimpleNetworking {
                         return false
                     }
                 }
-                if let method = Method(rawValue: mutableURLRequest.httpMethod!) , encodesParametersInURL(method) {
+                if let method = Method(rawValue: mutableURLRequest.httpMethod!), encodesParametersInURL(method) {
                     if var urlComponents = URLComponents(url: mutableURLRequest.url!, resolvingAgainstBaseURL: false) {
                         let percentEncodedQuery = (urlComponents.percentEncodedQuery.map { $0 + "&" } ?? "") + query(parameters)
                         urlComponents.percentEncodedQuery = percentEncodedQuery
@@ -108,7 +108,7 @@ class SimpleNetworking {
                 while index != string.endIndex {
                     let startIndex = index
                     let endIndex = string.index(index, offsetBy: batchSize, limitedBy: string.endIndex) ?? startIndex
-                    let substring = string[startIndex..<endIndex]
+                    let substring = string[startIndex ..< endIndex]
                     escaped += (substring.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet as CharacterSet) ?? String(substring))
                     index = endIndex
                 }
@@ -137,8 +137,8 @@ class SimpleNetworking {
             guard
                 let validData = data,
                 let jsonData = try? JSONSerialization.jsonObject(with: validData, options: .allowFragments) as? [String: Any] else {
-                    print("sample networking requet failt: JSON could not be serialized because input data was nil.")
-                    return
+                print("sample networking requet failt: JSON could not be serialized because input data was nil.")
+                return
             }
             json = jsonData
         }
@@ -158,8 +158,8 @@ class SimpleNetworking {
             guard
                 let validData = data,
                 let jsonData = try? JSONSerialization.jsonObject(with: validData, options: .allowFragments) as? [String: Any] else {
-                    print("sample networking upload failt: JSON could not be serialized because input data was nil.")
-                    return
+                print("sample networking upload failt: JSON could not be serialized because input data was nil.")
+                return
             }
             json = jsonData
         }

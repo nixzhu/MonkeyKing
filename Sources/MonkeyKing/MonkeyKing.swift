@@ -94,7 +94,7 @@ public class MonkeyKing: NSObject {
             }
         }
 
-        public static func ==(lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
+        public static func == (lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
             switch (lhs, rhs) {
             case (.weChat(let lappID, _, _), .weChat(let rappID, _, _)),
                  (.qq(let lappID), .qq(let rappID)),
@@ -189,7 +189,7 @@ extension MonkeyKing {
                     halfOauthCompletion(code, nil)
                     shared.weChatOAuthForCodeCompletionHandler = nil
                 } else {
-                    fetchWeChatOAuthInfoByCode(code: code) { (info, response, error) in
+                    fetchWeChatOAuthInfoByCode(code: code) { info, response, error in
                         shared.oauthCompletionHandler?(info, response, error)
                     }
                 }
@@ -226,7 +226,7 @@ extension MonkeyKing {
                         let info = dict[account.appID] as? [String: Any],
                         let result = info["result"] as? String,
                         let resultCode = Int(result) else {
-                            return false
+                        return false
                     }
 
                     // OAuth Failed
@@ -291,8 +291,8 @@ extension MonkeyKing {
             guard
                 let data = UIPasteboard.general.data(forPasteboardType: "com.tencent.tencent\(account.appID)"),
                 let info = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: Any] else {
-                    error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
-                    return false
+                error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
+                return false
             }
             guard let result = info["ret"] as? Int, result == 0 else {
                 if let errorDomatin = info["user_cancelled"] as? String, errorDomatin == "YES" {
@@ -320,7 +320,7 @@ extension MonkeyKing {
             guard
                 let responseInfo = results["transferObject"] as? [String: Any],
                 let type = responseInfo["__class"] as? String else {
-                    return false
+                return false
             }
             guard let statusCode = responseInfo["statusCode"] as? Int else {
                 return false
@@ -374,11 +374,11 @@ extension MonkeyKing {
                     let json = response.monkeyking_json,
                     let memo = json["memo"] as? [String: Any],
                     let status = memo["ResultStatus"] as? String else {
-                        let memo = "Unknow Error"
-                        let error = NSError(domain: memo, code: -1, userInfo: nil)
-                        shared.oauthCompletionHandler?(nil, nil, error)
-                        shared.payCompletionHandler?(false)
-                        return false
+                    let memo = "Unknow Error"
+                    let error = NSError(domain: memo, code: -1, userInfo: nil)
+                    shared.oauthCompletionHandler?(nil, nil, error)
+                    shared.payCompletionHandler?(false)
+                    return false
                 }
 
                 if status != "9000" {
@@ -412,7 +412,7 @@ extension MonkeyKing {
                     let dict = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any],
                     let objects = dict["$objects"] as? NSArray,
                     let result = objects[12] as? Int else {
-                        return false
+                    return false
                 }
                 let success = (result == 0)
                 if success {
@@ -437,9 +437,9 @@ extension MonkeyKing {
 
 extension MonkeyKing {
     public enum MiniAppType: Int {
-        case release    = 0
-        case test       = 1
-        case preview    = 2
+        case release = 0
+        case test = 1
+        case preview = 2
     }
 
     public enum Media {
@@ -484,6 +484,7 @@ extension MonkeyKing {
                 }
             }
         }
+
         case weChat(WeChatSubtype)
 
         public enum QQSubtype {
@@ -518,6 +519,7 @@ extension MonkeyKing {
                 }
             }
         }
+
         case qq(QQSubtype)
 
         public enum WeiboSubtype {
@@ -537,6 +539,7 @@ extension MonkeyKing {
                 }
             }
         }
+
         case weibo(WeiboSubtype)
 
         public enum AlipaySubtype {
@@ -561,6 +564,7 @@ extension MonkeyKing {
                 }
             }
         }
+
         case alipay(AlipaySubtype)
 
         public enum TwitterSubtype {
@@ -582,18 +586,19 @@ extension MonkeyKing {
 
             var accessToken: String? {
                 switch self {
-                case .default(_, _,let accessToken, _):
+                case .default(_, _, let accessToken, _):
                     return accessToken
                 }
             }
 
             var accessTokenSecret: String? {
                 switch self {
-                case .default(_, _, _,let accessTokenSecret):
+                case .default(_, _, _, let accessTokenSecret):
                     return accessTokenSecret
                 }
             }
         }
+
         case twitter(TwitterSubtype)
 
         public var canBeDelivered: Bool {
@@ -607,7 +612,7 @@ extension MonkeyKing {
             return account.isAppInstalled
         }
     }
-    
+
     public class func deliver(_ message: Message, completionHandler: @escaping DeliverCompletionHandler) {
         guard message.canBeDelivered else {
             completionHandler(.failure(.messageCanNotBeDelivered))
@@ -631,7 +636,7 @@ extension MonkeyKing {
                 "returnFromApp": "0",
                 "scene": type.scene,
                 "sdkver": "1.5",
-                "command": "1010"
+                "command": "1010",
             ]
             let info = type.info
             if let title = info.title {
@@ -683,7 +688,7 @@ extension MonkeyKing {
                         } else {
                             fatalError("Missing `miniProgramID`!")
                         }
-                    } 
+                    }
                 case .file(let fileData, let fileExt):
                     weChatMessageInfo["objectType"] = "6"
                     weChatMessageInfo["fileData"] = fileData
@@ -824,7 +829,7 @@ extension MonkeyKing {
             guard !shared.canOpenURL(urlString: "weibosdk://request") else {
                 // App Share
                 var messageInfo: [String: Any] = [
-                    "__class": "WBMessageObject"
+                    "__class": "WBMessageObject",
                 ]
                 let info = type.info
                 if let description = info.description {
@@ -836,7 +841,7 @@ extension MonkeyKing {
                         if let thumbnailData = info.thumbnail?.monkeyking_compressedImageData {
                             var mediaObject: [String: Any] = [
                                 "__class": "WBWebpageObject",
-                                "objectID": "identifier1"
+                                "objectID": "identifier1",
                             ]
                             mediaObject["webpageUrl"] = url.absoluteString
                             mediaObject["title"] = info.title ?? ""
@@ -869,16 +874,17 @@ extension MonkeyKing {
                 let dict: [String: Any] = [
                     "__class": "WBSendMessageToWeiboRequest",
                     "message": messageInfo,
-                    "requestID": uuidString
+                    "requestID": uuidString,
                 ]
-                let appData = NSKeyedArchiver.archivedData(withRootObject: [
-                    "appKey": appID,
-                    "bundleID": Bundle.main.monkeyking_bundleID ?? ""
+                let appData = NSKeyedArchiver.archivedData(
+                    withRootObject: [
+                        "appKey": appID,
+                        "bundleID": Bundle.main.monkeyking_bundleID ?? "",
                     ]
                 )
                 let messageData: [[String: Any]] = [
                     ["transferObject": NSKeyedArchiver.archivedData(withRootObject: dict)],
-                    ["app": appData]
+                    ["app": appData],
                 ]
                 UIPasteboard.general.items = messageData
                 openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000") { flag in
@@ -924,12 +930,12 @@ extension MonkeyKing {
                     fatalError("web Weibo not supports Mini App type")
                 }
             }
-            let statusText = status.compactMap({ $0 }).joined(separator: " ")
+            let statusText = status.compactMap { $0 }.joined(separator: " ")
             parameters["status"] = statusText
             switch mediaType {
             case .url:
                 let urlString = "https://api.weibo.com/2/statuses/share.json"
-                shared.request(urlString, method: .post, parameters: parameters) { (responseData, HTTPResponse, error) in
+                shared.request(urlString, method: .post, parameters: parameters) { responseData, _, error in
                     var reason: Error.APIRequestReason
                     if error != nil {
                         reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
@@ -943,7 +949,7 @@ extension MonkeyKing {
                 }
             case .image, .imageData:
                 let urlString = "https://api.weibo.com/2/statuses/share.json"
-                shared.upload(urlString, parameters: parameters) { (responseData, HTTPResponse, error) in
+                shared.upload(urlString, parameters: parameters) { responseData, _, error in
                     var reason: Error.APIRequestReason
                     if error != nil {
                         reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
@@ -980,8 +986,8 @@ extension MonkeyKing {
         case .twitter(let type):
             // MARK: - Twitter Deliver
             guard let accessToken = type.accessToken,
-                  let accessTokenSecret = type.accessTokenSecret,
-                  let account = shared.accountSet[.twitter] else {
+                let accessTokenSecret = type.accessTokenSecret,
+                let account = shared.accountSet[.twitter] else {
                 completionHandler(.failure(.noAccount))
                 return
             }
@@ -1010,7 +1016,7 @@ extension MonkeyKing {
             }
             switch mediaType {
             case .url:
-                let statusText = status.compactMap({ $0 }).joined(separator: " ")
+                let statusText = status.compactMap { $0 }.joined(separator: " ")
                 let updateStatusAPI = "https://api.twitter.com/1.1/statuses/update.json"
                 var parameters = ["status": statusText]
                 if let mediaIDs = type.mediaIDs {
@@ -1021,7 +1027,7 @@ extension MonkeyKing {
                     let headers = ["Authorization": oauthString]
                     // ref: https://dev.twitter.com/rest/reference/post/statuses/update
                     let urlString = "\(updateStatusAPI)?\(parameters.urlEncodedQueryString(using: .utf8))"
-                    shared.request(urlString, method: .post, parameters: nil, headers: headers) { (responseData, URLResponse, error) in
+                    shared.request(urlString, method: .post, parameters: nil, headers: headers) { responseData, URLResponse, error in
                         var reason: Error.APIRequestReason
                         if error != nil {
                             reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
@@ -1033,7 +1039,7 @@ extension MonkeyKing {
                                 return
                             }
                             if let responseData = responseData,
-                               let _ = responseData["errors"] {
+                                let _ = responseData["errors"] {
                                 reason = shared.errorReason(with: responseData, at: .twitter)
                                 completionHandler(.failure(.apiRequest(reason: reason)))
                                 return
@@ -1049,7 +1055,7 @@ extension MonkeyKing {
                     // ref: https://dev.twitter.com/rest/media/uploading-media#keepinmind
                     let oauthString = Networking.shared.authorizationHeader(for: .post, urlString: uploadMediaAPI, appID: appID, appKey: appKey, accessToken: accessToken, accessTokenSecret: accessTokenSecret, parameters: nil, isMediaUpload: false)
                     let headers = ["Authorization": oauthString]
-                    shared.upload(uploadMediaAPI, parameters: parameters, headers: headers) { (responseData, URLResponse, error) in
+                    shared.upload(uploadMediaAPI, parameters: parameters, headers: headers) { responseData, URLResponse, error in
                         if let statusCode = (URLResponse as? HTTPURLResponse)?.statusCode,
                             statusCode == 200 {
                             completionHandler(.success(responseData))
@@ -1109,7 +1115,7 @@ extension MonkeyKing {
                 if flag { return }
                 completionHandler(false)
             }
-        case let .alipay(urlString):
+        case .alipay(let urlString):
             openURL(urlString: urlString) { flag in
                 if flag { return }
                 completionHandler(false)
@@ -1142,7 +1148,7 @@ extension MonkeyKing {
         shared.openSchemeCompletionHandler = nil
 
         switch account {
-        case let .alipay(appID):
+        case .alipay(let appID):
 
             guard let dataStr = dataString else {
                 let error = NSError(domain: "Alipay's pid is nil", code: -2, userInfo: nil)
@@ -1195,7 +1201,7 @@ extension MonkeyKing {
                     "sdkv": "2.9",
                     "status_machine": UIDevice.current.model,
                     "status_os": UIDevice.current.systemVersion,
-                    "status_version": UIDevice.current.systemVersion
+                    "status_version": UIDevice.current.systemVersion,
                 ]
                 let data = NSKeyedArchiver.archivedData(withRootObject: dic)
                 UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.tencent\(appID)")
@@ -1212,28 +1218,31 @@ extension MonkeyKing {
             let scope = scope ?? "all"
             guard !account.isAppInstalled else {
                 let uuidString = UUID().uuidString
-                let transferObjectData = NSKeyedArchiver.archivedData(withRootObject: [
-                    "__class": "WBAuthorizeRequest",
-                    "redirectURI": redirectURL,
-                    "requestID": uuidString,
-                    "scope": scope
+                let transferObjectData = NSKeyedArchiver.archivedData(
+                    withRootObject: [
+                        "__class": "WBAuthorizeRequest",
+                        "redirectURI": redirectURL,
+                        "requestID": uuidString,
+                        "scope": scope,
                     ]
                 )
-                let userInfoData = NSKeyedArchiver.archivedData(withRootObject: [
-                    "mykey": "as you like",
-                    "SSO_From": "SendMessageToWeiboViewController"
+                let userInfoData = NSKeyedArchiver.archivedData(
+                    withRootObject: [
+                        "mykey": "as you like",
+                        "SSO_From": "SendMessageToWeiboViewController",
                     ]
                 )
-                let appData = NSKeyedArchiver.archivedData(withRootObject: [
-                    "appKey": appID,
-                    "bundleID": Bundle.main.monkeyking_bundleID ?? "",
-                    "name": Bundle.main.monkeyking_displayName ?? ""
+                let appData = NSKeyedArchiver.archivedData(
+                    withRootObject: [
+                        "appKey": appID,
+                        "bundleID": Bundle.main.monkeyking_bundleID ?? "",
+                        "name": Bundle.main.monkeyking_displayName ?? "",
                     ]
                 )
                 let authItems: [[String: Any]] = [
                     ["transferObject": transferObjectData],
                     ["userInfo": userInfoData],
-                    ["app": appData]
+                    ["app": appData],
                 ]
                 UIPasteboard.general.items = authItems
                 openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000") { flag in
@@ -1300,7 +1309,7 @@ extension MonkeyKing {
         let requestTokenAPI = "https://api.twitter.com/oauth/request_token"
         let oauthString = Networking.shared.authorizationHeader(for: .post, urlString: requestTokenAPI, appID: appID, appKey: appKey, accessToken: nil, accessTokenSecret: nil, parameters: ["oauth_callback": redirectURL], isMediaUpload: false)
         let oauthHeader = ["Authorization": oauthString]
-        Networking.shared.request(requestTokenAPI, method: .post, parameters: nil, encoding: .url, headers: oauthHeader) { responseData, httpResponse, error in
+        Networking.shared.request(requestTokenAPI, method: .post, parameters: nil, encoding: .url, headers: oauthHeader) { responseData, _, _ in
             if let responseData = responseData,
                 let requestToken = (responseData["oauth_token"] as? String) {
                 let loginURL = "https://api.twitter.com/oauth/authenticate?oauth_token=\(requestToken)"
@@ -1384,5 +1393,4 @@ extension MonkeyKing {
             handleErrorResult()
         }
     }
-
 }
