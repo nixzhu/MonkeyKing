@@ -4,14 +4,12 @@ import Foundation
 extension MonkeyKing {
 
     public class func oauth(for platform: SupportedPlatform, scope: String? = nil, requestToken: String? = nil, dataString: String? = nil, completionHandler: @escaping OAuthCompletionHandler) {
-
-        guard let account = shared.accountSet[platform] else {
-            completionHandler(.failure(.noAccount))
+        guard platform.isAppInstalled || platform.canWebOAuth else {
+            completionHandler(.failure(.noApp))
             return
         }
-
-        guard account.isAppInstalled || account.canWebOAuth else {
-            completionHandler(.failure(.noApp))
+        guard let account = shared.accountSet[platform] else {
+            completionHandler(.failure(.noAccount))
             return
         }
 
@@ -52,7 +50,7 @@ extension MonkeyKing {
 
         case .weChat(let appID, _, _):
             let scope = scope ?? "snsapi_userinfo"
-            if !account.isAppInstalled {
+            if !platform.isAppInstalled {
                 // SMS OAuth
                 // uid??
                 let accessTokenAPI = "https://open.weixin.qq.com/connect/mobilecheck?appid=\(appID)&uid=1926559385"
@@ -76,7 +74,7 @@ extension MonkeyKing {
             }
         case .qq(let appID):
             let scope = scope ?? ""
-            guard !account.isAppInstalled else {
+            guard !platform.isAppInstalled else {
                 let appName = Bundle.main.monkeyking_displayName ?? "nixApp"
                 let dic = [
                     "app_id": appID,
@@ -114,7 +112,7 @@ extension MonkeyKing {
             addWebView(withURLString: accessTokenAPI)
         case .weibo(let appID, _, let redirectURL):
             let scope = scope ?? "all"
-            guard !account.isAppInstalled else {
+            guard !platform.isAppInstalled else {
                 let uuidString = UUID().uuidString
                 let transferObjectData = NSKeyedArchiver.archivedData(
                     withRootObject: [
@@ -171,7 +169,7 @@ extension MonkeyKing {
             let prefix = appID[..<startIndex]
             let redirectURLString = "pocketapp\(prefix):authorizationFinished"
             guard let requestToken = requestToken else { return }
-            guard !account.isAppInstalled else {
+            guard !platform.isAppInstalled else {
                 var urlComponents = URLComponents(string: "pocket-oauth-v1:///authorize")
                 urlComponents?.queryItems = [
                     URLQueryItem(name: "request_token", value: requestToken),
@@ -199,19 +197,22 @@ extension MonkeyKing {
     }
 
     public class func weChatOAuthForCode(scope: String? = nil, requestToken: String? = nil, completionHandler: @escaping OAuthFromWeChatCodeCompletionHandler) {
-        guard let account = shared.accountSet[.weChat] else { return }
-        guard account.isAppInstalled || account.canWebOAuth else {
+        let platform = SupportedPlatform.weChat
+
+        guard platform.isAppInstalled || platform.canWebOAuth else {
             completionHandler(.failure(.noApp))
             return
         }
+        guard let account = shared.accountSet[platform] else {
+            completionHandler(.failure(.noAccount))
+            return
+        }
+
         shared.oauthFromWeChatCodeCompletionHandler = completionHandler
+
         switch account {
         case .weChat(let appID, _, _):
             let scope = scope ?? "snsapi_userinfo"
-            guard account.isAppInstalled else {
-                completionHandler(.failure(.noApp))
-                return
-            }
 
             var urlComponents = URLComponents(string: "weixin://app/\(appID)/auth/")
             urlComponents?.queryItems = [

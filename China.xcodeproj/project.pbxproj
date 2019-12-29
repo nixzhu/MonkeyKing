@@ -13,6 +13,7 @@
 		07211C7B23B8D3A60068A7C0 /* MonkeyKing+OAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07211C7A23B8D3A60068A7C0 /* MonkeyKing+OAuth.swift */; };
 		07211C7D23B8D40D0068A7C0 /* MonkeyKing+Program.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07211C7C23B8D40D0068A7C0 /* MonkeyKing+Program.swift */; };
 		07211C7F23B8D44C0068A7C0 /* MonkeyKing+OpenURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07211C7E23B8D44C0068A7C0 /* MonkeyKing+OpenURL.swift */; };
+		07211C8123B8EAE80068A7C0 /* MonkeyKing+SupportedPlatformCapable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07211C8023B8EAE80068A7C0 /* MonkeyKing+SupportedPlatformCapable.swift */; };
 		10CDDF46237A8588005E8DE7 /* MonkeyKing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CDDF3F237A8588005E8DE7 /* MonkeyKing.swift */; };
 		10CDDF47237A8588005E8DE7 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CDDF40237A8588005E8DE7 /* Networking.swift */; };
 		10CDDF48237A8588005E8DE7 /* MonkeyKing+WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10CDDF41237A8588005E8DE7 /* MonkeyKing+WebView.swift */; };
@@ -74,6 +75,7 @@
 		07211C7A23B8D3A60068A7C0 /* MonkeyKing+OAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MonkeyKing+OAuth.swift"; path = "Sources/MonkeyKing/MonkeyKing+OAuth.swift"; sourceTree = SOURCE_ROOT; };
 		07211C7C23B8D40D0068A7C0 /* MonkeyKing+Program.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MonkeyKing+Program.swift"; path = "Sources/MonkeyKing/MonkeyKing+Program.swift"; sourceTree = SOURCE_ROOT; };
 		07211C7E23B8D44C0068A7C0 /* MonkeyKing+OpenURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MonkeyKing+OpenURL.swift"; path = "Sources/MonkeyKing/MonkeyKing+OpenURL.swift"; sourceTree = SOURCE_ROOT; };
+		07211C8023B8EAE80068A7C0 /* MonkeyKing+SupportedPlatformCapable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MonkeyKing+SupportedPlatformCapable.swift"; path = "Sources/MonkeyKing/MonkeyKing+SupportedPlatformCapable.swift"; sourceTree = SOURCE_ROOT; };
 		10CDDF3F237A8588005E8DE7 /* MonkeyKing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MonkeyKing.swift; path = Sources/MonkeyKing/MonkeyKing.swift; sourceTree = SOURCE_ROOT; };
 		10CDDF40237A8588005E8DE7 /* Networking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Networking.swift; path = Sources/MonkeyKing/Networking.swift; sourceTree = SOURCE_ROOT; };
 		10CDDF41237A8588005E8DE7 /* MonkeyKing+WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MonkeyKing+WebView.swift"; path = "Sources/MonkeyKing/MonkeyKing+WebView.swift"; sourceTree = SOURCE_ROOT; };
@@ -184,6 +186,7 @@
 				07211C7E23B8D44C0068A7C0 /* MonkeyKing+OpenURL.swift */,
 				07211C7623B8D2FD0068A7C0 /* MonkeyKing+Pay.swift */,
 				07211C7C23B8D40D0068A7C0 /* MonkeyKing+Program.swift */,
+				07211C8023B8EAE80068A7C0 /* MonkeyKing+SupportedPlatformCapable.swift */,
 				10CDDF41237A8588005E8DE7 /* MonkeyKing+WebView.swift */,
 				10CDDF40237A8588005E8DE7 /* Networking.swift */,
 			);
@@ -355,6 +358,7 @@
 				10CDDF46237A8588005E8DE7 /* MonkeyKing.swift in Sources */,
 				10CDDF4A237A8588005E8DE7 /* Helpers.swift in Sources */,
 				10CDDF47237A8588005E8DE7 /* Networking.swift in Sources */,
+				07211C8123B8EAE80068A7C0 /* MonkeyKing+SupportedPlatformCapable.swift in Sources */,
 				07211C7B23B8D3A60068A7C0 /* MonkeyKing+OAuth.swift in Sources */,
 				07211C7D23B8D40D0068A7C0 /* MonkeyKing+Program.swift in Sources */,
 				07211C7323B8D1AA0068A7C0 /* MonkeyKing+handleOpenURL.swift in Sources */,

@@ -8,22 +8,14 @@ extension MonkeyKing {
         /// ref: https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.piSRlm&treeId=204&articleId=105295&docType=1
         case alipay(url: URL)
         case weChat(url: URL)
-
-        public var canBeDelivered: Bool {
-            switch self {
-            case .alipay:
-                return shared.canOpenURL(URL(string: "alipay://")!)
-            case .weChat:
-                return SupportedPlatform.weChat.isAppInstalled
-            }
-        }
     }
 
     public class func deliver(_ order: Order, completionHandler: @escaping PayCompletionHandler) {
-        if !order.canBeDelivered {
+        guard order.platform.isAppInstalled else {
             completionHandler(.failure(.noApp))
             return
         }
+
         shared.payCompletionHandler = completionHandler
         shared.oauthCompletionHandler = nil
         shared.deliverCompletionHandler = nil

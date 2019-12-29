@@ -46,43 +46,6 @@ extension Set {
         }
         return nil
     }
-
-    subscript(platform: MonkeyKing.Message) -> MonkeyKing.Account? {
-        let accountSet = MonkeyKing.shared.accountSet
-        switch platform {
-        case .weChat:
-            for account in accountSet {
-                if case .weChat = account {
-                    return account
-                }
-            }
-        case .qq:
-            for account in accountSet {
-                if case .qq = account {
-                    return account
-                }
-            }
-        case .weibo:
-            for account in accountSet {
-                if case .weibo = account {
-                    return account
-                }
-            }
-        case .alipay:
-            for account in accountSet {
-                if case .alipay = account {
-                    return account
-                }
-            }
-        case .twitter:
-            for account in accountSet {
-                if case .twitter = account {
-                    return account
-                }
-            }
-        }
-        return nil
-    }
 }
 
 extension Bundle {

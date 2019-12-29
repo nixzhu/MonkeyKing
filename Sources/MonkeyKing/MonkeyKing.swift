@@ -38,23 +38,6 @@ public class MonkeyKing: NSObject {
         case alipay(appID: String)
         case twitter(appID: String, appKey: String, redirectURL: String)
 
-        public var isAppInstalled: Bool {
-            switch self {
-            case .weChat:
-                return MonkeyKing.SupportedPlatform.weChat.isAppInstalled
-            case .qq:
-                return MonkeyKing.SupportedPlatform.qq.isAppInstalled
-            case .weibo:
-                return MonkeyKing.SupportedPlatform.weibo.isAppInstalled
-            case .pocket:
-                return MonkeyKing.SupportedPlatform.pocket.isAppInstalled
-            case .alipay:
-                return MonkeyKing.SupportedPlatform.alipay.isAppInstalled
-            case .twitter:
-                return MonkeyKing.SupportedPlatform.twitter.isAppInstalled
-            }
-        }
-
         public var appID: String {
             switch self {
             case .weChat(let appID, _, _):
@@ -74,15 +57,6 @@ public class MonkeyKing: NSObject {
 
         public func hash(into hasher: inout Hasher) {
             hasher.combine(appID)
-        }
-
-        public var canWebOAuth: Bool {
-            switch self {
-            case .qq, .weibo, .pocket, .weChat, .twitter:
-                return true
-            case .alipay:
-                return false
-            }
         }
 
         public static func == (lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
@@ -124,15 +98,25 @@ public class MonkeyKing: NSObject {
             case .pocket:
                 return shared.canOpenURL(URL(string: "pocket-oauth-v1://")!)
             case .alipay:
-                return shared.canOpenURL(URL(string: "alipayshare://")!) || shared.canOpenURL(URL(string: "alipay://")!)
+                return shared.canOpenURL(URL(string: "alipay://")!)
             case .twitter:
                 return shared.canOpenURL(URL(string: "twitter://")!)
+            }
+        }
+
+        public var canWebOAuth: Bool {
+            switch self {
+            case .qq, .weibo, .pocket, .weChat, .twitter:
+                return true
+            case .alipay:
+                return false
             }
         }
     }
 
     public class func registerAccount(_ account: Account) {
-        guard account.isAppInstalled || account.canWebOAuth else { return }
+        guard account.platform.isAppInstalled || account.platform.canWebOAuth else { return }
+
         for oldAccount in MonkeyKing.shared.accountSet {
             switch oldAccount {
             case .weChat:
@@ -149,6 +133,7 @@ public class MonkeyKing: NSObject {
                 if case .twitter = account { shared.accountSet.remove(oldAccount) }
             }
         }
+
         shared.accountSet.insert(account)
     }
 

@@ -169,14 +169,12 @@ extension MonkeyKing {
         case twitter(TwitterSubtype)
 
         public var canBeDelivered: Bool {
-            guard let account = shared.accountSet[self] else { return false }
-            switch account {
+            switch platform {
             case .weibo, .twitter:
                 return true
             default:
-                break
+                return platform.isAppInstalled
             }
-            return account.isAppInstalled
         }
     }
 
@@ -185,7 +183,7 @@ extension MonkeyKing {
             completionHandler(.failure(.noApp))
             return
         }
-        guard let account = shared.accountSet[message] else {
+        guard let account = shared.accountSet[message.platform] else {
             completionHandler(.failure(.noAccount))
             return
         }
@@ -567,9 +565,10 @@ extension MonkeyKing {
             }
         case .twitter(let type):
             // MARK: - Twitter Deliver
-            guard let accessToken = type.accessToken,
-                let accessTokenSecret = type.accessTokenSecret,
-                let account = shared.accountSet[.twitter] else {
+            guard
+                let accessToken = type.accessToken,
+                let accessTokenSecret = type.accessTokenSecret
+            else {
                 completionHandler(.failure(.noAccount))
                 return
             }

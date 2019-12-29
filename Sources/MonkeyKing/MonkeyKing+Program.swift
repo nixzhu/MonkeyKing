@@ -12,7 +12,11 @@ extension MonkeyKing {
     }
 
     public class func launch(_ program: Program, completionHandler: @escaping LaunchCompletionHandler) {
-        guard let account = shared.accountSet[.weChat] else {
+        guard program.platform.isAppInstalled else {
+            completionHandler(.failure(.noApp))
+            return
+        }
+        guard let account = shared.accountSet[program.platform] else {
             completionHandler(.failure(.noAccount))
             return
         }
