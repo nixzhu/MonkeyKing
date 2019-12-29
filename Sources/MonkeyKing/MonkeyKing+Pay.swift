@@ -33,12 +33,12 @@ extension MonkeyKing {
         case .weChat(let url):
             shared.openURL(url) { flag in
                 if flag { return }
-                completionHandler(.failure(.apiRequest(.unrecognizedError(response: nil))))
+                completionHandler(.failure(.sdk(.invalidURLScheme)))
             }
         case .alipay(let url):
             shared.openURL(url) { flag in
                 if flag { return }
-                completionHandler(.failure(.apiRequest(.unrecognizedError(response: nil))))
+                completionHandler(.failure(.sdk(.invalidURLScheme)))
             }
         }
     }

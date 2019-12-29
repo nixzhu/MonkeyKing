@@ -47,7 +47,7 @@ extension MonkeyKing {
 
             shared.openURL(url) { flag in
                 if flag { return }
-                completionHandler(.failure(.userCancelled))
+                completionHandler(.failure(.sdk(.invalidURLScheme)))
             }
 
         case .weChat(let appID, _, _):
@@ -71,7 +71,7 @@ extension MonkeyKing {
 
                 shared.openURL(url) { flag in
                     if flag { return }
-                    completionHandler(.failure(.userCancelled))
+                    completionHandler(.failure(.sdk(.invalidURLScheme)))
                 }
             }
         case .qq(let appID):
@@ -105,7 +105,7 @@ extension MonkeyKing {
 
                 shared.openURL(url) { flag in
                     if flag { return }
-                    completionHandler(.failure(.userCancelled))
+                    completionHandler(.failure(.sdk(.invalidURLScheme)))
                 }
                 return
             }
@@ -157,7 +157,7 @@ extension MonkeyKing {
 
                 shared.openURL(url) { flag in
                     if flag { return }
-                    completionHandler(.failure(.userCancelled))
+                    completionHandler(.failure(.sdk(.invalidURLScheme)))
                 }
                 return
             }
@@ -185,7 +185,7 @@ extension MonkeyKing {
 
                 shared.openURL(url) { flag in
                     if flag { return }
-                    completionHandler(.failure(.userCancelled))
+                    completionHandler(.failure(.sdk(.invalidURLScheme)))
                 }
                 return
             }
@@ -226,7 +226,7 @@ extension MonkeyKing {
 
             shared.openURL(url) { flag in
                 if flag { return }
-                completionHandler(.failure(.noApp))
+                completionHandler(.failure(.sdk(.invalidURLScheme)))
             }
         default:
             break
