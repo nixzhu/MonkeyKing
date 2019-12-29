@@ -6,14 +6,13 @@ public class MonkeyKing: NSObject {
 
     public typealias ResponseJSON = [String: Any]
 
-    // ResponseJSON for Twitter
     public typealias DeliverCompletionHandler = (Result<ResponseJSON?, Error>) -> Void
-    public typealias OAuthCompletionHandler = (Result<ResponseJSON?, Error>) -> Void
-    public typealias WeChatOAuthForCodeCompletionHandler = (Result<String, Error>) -> Void
-    public typealias PayCompletionHandler = (Result<Void, Error>) -> Void
     public typealias LaunchCompletionHandler = (Result<Void, Error>) -> Void
     public typealias LaunchFromWeChatMiniAppCompletionHandler = (Result<String, Error>) -> Void
+    public typealias OAuthCompletionHandler = (Result<ResponseJSON?, Error>) -> Void
+    public typealias OAuthFromWeChatCodeCompletionHandler = (Result<String, Error>) -> Void
     public typealias OpenSchemeCompletionHandler = (Result<URL, Error>) -> Void
+    public typealias PayCompletionHandler = (Result<Void, Error>) -> Void
 
     static let shared = MonkeyKing()
 
@@ -21,14 +20,13 @@ public class MonkeyKing: NSObject {
 
     var accountSet = Set<Account>()
 
+    var deliverCompletionHandler: DeliverCompletionHandler?
+    var launchCompletionHandler: LaunchCompletionHandler?
+    var launchFromWeChatMiniAppCompletionHandler: LaunchFromWeChatMiniAppCompletionHandler?
     var oauthCompletionHandler: OAuthCompletionHandler?
-    var weChatOAuthForCodeCompletionHandler: WeChatOAuthForCodeCompletionHandler?
-
-    private var deliverCompletionHandler: DeliverCompletionHandler?
-    private var payCompletionHandler: PayCompletionHandler?
-    private var launchCompletionHandler: LaunchCompletionHandler?
-    private var launchFromWeChatMiniAppCompletionHandler: LaunchFromWeChatMiniAppCompletionHandler?
-    private var openSchemeCompletionHandler: OpenSchemeCompletionHandler?
+    var oauthFromWeChatCodeCompletionHandler: OAuthFromWeChatCodeCompletionHandler?
+    var openSchemeCompletionHandler: OpenSchemeCompletionHandler?
+    var payCompletionHandler: PayCompletionHandler?
 
     private override init() {}
 
@@ -174,13 +172,13 @@ extension MonkeyKing {
             if urlString.contains("state=Weixinauth") {
                 let queryDictionary = url.monkeyking_queryDictionary
                 guard let code = queryDictionary["code"] else {
-                    shared.weChatOAuthForCodeCompletionHandler = nil
+                    shared.oauthFromWeChatCodeCompletionHandler = nil
                     return false
                 }
                 // Login Succcess
-                if let halfOauthCompletion = shared.weChatOAuthForCodeCompletionHandler {
+                if let halfOauthCompletion = shared.oauthFromWeChatCodeCompletionHandler {
                     halfOauthCompletion(.success(code))
-                    shared.weChatOAuthForCodeCompletionHandler = nil
+                    shared.oauthFromWeChatCodeCompletionHandler = nil
                 } else {
                     fetchWeChatOAuthInfoByCode(code: code) { result in
                         shared.oauthCompletionHandler?(result)
@@ -1241,13 +1239,13 @@ extension MonkeyKing {
         }
     }
 
-    public class func weChatOAuthForCode(scope: String? = nil, requestToken: String? = nil, completionHandler: @escaping WeChatOAuthForCodeCompletionHandler) {
+    public class func weChatOAuthForCode(scope: String? = nil, requestToken: String? = nil, completionHandler: @escaping OAuthFromWeChatCodeCompletionHandler) {
         guard let account = shared.accountSet[.weChat] else { return }
         guard account.isAppInstalled || account.canWebOAuth else {
             completionHandler(.failure(.noApp))
             return
         }
-        shared.weChatOAuthForCodeCompletionHandler = completionHandler
+        shared.oauthFromWeChatCodeCompletionHandler = completionHandler
         switch account {
         case .weChat(let appID, _, _):
             let scope = scope ?? "snsapi_userinfo"
