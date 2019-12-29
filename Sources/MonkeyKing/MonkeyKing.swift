@@ -253,7 +253,7 @@ extension MonkeyKing {
                         } else {
                             let error: Error = resultCode == -2
                                 ? .userCancelled
-                                : .sdk(reason: .other(code: result))
+                                : .sdk(.other(code: result))
                             shared.deliverCompletionHandler?(.failure(error))
                         }
                     }
@@ -274,7 +274,7 @@ extension MonkeyKing {
             } else {
                 let error: Error = errorDescription == "-4"
                     ? .userCancelled
-                    : .sdk(reason: .other(code: errorDescription))
+                    : .sdk(.other(code: errorDescription))
                 shared.deliverCompletionHandler?(.failure(error))
             }
             return success
@@ -347,7 +347,7 @@ extension MonkeyKing {
                 } else {
                     let error: Error = statusCode == -1
                         ? .userCancelled
-                        : .sdk(reason: .other(code: String(statusCode)))
+                        : .sdk(.other(code: String(statusCode)))
                     shared.deliverCompletionHandler?(.failure(error))
                 }
                 return success
@@ -418,7 +418,7 @@ extension MonkeyKing {
                 if success {
                     shared.deliverCompletionHandler?(.success(nil))
                 } else {
-                    shared.deliverCompletionHandler?(.failure(.sdk(reason: .other(code: String(result))))) // TODO: user cancelled
+                    shared.deliverCompletionHandler?(.failure(.sdk(.other(code: String(result))))) // TODO: user cancelled
                 }
                 return success
             }
@@ -615,7 +615,7 @@ extension MonkeyKing {
 
     public class func deliver(_ message: Message, completionHandler: @escaping DeliverCompletionHandler) {
         guard message.canBeDelivered else {
-            completionHandler(.failure(.messageCanNotBeDelivered))
+            completionHandler(.failure(.noApp))
             return
         }
         guard let account = shared.accountSet[message] else {
@@ -711,7 +711,7 @@ extension MonkeyKing {
             let weChatSchemeURLString = "weixin://app/\(appID)/sendreq/?"
             openURL(urlString: weChatSchemeURLString) { flag in
                 if flag { return }
-                completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
+                completionHandler(.failure(.sdk(.invalidURLScheme)))
             }
         case .qq(let type):
             let callbackName = appID.monkeyking_qqCallbackName
@@ -737,7 +737,7 @@ extension MonkeyKing {
                     }
                     qqSchemeURLString += mediaType ?? "news"
                     guard let encodedURLString = url.absoluteString.monkeyking_base64AndURLEncodedString else {
-                        completionHandler(.failure(.sdk(reason: .urlEncodeFailed)))
+                        completionHandler(.failure(.sdk(.urlEncodeFailed)))
                         return
                     }
                     qqSchemeURLString += "&url=\(encodedURLString)"
@@ -747,7 +747,7 @@ extension MonkeyKing {
                     handleNews(with: url, mediaType: "news")
                 case .image(let image):
                     guard let imageData = image.jpegData(compressionQuality: 0.9) else {
-                        completionHandler(.failure(.invalidImageData))
+                        completionHandler(.failure(.resource(.invalidImageData)))
                         return
                     }
                     var dic: [String: Any] = ["file_data": imageData]
@@ -811,21 +811,9 @@ extension MonkeyKing {
             }
             openURL(urlString: qqSchemeURLString) { flag in
                 if flag { return }
-                completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
+                completionHandler(.failure(.sdk(.invalidURLScheme)))
             }
         case .weibo(let type):
-            func errorReason(with reponseData: [String: Any]) -> Error.APIRequestReason {
-                // ref: http://open.weibo.com/wiki/Error_code
-                guard let errorCode = reponseData["error_code"] as? Int else {
-                    return Error.APIRequestReason(type: .unrecognizedError, responseData: reponseData)
-                }
-                switch errorCode {
-                case 21314, 21315, 21316, 21317, 21327, 21332:
-                    return Error.APIRequestReason(type: .invalidToken, responseData: reponseData)
-                default:
-                    return Error.APIRequestReason(type: .unrecognizedError, responseData: reponseData)
-                }
-            }
             guard !shared.canOpenURL(urlString: "weibosdk://request") else {
                 // App Share
                 var messageInfo: [String: Any] = [
@@ -889,7 +877,7 @@ extension MonkeyKing {
                 UIPasteboard.general.items = messageData
                 openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000") { flag in
                     if flag { return }
-                    completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
+                    completionHandler(.failure(.sdk(.invalidURLScheme)))
                 }
                 return
             }
@@ -910,7 +898,7 @@ extension MonkeyKing {
                     mediaType = Media.url(url)
                 case .image(let image):
                     guard let imageData = image.jpegData(compressionQuality: 0.9) else {
-                        completionHandler(.failure(.invalidImageData))
+                        completionHandler(.failure(.resource(.invalidImageData)))
                         return
                     }
                     parameters["pic"] = imageData
@@ -936,13 +924,10 @@ extension MonkeyKing {
             case .url:
                 let urlString = "https://api.weibo.com/2/statuses/share.json"
                 shared.request(urlString, method: .post, parameters: parameters) { responseData, _, error in
-                    var reason: Error.APIRequestReason
                     if error != nil {
-                        reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
-                        completionHandler(.failure(.apiRequest(reason: reason)))
+                        completionHandler(.failure(.apiRequest(.connectFailed)))
                     } else if let responseData = responseData, (responseData["idstr"] as? String) == nil {
-                        reason = errorReason(with: responseData)
-                        completionHandler(.failure(.apiRequest(reason: reason)))
+                        completionHandler(.failure(shared.errorReason(with: responseData, at: .weibo)))
                     } else {
                         completionHandler(.success(nil))
                     }
@@ -950,13 +935,10 @@ extension MonkeyKing {
             case .image, .imageData:
                 let urlString = "https://api.weibo.com/2/statuses/share.json"
                 shared.upload(urlString, parameters: parameters) { responseData, _, error in
-                    var reason: Error.APIRequestReason
                     if error != nil {
-                        reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
-                        completionHandler(.failure(.apiRequest(reason: reason)))
+                        completionHandler(.failure(.apiRequest(.connectFailed)))
                     } else if let responseData = responseData, (responseData["idstr"] as? String) == nil {
-                        reason = errorReason(with: responseData)
-                        completionHandler(.failure(.apiRequest(reason: reason)))
+                        completionHandler(.failure(shared.errorReason(with: responseData, at: .weibo)))
                     } else {
                         completionHandler(.success(nil))
                     }
@@ -975,13 +957,13 @@ extension MonkeyKing {
         case .alipay(let type):
             let dictionary = createAlipayMessageDictionary(withScene: type.scene, info: type.info, appID: appID)
             guard let data = try? PropertyListSerialization.data(fromPropertyList: dictionary, format: .xml, options: .init()) else {
-                completionHandler(.failure(.sdk(reason: .serializeFailed)))
+                completionHandler(.failure(.sdk(.serializeFailed)))
                 return
             }
             UIPasteboard.general.setData(data, forPasteboardType: "com.alipay.openapi.pb.req.\(appID)")
             openURL(urlString: "alipayshare://platformapi/shareService?action=sendReq&shareId=\(appID)") { flag in
                 if flag { return }
-                completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
+                completionHandler(.failure(.sdk(.invalidURLScheme)))
             }
         case .twitter(let type):
             // MARK: - Twitter Deliver
@@ -1002,7 +984,7 @@ extension MonkeyKing {
                     mediaType = Media.url(url)
                 case .image(let image):
                     guard let imageData = image.jpegData(compressionQuality: 0.9) else {
-                        completionHandler(.failure(.invalidImageData))
+                        completionHandler(.failure(.resource(.invalidImageData)))
                         return
                     }
                     parameters["media"] = imageData
@@ -1028,10 +1010,8 @@ extension MonkeyKing {
                     // ref: https://dev.twitter.com/rest/reference/post/statuses/update
                     let urlString = "\(updateStatusAPI)?\(parameters.urlEncodedQueryString(using: .utf8))"
                     shared.request(urlString, method: .post, parameters: nil, headers: headers) { responseData, URLResponse, error in
-                        var reason: Error.APIRequestReason
                         if error != nil {
-                            reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
-                            completionHandler(.failure(.apiRequest(reason: reason)))
+                            completionHandler(.failure(.apiRequest(.connectFailed)))
                         } else {
                             if let HTTPResponse = URLResponse as? HTTPURLResponse,
                                 HTTPResponse.statusCode == 200 {
@@ -1040,12 +1020,10 @@ extension MonkeyKing {
                             }
                             if let responseData = responseData,
                                 let _ = responseData["errors"] {
-                                reason = shared.errorReason(with: responseData, at: .twitter)
-                                completionHandler(.failure(.apiRequest(reason: reason)))
+                                completionHandler(.failure(shared.errorReason(with: responseData, at: .twitter)))
                                 return
                             }
-                            let unrecognizedReason = Error.APIRequestReason(type: .unrecognizedError, responseData: responseData)
-                            completionHandler(.failure(.apiRequest(reason: unrecognizedReason)))
+                            completionHandler(.failure(.apiRequest(.unrecognizedError(response: responseData))))
                         }
                     }
                 }
@@ -1061,13 +1039,11 @@ extension MonkeyKing {
                             completionHandler(.success(responseData))
                             return
                         }
-                        var reason: Error.APIRequestReason
-                        if let _ = error {
-                            reason = Error.APIRequestReason(type: .connectFailed, responseData: nil)
+                        if error != nil {
+                            completionHandler(.failure(.apiRequest(.connectFailed)))
                         } else {
-                            reason = Error.APIRequestReason(type: .unrecognizedError, responseData: responseData)
+                            completionHandler(.failure(.apiRequest(.unrecognizedError(response: responseData))))
                         }
-                        completionHandler(.failure(.apiRequest(reason: reason)))
                     }
                 }
             default:
@@ -1348,12 +1324,12 @@ extension MonkeyKing {
                     URLQueryItem(name: "miniProgramType", value: String(type.rawValue)),
                 ]
                 guard let urlString = components?.url?.absoluteString else {
-                    completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
+                    completionHandler(.failure(.sdk(.invalidURLScheme)))
                     return
                 }
                 openURL(urlString: urlString) { flag in
                     if flag { return }
-                    completionHandler(.failure(.sdk(reason: .invalidURLScheme)))
+                    completionHandler(.failure(.sdk(.invalidURLScheme)))
                 }
             }
         }
