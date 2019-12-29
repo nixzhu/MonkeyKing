@@ -6,12 +6,8 @@ public class MonkeyKing: NSObject {
 
     public typealias ResponseJSON = [String: Any]
 
-    public enum DeliverResult {
-        case success(ResponseJSON?)
-        case failure(Error)
-    }
-
-    public typealias DeliverCompletionHandler = (_ result: DeliverResult) -> Void
+    // ResponseJSON for Twitter
+    public typealias DeliverCompletionHandler = (Result<ResponseJSON?, Error>) -> Void
     public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Swift.Error?) -> Void
     public typealias WeChatOAuthForCodeCompletionHandler = (_ code: String?, _ error: Swift.Error?) -> Void
     public typealias PayCompletionHandler = (_ result: Bool) -> Void
