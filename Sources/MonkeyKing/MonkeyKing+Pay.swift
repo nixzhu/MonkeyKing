@@ -6,18 +6,16 @@ extension MonkeyKing {
     public enum Order {
         /// You can custom URL scheme. Default "ap" + String(appID)
         /// ref: https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.piSRlm&treeId=204&articleId=105295&docType=1
-        case alipay(urlString: String)
-        case weChat(urlString: String)
+        case alipay(url: URL)
+        case weChat(url: URL)
 
         public var canBeDelivered: Bool {
-            let scheme: String
             switch self {
             case .alipay:
-                scheme = "alipay://"
+                return shared.canOpenURL(URL(string: "alipay://")!)
             case .weChat:
-                scheme = "weixin://"
+                return SupportedPlatform.weChat.isAppInstalled
             }
-            return shared.canOpenURL(urlString: scheme)
         }
     }
 
@@ -32,13 +30,13 @@ extension MonkeyKing {
         shared.openSchemeCompletionHandler = nil
 
         switch order {
-        case .weChat(let urlString):
-            openURL(urlString: urlString) { flag in
+        case .weChat(let url):
+            shared.openURL(url) { flag in
                 if flag { return }
                 completionHandler(.failure(.apiRequest(.unrecognizedError(response: nil))))
             }
-        case .alipay(let urlString):
-            openURL(urlString: urlString) { flag in
+        case .alipay(let url):
+            shared.openURL(url) { flag in
                 if flag { return }
                 completionHandler(.failure(.apiRequest(.unrecognizedError(response: nil))))
             }

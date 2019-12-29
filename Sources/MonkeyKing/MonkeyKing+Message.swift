@@ -275,8 +275,11 @@ extension MonkeyKing {
             }
             guard let data = try? PropertyListSerialization.data(fromPropertyList: weChatMessage, format: .binary, options: .init()) else { return }
             UIPasteboard.general.setData(data, forPasteboardType: "content")
-            let weChatSchemeURLString = "weixin://app/\(appID)/sendreq/?"
-            openURL(urlString: weChatSchemeURLString) { flag in
+            guard let url = URL(string: "weixin://app/\(appID)/sendreq/?") else {
+                completionHandler(.failure(.sdk(.urlEncodeFailed)))
+                return
+            }
+            shared.openURL(url) { flag in
                 if flag { return }
                 completionHandler(.failure(.sdk(.invalidURLScheme)))
             }
@@ -376,12 +379,18 @@ extension MonkeyKing {
                     qqSchemeURLString += "\(encodedDescription)"
                 }
             }
-            openURL(urlString: qqSchemeURLString) { flag in
+
+            guard let url = URL(string: qqSchemeURLString) else {
+                completionHandler(.failure(.sdk(.urlEncodeFailed)))
+                return
+            }
+
+            shared.openURL(url) { flag in
                 if flag { return }
                 completionHandler(.failure(.sdk(.invalidURLScheme)))
             }
         case .weibo(let type):
-            guard !shared.canOpenURL(urlString: "weibosdk://request") else {
+            guard !shared.canOpenURL(URL(string: "weibosdk://request")!) else {
                 // App Share
                 var messageInfo: [String: Any] = [
                     "__class": "WBMessageObject",
@@ -442,7 +451,19 @@ extension MonkeyKing {
                     ["app": appData],
                 ]
                 UIPasteboard.general.items = messageData
-                openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000") { flag in
+
+                var urlComponents = URLComponents(string: "weibosdk://request")
+                urlComponents?.queryItems = [
+                    URLQueryItem(name: "id", value: uuidString),
+                    URLQueryItem(name: "sdkversion", value: "003013000"),
+                ]
+
+                guard let url = urlComponents?.url else {
+                    completionHandler(.failure(.sdk(.urlEncodeFailed)))
+                    return
+                }
+
+                shared.openURL(url) { flag in
                     if flag { return }
                     completionHandler(.failure(.sdk(.invalidURLScheme)))
                 }
@@ -528,7 +549,19 @@ extension MonkeyKing {
                 return
             }
             UIPasteboard.general.setData(data, forPasteboardType: "com.alipay.openapi.pb.req.\(appID)")
-            openURL(urlString: "alipayshare://platformapi/shareService?action=sendReq&shareId=\(appID)") { flag in
+
+            var urlComponents = URLComponents(string: "alipayshare://platformapi/shareService")
+            urlComponents?.queryItems = [
+                URLQueryItem(name: "action", value: "sendReq"),
+                URLQueryItem(name: "shareId", value: appID),
+            ]
+
+            guard let url = urlComponents?.url else {
+                completionHandler(.failure(.sdk(.urlEncodeFailed)))
+                return
+            }
+
+            shared.openURL(url) { flag in
                 if flag { return }
                 completionHandler(.failure(.sdk(.invalidURLScheme)))
             }

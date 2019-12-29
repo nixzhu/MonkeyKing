@@ -40,7 +40,12 @@ extension MonkeyKing {
             resultStr = resultStr.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? resultStr
             resultStr = "alipay://alipayclient/?" + resultStr
 
-            openURL(urlString: resultStr) { flag in
+            guard let url = URL(string: resultStr) else {
+                completionHandler(.failure(.sdk(.urlEncodeFailed)))
+                return
+            }
+
+            shared.openURL(url) { flag in
                 if flag { return }
                 completionHandler(.failure(.userCancelled))
             }
@@ -53,7 +58,18 @@ extension MonkeyKing {
                 let accessTokenAPI = "https://open.weixin.qq.com/connect/mobilecheck?appid=\(appID)&uid=1926559385"
                 addWebView(withURLString: accessTokenAPI)
             } else {
-                openURL(urlString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth") { flag in
+                var urlComponents = URLComponents(string: "weixin://app/\(appID)/auth/")
+                urlComponents?.queryItems = [
+                    URLQueryItem(name: "scope", value: scope),
+                    URLQueryItem(name: "state", value: "Weixinauth"),
+                ]
+
+                guard let url = urlComponents?.url else {
+                    completionHandler(.failure(.sdk(.urlEncodeFailed)))
+                    return
+                }
+
+                shared.openURL(url) { flag in
                     if flag { return }
                     completionHandler(.failure(.userCancelled))
                 }
@@ -76,7 +92,18 @@ extension MonkeyKing {
                 ]
                 let data = NSKeyedArchiver.archivedData(withRootObject: dic)
                 UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.tencent\(appID)")
-                openURL(urlString: "mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1") { flag in
+
+                var urlComponents = URLComponents(string: "mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)")
+                urlComponents?.queryItems = [
+                    URLQueryItem(name: "generalpastboard", value: "1"),
+                ]
+
+                guard let url = urlComponents?.url else {
+                    completionHandler(.failure(.sdk(.urlEncodeFailed)))
+                    return
+                }
+
+                shared.openURL(url) { flag in
                     if flag { return }
                     completionHandler(.failure(.userCancelled))
                 }
@@ -116,7 +143,19 @@ extension MonkeyKing {
                     ["app": appData],
                 ]
                 UIPasteboard.general.items = authItems
-                openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000") { flag in
+
+                var urlComponents = URLComponents(string: "weibosdk://request")
+                urlComponents?.queryItems = [
+                    URLQueryItem(name: "id", value: uuidString),
+                    URLQueryItem(name: "sdkversion", value: "003013000"),
+                ]
+
+                guard let url = urlComponents?.url else {
+                    completionHandler(.failure(.sdk(.urlEncodeFailed)))
+                    return
+                }
+
+                shared.openURL(url) { flag in
                     if flag { return }
                     completionHandler(.failure(.userCancelled))
                 }
@@ -133,8 +172,18 @@ extension MonkeyKing {
             let redirectURLString = "pocketapp\(prefix):authorizationFinished"
             guard let requestToken = requestToken else { return }
             guard !account.isAppInstalled else {
-                let requestTokenAPI = "pocket-oauth-v1:///authorize?request_token=\(requestToken)&redirect_uri=\(redirectURLString)"
-                openURL(urlString: requestTokenAPI) { flag in
+                var urlComponents = URLComponents(string: "pocket-oauth-v1:///authorize")
+                urlComponents?.queryItems = [
+                    URLQueryItem(name: "request_token", value: requestToken),
+                    URLQueryItem(name: "redirect_uri", value: redirectURLString),
+                ]
+
+                guard let url = urlComponents?.url else {
+                    completionHandler(.failure(.sdk(.urlEncodeFailed)))
+                    return
+                }
+
+                shared.openURL(url) { flag in
                     if flag { return }
                     completionHandler(.failure(.userCancelled))
                 }
@@ -163,7 +212,19 @@ extension MonkeyKing {
                 completionHandler(.failure(.noApp))
                 return
             }
-            openURL(urlString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth") { flag in
+
+            var urlComponents = URLComponents(string: "weixin://app/\(appID)/auth/")
+            urlComponents?.queryItems = [
+                URLQueryItem(name: "scope", value: scope),
+                URLQueryItem(name: "state", value: "Weixinauth"),
+            ]
+
+            guard let url = urlComponents?.url else {
+                completionHandler(.failure(.sdk(.urlEncodeFailed)))
+                return
+            }
+
+            shared.openURL(url) { flag in
                 if flag { return }
                 completionHandler(.failure(.noApp))
             }

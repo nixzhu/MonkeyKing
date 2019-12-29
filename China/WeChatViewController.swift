@@ -184,7 +184,8 @@ extension WeChatViewController {
         do {
             let data = try NSURLConnection.sendSynchronousRequest(URLRequest(url: URL(string: "http://www.example.com/pay.php?payType=weixin")!), returning: nil)
             let urlString = String(data: data, encoding: .utf8)!
-            let order = MonkeyKing.Order.weChat(urlString: urlString)
+            let url = URL(string: urlString)!
+            let order = MonkeyKing.Order.weChat(url: url)
             MonkeyKing.deliver(order) { result in
                 print("result: \(result)")
             }

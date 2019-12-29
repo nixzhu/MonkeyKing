@@ -79,7 +79,8 @@ class AlipayViewController: UIViewController {
             registerAccount()
             let data = try NSURLConnection.sendSynchronousRequest(URLRequest(url: URL(string: "https://www.example.com/pay.php?payType=alipay")!), returning: nil)
             let urlString = String(data: data, encoding: .utf8)!
-            let order = MonkeyKing.Order.alipay(urlString: urlString)
+            let url = URL(string: urlString)!
+            let order = MonkeyKing.Order.alipay(url: url)
             MonkeyKing.deliver(order) { result in
                 print("result: \(result)")
             }

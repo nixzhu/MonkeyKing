@@ -268,11 +268,12 @@ extension MonkeyKing {
         Networking.shared.upload(urlString, parameters: parameters, headers: headers, completionHandler: completionHandler)
     }
 
-    class func openURL(urlString: String, options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:], completionHandler completion: ((Bool) -> Swift.Void)? = nil) {
-        guard let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) else {
+    func openURL(_ url: URL, options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:], completionHandler completion: ((Bool) -> Void)? = nil) {
+        guard UIApplication.shared.canOpenURL(url) else {
             completion?(false)
             return
         }
+
         if #available(iOS 10.0, *) {
             UIApplication.shared.open(url, options: options) { flag in
                 completion?(flag)
@@ -282,13 +283,7 @@ extension MonkeyKing {
         }
     }
 
-    class func openURL(urlString: String) -> Bool {
-        guard let url = URL(string: urlString) else { return false }
-        return UIApplication.shared.openURL(url)
-    }
-
-    func canOpenURL(urlString: String) -> Bool {
-        guard let url = URL(string: urlString) else { return false }
+    func canOpenURL(_ url: URL) -> Bool {
         return UIApplication.shared.canOpenURL(url)
     }
 }

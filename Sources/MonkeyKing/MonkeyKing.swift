@@ -116,17 +116,17 @@ public class MonkeyKing: NSObject {
         public var isAppInstalled: Bool {
             switch self {
             case .weChat:
-                return shared.canOpenURL(urlString: "weixin://")
+                return shared.canOpenURL(URL(string: "weixin://")!)
             case .qq:
-                return shared.canOpenURL(urlString: "mqqapi://")
+                return shared.canOpenURL(URL(string: "mqqapi://")!)
             case .weibo:
-                return shared.canOpenURL(urlString: "weibosdk://request")
+                return shared.canOpenURL(URL(string: "weibosdk://request")!)
             case .pocket:
-                return shared.canOpenURL(urlString: "pocket-oauth-v1://")
+                return shared.canOpenURL(URL(string: "pocket-oauth-v1://")!)
             case .alipay:
-                return shared.canOpenURL(urlString: "alipayshare://") || shared.canOpenURL(urlString: "alipay://")
+                return shared.canOpenURL(URL(string: "alipayshare://")!) || shared.canOpenURL(URL(string: "alipay://")!)
             case .twitter:
-                return shared.canOpenURL(urlString: "twitter://")
+                return shared.canOpenURL(URL(string: "twitter://")!)
             }
         }
     }

@@ -29,11 +29,13 @@ extension MonkeyKing {
                     URLQueryItem(name: "path", value: path),
                     URLQueryItem(name: "miniProgramType", value: String(type.rawValue)),
                 ]
-                guard let urlString = components?.url?.absoluteString else {
-                    completionHandler(.failure(.sdk(.invalidURLScheme)))
+
+                guard let url = components?.url else {
+                    completionHandler(.failure(.sdk(.urlEncodeFailed)))
                     return
                 }
-                openURL(urlString: urlString) { flag in
+
+                shared.openURL(url) { flag in
                     if flag { return }
                     completionHandler(.failure(.sdk(.invalidURLScheme)))
                 }
