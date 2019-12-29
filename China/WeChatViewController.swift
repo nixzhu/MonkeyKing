@@ -157,12 +157,13 @@ extension WeChatViewController {
     }
 
     @IBAction func OAuthForCode(_ sender: UIButton) {
-        MonkeyKing.weChatOAuthForCode { [weak self] code, error in
-            guard let code = code else {
+        MonkeyKing.weChatOAuthForCode { [weak self] result in
+            switch result {
+            case .success(let code):
+                self?.fetchWeChatOAuthInfoByCode(code: code)
+            case .failure(let error):
                 print("error \(String(describing: error))")
-                return
             }
-            self?.fetchWeChatOAuthInfoByCode(code: code)
         }
     }
 }

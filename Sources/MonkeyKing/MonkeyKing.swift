@@ -9,7 +9,7 @@ public class MonkeyKing: NSObject {
     // ResponseJSON for Twitter
     public typealias DeliverCompletionHandler = (Result<ResponseJSON?, Error>) -> Void
     public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Swift.Error?) -> Void
-    public typealias WeChatOAuthForCodeCompletionHandler = (_ code: String?, _ error: Swift.Error?) -> Void
+    public typealias WeChatOAuthForCodeCompletionHandler = (Result<String, Error>) -> Void
     public typealias PayCompletionHandler = (_ result: Bool) -> Void
     public typealias LaunchCompletionHandler = (_ result: LaunchResult) -> Void
 
@@ -182,7 +182,7 @@ extension MonkeyKing {
                 }
                 // Login Succcess
                 if let halfOauthCompletion = shared.weChatOAuthForCodeCompletionHandler {
-                    halfOauthCompletion(code, nil)
+                    halfOauthCompletion(.success(code))
                     shared.weChatOAuthForCodeCompletionHandler = nil
                 } else {
                     fetchWeChatOAuthInfoByCode(code: code) { info, response, error in
@@ -1253,8 +1253,7 @@ extension MonkeyKing {
     public class func weChatOAuthForCode(scope: String? = nil, requestToken: String? = nil, completionHandler: @escaping WeChatOAuthForCodeCompletionHandler) {
         guard let account = shared.accountSet[.weChat] else { return }
         guard account.isAppInstalled || account.canWebOAuth else {
-            let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
-            completionHandler(nil, error)
+            completionHandler(.failure(.noApp))
             return
         }
         shared.weChatOAuthForCodeCompletionHandler = completionHandler
@@ -1262,13 +1261,12 @@ extension MonkeyKing {
         case .weChat(let appID, _, _):
             let scope = scope ?? "snsapi_userinfo"
             guard account.isAppInstalled else {
-                let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
-                completionHandler(nil, error)
+                completionHandler(.failure(.noApp))
                 return
             }
             openURL(urlString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth") { flag in
                 if flag { return }
-                completionHandler(nil, NSError(domain: "OAuth Error, cannot open url weixin://", code: -1, userInfo: nil))
+                completionHandler(.failure(.noApp))
             }
         default:
             break
