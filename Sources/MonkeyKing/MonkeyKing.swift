@@ -11,12 +11,7 @@ public class MonkeyKing: NSObject {
     public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Swift.Error?) -> Void
     public typealias WeChatOAuthForCodeCompletionHandler = (Result<String, Error>) -> Void
     public typealias PayCompletionHandler = (Result<Void, Error>) -> Void
-    public typealias LaunchCompletionHandler = (_ result: LaunchResult) -> Void
-
-    public enum LaunchResult {
-        case success(ResponseJSON?)
-        case failure(Error)
-    }
+    public typealias LaunchCompletionHandler = (Result<Void, Error>) -> Void
 
     static let shared = MonkeyKing()
 
