@@ -12,6 +12,7 @@ public class MonkeyKing: NSObject {
     public typealias WeChatOAuthForCodeCompletionHandler = (Result<String, Error>) -> Void
     public typealias PayCompletionHandler = (Result<Void, Error>) -> Void
     public typealias LaunchCompletionHandler = (Result<Void, Error>) -> Void
+    public typealias LaunchFromWeChatMiniAppCompletionHandler = (Result<String, Error>) -> Void
 
     static let shared = MonkeyKing()
 
@@ -25,7 +26,7 @@ public class MonkeyKing: NSObject {
     private var deliverCompletionHandler: DeliverCompletionHandler?
     private var payCompletionHandler: PayCompletionHandler?
     private var launchCompletionHandler: LaunchCompletionHandler?
-    private var launchFromWeChatMiniAppHandler: ((String) -> Void)?
+    private var launchFromWeChatMiniAppCompletionHandler: LaunchFromWeChatMiniAppCompletionHandler?
     private var openSchemeCompletionHandler: ((URL?) -> Void)?
 
     private override init() {}
@@ -152,8 +153,8 @@ public class MonkeyKing: NSObject {
         shared.accountSet.insert(account)
     }
 
-    public class func registerLaunchFromWeChatMiniAppHandler(_ handler: @escaping (String) -> Void) {
-        shared.launchFromWeChatMiniAppHandler = handler
+    public class func registerLaunchFromWeChatMiniAppHandler(_ handler: @escaping LaunchFromWeChatMiniAppCompletionHandler) {
+        shared.launchFromWeChatMiniAppCompletionHandler = handler
     }
 }
 
@@ -241,13 +242,13 @@ extension MonkeyKing {
                     let messageExtKey = "messageExt"
                     if success {
                         if let messageExt = info[messageExtKey] as? String {
-                            shared.launchFromWeChatMiniAppHandler?(messageExt)
+                            shared.launchFromWeChatMiniAppCompletionHandler?(.success(messageExt))
                         } else {
                             shared.deliverCompletionHandler?(.success(nil))
                         }
                     } else {
                         if let messageExt = info[messageExtKey] as? String {
-                            shared.launchFromWeChatMiniAppHandler?(messageExt)
+                            shared.launchFromWeChatMiniAppCompletionHandler?(.success(messageExt))
                             return true
                         } else {
                             let error: Error = resultCode == -2
