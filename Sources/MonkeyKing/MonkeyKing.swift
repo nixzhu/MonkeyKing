@@ -13,6 +13,7 @@ public class MonkeyKing: NSObject {
     public typealias PayCompletionHandler = (Result<Void, Error>) -> Void
     public typealias LaunchCompletionHandler = (Result<Void, Error>) -> Void
     public typealias LaunchFromWeChatMiniAppCompletionHandler = (Result<String, Error>) -> Void
+    public typealias OpenSchemeCompletionHandler = (Result<URL, Error>) -> Void
 
     static let shared = MonkeyKing()
 
@@ -27,7 +28,7 @@ public class MonkeyKing: NSObject {
     private var payCompletionHandler: PayCompletionHandler?
     private var launchCompletionHandler: LaunchCompletionHandler?
     private var launchFromWeChatMiniAppCompletionHandler: LaunchFromWeChatMiniAppCompletionHandler?
-    private var openSchemeCompletionHandler: ((URL?) -> Void)?
+    private var openSchemeCompletionHandler: OpenSchemeCompletionHandler?
 
     private override init() {}
 
@@ -425,7 +426,7 @@ extension MonkeyKing {
         }
 
         if let handler = shared.openSchemeCompletionHandler {
-            handler(url)
+            handler(.success(url))
             return true
         }
 
@@ -1338,7 +1339,7 @@ extension MonkeyKing {
 
 extension MonkeyKing {
 
-    public class func openScheme(_ scheme: String, options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:], completionHandler: ((URL?) -> Void)? = nil) {
+    public class func openScheme(_ scheme: String, options: [UIApplication.OpenExternalURLOptionsKey: Any] = [:], completionHandler: OpenSchemeCompletionHandler? = nil) {
 
         shared.openSchemeCompletionHandler = completionHandler
         shared.deliverCompletionHandler = nil
@@ -1347,7 +1348,7 @@ extension MonkeyKing {
 
         let handleErrorResult: () -> Void = {
             shared.openSchemeCompletionHandler = nil
-            completionHandler?(nil)
+            completionHandler?(.failure(.apiRequest(.unrecognizedError(response: nil))))
         }
 
         if let url = URL(string: scheme) {
