@@ -18,11 +18,15 @@ class WeiboViewController: UIViewController {
 
         // not installed weibo app, must need accessToken
         if !MonkeyKing.SupportedPlatform.weibo.isAppInstalled {
-            MonkeyKing.oauth(for: .weibo) { [weak self] info, _, error in
-                if let accessToken = info?["access_token"] as? String {
-                    self?.accessToken = accessToken
+            MonkeyKing.oauth(for: .weibo) { [weak self] result in
+                switch result {
+                case .success(let info):
+                    if let accessToken = info?["access_token"] as? String {
+                        self?.accessToken = accessToken
+                    }
+                case .failure(let error):
+                    print("error: \(String(describing: error))")
                 }
-                print("MonkeyKing.oauth info: \(String(describing: info)), error: \(String(describing: error))")
             }
         }
     }
@@ -66,22 +70,27 @@ class WeiboViewController: UIViewController {
     // MARK: OAuth
 
     @IBAction func OAuth(_ sender: UIButton) {
-        MonkeyKing.oauth(for: .weibo) { info, _, _ in
-            // App or Web: token & userID
-            guard
-                let unwrappedInfo = info,
-                let token = (unwrappedInfo["access_token"] as? String) ?? (unwrappedInfo["accessToken"] as? String),
-                let userID = (unwrappedInfo["uid"] as? String) ?? (unwrappedInfo["userID"] as? String) else {
-                return
-            }
-            let userInfoAPI = "https://api.weibo.com/2/users/show.json"
-            let parameters = [
-                "uid": userID,
-                "access_token": token,
-            ]
-            // fetch UserInfo by userInfoAPI
-            SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters) { userInfo, _, _ in
-                print("userInfo \(String(describing: userInfo))")
+        MonkeyKing.oauth(for: .weibo) { result in
+            switch result {
+            case .success(let info):
+                // App or Web: token & userID
+                guard
+                    let unwrappedInfo = info,
+                    let token = (unwrappedInfo["access_token"] as? String) ?? (unwrappedInfo["accessToken"] as? String),
+                    let userID = (unwrappedInfo["uid"] as? String) ?? (unwrappedInfo["userID"] as? String) else {
+                    return
+                }
+                let userInfoAPI = "https://api.weibo.com/2/users/show.json"
+                let parameters = [
+                    "uid": userID,
+                    "access_token": token,
+                ]
+                // fetch UserInfo by userInfoAPI
+                SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters) { userInfo, _, _ in
+                    print("userInfo \(String(describing: userInfo))")
+                }
+            case .failure:
+                break
             }
             // More API
             // http://open.weibo.com/wiki/%E5%BE%AE%E5%8D%9AAPI

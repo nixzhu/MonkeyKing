@@ -8,7 +8,7 @@ public class MonkeyKing: NSObject {
 
     // ResponseJSON for Twitter
     public typealias DeliverCompletionHandler = (Result<ResponseJSON?, Error>) -> Void
-    public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Swift.Error?) -> Void
+    public typealias OAuthCompletionHandler = (Result<ResponseJSON?, Error>) -> Void
     public typealias WeChatOAuthForCodeCompletionHandler = (Result<String, Error>) -> Void
     public typealias PayCompletionHandler = (Result<Void, Error>) -> Void
     public typealias LaunchCompletionHandler = (Result<Void, Error>) -> Void
@@ -182,8 +182,8 @@ extension MonkeyKing {
                     halfOauthCompletion(.success(code))
                     shared.weChatOAuthForCodeCompletionHandler = nil
                 } else {
-                    fetchWeChatOAuthInfoByCode(code: code) { info, response, error in
-                        shared.oauthCompletionHandler?(info, response, error)
+                    fetchWeChatOAuthInfoByCode(code: code) { result in
+                        shared.oauthCompletionHandler?(result)
                     }
                 }
                 return true
@@ -232,8 +232,10 @@ extension MonkeyKing {
 
                     // OAuth Failed
                     if let state = info["state"] as? String, state == "Weixinauth", resultCode != 0 {
-                        let error: Swift.Error = resultCode == -2 ? Error.userCancelled : NSError(domain: "WeChat OAuth Error", code: resultCode, userInfo: nil)
-                        shared.oauthCompletionHandler?(nil, nil, error)
+                        let error: Error = resultCode == -2
+                            ? .userCancelled
+                            : .sdk(.other(code: result))
+                        shared.deliverCompletionHandler?(.failure(error))
                         return false
                     }
 
@@ -284,26 +286,24 @@ extension MonkeyKing {
         // QQ OAuth
         if urlScheme.hasPrefix("tencent") {
             guard let account = shared.accountSet[.qq] else { return false }
-            var userInfo: [String: Any]?
-            var error: Swift.Error?
-            defer {
-                shared.oauthCompletionHandler?(userInfo, nil, error)
-            }
             guard
                 let data = UIPasteboard.general.data(forPasteboardType: "com.tencent.tencent\(account.appID)"),
                 let info = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: Any] else {
-                error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
+                shared.oauthCompletionHandler?(.failure(.sdk(.deserializeFailed)))
                 return false
             }
             guard let result = info["ret"] as? Int, result == 0 else {
+                let error: Error
                 if let errorDomatin = info["user_cancelled"] as? String, errorDomatin == "YES" {
-                    error = Error.userCancelled
+                    error = .userCancelled
                 } else {
-                    error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
+                    error = .apiRequest(.unrecognizedError(response: nil))
                 }
+                shared.oauthCompletionHandler?(.failure(error))
                 return false
             }
-            userInfo = info
+
+            shared.oauthCompletionHandler?(.success(info))
             return true
         }
 
@@ -329,16 +329,12 @@ extension MonkeyKing {
             switch type {
             // OAuth
             case "WBAuthorizeResponse":
-                var userInfo: [String: Any]?
-                var error: Swift.Error?
-                defer {
-                    shared.oauthCompletionHandler?(responseInfo, nil, error)
-                }
-                userInfo = responseInfo
                 if statusCode != 0 {
-                    error = NSError(domain: "OAuth Error", code: -1, userInfo: userInfo)
+                    shared.oauthCompletionHandler?(.failure(.apiRequest(.unrecognizedError(response: responseInfo))))
                     return false
                 }
+
+                shared.oauthCompletionHandler?(.success(responseInfo))
                 return true
             // Share
             case "WBSendMessageToWeiboResponse":
@@ -359,7 +355,7 @@ extension MonkeyKing {
 
         // Pocket OAuth
         if urlScheme.hasPrefix("pocketapp") {
-            shared.oauthCompletionHandler?(nil, nil, nil)
+            shared.oauthCompletionHandler?(.success(nil))
             return true
         }
 
@@ -374,18 +370,15 @@ extension MonkeyKing {
                     let response = query.monkeyking_urlDecodedString?.data(using: .utf8),
                     let json = response.monkeyking_json,
                     let memo = json["memo"] as? [String: Any],
-                    let status = memo["ResultStatus"] as? String else {
-                    let memo = "Unknow Error"
-                    let error = NSError(domain: memo, code: -1, userInfo: nil)
-                    shared.oauthCompletionHandler?(nil, nil, error)
+                    let status = memo["ResultStatus"] as? String
+                else {
+                    shared.oauthCompletionHandler?(.failure(.apiRequest(.missingParameter)))
                     shared.payCompletionHandler?(.failure(.apiRequest(.missingParameter)))
                     return false
                 }
 
                 if status != "9000" {
-                    let memo = memo["memo"] as? String ?? "Unknow Error"
-                    let error = NSError(domain: memo, code: -1, userInfo: nil)
-                    shared.oauthCompletionHandler?(nil, nil, error)
+                    shared.oauthCompletionHandler?(.failure(.apiRequest(.invalidParameter)))
                     shared.payCompletionHandler?(.failure(.apiRequest(.invalidParameter)))
                     return false
                 }
@@ -394,14 +387,11 @@ extension MonkeyKing {
                     let resultStr = memo["result"] as? String ?? ""
                     let urlStr = "https://www.example.com?" + resultStr
                     let resultDic = URL(string: urlStr)?.monkeyking_queryDictionary ?? [:]
-                    var error: Swift.Error?
-                    defer {
-                        shared.oauthCompletionHandler?(resultDic, nil, error)
-                    }
                     if let _ = resultDic["auth_code"], let _ = resultDic["scope"] {
+                        shared.oauthCompletionHandler?(.success(resultDic))
                         return true
                     }
-                    error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
+                    shared.oauthCompletionHandler?(.failure(.apiRequest(.unrecognizedError(response: resultDic))))
                     return false
                 } else { // Pay
                     shared.payCompletionHandler?(.success(()))
@@ -1108,14 +1098,12 @@ extension MonkeyKing {
     public class func oauth(for platform: SupportedPlatform, scope: String? = nil, requestToken: String? = nil, dataString: String? = nil, completionHandler: @escaping OAuthCompletionHandler) {
 
         guard let account = shared.accountSet[platform] else {
-            let error = NSError(domain: "No have platform account", code: -2, userInfo: nil)
-            completionHandler(nil, nil, error)
+            completionHandler(.failure(.noAccount))
             return
         }
 
         guard account.isAppInstalled || account.canWebOAuth else {
-            let error = NSError(domain: "App is not installed", code: -2, userInfo: nil)
-            completionHandler(nil, nil, error)
+            completionHandler(.failure(.noApp))
             return
         }
 
@@ -1128,8 +1116,7 @@ extension MonkeyKing {
         case .alipay(let appID):
 
             guard let dataStr = dataString else {
-                let error = NSError(domain: "Alipay's pid is nil", code: -2, userInfo: nil)
-                completionHandler(nil, nil, error)
+                completionHandler(.failure(.apiRequest(.missingParameter)))
                 return
             }
 
@@ -1137,8 +1124,7 @@ extension MonkeyKing {
             let resultDic: [String: String] = ["fromAppUrlScheme": appUrlScheme, "requestType": "SafePay", "dataString": dataStr]
 
             guard var resultStr = resultDic.toString else {
-                let error = NSError(domain: "Alipay oauth error", code: -2, userInfo: nil)
-                completionHandler(nil, nil, error)
+                completionHandler(.failure(.sdk(.urlEncodeFailed)))
                 return
             }
 
@@ -1148,7 +1134,7 @@ extension MonkeyKing {
 
             openURL(urlString: resultStr) { flag in
                 if flag { return }
-                completionHandler(nil, nil, Error.userCancelled)
+                completionHandler(.failure(.userCancelled))
             }
 
         case .weChat(let appID, _, _):
@@ -1161,7 +1147,7 @@ extension MonkeyKing {
             } else {
                 openURL(urlString: "weixin://app/\(appID)/auth/?scope=\(scope)&state=Weixinauth") { flag in
                     if flag { return }
-                    completionHandler(nil, nil, Error.userCancelled)
+                    completionHandler(.failure(.userCancelled))
                 }
             }
         case .qq(let appID):
@@ -1184,7 +1170,7 @@ extension MonkeyKing {
                 UIPasteboard.general.setData(data, forPasteboardType: "com.tencent.tencent\(appID)")
                 openURL(urlString: "mqqOpensdkSSoLogin://SSoLogin/tencent\(appID)/com.tencent.tencent\(appID)?generalpastboard=1") { flag in
                     if flag { return }
-                    completionHandler(nil, nil, Error.userCancelled)
+                    completionHandler(.failure(.userCancelled))
                 }
                 return
             }
@@ -1224,7 +1210,7 @@ extension MonkeyKing {
                 UIPasteboard.general.items = authItems
                 openURL(urlString: "weibosdk://request?id=\(uuidString)&sdkversion=003013000") { flag in
                     if flag { return }
-                    completionHandler(nil, nil, Error.userCancelled)
+                    completionHandler(.failure(.userCancelled))
                 }
                 return
             }
@@ -1242,7 +1228,7 @@ extension MonkeyKing {
                 let requestTokenAPI = "pocket-oauth-v1:///authorize?request_token=\(requestToken)&redirect_uri=\(redirectURLString)"
                 openURL(urlString: requestTokenAPI) { flag in
                     if flag { return }
-                    completionHandler(nil, nil, Error.userCancelled)
+                    completionHandler(.failure(.userCancelled))
                 }
                 return
             }

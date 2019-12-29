@@ -112,23 +112,28 @@ class QQViewController: UIViewController {
     @IBAction func OAuth(_ sender: UIButton) {
         // "get_user_info,get_simple_userinfo,add_album,add_idol,add_one_blog,add_pic_t,add_share,add_topic,check_page_fans,del_idol,del_t,get_fanslist,get_idollist,get_info,get_other_info,get_repost_list,list_album,upload_pic,get_vip_info,get_vip_rich_info,get_intimate_friends_weibo,match_nick_tips_weibo"
 
-        MonkeyKing.oauth(for: .qq, scope: "get_user_info") { info, _, _ in
-            guard
-                let unwrappedInfo = info,
-                let token = unwrappedInfo["access_token"] as? String,
-                let openID = unwrappedInfo["openid"] as? String else {
-                return
-            }
-            let query = "get_user_info"
-            let userInfoAPI = "https://graph.qq.com/user/\(query)"
-            let parameters = [
-                "openid": openID,
-                "access_token": token,
-                "oauth_consumer_key": Configs.QQ.appID,
-            ]
-            // fetch UserInfo by userInfoAPI
-            SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters) { userInfo, _, _ in
-                print("userInfo \(String(describing: userInfo))")
+        MonkeyKing.oauth(for: .qq, scope: "get_user_info") { result in
+            switch result {
+            case .success(let info):
+                guard
+                    let unwrappedInfo = info,
+                    let token = unwrappedInfo["access_token"] as? String,
+                    let openID = unwrappedInfo["openid"] as? String else {
+                    return
+                }
+                let query = "get_user_info"
+                let userInfoAPI = "https://graph.qq.com/user/\(query)"
+                let parameters = [
+                    "openid": openID,
+                    "access_token": token,
+                    "oauth_consumer_key": Configs.QQ.appID,
+                ]
+                // fetch UserInfo by userInfoAPI
+                SimpleNetworking.sharedInstance.request(userInfoAPI, method: .get, parameters: parameters) { userInfo, _, _ in
+                    print("userInfo \(String(describing: userInfo))")
+                }
+            case .failure:
+                break
             }
             // More API
             // http://wiki.open.qq.com/wiki/website/API%E5%88%97%E8%A1%A8

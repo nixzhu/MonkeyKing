@@ -131,9 +131,13 @@ class AlipayViewController: UIViewController {
         dataString += "&sign=\(sign)"
         dataString += "&sign_type=\(signType)"
 
-        MonkeyKing.oauth(for: .alipay, dataString: dataString) { dictionary, _, error in
-            print("dictionary \(String(describing: dictionary))")
-            print("error \(String(describing: error))")
+        MonkeyKing.oauth(for: .alipay, dataString: dataString) { result in
+            switch result {
+            case .success(let dictionary):
+                print("dictionary \(String(describing: dictionary))")
+            case .failure(let error):
+                print("error \(String(describing: error))")
+            }
         }
     }
 
