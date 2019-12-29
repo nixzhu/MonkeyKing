@@ -10,7 +10,7 @@ public class MonkeyKing: NSObject {
     public typealias DeliverCompletionHandler = (Result<ResponseJSON?, Error>) -> Void
     public typealias OAuthCompletionHandler = (_ info: [String: Any]?, _ response: URLResponse?, _ error: Swift.Error?) -> Void
     public typealias WeChatOAuthForCodeCompletionHandler = (Result<String, Error>) -> Void
-    public typealias PayCompletionHandler = (_ result: Bool) -> Void
+    public typealias PayCompletionHandler = (Result<Void, Error>) -> Void
     public typealias LaunchCompletionHandler = (_ result: LaunchResult) -> Void
 
     public enum LaunchResult {
@@ -204,13 +204,21 @@ extension MonkeyKing {
             }
             // Pay
             if urlString.contains("://pay/") {
-                var result = false
-                defer {
-                    shared.payCompletionHandler?(result)
-                }
                 let queryDictionary = url.monkeyking_queryDictionary
-                guard let ret = queryDictionary["ret"] else { return false }
-                result = (ret == "0")
+
+                guard let ret = queryDictionary["ret"] else {
+                    shared.payCompletionHandler?(.failure(.apiRequest(.missingParameter)))
+                    return false
+                }
+
+                let result = (ret == "0")
+
+                if result {
+                    shared.payCompletionHandler?(.success(()))
+                } else {
+                    shared.payCompletionHandler?(.failure(.apiRequest(.unrecognizedError(response: queryDictionary))))
+                }
+
                 return result
             }
 
@@ -373,7 +381,7 @@ extension MonkeyKing {
                     let memo = "Unknow Error"
                     let error = NSError(domain: memo, code: -1, userInfo: nil)
                     shared.oauthCompletionHandler?(nil, nil, error)
-                    shared.payCompletionHandler?(false)
+                    shared.payCompletionHandler?(.failure(.apiRequest(.missingParameter)))
                     return false
                 }
 
@@ -381,7 +389,7 @@ extension MonkeyKing {
                     let memo = memo["memo"] as? String ?? "Unknow Error"
                     let error = NSError(domain: memo, code: -1, userInfo: nil)
                     shared.oauthCompletionHandler?(nil, nil, error)
-                    shared.payCompletionHandler?(false)
+                    shared.payCompletionHandler?(.failure(.apiRequest(.invalidParameter)))
                     return false
                 }
 
@@ -399,7 +407,7 @@ extension MonkeyKing {
                     error = NSError(domain: "OAuth Error", code: -1, userInfo: nil)
                     return false
                 } else { // Pay
-                    shared.payCompletionHandler?(true)
+                    shared.payCompletionHandler?(.success(()))
                 }
                 return true
             } else { // Share
@@ -1073,7 +1081,7 @@ extension MonkeyKing {
 
     public class func deliver(_ order: Order, completionHandler: @escaping PayCompletionHandler) {
         if !order.canBeDelivered {
-            completionHandler(false)
+            completionHandler(.failure(.noApp))
             return
         }
         shared.payCompletionHandler = completionHandler
@@ -1085,12 +1093,12 @@ extension MonkeyKing {
         case .weChat(let urlString):
             openURL(urlString: urlString) { flag in
                 if flag { return }
-                completionHandler(false)
+                completionHandler(.failure(.apiRequest(.unrecognizedError(response: nil))))
             }
         case .alipay(let urlString):
             openURL(urlString: urlString) { flag in
                 if flag { return }
-                completionHandler(false)
+                completionHandler(.failure(.apiRequest(.unrecognizedError(response: nil))))
             }
         }
     }
