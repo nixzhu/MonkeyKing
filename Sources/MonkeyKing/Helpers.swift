@@ -33,7 +33,7 @@ extension MonkeyKing {
         // OAuth
         shared.request(accessTokenAPI, method: .get) { json, _, error in
             if error != nil {
-                completionHandler(.failure(.apiRequest(.unrecognizedError(response: nil))))
+                completionHandler(.failure(.apiRequest(.unrecognizedError(error: error, response: json))))
             } else {
                 completionHandler(.success(json))
             }
@@ -67,7 +67,7 @@ extension MonkeyKing {
 
         shared.request(accessTokenAPI, method: .post) { json, _, error in
             if error != nil {
-                completionHandler(.failure(.apiRequest(.unrecognizedError(response: nil))))
+                completionHandler(.failure(.apiRequest(.unrecognizedError(error: error, response: json))))
             } else {
                 completionHandler(.success(json))
             }

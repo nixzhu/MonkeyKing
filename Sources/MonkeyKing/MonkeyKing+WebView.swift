@@ -60,7 +60,7 @@ extension MonkeyKing: WKNavigationDelegate {
                 DispatchQueue.main.async { [weak self] in
                     let result: Result<ResponseJSON?, Error>
                     if error != nil {
-                        result = .failure(.apiRequest(.unrecognizedError(response: responseData)))
+                        result = .failure(.apiRequest(.unrecognizedError(error: error, response: responseData)))
                     } else {
                         result = .success(responseData)
                     }

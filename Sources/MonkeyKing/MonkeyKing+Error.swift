@@ -25,7 +25,7 @@ extension MonkeyKing {
         }
 
         public enum APIRequestReason {
-            case unrecognizedError(response: ResponseJSON?)
+            case unrecognizedError(error: Swift.Error? = nil, response: ResponseJSON?)
             case connectFailed
             case invalidToken
             case invalidParameter
