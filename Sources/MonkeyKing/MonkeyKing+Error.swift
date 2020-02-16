@@ -40,7 +40,7 @@ extension MonkeyKing {
         case apiRequest(APIRequestReason)
     }
 
-    func errorReason(with responseData: [String: Any], at platform: SupportedPlatform) -> Error {
+    func buildError(with responseData: [String: Any], at platform: SupportedPlatform) -> Error {
         let unrecognizedReason = Error.apiRequest(.unrecognizedError(response: responseData))
         switch platform {
         case .twitter:

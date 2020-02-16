@@ -513,7 +513,7 @@ extension MonkeyKing {
                     if error != nil {
                         completionHandler(.failure(.apiRequest(.connectFailed)))
                     } else if let responseData = responseData, (responseData["idstr"] as? String) == nil {
-                        completionHandler(.failure(shared.errorReason(with: responseData, at: .weibo)))
+                        completionHandler(.failure(shared.buildError(with: responseData, at: .weibo)))
                     } else {
                         completionHandler(.success(nil))
                     }
@@ -524,7 +524,7 @@ extension MonkeyKing {
                     if error != nil {
                         completionHandler(.failure(.apiRequest(.connectFailed)))
                     } else if let responseData = responseData, (responseData["idstr"] as? String) == nil {
-                        completionHandler(.failure(shared.errorReason(with: responseData, at: .weibo)))
+                        completionHandler(.failure(shared.buildError(with: responseData, at: .weibo)))
                     } else {
                         completionHandler(.success(nil))
                     }
@@ -619,7 +619,7 @@ extension MonkeyKing {
                             }
                             if let responseData = responseData,
                                 let _ = responseData["errors"] {
-                                completionHandler(.failure(shared.errorReason(with: responseData, at: .twitter)))
+                                completionHandler(.failure(shared.buildError(with: responseData, at: .twitter)))
                                 return
                             }
                             completionHandler(.failure(.apiRequest(.unrecognizedError(response: responseData))))
