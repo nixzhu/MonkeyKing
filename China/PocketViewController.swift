@@ -48,27 +48,28 @@ class PocketViewController: UIViewController {
                 return
             }
             print("S2: OAuth by requestToken: \(requestToken)")
-            MonkeyKing.oauth(for: .pocket, requestToken: requestToken) { _, response, error in
-                guard error == nil else {
-                    print(error!)
-                    return
+            MonkeyKing.oauth(for: .pocket, requestToken: requestToken) { result in
+                switch result {
+                case .success:
+                    let accessTokenAPI = "https://getpocket.com/v3/oauth/authorize"
+                    let parameters = [
+                        "consumer_key": Configs.Pocket.appID,
+                        "code": requestToken,
+                    ]
+                    print("S3: fetch OAuth state")
+                    SimpleNetworking.sharedInstance.request(accessTokenAPI, method: .post, parameters: parameters, encoding: .json) { info, response, _ in
+                        print("S4: OAuth completion")
+                        print("JSON: \(String(describing: info))")
+                        // If the HTTP status of the response is 200, then the request completed successfully.
+                        print("response: \(String(describing: response))")
+                        strongSelf.accessToken = info?["access_token"] as? String
+                    }
+                case .failure(let error):
+                    print(error)
                 }
-                let accessTokenAPI = "https://getpocket.com/v3/oauth/authorize"
-                let parameters = [
-                    "consumer_key": Configs.Pocket.appID,
-                    "code": requestToken,
-                ]
-                print("S3: fetch OAuth state")
-                SimpleNetworking.sharedInstance.request(accessTokenAPI, method: .post, parameters: parameters, encoding: .json) { info, response, _ in
-                    print("S4: OAuth completion")
-                    print("JSON: \(String(describing: info))")
-                    // If the HTTP status of the response is 200, then the request completed successfully.
-                    print("response: \(String(describing: response))")
-                    strongSelf.accessToken = info?["access_token"] as? String
-                }
+                // More details
+                // Pocket Authentication API Documentation: https://getpocket.com/developer/docs/authentication
             }
-            // More details
-            // Pocket Authentication API Documentation: https://getpocket.com/developer/docs/authentication
         }
     }
 }

@@ -17,13 +17,17 @@ class TwitterViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        MonkeyKing.oauth(for: .twitter) { [weak self] info, _, error in
-            if let accessToken = info?["oauth_token"] as? String,
-                let accessTokenSecret = info?["oauth_token_secret"] as? String {
-                self?.accessToken = accessToken
-                self?.accessTokenSecret = accessTokenSecret
+        MonkeyKing.oauth(for: .twitter) { [weak self] result in
+            switch result {
+            case .success(let info):
+                if let accessToken = info?["oauth_token"] as? String,
+                    let accessTokenSecret = info?["oauth_token_secret"] as? String {
+                    self?.accessToken = accessToken
+                    self?.accessTokenSecret = accessTokenSecret
+                }
+            case .failure(let error):
+                print("error: \(String(describing: error))")
             }
-            print("MonkeyKing.oauth info: \(String(describing: info)), error: \(String(describing: error))")
         }
     }
 
@@ -81,13 +85,17 @@ class TwitterViewController: UIViewController {
     // MARK: OAuth
 
     @IBAction func OAuth(_ sender: UIButton) {
-        MonkeyKing.oauth(for: .twitter) { [weak self] info, _, error in
-            if let accessToken = info?["oauth_token"] as? String,
-                let accessTokenSecret = info?["oauth_token_secret"] as? String {
-                self?.accessToken = accessToken
-                self?.accessTokenSecret = accessTokenSecret
+        MonkeyKing.oauth(for: .twitter) { [weak self] result in
+            switch result {
+            case .success(let info):
+                if let accessToken = info?["oauth_token"] as? String,
+                    let accessTokenSecret = info?["oauth_token_secret"] as? String {
+                    self?.accessToken = accessToken
+                    self?.accessTokenSecret = accessTokenSecret
+                }
+            case .failure(let error):
+                print("error: \(String(describing: error))")
             }
-            print("MonkeyKing.oauth info: \(String(describing: info)), error: \(String(describing: error))")
         }
     }
 }

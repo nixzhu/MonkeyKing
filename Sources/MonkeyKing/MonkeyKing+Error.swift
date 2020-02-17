@@ -4,36 +4,44 @@ import UIKit
 extension MonkeyKing {
 
     public enum Error: Swift.Error {
-        case noAccount
-        case messageCanNotBeDelivered
-        case invalidImageData
-        case userCancelled
+
+        public enum ResourceReason {
+            case invalidImageData
+            case missingTitle
+            case missingDescription
+            case missingThumbnail
+            case missingMedia
+            case imageTooBig
+            case textTooLong
+        }
 
         public enum SDKReason {
             case invalidURLScheme
             case urlEncodeFailed
+            case urlDecodeFailed
             case serializeFailed
+            case deserializeFailed
             case other(code: String)
         }
 
-        case sdk(reason: SDKReason)
-
-        public struct APIRequestReason {
-            public enum `Type` {
-                case unrecognizedError
-                case connectFailed
-                case invalidToken
-            }
-
-            public var type: Type
-            public var responseData: [String: Any]?
+        public enum APIRequestReason {
+            case unrecognizedError(error: Swift.Error? = nil, response: ResponseJSON?)
+            case connectFailed
+            case invalidToken
+            case invalidParameter
+            case missingParameter
         }
 
-        case apiRequest(reason: APIRequestReason)
+        case noApp
+        case noAccount
+        case userCancelled
+        case resource(ResourceReason)
+        case sdk(SDKReason)
+        case apiRequest(APIRequestReason)
     }
 
-    func errorReason(with responseData: [String: Any], at platform: SupportedPlatform) -> Error.APIRequestReason {
-        let unrecognizedReason = Error.APIRequestReason(type: .unrecognizedError, responseData: responseData)
+    func buildError(with responseData: [String: Any], at platform: SupportedPlatform) -> Error {
+        let unrecognizedReason = Error.apiRequest(.unrecognizedError(response: responseData))
         switch platform {
         case .twitter:
             // ref: https://dev.twitter.com/overview/api/response-codes
@@ -42,7 +50,7 @@ extension MonkeyKing {
             }
             switch errorCode {
             case 89, 99:
-                return Error.APIRequestReason(type: .invalidToken, responseData: responseData)
+                return Error.apiRequest(.invalidToken)
             default:
                 return unrecognizedReason
             }
@@ -53,7 +61,7 @@ extension MonkeyKing {
             }
             switch errorCode {
             case 21314, 21315, 21316, 21317, 21327, 21332:
-                return Error.APIRequestReason(type: .invalidToken, responseData: responseData)
+                return Error.apiRequest(.invalidToken)
             default:
                 return unrecognizedReason
             }
