@@ -239,7 +239,7 @@ extension MonkeyKing {
                     weChatMessageInfo["objectType"] = "4"
                     weChatMessageInfo["mediaUrl"] = url.absoluteString
                 case .miniApp(let url, let path, let withShareTicket, let type):
-                    if case .weChat(let appID, _, let miniProgramID) = account {
+                    if case .weChat(_, _, let miniProgramID) = account {
                         weChatMessageInfo["objectType"] = "36"
                         if let hdThumbnailImage = info.thumbnail {
                             weChatMessageInfo["hdThumbData"] = hdThumbnailImage.monkeyking_resetSizeOfImageData(maxSize: 127 * 1024)

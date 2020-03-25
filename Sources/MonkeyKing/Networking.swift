@@ -355,7 +355,7 @@ public struct HMAC {
         let ipadAndMessageHash = SHA1(message: Data(bytes: ipad + message)).calculate().rawBytes
         let finalHash = SHA1(message: Data(bytes: opad + ipadAndMessageHash)).calculate().rawBytes
         let mac = finalHash
-        return Data(bytes: UnsafePointer<UInt8>(mac), count: mac.count)
+        return mac.withUnsafeBufferPointer { Data($0) }
     }
 }
 
@@ -501,10 +501,12 @@ extension Data {
     }
 
     init(bytes: [UInt8]) {
-        self.init(bytes: UnsafePointer<UInt8>(bytes), count: bytes.count)
+        self = bytes.withUnsafeBufferPointer { Data($0) }
     }
 
     mutating func append(_ bytes: [UInt8]) {
-        append(UnsafePointer<UInt8>(bytes), count: bytes.count)
+        bytes.withUnsafeBufferPointer {
+            append($0)
+        }
     }
 }
