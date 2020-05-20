@@ -75,7 +75,7 @@ extension MonkeyKing {
                         let error: Error = resultCode == -2
                             ? .userCancelled
                             : .sdk(.other(code: result))
-                        shared.deliverCompletionHandler?(.failure(error))
+                        shared.oauthCompletionHandler?(.failure(error))
                         return false
                     }
 
