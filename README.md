@@ -11,7 +11,10 @@
 
 MonkeyKing helps you post SNS messages to Chinese Social Networks, without their buggy SDKs.
 
-MonkeyKing uses the same analysis process of [openshare](https://github.com/100apps/openshare), support share **Text**, **URL**, **Image**, **Audio**, **Video**, and **File** to **WeChat**, **QQ**, **Alipay** or **Weibo**. MonkeyKing can also post messages to Weibo by a webpage. (Note: Audio and Video are specifically for WeChat or QQ, File is only for QQ Dataline)
+MonkeyKing uses the same analysis process of [openshare](https://github.com/100apps/openshare).
+We also use some reverse engineering tools such as [Hopper Disassembler](https://www.hopperapp.com/) to unveil several undocumented authentication mechanisms under the hood.
+It supports sharing **Text**, **URL**, **Image**, **Audio**, **Video**, and **File** to **WeChat**, **QQ**, **Alipay** or **Weibo**.
+MonkeyKing can also post messages to Weibo by a web page. (Note: Audio and Video are exclusive to WeChat or QQ, and File is exclusive to QQ Dataline)
 
 MonkeyKing also supports **OAuth** and **Mobile payment** via WeChat and Alipay!
 
@@ -34,33 +37,44 @@ Example: Share to WeChat (微信)：
 1. In your Project Target's `Info.plist`, set `URL Type`, `LSApplicationQueriesSchemes` as follow:
 
     <img src="https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/infoList.png" width="600">
+    
+    You should also add `weixinULAPI` once you enabled Universal Link of your WeChat App.
 
 2. Register account: // it's not necessary to do it here, but for the sake of convenience
 
     ```swift
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-
-        MonkeyKing.registerAccount(.weChat(appID: "xxx", appKey: "yyy", miniAppID: nil))
-
+        MonkeyKing.regsiterAccount(
+            .weChat(
+                appID: "xxx",
+                appKey: "yyy",
+                miniAppID: nil,
+                universalLink: nil // FIXME: You have to adopt Universal Link otherwise your app name becomes "Unauthorized App"(未验证应用)...
+            )
+        )
         return true
     }
     ```
 
-3. If you need to handle call back, add following code:
+3. Append the following code to handle callbacks:
 
     ```swift
+    // AppDelegate.swift
+    
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
     //func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool { // only for iOS 8
-
-        if MonkeyKing.handleOpenURL(url) {
-            return true
-        }
-
-        return false
+        return MonkeyKing.handleOpenURL(url)
     }
     ```
-
-    to your AppDelegate.
+    
+    Remember to handle userActivities if you are using `UIScene` in your project:
+    ```swift
+    // SceneDelegate.swift
+    
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        MonkeyKing.handleOpenUserActivity(userActivity)
+    }
+    ```
 
 4. Prepare your message and ask MonkeyKing to deliver it:
 

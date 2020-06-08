@@ -48,7 +48,7 @@ extension MonkeyKing {
                 completionHandler(.failure(.sdk(.invalidURLScheme)))
             }
 
-        case .weChat(let appID, _, _):
+        case .weChat(let appID, _, _, _):
             let scope = scope ?? "snsapi_userinfo"
             if !platform.isAppInstalled {
                 // SMS OAuth
@@ -211,7 +211,7 @@ extension MonkeyKing {
         shared.oauthFromWeChatCodeCompletionHandler = completionHandler
 
         switch account {
-        case .weChat(let appID, _, _):
+        case .weChat(let appID, _, _, _):
             let scope = scope ?? "snsapi_userinfo"
 
             var urlComponents = URLComponents(string: "weixin://app/\(appID)/auth/")

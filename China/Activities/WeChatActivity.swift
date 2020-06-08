@@ -36,7 +36,14 @@ class WeChatActivity: AnyActivity {
     }
 
     init(type: Type, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.DeliverCompletionHandler) {
-        MonkeyKing.registerAccount(.weChat(appID: Configs.WeChat.appID, appKey: nil, miniAppID: nil))
+        MonkeyKing.registerAccount(
+            .weChat(
+                appID: Configs.WeChat.appID,
+                appKey: nil,
+                miniAppID: nil,
+                universalLink: Configs.WeChat.universalLink
+            )
+        )
         super.init(
             type: type.activityType,
             title: type.title,

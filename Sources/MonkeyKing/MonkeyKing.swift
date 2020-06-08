@@ -31,7 +31,7 @@ public class MonkeyKing: NSObject {
     private override init() {}
 
     public enum Account: Hashable {
-        case weChat(appID: String, appKey: String?, miniAppID: String?)
+        case weChat(appID: String, appKey: String?, miniAppID: String?, universalLink: String?)
         case qq(appID: String)
         case weibo(appID: String, appKey: String, redirectURL: String)
         case pocket(appID: String)
@@ -40,7 +40,7 @@ public class MonkeyKing: NSObject {
 
         public var appID: String {
             switch self {
-            case .weChat(let appID, _, _):
+            case .weChat(let appID, _, _, _):
                 return appID
             case .qq(let appID):
                 return appID
@@ -55,13 +55,22 @@ public class MonkeyKing: NSObject {
             }
         }
 
+        public var universalLink: String? {
+            switch self {
+            case .weChat(_, _, _, let universalLink):
+                return universalLink
+            default:
+                return nil
+            }
+        }
+
         public func hash(into hasher: inout Hasher) {
             hasher.combine(appID)
         }
 
         public static func == (lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
             switch (lhs, rhs) {
-            case (.weChat(let lappID, _, _), .weChat(let rappID, _, _)),
+            case (.weChat(let lappID, _, _, _), .weChat(let rappID, _, _, _)),
                  (.qq(let lappID), .qq(let rappID)),
                  (.weibo(let lappID, _, _), .weibo(let rappID, _, _)),
                  (.pocket(let lappID), .pocket(let rappID)),

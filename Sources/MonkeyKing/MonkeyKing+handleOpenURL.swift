@@ -1,7 +1,50 @@
 
 import Foundation
+import Security
+
 
 extension MonkeyKing {
+
+    public class func handleOpenUserActivity(_ userActivity: NSUserActivity) {
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb else { return }
+        guard let url = userActivity.webpageURL, let urlComps = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return
+        }
+
+        // handle `refreshToken`
+        if urlComps.path.hasSuffix("refreshToken") {
+            guard let authToken = urlComps
+                .queryItems?
+                .filter({ $0.name.lowercased() == "wechat_auth_token" })
+                .first?
+                .value,
+                !authToken.isEmpty
+            else {
+                return
+            }
+
+            wechatAuthToken = authToken
+
+            if let msg = lastMessage {
+                deliver(msg) { _ in }
+            }
+        }
+
+        lastMessage = nil
+
+        // TODO: handle `resendContextReqByScheme`
+        // TODO: handle `oauth`
+        // TODO: handle `pay`
+        // TODO: handle `jointpay`
+        // TODO: handle `offlinepay`
+        // TODO: handle `cardPackage`
+        // TODO: handle `choosecard`
+        // TODO: handle `chooseinvoice`
+        // TODO: handle `openwebview`
+        // TODO: handle `openbusinesswebview`
+        // TODO: handle `openranklist`
+        // TODO: handle `opentypewebview`
+    }
 
     public class func handleOpenURL(_ url: URL) -> Bool {
 

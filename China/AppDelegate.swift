@@ -14,9 +14,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        if MonkeyKing.handleOpenURL(url) {
-            return true
-        }
-        return false
+        return MonkeyKing.handleOpenURL(url)
+    }
+
+    func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
+        return MonkeyKing.handleOpenURL(url)
+    }
+
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        MonkeyKing.handleOpenUserActivity(userActivity)
+        return true
     }
 }

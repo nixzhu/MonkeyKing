@@ -200,7 +200,7 @@ extension MonkeyKing {
                 "result": "1",
                 "returnFromApp": "0",
                 "scene": type.scene,
-                "sdkver": "1.5",
+                "sdkver": "1.8.7.1",
                 "command": "1010",
             ]
             let info = type.info
@@ -239,7 +239,7 @@ extension MonkeyKing {
                     weChatMessageInfo["objectType"] = "4"
                     weChatMessageInfo["mediaUrl"] = url.absoluteString
                 case .miniApp(let url, let path, let withShareTicket, let type):
-                    if case .weChat(_, _, let miniProgramID) = account {
+                    if case .weChat(_, _, let miniProgramID, let universalLink) = account {
                         weChatMessageInfo["objectType"] = "36"
                         if let hdThumbnailImage = info.thumbnail {
                             weChatMessageInfo["hdThumbData"] = hdThumbnailImage.monkeyking_resetSizeOfImageData(maxSize: 127 * 1024)
@@ -248,6 +248,7 @@ extension MonkeyKing {
                         weChatMessageInfo["appBrandPath"] = path
                         weChatMessageInfo["withShareTicket"] = withShareTicket
                         weChatMessageInfo["miniprogramType"] = type.rawValue
+                        weChatMessageInfo["universalLink"] = universalLink
                         if let miniProgramID = miniProgramID {
                             weChatMessageInfo["appBrandUserName"] = miniProgramID
                         } else {
@@ -267,17 +268,47 @@ extension MonkeyKing {
             } else { // Text Share
                 weChatMessageInfo["command"] = "1020"
             }
+
+            let wxUrlStr: String
+
+            var wxUrlOptions = [UIApplication.OpenExternalURLOptionsKey : Any]()
+
+            if let universalLink = account.universalLink, #available(iOS 10.0, *) {
+                weChatMessageInfo["universalLink"] = universalLink
+                weChatMessageInfo["isAutoResend"] = false
+                wxUrlOptions[.universalLinksOnly] = true
+
+                let contextId = wechatContextId
+                let bundleId = Bundle.main.bundleIdentifier ?? ""
+                let allowedCharacterSet = CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[] ^").inverted
+
+                if  let authToken = wechatAuthToken,
+                    let authTokenEncoded = NSString(string: authToken).addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)
+                {
+                    wxUrlStr = "https://help.wechat.com/app/\(appID)/sendreq/?wechat_auth_token=\(authTokenEncoded)&wechat_auth_context_id=\(contextId)&wechat_app_bundleId=\(bundleId)"
+                } else {
+                    wxUrlStr = "https://help.wechat.com/app/\(appID)/sendreq/?wechat_auth_context_id=\(contextId)&wechat_app_bundleId=\(bundleId)"
+                }
+            } else {
+                wxUrlStr = "weixin://app/\(appID)/sendreq/?"
+            }
+
             var weChatMessage: [String: Any] = [appID: weChatMessageInfo]
             if let oldText = UIPasteboard.general.oldText {
                 weChatMessage["old_text"] = oldText
             }
+
             guard let data = try? PropertyListSerialization.data(fromPropertyList: weChatMessage, format: .binary, options: .init()) else { return }
             UIPasteboard.general.setData(data, forPasteboardType: "content")
-            guard let url = URL(string: "weixin://app/\(appID)/sendreq/?") else {
+
+            guard let url = URL(string: wxUrlStr) else {
                 completionHandler(.failure(.sdk(.urlEncodeFailed)))
                 return
             }
-            shared.openURL(url) { flag in
+
+            lastMessage = message
+
+            shared.openURL(url, options: wxUrlOptions) { flag in
                 if flag { return }
                 completionHandler(.failure(.sdk(.invalidURLScheme)))
             }

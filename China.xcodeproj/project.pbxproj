@@ -39,6 +39,7 @@
 		50FBA6D71BA2BBE900E69BB3 /* MonkeyKing.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 50FBA6CF1BA2BBE900E69BB3 /* MonkeyKing.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7840AF1D1C63167C00AD5256 /* pay.php in Resources */ = {isa = PBXBuildFile; fileRef = 7840AF1C1C63167C00AD5256 /* pay.php */; };
 		955654EB1EB89D5D009444FF /* TwitterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955654EA1EB89D5D009444FF /* TwitterViewController.swift */; };
+		D79F73B42491F5EB00B4B883 /* MonkeyKing+WeChatUniversalLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = D79F73B32491F5EB00B4B883 /* MonkeyKing+WeChatUniversalLink.swift */; };
 		EDD0A28C213E6F7B003EB202 /* WeChatActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD0A28A213E6F7B003EB202 /* WeChatActivity.swift */; };
 		EDD0A28D213E6F7B003EB202 /* QQActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDD0A28B213E6F7B003EB202 /* QQActivity.swift */; };
 		EDD0A28F213E6FB2003EB202 /* gif.gif in Resources */ = {isa = PBXBuildFile; fileRef = EDD0A28E213E6FB2003EB202 /* gif.gif */; };
@@ -103,6 +104,10 @@
 		50FBA6D31BA2BBE900E69BB3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7840AF1C1C63167C00AD5256 /* pay.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; path = pay.php; sourceTree = "<group>"; };
 		955654EA1EB89D5D009444FF /* TwitterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TwitterViewController.swift; sourceTree = "<group>"; };
+		D79F73B32491F5EB00B4B883 /* MonkeyKing+WeChatUniversalLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MonkeyKing+WeChatUniversalLink.swift"; sourceTree = "<group>"; };
+		D79F73B524920FBC00B4B883 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
+		D79F73B624920FBC00B4B883 /* MonkeyKing.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = MonkeyKing.podspec; sourceTree = "<group>"; };
+		D79F73B724920FBC00B4B883 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		EDD0A28A213E6F7B003EB202 /* WeChatActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeChatActivity.swift; sourceTree = "<group>"; };
 		EDD0A28B213E6F7B003EB202 /* QQActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QQActivity.swift; sourceTree = "<group>"; };
 		EDD0A28E213E6FB2003EB202 /* gif.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif.gif; sourceTree = "<group>"; };
@@ -130,6 +135,9 @@
 		50FBA6AC1BA2AFAD00E69BB3 = {
 			isa = PBXGroup;
 			children = (
+				D79F73B724920FBC00B4B883 /* README.md */,
+				D79F73B624920FBC00B4B883 /* MonkeyKing.podspec */,
+				D79F73B524920FBC00B4B883 /* Package.swift */,
 				50FBA6B71BA2AFAD00E69BB3 /* China */,
 				50FBA6D01BA2BBE900E69BB3 /* MonkeyKing */,
 				50FBA6B61BA2AFAD00E69BB3 /* Products */,
@@ -180,6 +188,7 @@
 				10CDDF43237A8588005E8DE7 /* Helpers.swift */,
 				10CDDF3F237A8588005E8DE7 /* MonkeyKing.swift */,
 				10CDDF45237A8588005E8DE7 /* MonkeyKing+Error.swift */,
+				D79F73B32491F5EB00B4B883 /* MonkeyKing+WeChatUniversalLink.swift */,
 				07211C7223B8D1AA0068A7C0 /* MonkeyKing+handleOpenURL.swift */,
 				07211C7823B8D37E0068A7C0 /* MonkeyKing+Message.swift */,
 				07211C7A23B8D3A60068A7C0 /* MonkeyKing+OAuth.swift */,
@@ -354,6 +363,7 @@
 				10CDDF4B237A8588005E8DE7 /* Extensions.swift in Sources */,
 				07211C7923B8D37E0068A7C0 /* MonkeyKing+Message.swift in Sources */,
 				10CDDF49237A8588005E8DE7 /* AnyActivity.swift in Sources */,
+				D79F73B42491F5EB00B4B883 /* MonkeyKing+WeChatUniversalLink.swift in Sources */,
 				07211C7723B8D2FD0068A7C0 /* MonkeyKing+Pay.swift in Sources */,
 				10CDDF46237A8588005E8DE7 /* MonkeyKing.swift in Sources */,
 				10CDDF4A237A8588005E8DE7 /* Helpers.swift in Sources */,
