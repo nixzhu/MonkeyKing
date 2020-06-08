@@ -9,9 +9,9 @@
 
 # MonkeyKing
 
-MonkeyKing helps you post messages to Chinese Social Networks, without their buggy SDKs.
+MonkeyKing helps you post SNS messages to Chinese Social Networks, without their buggy SDKs.
 
-MonkeyKing uses the same analysis process of [openshare](https://github.com/100apps/openshare), support share **Text**, **URL**, **Image**, **Audio**, **Video**, and **File** to **WeChat**, **QQ**, **Alipay** or **Weibo**. MonkeyKing also can post messages to Weibo by webpage. (Note: Audio and Video are specifically for WeChat or QQ, File is only for QQ Dataline)
+MonkeyKing uses the same analysis process of [openshare](https://github.com/100apps/openshare), support share **Text**, **URL**, **Image**, **Audio**, **Video**, and **File** to **WeChat**, **QQ**, **Alipay** or **Weibo**. MonkeyKing can also post messages to Weibo by a webpage. (Note: Audio and Video are specifically for WeChat or QQ, File is only for QQ Dataline)
 
 MonkeyKing also supports **OAuth** and **Mobile payment** via WeChat and Alipay!
 
@@ -33,22 +33,22 @@ Example: Share to WeChat (微信)：
 
 1. In your Project Target's `Info.plist`, set `URL Type`, `LSApplicationQueriesSchemes` as follow:
 
-	<img src="https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/infoList.png" width="600">
+    <img src="https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/infoList.png" width="600">
 
-2. Register account: // it's not necessary to do it here, but for convenient
+2. Register account: // it's not necessary to do it here, but for the sake of convenience
 
-	```swift
-	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    ```swift
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 
-	    MonkeyKing.registerAccount(.weChat(appID: "xxx", appKey: "yyy", miniAppID: nil))
+        MonkeyKing.registerAccount(.weChat(appID: "xxx", appKey: "yyy", miniAppID: nil))
 
-	    return true
-	}
-	```
+        return true
+    }
+    ```
 
 3. If you need to handle call back, add following code:
 
-	```swift
+    ```swift
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
     //func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool { // only for iOS 8
 
@@ -58,13 +58,13 @@ Example: Share to WeChat (微信)：
 
         return false
     }
-	```
+    ```
 
-	to your AppDelegate.
+    to your AppDelegate.
 
 4. Prepare your message and ask MonkeyKing to deliver it:
 
-	```swift
+    ```swift
     @IBAction func shareURLToWeChatSession(sender: UIButton) {
 
         MonkeyKing.registerAccount(.weChat(appID: "xxx", appKey: "yyy", miniAppID: nil)) // you can do it here (just before deliver)
@@ -80,7 +80,7 @@ Example: Share to WeChat (微信)：
             print("shareURLToWeChatSession success: \(success)")
         }
     }
-	```
+    ```
 
 It's done!
 
@@ -107,7 +107,7 @@ MonkeyKing.weChatOAuthForCode { [weak self] (code, error) in
 }
 ```
 
-If user don't have Weibo App installed on their devices then MonkeyKing will use web OAuth:
+If the user doesn't have Weibo App installed on their devices then MonkeyKing will use web OAuth:
 
 <img src="https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/wbOAuth.png" width="240">
 
@@ -122,7 +122,7 @@ MonkeyKing.deliver(order) { result in
     print("result: \(result)")
 }
 ```
-> You need to configure `pay.php` in remote server. You can find a example about `pay.php` at Demo project.
+> You need to configure `pay.php` in a remote server. You can find an example of `pay.php` at the Demo project.
 
 <br />
 
@@ -143,7 +143,7 @@ MonkeyKing.launch(.weChat(.miniApp(username: "gh_XXX", path: path, type: .releas
 }
 ```
 
-Note that username has a `gh_` prefix (原始ID).
+Note that `username` has a `gh_` prefix (原始ID).
 
 ### More
 
@@ -159,7 +159,7 @@ Using Carthage or CocoaPods.
 
 ### Carthage
 
-[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager for Cocoa application. To install the carthage tool, you can use [Homebrew](http://brew.sh).
+[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager for Cocoa application. To install the Carthage tool, you can use [Homebrew](http://brew.sh).
 
 ```bash
 $ brew update
