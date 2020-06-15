@@ -5,14 +5,30 @@ import Security
 
 extension MonkeyKing {
 
-    public class func handleOpenUserActivity(_ userActivity: NSUserActivity) {
-        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb else { return }
-        guard let url = userActivity.webpageURL, let urlComps = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-            return
+    public class func handleOpenUserActivity(_ userActivity: NSUserActivity) -> Bool {
+        guard
+            userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+            let url = userActivity.webpageURL, let urlComps = URLComponents(url: url, resolvingAgainstBaseURL: false),
+            let weChatAccount = shared.accountSet[.weChat]
+        else {
+            return false
         }
 
         // handle `refreshToken`
-        if urlComps.path.hasSuffix("refreshToken") {
+
+        let wxUniversalLink: String
+
+        switch weChatAccount {
+        case .weChat(_, _, _, let universalLink):
+            guard let ul = universalLink else {
+                return false
+            }
+            wxUniversalLink = ul
+        default:
+            return false
+        }
+
+        if url.absoluteString.hasPrefix(wxUniversalLink) && urlComps.path.hasSuffix("refreshToken") {
             guard let authToken = urlComps
                 .queryItems?
                 .filter({ $0.name.lowercased() == "wechat_auth_token" })
@@ -20,7 +36,7 @@ extension MonkeyKing {
                 .value,
                 !authToken.isEmpty
             else {
-                return
+                return false
             }
 
             wechatAuthToken = authToken
@@ -44,6 +60,8 @@ extension MonkeyKing {
         // TODO: handle `openbusinesswebview`
         // TODO: handle `openranklist`
         // TODO: handle `opentypewebview`
+
+        return true
     }
 
     public class func handleOpenURL(_ url: URL) -> Bool {
