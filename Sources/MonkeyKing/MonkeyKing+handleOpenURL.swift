@@ -75,7 +75,13 @@ extension MonkeyKing {
                         let error: Error = resultCode == -2
                             ? .userCancelled
                             : .sdk(.other(code: result))
-                        shared.oauthCompletionHandler?(.failure(error))
+                        if let oauthCompletionHandler = shared.oauthCompletionHandler {
+                            oauthCompletionHandler(.failure(error))
+                        }
+                        
+                        if let oauthFromWeChatCodeCompletionHandler = shared.oauthFromWeChatCodeCompletionHandler {
+                            oauthFromWeChatCodeCompletionHandler(.failure(error))
+                        }
                         return false
                     }
 
