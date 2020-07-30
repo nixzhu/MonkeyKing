@@ -8,48 +8,51 @@ extension MonkeyKing {
     public class func handleOpenUserActivity(_ userActivity: NSUserActivity) -> Bool {
         guard
             userActivity.activityType == NSUserActivityTypeBrowsingWeb,
-            let url = userActivity.webpageURL, let urlComps = URLComponents(url: url, resolvingAgainstBaseURL: false),
+            let url = userActivity.webpageURL,
             let weChatAccount = shared.accountSet[.weChat]
         else {
             return false
         }
 
-        // handle `refreshToken`
-
-        let wxUniversalLink: String
-
         switch weChatAccount {
-        case .weChat(_, _, _, let universalLink):
-            guard let ul = universalLink else {
-                return false
+        case .weChat(_, _, _, let wxUL):
+            if let wxUL = wxUL, url.absoluteString.hasPrefix(wxUL) {
+                return handleWechatUniversalLink(url)
             }
-            wxUniversalLink = ul
+
+        // TODO: handle universal link of qq
+
         default:
             return false
         }
 
-        if url.absoluteString.hasPrefix(wxUniversalLink) && urlComps.path.hasSuffix("refreshToken") {
-            guard let authToken = urlComps
-                .queryItems?
-                .filter({ $0.name.lowercased() == "wechat_auth_token" })
-                .first?
-                .value,
-                !authToken.isEmpty
-            else {
-                return false
-            }
-
-            wechatAuthToken = authToken
-
-            if let msg = lastMessage {
-                deliver(msg) { _ in }
-            }
-        }
-
         lastMessage = nil
 
+        return true
+    }
+
+    // MARK: - Wechat Universal Links
+
+    private class func handleWechatUniversalLink(_ url: URL) -> Bool {
+        guard let comps = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return false
+        }
+
+        // MARK: - refreshToken
+        if  comps.path.hasSuffix("refreshToken"),
+            let authToken = comps.valueOfQueryItem("wechat_auth_token"), !authToken.isEmpty
+        {
+            wechatAuthToken = authToken
+
+            lastMessage.map { deliver($0) { _ in } }
+        }
+
+        // MARK: - oauth
+        if  comps.path.hasSuffix("oauth"), let code = comps.valueOfQueryItem("code") {
+            return handleWechatOAuth(code: code)
+        }
+
         // TODO: handle `resendContextReqByScheme`
-        // TODO: handle `oauth`
         // TODO: handle `pay`
         // TODO: handle `jointpay`
         // TODO: handle `offlinepay`
@@ -61,8 +64,28 @@ extension MonkeyKing {
         // TODO: handle `openranklist`
         // TODO: handle `opentypewebview`
 
+        return false
+    }
+
+    private class func handleWechatOAuth(code: String) -> Bool {
+        if code == "authdeny" {
+            shared.oauthFromWeChatCodeCompletionHandler = nil
+            return false
+        }
+
+        // Login succeed
+        if let halfOauthCompletion = shared.oauthFromWeChatCodeCompletionHandler {
+            halfOauthCompletion(.success(code))
+            shared.oauthFromWeChatCodeCompletionHandler = nil
+        } else {
+            fetchWeChatOAuthInfoByCode(code: code) { result in
+                shared.oauthCompletionHandler?(result)
+            }
+        }
         return true
     }
+
+    // MARK: - OpenURL
 
     public class func handleOpenURL(_ url: URL) -> Bool {
 
@@ -78,16 +101,10 @@ extension MonkeyKing {
                     shared.oauthFromWeChatCodeCompletionHandler = nil
                     return false
                 }
-                // Login Succcess
-                if let halfOauthCompletion = shared.oauthFromWeChatCodeCompletionHandler {
-                    halfOauthCompletion(.success(code))
-                    shared.oauthFromWeChatCodeCompletionHandler = nil
-                } else {
-                    fetchWeChatOAuthInfoByCode(code: code) { result in
-                        shared.oauthCompletionHandler?(result)
-                    }
+
+                if handleWechatOAuth(code: code) {
+                    return true
                 }
-                return true
             }
             // SMS OAuth
             if urlString.contains("wapoauth") {
@@ -322,5 +339,11 @@ extension MonkeyKing {
         }
 
         return false
+    }
+}
+
+private extension URLComponents {
+    func valueOfQueryItem(_ itemName: String) -> String? {
+        queryItems?.first(where: { $0.name == itemName })?.value
     }
 }

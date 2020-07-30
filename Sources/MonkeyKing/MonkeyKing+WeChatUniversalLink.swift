@@ -14,16 +14,16 @@ import CommonCrypto
 extension MonkeyKing {
 
     private static var wechatAccount: String {
-        return "WeChatOpenSDKKeyChainAccount"
+        "WeChatOpenSDKKeyChainAccount"
     }
 
     private static var wechatServiceName: String {
-        return "WeChatOpenSDKKeyChainService_\(Bundle.main.bundleIdentifier ?? "")"
+        "WeChatOpenSDKKeyChainService_\(Bundle.main.bundleIdentifier ?? "")"
     }
 
     static var lastMessage: Message? {
         get {
-            return _lastMessage
+            _lastMessage
         }
         set {
             _lastMessage = newValue
@@ -91,8 +91,8 @@ extension String {
     // NOTE: Obviously, we don't even have to use CommonCrypto
     // In order to reduce the package size, we'll replace this implenmentation some day
     func sha1() -> String {
-        let data = Data(self.utf8)
-        var digest = [UInt8](repeating: 0, count:Int(CC_SHA1_DIGEST_LENGTH))
+        let data = Data(utf8)
+        var digest = [UInt8](repeating: 0, count: Int(CC_SHA1_DIGEST_LENGTH))
         data.withUnsafeBytes {
             _ = CC_SHA1($0.baseAddress, CC_LONG(data.count), &digest)
         }
@@ -103,7 +103,7 @@ extension String {
 
 extension Data {
     var hexDescription: String {
-        return reduce("") { $0 + String(format: "%02x", $1) }
+        reduce("") { $0 + String(format: "%02x", $1) }
     }
 }
 
