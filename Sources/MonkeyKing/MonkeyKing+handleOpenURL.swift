@@ -341,9 +341,3 @@ extension MonkeyKing {
         return false
     }
 }
-
-private extension URLComponents {
-    func valueOfQueryItem(_ itemName: String) -> String? {
-        queryItems?.first(where: { $0.name == itemName })?.value
-    }
-}

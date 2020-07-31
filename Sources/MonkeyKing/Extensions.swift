@@ -113,6 +113,13 @@ extension URL {
     }
 }
 
+extension URLComponents {
+
+    func valueOfQueryItem(_ itemName: String) -> String? {
+        queryItems?.first(where: { $0.name == itemName })?.value
+    }
+}
+
 extension UIImage {
 
     var monkeyking_compressedImageData: Data? {
