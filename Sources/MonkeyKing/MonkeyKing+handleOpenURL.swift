@@ -54,19 +54,15 @@ extension MonkeyKing {
         }
 
         // MARK: - pay
-        if  comps.path.hasSuffix("pay"),
-            let returnKey = comps.valueOfQueryItem("returnKey"),
-            let ret = comps.valueOfQueryItem("ret"), let retIntValue = Int(ret),
-            let notifyStr = comps.valueOfQueryItem("notifyStr")
-        {
+        if  comps.path.hasSuffix("pay"), let ret = comps.valueOfQueryItem("ret"), let retIntValue = Int(ret) {
             if retIntValue == 0 {
                 shared.payCompletionHandler?(.success(()))
                 return true
             } else {
                 let response: [String: String] = [
                     "ret": ret,
-                    "returnKey": returnKey,
-                    "notifyStr": notifyStr
+                    "returnKey": comps.valueOfQueryItem("returnKey") ?? "",
+                    "notifyStr": comps.valueOfQueryItem("notifyStr") ?? ""
                 ]
                 shared.payCompletionHandler?(.failure(.apiRequest(.unrecognizedError(response: response))))
                 return false
