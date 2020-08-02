@@ -45,6 +45,7 @@ extension MonkeyKing {
             wechatAuthToken = authToken
 
             lastMessage.map { deliver($0) { _ in } }
+            return true
         }
 
         // MARK: - oauth
@@ -52,8 +53,27 @@ extension MonkeyKing {
             return handleWechatOAuth(code: code)
         }
 
+        // MARK: - pay
+        if  comps.path.hasSuffix("pay"),
+            let returnKey = comps.valueOfQueryItem("returnKey"),
+            let ret = comps.valueOfQueryItem("ret"), let retIntValue = Int(ret),
+            let notifyStr = comps.valueOfQueryItem("notifyStr")
+        {
+            if retIntValue == 0 {
+                shared.payCompletionHandler?(.success(()))
+                return true
+            } else {
+                let response: [String: String] = [
+                    "ret": ret,
+                    "returnKey": returnKey,
+                    "notifyStr": notifyStr
+                ]
+                shared.payCompletionHandler?(.failure(.apiRequest(.unrecognizedError(response: response))))
+                return false
+            }
+        }
+
         // TODO: handle `resendContextReqByScheme`
-        // TODO: handle `pay`
         // TODO: handle `jointpay`
         // TODO: handle `offlinepay`
         // TODO: handle `cardPackage`
