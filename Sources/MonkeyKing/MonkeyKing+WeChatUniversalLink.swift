@@ -84,6 +84,29 @@ extension MonkeyKing {
         }
     }
 
+    func wechatUniversalLink(of command: String) -> String? {
+        guard
+            #available(iOS 10.0, *),
+            let account = MonkeyKing.shared.accountSet[.weChat],
+            account.universalLink != nil
+        else {
+            return nil
+        }
+
+        let appID = account.appID
+        let contextId = MonkeyKing.wechatContextId
+        let bundleId = Bundle.main.bundleIdentifier ?? ""
+        let allowedCharacterSet = CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[] ^").inverted
+
+        if  let authToken = MonkeyKing.wechatAuthToken,
+            let authTokenEncoded = NSString(string: authToken).addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)
+        {
+            return "https://help.wechat.com/app/\(appID)/\(command)/?wechat_auth_token=\(authTokenEncoded)&wechat_auth_context_id=\(contextId)&wechat_app_bundleId=\(bundleId)"
+        } else {
+            return "https://help.wechat.com/app/\(appID)/\(command)/?wechat_auth_context_id=\(contextId)&wechat_app_bundleId=\(bundleId)"
+        }
+    }
+
 }
 
 extension String {

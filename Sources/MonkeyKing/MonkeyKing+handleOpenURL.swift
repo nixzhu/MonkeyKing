@@ -38,12 +38,13 @@ extension MonkeyKing {
             return false
         }
 
-        // MARK: - refreshToken
-        if  comps.path.hasSuffix("refreshToken"),
-            let authToken = comps.valueOfQueryItem("wechat_auth_token"), !authToken.isEmpty
-        {
+        // MARK: - update token
+        if let authToken = comps.valueOfQueryItem("wechat_auth_token"), !authToken.isEmpty {
             wechatAuthToken = authToken
+        }
 
+        // MARK: - refreshToken
+        if comps.path.hasSuffix("refreshToken") {
             lastMessage.map { deliver($0) { _ in } }
             return true
         }

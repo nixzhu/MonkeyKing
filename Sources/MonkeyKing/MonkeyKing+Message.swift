@@ -273,22 +273,11 @@ extension MonkeyKing {
 
             var wxUrlOptions = [UIApplication.OpenExternalURLOptionsKey : Any]()
 
-            if let universalLink = account.universalLink, #available(iOS 10.0, *) {
+            if let universalLink = shared.wechatUniversalLink(of: "sendreq"), #available(iOS 10.0, *) {
+                wxUrlStr = universalLink
                 weChatMessageInfo["universalLink"] = universalLink
                 weChatMessageInfo["isAutoResend"] = false
                 wxUrlOptions[.universalLinksOnly] = true
-
-                let contextId = wechatContextId
-                let bundleId = Bundle.main.bundleIdentifier ?? ""
-                let allowedCharacterSet = CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[] ^").inverted
-
-                if  let authToken = wechatAuthToken,
-                    let authTokenEncoded = NSString(string: authToken).addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)
-                {
-                    wxUrlStr = "https://help.wechat.com/app/\(appID)/sendreq/?wechat_auth_token=\(authTokenEncoded)&wechat_auth_context_id=\(contextId)&wechat_app_bundleId=\(bundleId)"
-                } else {
-                    wxUrlStr = "https://help.wechat.com/app/\(appID)/sendreq/?wechat_auth_context_id=\(contextId)&wechat_app_bundleId=\(bundleId)"
-                }
             } else {
                 wxUrlStr = "weixin://app/\(appID)/sendreq/?"
             }
