@@ -197,10 +197,7 @@ extension MonkeyKing {
         switch message {
         case .weChat(let type):
             var weChatMessageInfo: [String: Any] = [
-                "result": "1",
-                "returnFromApp": "0",
                 "scene": type.scene,
-                "sdkver": "1.8.7.1",
                 "command": "1010",
             ]
             let info = type.info
@@ -273,8 +270,11 @@ extension MonkeyKing {
 
             var wxUrlOptions = [UIApplication.OpenExternalURLOptionsKey : Any]()
 
-            if let universalLink = shared.wechatUniversalLink(of: "sendreq"), #available(iOS 10.0, *) {
-                wxUrlStr = universalLink
+            if
+                let commandUniversalLink = shared.wechatUniversalLink(of: "sendreq"), #available(iOS 10.0, *),
+                let universalLink = MonkeyKing.shared.accountSet[.weChat]?.universalLink
+            {
+                wxUrlStr = commandUniversalLink
                 weChatMessageInfo["universalLink"] = universalLink
                 weChatMessageInfo["isAutoResend"] = false
                 wxUrlOptions[.universalLinksOnly] = true
@@ -282,13 +282,7 @@ extension MonkeyKing {
                 wxUrlStr = "weixin://app/\(appID)/sendreq/?"
             }
 
-            var weChatMessage: [String: Any] = [appID: weChatMessageInfo]
-            if let oldText = UIPasteboard.general.oldText {
-                weChatMessage["old_text"] = oldText
-            }
-
-            guard let data = try? PropertyListSerialization.data(fromPropertyList: weChatMessage, format: .binary, options: .init()) else { return }
-            UIPasteboard.general.setData(data, forPasteboardType: "content")
+            shared.setPasteboard(of: appID, with: weChatMessageInfo)
 
             guard let url = URL(string: wxUrlStr) else {
                 completionHandler(.failure(.sdk(.urlEncodeFailed)))

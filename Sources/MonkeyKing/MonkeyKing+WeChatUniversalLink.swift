@@ -107,6 +107,26 @@ extension MonkeyKing {
         }
     }
 
+    func setPasteboard(of appId: String, with content: [String: Any]) {
+        var weChatMessageInfo: [String: Any] = [
+            "result": "1",
+            "sdkver": "1.8.7.1",
+            "returnFromApp": "0",
+        ]
+
+        content.forEach { (key, value) in
+            weChatMessageInfo[key] = value
+        }
+
+        var weChatMessage: [String: Any] = [appId: weChatMessageInfo]
+        if let oldText = UIPasteboard.general.oldText {
+            weChatMessage["old_text"] = oldText
+        }
+
+        guard let data = try? PropertyListSerialization.data(fromPropertyList: weChatMessage, format: .binary, options: .init()) else { return }
+        UIPasteboard.general.setData(data, forPasteboardType: "content")
+    }
+
 }
 
 extension String {
