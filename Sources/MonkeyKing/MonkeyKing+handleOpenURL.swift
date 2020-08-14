@@ -26,8 +26,6 @@ extension MonkeyKing {
             return false
         }
 
-        lastMessage = nil
-
         return true
     }
 
@@ -39,7 +37,10 @@ extension MonkeyKing {
             return false
         }
 
-        lastMessage.map { deliver($0) { _ in lastMessage = nil } }
+        if let msg = lastMessage {
+            deliver(msg) { _ in }
+        }
+        lastMessage = nil
 
         // MARK: - update token
         if let authToken = comps.valueOfQueryItem("wechat_auth_token"), !authToken.isEmpty {
