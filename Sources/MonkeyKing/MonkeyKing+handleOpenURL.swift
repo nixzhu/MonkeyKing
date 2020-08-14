@@ -14,19 +14,23 @@ extension MonkeyKing {
             return false
         }
 
+        var isHandled = false
+
         switch weChatAccount {
         case .weChat(_, _, _, let wxUL):
             if let wxUL = wxUL, url.absoluteString.hasPrefix(wxUL) {
-                return handleWechatUniversalLink(url)
+                isHandled = handleWechatUniversalLink(url)
             }
 
         // TODO: handle universal link of qq
 
         default:
-            return false
+            ()
         }
 
-        return true
+        lastMessage = nil
+
+        return isHandled
     }
 
     // MARK: - Wechat Universal Links
@@ -37,11 +41,6 @@ extension MonkeyKing {
             return false
         }
 
-        if let msg = lastMessage {
-            deliver(msg) { _ in }
-        }
-        lastMessage = nil
-
         // MARK: - update token
         if let authToken = comps.valueOfQueryItem("wechat_auth_token"), !authToken.isEmpty {
             wechatAuthToken = authToken
@@ -49,6 +48,9 @@ extension MonkeyKing {
 
         // MARK: - refreshToken
         if comps.path.hasSuffix("refreshToken") {
+            if let msg = lastMessage {
+                deliver(msg, completionHandler: shared.deliverCompletionHandler ?? { _ in })
+            }
             return true
         }
 
