@@ -33,10 +33,13 @@ extension MonkeyKing {
 
     // MARK: - Wechat Universal Links
 
+    @discardableResult
     private class func handleWechatUniversalLink(_ url: URL) -> Bool {
         guard let comps = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             return false
         }
+
+        lastMessage.map { deliver($0) { _ in lastMessage = nil } }
 
         // MARK: - update token
         if let authToken = comps.valueOfQueryItem("wechat_auth_token"), !authToken.isEmpty {
@@ -45,7 +48,6 @@ extension MonkeyKing {
 
         // MARK: - refreshToken
         if comps.path.hasSuffix("refreshToken") {
-            lastMessage.map { deliver($0) { _ in } }
             return true
         }
 
