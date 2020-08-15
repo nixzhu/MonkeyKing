@@ -86,7 +86,7 @@ extension MonkeyKing {
         // TODO: handle `openranklist`
         // TODO: handle `opentypewebview`
 
-        return false
+        return handleCallbackResultViaPasteboard()
     }
 
     private class func handleWechatOAuth(code: String) -> Bool {
@@ -105,6 +105,56 @@ extension MonkeyKing {
             }
         }
         return true
+    }
+
+    private class func handleCallbackResultViaPasteboard() -> Bool {
+        guard
+            let data = UIPasteboard.general.data(forPasteboardType: "content"),
+            let dict = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any]
+        else {
+            return false
+        }
+
+        guard
+            let account = shared.accountSet[.weChat],
+            let info = dict[account.appID] as? [String: Any],
+            let result = info["result"] as? String,
+            let resultCode = Int(result) else {
+            return false
+        }
+
+        // OAuth Failed
+        if let state = info["state"] as? String, state == "Weixinauth", resultCode != 0 {
+            let error: Error = resultCode == -2
+                ? .userCancelled
+                : .sdk(.other(code: result))
+            shared.oauthCompletionHandler?(.failure(error))
+            return false
+        }
+
+        let succeed = (resultCode == 0)
+
+        // Share or Launch Mini App
+        let messageExtKey = "messageExt"
+        if succeed {
+            if let messageExt = info[messageExtKey] as? String {
+                shared.launchFromWeChatMiniAppCompletionHandler?(.success(messageExt))
+            } else {
+                shared.deliverCompletionHandler?(.success(nil))
+            }
+        } else {
+            if let messageExt = info[messageExtKey] as? String {
+                shared.launchFromWeChatMiniAppCompletionHandler?(.success(messageExt))
+                return true
+            } else {
+                let error: Error = resultCode == -2
+                    ? .userCancelled
+                    : .sdk(.other(code: result))
+                shared.deliverCompletionHandler?(.failure(error))
+            }
+        }
+
+        return succeed
     }
 
     // MARK: - OpenURL
@@ -159,53 +209,7 @@ extension MonkeyKing {
                 return result
             }
 
-            if let data = UIPasteboard.general.data(forPasteboardType: "content") {
-                if let dict = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any] {
-
-                    guard
-                        let account = shared.accountSet[.weChat],
-                        let info = dict[account.appID] as? [String: Any],
-                        let result = info["result"] as? String,
-                        let resultCode = Int(result) else {
-                        return false
-                    }
-
-                    // OAuth Failed
-                    if let state = info["state"] as? String, state == "Weixinauth", resultCode != 0 {
-                        let error: Error = resultCode == -2
-                            ? .userCancelled
-                            : .sdk(.other(code: result))
-                        shared.oauthCompletionHandler?(.failure(error))
-                        return false
-                    }
-
-                    let success = (resultCode == 0)
-
-                    // Share or Launch Mini App
-                    let messageExtKey = "messageExt"
-                    if success {
-                        if let messageExt = info[messageExtKey] as? String {
-                            shared.launchFromWeChatMiniAppCompletionHandler?(.success(messageExt))
-                        } else {
-                            shared.deliverCompletionHandler?(.success(nil))
-                        }
-                    } else {
-                        if let messageExt = info[messageExtKey] as? String {
-                            shared.launchFromWeChatMiniAppCompletionHandler?(.success(messageExt))
-                            return true
-                        } else {
-                            let error: Error = resultCode == -2
-                                ? .userCancelled
-                                : .sdk(.other(code: result))
-                            shared.deliverCompletionHandler?(.failure(error))
-                        }
-                    }
-
-                    return success
-                }
-            }
-
-            return false
+            return handleCallbackResultViaPasteboard()
         }
 
         // QQ Share
