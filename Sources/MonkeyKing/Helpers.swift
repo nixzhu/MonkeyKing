@@ -7,7 +7,7 @@ extension MonkeyKing {
         var appID = ""
         var appKey = ""
 
-        for case .weChat(let id, let key, _) in shared.accountSet {
+        for case .weChat(let id, let key, _, _) in shared.accountSet {
             guard let key = key else {
                 completionHandler(.failure(.noAccount))
                 return

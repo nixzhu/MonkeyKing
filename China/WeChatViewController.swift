@@ -10,7 +10,7 @@ class WeChatViewController: UIViewController {
         super.viewDidLoad()
 
         // Should not register account here
-        let account = MonkeyKing.Account.weChat(appID: Configs.WeChat.appID, appKey: Configs.WeChat.appKey, miniAppID: Configs.WeChat.miniAppID)
+        let account = MonkeyKing.Account.weChat(appID: Configs.WeChat.appID, appKey: Configs.WeChat.appKey, miniAppID: Configs.WeChat.miniAppID, universalLink: Configs.WeChat.universalLink)
         MonkeyKing.registerAccount(account)
     }
 
@@ -150,7 +150,11 @@ extension WeChatViewController {
 
     @IBAction func OAuthWithoutAppKey(_ sender: UIButton) {
         // Should not register account here
-        let accountWithoutAppKey = MonkeyKing.Account.weChat(appID: Configs.WeChat.appID, appKey: nil, miniAppID: nil)
+        let accountWithoutAppKey = MonkeyKing.Account.weChat(
+            appID: Configs.WeChat.appID,
+            appKey: nil,
+            miniAppID: nil,
+            universalLink: Configs.WeChat.universalLink)
         MonkeyKing.registerAccount(accountWithoutAppKey)
 
         MonkeyKing.oauth(for: .weChat) { result in

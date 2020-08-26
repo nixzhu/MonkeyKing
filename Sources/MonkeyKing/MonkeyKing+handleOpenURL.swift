@@ -1,7 +1,163 @@
 
 import Foundation
+import Security
+
 
 extension MonkeyKing {
+
+    public class func handleOpenUserActivity(_ userActivity: NSUserActivity) -> Bool {
+        guard
+            userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+            let url = userActivity.webpageURL,
+            let weChatAccount = shared.accountSet[.weChat]
+        else {
+            return false
+        }
+
+        var isHandled = false
+
+        switch weChatAccount {
+        case .weChat(_, _, _, let wxUL):
+            if let wxUL = wxUL, url.absoluteString.hasPrefix(wxUL) {
+                isHandled = handleWechatUniversalLink(url)
+            }
+
+        // TODO: handle universal link of qq
+
+        default:
+            ()
+        }
+
+        lastMessage = nil
+
+        return isHandled
+    }
+
+    // MARK: - Wechat Universal Links
+
+    @discardableResult
+    private class func handleWechatUniversalLink(_ url: URL) -> Bool {
+        guard let comps = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return false
+        }
+
+        // MARK: - update token
+        if let authToken = comps.valueOfQueryItem("wechat_auth_token"), !authToken.isEmpty {
+            wechatAuthToken = authToken
+        }
+
+        // MARK: - refreshToken
+        if comps.path.hasSuffix("refreshToken") {
+            if let msg = lastMessage {
+                deliver(msg, completionHandler: shared.deliverCompletionHandler ?? { _ in })
+            }
+            return true
+        }
+
+        // MARK: - oauth
+        if  comps.path.hasSuffix("oauth"), let code = comps.valueOfQueryItem("code") {
+            return handleWechatOAuth(code: code)
+        }
+
+        // MARK: - pay
+        if  comps.path.hasSuffix("pay"), let ret = comps.valueOfQueryItem("ret"), let retIntValue = Int(ret) {
+            if retIntValue == 0 {
+                shared.payCompletionHandler?(.success(()))
+                return true
+            } else {
+                let response: [String: String] = [
+                    "ret": ret,
+                    "returnKey": comps.valueOfQueryItem("returnKey") ?? "",
+                    "notifyStr": comps.valueOfQueryItem("notifyStr") ?? ""
+                ]
+                shared.payCompletionHandler?(.failure(.apiRequest(.unrecognizedError(response: response))))
+                return false
+            }
+        }
+
+        // TODO: handle `resendContextReqByScheme`
+        // TODO: handle `jointpay`
+        // TODO: handle `offlinepay`
+        // TODO: handle `cardPackage`
+        // TODO: handle `choosecard`
+        // TODO: handle `chooseinvoice`
+        // TODO: handle `openwebview`
+        // TODO: handle `openbusinesswebview`
+        // TODO: handle `openranklist`
+        // TODO: handle `opentypewebview`
+
+        return handleCallbackResultViaPasteboard()
+    }
+
+    private class func handleWechatOAuth(code: String) -> Bool {
+        if code == "authdeny" {
+            shared.oauthFromWeChatCodeCompletionHandler = nil
+            return false
+        }
+
+        // Login succeed
+        if let halfOauthCompletion = shared.oauthFromWeChatCodeCompletionHandler {
+            halfOauthCompletion(.success(code))
+            shared.oauthFromWeChatCodeCompletionHandler = nil
+        } else {
+            fetchWeChatOAuthInfoByCode(code: code) { result in
+                shared.oauthCompletionHandler?(result)
+            }
+        }
+        return true
+    }
+
+    private class func handleCallbackResultViaPasteboard() -> Bool {
+        guard
+            let data = UIPasteboard.general.data(forPasteboardType: "content"),
+            let dict = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any]
+        else {
+            return false
+        }
+
+        guard
+            let account = shared.accountSet[.weChat],
+            let info = dict[account.appID] as? [String: Any],
+            let result = info["result"] as? String,
+            let resultCode = Int(result) else {
+            return false
+        }
+
+        // OAuth Failed
+        if let state = info["state"] as? String, state == "Weixinauth", resultCode != 0 {
+            let error: Error = resultCode == -2
+                ? .userCancelled
+                : .sdk(.other(code: result))
+            shared.oauthCompletionHandler?(.failure(error))
+            return false
+        }
+
+        let succeed = (resultCode == 0)
+
+        // Share or Launch Mini App
+        let messageExtKey = "messageExt"
+        if succeed {
+            if let messageExt = info[messageExtKey] as? String {
+                shared.launchFromWeChatMiniAppCompletionHandler?(.success(messageExt))
+            } else {
+                shared.deliverCompletionHandler?(.success(nil))
+            }
+        } else {
+            if let messageExt = info[messageExtKey] as? String {
+                shared.launchFromWeChatMiniAppCompletionHandler?(.success(messageExt))
+                return true
+            } else {
+                let error: Error = resultCode == -2
+                    ? .userCancelled
+                    : .sdk(.other(code: result))
+                shared.deliverCompletionHandler?(.failure(error))
+            }
+        }
+
+        return succeed
+    }
+
+    // MARK: - OpenURL
 
     public class func handleOpenURL(_ url: URL) -> Bool {
 
@@ -17,16 +173,10 @@ extension MonkeyKing {
                     shared.oauthFromWeChatCodeCompletionHandler = nil
                     return false
                 }
-                // Login Succcess
-                if let halfOauthCompletion = shared.oauthFromWeChatCodeCompletionHandler {
-                    halfOauthCompletion(.success(code))
-                    shared.oauthFromWeChatCodeCompletionHandler = nil
-                } else {
-                    fetchWeChatOAuthInfoByCode(code: code) { result in
-                        shared.oauthCompletionHandler?(result)
-                    }
+
+                if handleWechatOAuth(code: code) {
+                    return true
                 }
-                return true
             }
             // SMS OAuth
             if urlString.contains("wapoauth") {
@@ -59,59 +209,7 @@ extension MonkeyKing {
                 return result
             }
 
-            if let data = UIPasteboard.general.data(forPasteboardType: "content") {
-                if let dict = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any] {
-
-                    guard
-                        let account = shared.accountSet[.weChat],
-                        let info = dict[account.appID] as? [String: Any],
-                        let result = info["result"] as? String,
-                        let resultCode = Int(result) else {
-                        return false
-                    }
-
-                    // OAuth Failed
-                    if let state = info["state"] as? String, state == "Weixinauth", resultCode != 0 {
-                        let error: Error = resultCode == -2
-                            ? .userCancelled
-                            : .sdk(.other(code: result))
-                        if let oauthCompletionHandler = shared.oauthCompletionHandler {
-                            oauthCompletionHandler(.failure(error))
-                        }
-                        
-                        if let oauthFromWeChatCodeCompletionHandler = shared.oauthFromWeChatCodeCompletionHandler {
-                            oauthFromWeChatCodeCompletionHandler(.failure(error))
-                        }
-                        return false
-                    }
-
-                    let success = (resultCode == 0)
-
-                    // Share or Launch Mini App
-                    let messageExtKey = "messageExt"
-                    if success {
-                        if let messageExt = info[messageExtKey] as? String {
-                            shared.launchFromWeChatMiniAppCompletionHandler?(.success(messageExt))
-                        } else {
-                            shared.deliverCompletionHandler?(.success(nil))
-                        }
-                    } else {
-                        if let messageExt = info[messageExtKey] as? String {
-                            shared.launchFromWeChatMiniAppCompletionHandler?(.success(messageExt))
-                            return true
-                        } else {
-                            let error: Error = resultCode == -2
-                                ? .userCancelled
-                                : .sdk(.other(code: result))
-                            shared.deliverCompletionHandler?(.failure(error))
-                        }
-                    }
-
-                    return success
-                }
-            }
-
-            return false
+            return handleCallbackResultViaPasteboard()
         }
 
         // QQ Share

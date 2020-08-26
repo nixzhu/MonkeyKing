@@ -13,6 +13,7 @@ struct Configs {
         static let appID = "wx4868b35061f87885"
         static let appKey = "64020361b8ec4c99936c0e3999a9f249"
         static let miniAppID = "gh_d43f693ca31f"
+        static let universalLink = "YOUR_UNIVERSAL_LINK"
     }
 
     struct QQ {
