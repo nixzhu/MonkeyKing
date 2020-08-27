@@ -4,7 +4,7 @@ import UIKit
 
 class QQViewController: UIViewController {
 
-    let account = MonkeyKing.Account.qq(appID: Configs.QQ.appID)
+    let account = MonkeyKing.Account.qq(appID: Configs.QQ.appID, universalLink: Configs.QQ.universalLink)
 
     @IBOutlet private var segmentControl: UISegmentedControl!
 

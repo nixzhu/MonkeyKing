@@ -18,6 +18,7 @@ struct Configs {
 
     struct QQ {
         static let appID = "1104881792"
+        static let universalLink = "YOUR_UNIVERSAL_LINK"
     }
 
     struct Pocket {

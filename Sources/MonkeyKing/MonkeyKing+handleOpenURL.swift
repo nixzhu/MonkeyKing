@@ -8,24 +8,28 @@ extension MonkeyKing {
     public class func handleOpenUserActivity(_ userActivity: NSUserActivity) -> Bool {
         guard
             userActivity.activityType == NSUserActivityTypeBrowsingWeb,
-            let url = userActivity.webpageURL,
-            let weChatAccount = shared.accountSet[.weChat]
+            let url = userActivity.webpageURL
         else {
             return false
         }
 
         var isHandled = false
 
-        switch weChatAccount {
-        case .weChat(_, _, _, let wxUL):
-            if let wxUL = wxUL, url.absoluteString.hasPrefix(wxUL) {
-                isHandled = handleWechatUniversalLink(url)
+        shared.accountSet.forEach { account in
+            switch account {
+            case .weChat(_, _, _, let wxUL):
+                if let wxUL = wxUL, url.absoluteString.hasPrefix(wxUL) {
+                    isHandled = handleWechatUniversalLink(url)
+                }
+
+            case .qq(_, let qqUL):
+                if let qqUL = qqUL, url.absoluteString.hasPrefix(qqUL) {
+                    isHandled = handleQQUniversalLink(url)
+                }
+
+            default:
+                ()
             }
-
-        // TODO: handle universal link of qq
-
-        default:
-            ()
         }
 
         lastMessage = nil
@@ -86,7 +90,7 @@ extension MonkeyKing {
         // TODO: handle `openranklist`
         // TODO: handle `opentypewebview`
 
-        return handleCallbackResultViaPasteboard()
+        return handleWechatCallbackResultViaPasteboard()
     }
 
     private class func handleWechatOAuth(code: String) -> Bool {
@@ -107,7 +111,7 @@ extension MonkeyKing {
         return true
     }
 
-    private class func handleCallbackResultViaPasteboard() -> Bool {
+    private class func handleWechatCallbackResultViaPasteboard() -> Bool {
         guard
             let data = UIPasteboard.general.data(forPasteboardType: "content"),
             let dict = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any]
@@ -155,6 +159,126 @@ extension MonkeyKing {
         }
 
         return succeed
+    }
+
+    // MARK: - QQ Universal Links
+
+    @discardableResult
+    private class func handleQQUniversalLink(_ url: URL) -> Bool {
+        guard let comps = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return false
+        }
+
+        var error: Error?
+
+        if
+            let actionInfoString = comps.queryItems?.first(where: { $0.name == "sdkactioninfo" })?.value,
+            let data = Data(base64Encoded: actionInfoString),
+            let actionInfo = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: Any] {
+
+            // What for?
+            // sck_action_query=appsign_bundlenull=2&source=qq&source_scheme=mqqapi&error=0&version=1
+            // sdk_action_path=
+            // sdk_action_scheme=tencent101******8
+            // sdk_action_host=response_from_qq
+
+
+            if let query = actionInfo["sdk_action_query"] as? String {
+                if query.contains("error=0") {
+                    error = nil
+                } else if query.contains("error=-4") {
+                    error = .userCancelled
+                } else {
+                    // TODO: handle error_description=dGhlIHVzZXIgZ2l2ZSB1cCB0aGUgY3VycmVudCBvcGVyYXRpb24=
+                    error = .noAccount
+                }
+            }
+
+        }
+
+        guard handleQQCallbackResult(url: url, error: error) else {
+            return false
+        }
+
+        return true
+    }
+
+    private class func handleQQCallbackResult(url: URL, error: Error?) -> Bool {
+        guard let account = shared.accountSet[.qq] else { return false }
+
+        // OpenApi.m:131 getDictionaryFromGeneralPasteBoard
+        guard
+            let data = UIPasteboard.general.data(forPasteboardType: "com.tencent.tencent\(account.appID)"),
+            let info = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: Any] else {
+                shared.oauthCompletionHandler?(.failure(.sdk(.deserializeFailed)))
+                return false
+        }
+
+        if url.path.contains("mqqsignapp") && url.query?.contains("generalpastboard=1") == true {
+
+            // OpenApi.m:680 start universallink signature.
+            guard
+                let token = info["appsign_token"] as? String,
+                let appSignRedirect = info["appsign_redirect"] as? String,
+                var redirectComps = URLComponents(string: appSignRedirect)
+            else {
+                return false
+            }
+
+            qqAppSignToken = token
+            redirectComps.queryItems?.append(.init(name: "appsign_token", value: qqAppSignToken))
+
+            if let callbackName = redirectComps.queryItems?.first(where: { $0.name == "callback_name" })?.value {
+                qqAppSignTxid = callbackName
+                redirectComps.queryItems?.append(.init(name: "appsign_txid", value: qqAppSignTxid))
+            }
+
+            if let ul = account.universalLink, url.absoluteString.hasPrefix(ul) {
+                redirectComps.scheme = "https"
+                redirectComps.host = "qm.qq.com"
+                redirectComps.path = "/opensdkul/mqqapi/share/to_fri"
+            }
+
+            // Try to open the redirect url provided above
+            if let redirectUrl = redirectComps.url, UIApplication.shared.canOpenURL(redirectUrl) {
+                UIApplication.shared.openURL(redirectUrl)
+            }
+
+            // Otherwise we just send last message again
+            else if let msg = lastMessage {
+                deliver(msg, completionHandler: shared.deliverCompletionHandler ?? { _ in })
+            }
+
+            // The dictionary also contains "appsign_retcode=25105" and "appsign_bundlenull=2"
+            // We don't have to handle them yet.
+
+            return true
+        }
+
+
+        if let ul = account.universalLink, url.absoluteString.hasPrefix(ul) {
+            if let error = error {
+                shared.deliverCompletionHandler?(.failure(error))
+            } else {
+                shared.deliverCompletionHandler?(.success(nil))
+            }
+            return true
+        }
+
+        // OAuth is the only left
+        guard let result = info["ret"] as? Int, result == 0 else {
+            let error: Error
+            if let errorDomatin = info["user_cancelled"] as? String, errorDomatin == "YES" {
+                error = .userCancelled
+            } else {
+                error = .apiRequest(.unrecognizedError(response: nil))
+            }
+            shared.oauthCompletionHandler?(.failure(error))
+            return false
+        }
+
+        shared.oauthCompletionHandler?(.success(info))
+        return true
     }
 
     // MARK: - OpenURL
@@ -209,46 +333,41 @@ extension MonkeyKing {
                 return result
             }
 
-            return handleCallbackResultViaPasteboard()
+            return handleWechatCallbackResultViaPasteboard()
         }
 
-        // QQ Share
-        if urlScheme.hasPrefix("QQ") {
-            guard let errorDescription = url.monkeyking_queryDictionary["error"] else { return false }
+        // QQ
+        if urlScheme.lowercased().hasPrefix("qq") || urlScheme.hasPrefix("tencent") {
+            let errorDescription = url.monkeyking_queryDictionary["error"] ?? url.lastPathComponent
+
+            var error: Error?
+
             let success = (errorDescription == "0")
             if success {
-                shared.deliverCompletionHandler?(.success(nil))
+                error = nil
             } else {
-                let error: Error = errorDescription == "-4"
+                error = errorDescription == "-4"
                     ? .userCancelled
                     : .sdk(.other(code: errorDescription))
-                shared.deliverCompletionHandler?(.failure(error))
+            }
+
+            // OAuth
+            if url.path.contains("mqzone") {
+                if let error = error {
+                    shared.oauthCompletionHandler?(.failure(error))
+                } else {
+                    shared.oauthCompletionHandler?(.success(nil))
+                }
+            }
+            // Share
+            else {
+                if let error = error {
+                    shared.deliverCompletionHandler?(.failure(error))
+                } else {
+                    shared.deliverCompletionHandler?(.success(nil))
+                }
             }
             return success
-        }
-
-        // QQ OAuth
-        if urlScheme.hasPrefix("tencent") {
-            guard let account = shared.accountSet[.qq] else { return false }
-            guard
-                let data = UIPasteboard.general.data(forPasteboardType: "com.tencent.tencent\(account.appID)"),
-                let info = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: Any] else {
-                shared.oauthCompletionHandler?(.failure(.sdk(.deserializeFailed)))
-                return false
-            }
-            guard let result = info["ret"] as? Int, result == 0 else {
-                let error: Error
-                if let errorDomatin = info["user_cancelled"] as? String, errorDomatin == "YES" {
-                    error = .userCancelled
-                } else {
-                    error = .apiRequest(.unrecognizedError(response: nil))
-                }
-                shared.oauthCompletionHandler?(.failure(error))
-                return false
-            }
-
-            shared.oauthCompletionHandler?(.success(info))
-            return true
         }
 
         // Weibo

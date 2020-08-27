@@ -92,18 +92,18 @@ extension MonkeyKing {
                     completionHandler(.failure(.sdk(.invalidURLScheme)))
                 }
             }
-        case .qq(let appID):
+        case .qq(let appID, _):
             let scope = scope ?? ""
             guard !platform.isAppInstalled else {
                 let appName = Bundle.main.monkeyking_displayName ?? "nixApp"
-                let dic = [
+                let dic: [String: Any] = [
                     "app_id": appID,
                     "app_name": appName,
                     "client_id": appID,
                     "response_type": "token",
                     "scope": scope,
                     "sdkp": "i",
-                    "sdkv": "2.9",
+                    "sdkv": "3.3.9_lite",
                     "status_machine": UIDevice.current.model,
                     "status_os": UIDevice.current.systemVersion,
                     "status_version": UIDevice.current.systemVersion,
