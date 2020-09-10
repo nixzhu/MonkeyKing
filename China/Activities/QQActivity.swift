@@ -36,7 +36,11 @@ class QQActivity: AnyActivity {
     }
 
     init(type: Type, message: MonkeyKing.Message, completionHandler: @escaping MonkeyKing.DeliverCompletionHandler) {
-        MonkeyKing.registerAccount(.qq(appID: Configs.QQ.appID))
+        MonkeyKing.registerAccount(
+            .qq(
+                appID: Configs.QQ.appID,
+                universalLink: Configs.QQ.universalLink
+            ))
         super.init(
             type: type.activityType,
             title: type.title,

@@ -32,7 +32,7 @@ public class MonkeyKing: NSObject {
 
     public enum Account: Hashable {
         case weChat(appID: String, appKey: String?, miniAppID: String?, universalLink: String?)
-        case qq(appID: String)
+        case qq(appID: String, universalLink: String?)
         case weibo(appID: String, appKey: String, redirectURL: String)
         case pocket(appID: String)
         case alipay(appID: String)
@@ -42,7 +42,7 @@ public class MonkeyKing: NSObject {
             switch self {
             case .weChat(let appID, _, _, _):
                 return appID
-            case .qq(let appID):
+            case .qq(let appID, _):
                 return appID
             case .weibo(let appID, _, _):
                 return appID
@@ -57,7 +57,7 @@ public class MonkeyKing: NSObject {
 
         public var universalLink: String? {
             switch self {
-            case .weChat(_, _, _, let universalLink):
+            case .weChat(_, _, _, let universalLink), .qq(_, let universalLink):
                 return universalLink
             default:
                 return nil
@@ -71,7 +71,7 @@ public class MonkeyKing: NSObject {
         public static func == (lhs: MonkeyKing.Account, rhs: MonkeyKing.Account) -> Bool {
             switch (lhs, rhs) {
             case (.weChat(let lappID, _, _, _), .weChat(let rappID, _, _, _)),
-                 (.qq(let lappID), .qq(let rappID)),
+                 (.qq(let lappID, _), .qq(let rappID, _)),
                  (.weibo(let lappID, _, _), .weibo(let rappID, _, _)),
                  (.pocket(let lappID), .pocket(let rappID)),
                  (.alipay(let lappID), .alipay(let rappID)),

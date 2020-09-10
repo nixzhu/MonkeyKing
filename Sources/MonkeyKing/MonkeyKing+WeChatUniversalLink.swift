@@ -8,7 +8,6 @@
 
 import Foundation
 import Security
-import CommonCrypto
 
 
 extension MonkeyKing {
@@ -127,27 +126,6 @@ extension MonkeyKing {
         UIPasteboard.general.setData(data, forPasteboardType: "content")
     }
 
-}
-
-extension String {
-
-    // NOTE: Obviously, we don't even have to use CommonCrypto
-    // In order to reduce the package size, we'll replace this implenmentation some day
-    func sha1() -> String {
-        let data = Data(utf8)
-        var digest = [UInt8](repeating: 0, count: Int(CC_SHA1_DIGEST_LENGTH))
-        data.withUnsafeBytes {
-            _ = CC_SHA1($0.baseAddress, CC_LONG(data.count), &digest)
-        }
-        let hexBytes = digest.map { String(format: "%02hhx", $0) }
-        return hexBytes.joined()
-    }
-}
-
-extension Data {
-    var hexDescription: String {
-        reduce("") { $0 + String(format: "%02x", $1) }
-    }
 }
 
 private var _autoIncreaseId: UInt64 = 0

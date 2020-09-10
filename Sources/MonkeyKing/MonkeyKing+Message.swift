@@ -1,5 +1,5 @@
-
 import Foundation
+import UIKit
 
 extension MonkeyKing {
 
@@ -336,6 +336,8 @@ extension MonkeyKing {
                     if let thumbnail = type.info.thumbnail, let thumbnailData = thumbnail.jpegData(compressionQuality: 0.9) {
                         dic["previewimagedata"] = thumbnailData
                     }
+                    // TODO: handle previewimageUrl string aswell
+
                     if let oldText = UIPasteboard.general.oldText {
                         dic["pasted_string"] = oldText
                     }
@@ -377,7 +379,7 @@ extension MonkeyKing {
                 if let encodedDescription = type.info.description?.monkeyking_base64AndURLEncodedString {
                     qqSchemeURLString += "&objectlocation=pasteboard&description=\(encodedDescription)"
                 }
-                qqSchemeURLString += "&sdkv=2.9"
+                qqSchemeURLString += "&sdkv=3.3.9_lite"
 
             } else { // Share Text
                 // fix #75
@@ -392,10 +394,29 @@ extension MonkeyKing {
                 }
             }
 
-            guard let url = URL(string: qqSchemeURLString) else {
+            guard var comps = URLComponents(string: qqSchemeURLString) else {
+                return
+            }
+
+            if account.universalLink != nil {
+                comps.scheme = "https"
+                comps.host = "qm.qq.com"
+                comps.path = "/opensdkul/mqqapi/share/to_fri"
+
+                if let token = qqAppSignToken {
+                    comps.queryItems?.append(.init(name: "appsign_token", value: token))
+                }
+                if let txid = qqAppSignTxid {
+                    comps.queryItems?.append(.init(name: "appsign_txid", value: txid))
+                }
+            }
+
+            guard let url = comps.url else {
                 completionHandler(.failure(.sdk(.urlEncodeFailed)))
                 return
             }
+
+            lastMessage = message
 
             shared.openURL(url) { flag in
                 if flag { return }
