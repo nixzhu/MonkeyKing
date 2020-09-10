@@ -1,4 +1,4 @@
-
+import UIKit
 import Foundation
 import Security
 
@@ -257,18 +257,15 @@ extension MonkeyKing {
 
 
         if let ul = account.universalLink, url.absoluteString.hasPrefix(ul) {
-            if let error = error {
-                shared.deliverCompletionHandler?(.failure(error))
-            } else {
-                shared.deliverCompletionHandler?(.success(nil))
-            }
+            let result = error.map(Result<ResponseJSON?, Error>.failure) ?? .success(nil)
+            shared.deliverCompletionHandler?(result)
             return true
         }
 
-        // OAuth is the only left
+        // OAuth is the only leftover
         guard let result = info["ret"] as? Int, result == 0 else {
             let error: Error
-            if let errorDomatin = info["user_cancelled"] as? String, errorDomatin == "YES" {
+            if let errorDomatin = info["user_cancelled"] as? String, errorDomatin.uppercased() == "YES" {
                 error = .userCancelled
             } else {
                 error = .apiRequest(.unrecognizedError(response: nil))

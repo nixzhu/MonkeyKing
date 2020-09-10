@@ -36,10 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             SecItemDelete(spec)
         }
 
-        let defaults = UserDefaults.standard
-        let dictionary = defaults.dictionaryRepresentation()
-        dictionary.keys.forEach { key in
-            defaults.removeObject(forKey: key)
-        }
+        UserDefaults.standard
+            .dictionaryRepresentation().keys
+            .forEach(UserDefaults.standard.removeObject)
     }
 }

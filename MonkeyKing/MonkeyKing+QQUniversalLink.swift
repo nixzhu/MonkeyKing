@@ -12,7 +12,7 @@ extension MonkeyKing {
 
     static var qqAppSignTxid: String? {
         get {
-            return UserDefaults.standard.string(forKey: _txidKey)
+            UserDefaults.standard.string(forKey: _txidKey)
         }
         set {
             if newValue == nil {
@@ -25,7 +25,7 @@ extension MonkeyKing {
 
     static var qqAppSignToken: String? {
         get {
-            return UserDefaults.standard.string(forKey: _tokenKey)
+            UserDefaults.standard.string(forKey: _tokenKey)
         }
         set {
             if newValue == nil {
