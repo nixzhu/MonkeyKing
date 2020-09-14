@@ -1,14 +1,6 @@
-//
-//  MonkeyKing+WeChatUniversalLink.swift
-//  MonkeyKing
-//
-//  Created by Lex on 2020/6/11.
-//  Copyright © 2020 nixWork. All rights reserved.
-//
 
 import Foundation
 import Security
-
 
 extension MonkeyKing {
 
@@ -22,7 +14,7 @@ extension MonkeyKing {
 
     static var lastMessage: Message? {
         get {
-            _lastMessage
+            return _lastMessage
         }
         set {
             _lastMessage = newValue
@@ -47,7 +39,6 @@ extension MonkeyKing {
                 kSecReturnData as String: true,
                 kSecReturnAttributes as String: true
             ] as CFDictionary
-
 
             var queryResult: AnyObject?
             let status = withUnsafeMutablePointer(to: &queryResult) {
@@ -125,7 +116,6 @@ extension MonkeyKing {
         guard let data = try? PropertyListSerialization.data(fromPropertyList: weChatMessage, format: .binary, options: .init()) else { return }
         UIPasteboard.general.setData(data, forPasteboardType: "content")
     }
-
 }
 
 private var _autoIncreaseId: UInt64 = 0

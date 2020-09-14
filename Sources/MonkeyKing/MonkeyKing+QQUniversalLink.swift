@@ -1,10 +1,3 @@
-//
-//  MonkeyKing+QQUniversalLink.swift
-//  MonkeyKing
-//
-//  Created by Lex Tang on 2020/8/27.
-//  Copyright © 2020 nixWork. All rights reserved.
-//
 
 import Foundation
 
@@ -12,7 +5,7 @@ extension MonkeyKing {
 
     static var qqAppSignTxid: String? {
         get {
-            UserDefaults.standard.string(forKey: _txidKey)
+            return UserDefaults.standard.string(forKey: _txidKey)
         }
         set {
             if newValue == nil {
@@ -25,7 +18,7 @@ extension MonkeyKing {
 
     static var qqAppSignToken: String? {
         get {
-            UserDefaults.standard.string(forKey: _tokenKey)
+            return UserDefaults.standard.string(forKey: _tokenKey)
         }
         set {
             if newValue == nil {
@@ -35,7 +28,6 @@ extension MonkeyKing {
             }
         }
     }
-
 }
 
 private let _txidKey = "_MonkeyKingQQAppSignTxid"

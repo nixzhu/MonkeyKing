@@ -2,7 +2,6 @@ import UIKit
 import Foundation
 import Security
 
-
 extension MonkeyKing {
 
     public class func handleOpenUserActivity(_ userActivity: NSUserActivity) -> Bool {
@@ -123,7 +122,8 @@ extension MonkeyKing {
             let account = shared.accountSet[.weChat],
             let info = dict[account.appID] as? [String: Any],
             let result = info["result"] as? String,
-            let resultCode = Int(result) else {
+            let resultCode = Int(result)
+        else {
             return false
         }
 
@@ -182,7 +182,6 @@ extension MonkeyKing {
             // sdk_action_scheme=tencent101******8
             // sdk_action_host=response_from_qq
 
-
             if let query = actionInfo["sdk_action_query"] as? String {
                 if query.contains("error=0") {
                     error = nil
@@ -209,9 +208,10 @@ extension MonkeyKing {
         // OpenApi.m:131 getDictionaryFromGeneralPasteBoard
         guard
             let data = UIPasteboard.general.data(forPasteboardType: "com.tencent.tencent\(account.appID)"),
-            let info = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: Any] else {
-                shared.oauthCompletionHandler?(.failure(.sdk(.deserializeFailed)))
-                return false
+            let info = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: Any]
+        else {
+            shared.oauthCompletionHandler?(.failure(.sdk(.deserializeFailed)))
+            return false
         }
 
         if url.path.contains("mqqsignapp") && url.query?.contains("generalpastboard=1") == true {
