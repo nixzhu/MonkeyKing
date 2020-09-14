@@ -1,5 +1,6 @@
-import MobileCoreServices
+
 import UIKit
+import MobileCoreServices
 import CommonCrypto
 
 extension Set {
