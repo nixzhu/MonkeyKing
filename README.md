@@ -2,10 +2,6 @@
 <a href="http://cocoadocs.org/docsets/MonkeyKing"><img src="https://img.shields.io/cocoapods/v/MonkeyKing.svg?style=flat"></a>
 <a href="https://github.com/Carthage/Carthage/"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat"></a>
 </p>
-<p>
-<a href="http://cocoapods.org/pods/MonkeyKing"><img src="https://img.shields.io/cocoapods/at/MonkeyKing.svg?label=Apps%20Using%20MonkeyKing&colorB=28B9FE"></a>
-<a href="http://cocoapods.org/pods/MonkeyKing"><img src="https://img.shields.io/cocoapods/dt/MonkeyKing.svg?label=Total%20Downloads&colorB=28B9FE"></a>
-</p>
 
 # MonkeyKing
 
@@ -98,7 +94,6 @@ Example: Share to WeChat (微信)：
 
 It's done!
 
-
 ### OAuth
 
 Example: Weibo OAuth
@@ -124,7 +119,6 @@ MonkeyKing.weChatOAuthForCode { [weak self] (code, error) in
 If the user doesn't have Weibo App installed on their devices then MonkeyKing will use web OAuth:
 
 <img src="https://raw.githubusercontent.com/nixzhu/MonkeyKing/master/images/wbOAuth.png" width="240">
-
 
 ### Pay
 
@@ -169,85 +163,21 @@ Check the demo for more information.
 
 ## Installation
 
-Using Carthage or CocoaPods.
-
 ### Carthage
-
-[Carthage](https://github.com/Carthage/Carthage) is a decentralized dependency manager for Cocoa application. To install the Carthage tool, you can use [Homebrew](http://brew.sh).
-
-```bash
-$ brew update
-$ brew install carthage
-```
-
-To integrate MonkeyKing into your Xcode project using Carthage, specify it in your `Cartfile`:
 
 ```ogdl
 github "nixzhu/MonkeyKing"
 ```
 
-Then, run the following command to build the MonkeyKing framework:
-
-```bash
-$ carthage update
-```
-
-At last, you need to set up your Xcode project manually to add the MonkeyKing framework.
-
-On your application targets’ “General” settings tab, in the “Linked Frameworks and Libraries” section, drag and drop each framework you want to use from the Carthage/Build folder on disk.
-
-On your application targets’ “Build Phases” settings tab, click the “+” icon and choose “New Run Script Phase”. Create a Run Script with the following content:
-
-```
-/usr/local/bin/carthage copy-frameworks
-```
-
-and add the paths to the frameworks you want to use under “Input Files”:
-
-```
-$(SRCROOT)/Carthage/Build/iOS/MonkeyKing.framework
-```
-
-For more information about how to use Carthage, please see its [project page](https://github.com/Carthage/Carthage).
-
 ### CocoaPods
 
-[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects.
-
-CocoaPods 0.36 adds supports for Swift and embedded frameworks. You can install it with the following command:
-
-```bash
-$ [sudo] gem install cocoapods
-```
-
-To integrate MonkeyKing into your Xcode project using CocoaPods, specify it in your `Podfile`:
-
 ```ruby
-source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '8.0'
-use_frameworks!
-
-target <Your Target Name> do
-    pod 'MonkeyKing'
-end
+pod 'MonkeyKing'
 ```
 
-Then, run the following command:
+## Contributors
 
-```bash
-$ pod install
-```
-
-You should open the `{Project}.xcworkspace` instead of the `{Project}.xcodeproj` after you installed anything from CocoaPods.
-
-For more information about how to use CocoaPods, I suggest [this tutorial](http://www.raywenderlich.com/64546/introduction-to-cocoapods-2).
-
-## Contact
-
-NIX [@nixzhu](https://twitter.com/nixzhu),
-Limon [@Limon](http://weibo.com/u/1783821582),
-Lanford [@Lanford3_3](http://weibo.com/accoropitor) or
-Alex [@Xspyhack](http://weibo.com/xspyhack)
+Thanks to all the [contributors](https://github.com/nixzhu/MonkeyKing/graphs/contributors).
 
 ## Credits
 
