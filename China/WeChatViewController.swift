@@ -185,17 +185,21 @@ extension WeChatViewController {
 extension WeChatViewController {
 
     @IBAction func pay(_ sender: UIButton) {
-        do {
-            let data = try NSURLConnection.sendSynchronousRequest(URLRequest(url: URL(string: "http://www.example.com/pay.php?payType=weixin")!), returning: nil)
-            let urlString = String(data: data, encoding: .utf8)!
-            let url = URL(string: urlString)!
-            let order = MonkeyKing.Order.weChat(url: url)
-            MonkeyKing.deliver(order) { result in
-                print("result: \(result)")
+        let request = URLRequest(url: URL(string: "http://www.example.com/pay.php?payType=weixin")!)
+        let task = URLSession.shared.dataTask(with: request) { data, _, error in
+            if let error = error {
+                print(error)
+            } else {
+                guard let data = data else { return }
+                guard let urlString = String(data: data, encoding: .utf8) else { return }
+                guard let url = URL(string: urlString) else { return }
+
+                MonkeyKing.deliver(.weChat(url: url)) { result in
+                    print("result:", result)
+                }
             }
-        } catch {
-            print(error)
         }
+        task.resume()
     }
 }
 

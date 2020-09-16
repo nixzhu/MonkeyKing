@@ -75,18 +75,23 @@ class AlipayViewController: UIViewController {
     // MARK: Pay
 
     @IBAction func pay(_ sender: UIButton) {
-        do {
-            registerAccount()
-            let data = try NSURLConnection.sendSynchronousRequest(URLRequest(url: URL(string: "https://www.example.com/pay.php?payType=alipay")!), returning: nil)
-            let urlString = String(data: data, encoding: .utf8)!
-            let url = URL(string: urlString)!
-            let order = MonkeyKing.Order.alipay(url: url)
-            MonkeyKing.deliver(order) { result in
-                print("result: \(result)")
+        registerAccount()
+
+        let request = URLRequest(url: URL(string: "https://www.example.com/pay.php?payType=alipay")!)
+        let task = URLSession.shared.dataTask(with: request) { data, _, error in
+            if let error = error {
+                print(error)
+            } else {
+                guard let data = data else { return }
+                guard let urlString = String(data: data, encoding: .utf8) else { return }
+                guard let url = URL(string: urlString) else { return }
+
+                MonkeyKing.deliver(.alipay(url: url)) { result in
+                    print("result:", result)
+                }
             }
-        } catch {
-            print(error)
         }
+        task.resume()
     }
 
     // MARK: Oauth
