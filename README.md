@@ -16,7 +16,7 @@ MonkeyKing also supports **OAuth** and **Mobile payment** via WeChat and Alipay!
 
 ## Requirements
 
-Swift 5, iOS 8
+Swift 5, iOS 9
 
 (For Swift 4.2, use version 1.13.0)
 
@@ -173,6 +173,12 @@ github "nixzhu/MonkeyKing"
 
 ```ruby
 pod 'MonkeyKing'
+```
+
+### Swift Package Manager
+
+```
+https://github.com/nixzhu/MonkeyKing
 ```
 
 ## Contributors
