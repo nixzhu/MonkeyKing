@@ -64,7 +64,7 @@ extension MonkeyKing {
                     urlComponents = URLComponents(string: authLink)
                     urlComponents?.queryItems?.append(contentsOf: [
                         URLQueryItem(name: "scope", value: scope),
-                        URLQueryItem(name: "state", value: "123"), // Weixinauth instead?
+                        URLQueryItem(name: "state", value: "Weixinauth"), // Weixinauth instead?
                     ])
 
                     shared.setPasteboard(of: appID, with: [
