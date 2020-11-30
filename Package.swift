@@ -35,8 +35,8 @@ let package = Package(
         ),
         .binaryTarget(
             name: "MonkeyKing",
-            url: "https://github.com/nixzhu/MonkeyKing/releases/download/pre-1.17.0/MonkeyKing.xcframework.zip",
-            checksum: "1b4fafe9b3c438c7fe9f3490a5b4194baad0cb70c20ee374e0fb86326ee0e283"
+            url: "https://github.com/nixzhu/MonkeyKing/releases/download/2.0.0/MonkeyKing.xcframework.zip",
+            checksum: "d9a1eff556a38b2a435fb4eb8bfc4b0636d03eb2538e2fbdb36880d1d05499d7"
         )
     ]
 )
