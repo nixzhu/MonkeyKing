@@ -391,7 +391,7 @@ extension MonkeyKing {
                 }
             }
 
-            guard var comps = URLComponents(string: qqSchemeURLString), let url = comps.url else {
+            guard let comps = URLComponents(string: qqSchemeURLString), let url = comps.url else {
                 completionHandler(.failure(.sdk(.urlEncodeFailed)))
                 return
             }
