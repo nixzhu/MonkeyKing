@@ -266,35 +266,32 @@ extension MonkeyKing {
                 weChatMessageInfo["command"] = "1020"
             }
 
-            let wxUrlStr: String
-
-            var wxUrlOptions = [UIApplication.OpenExternalURLOptionsKey : Any]()
+            lastMessage = message
+            shared.setPasteboard(of: appID, with: weChatMessageInfo)
 
             if
                 let commandUniversalLink = shared.wechatUniversalLink(of: "sendreq"), #available(iOS 10.0, *),
-                let universalLink = MonkeyKing.shared.accountSet[.weChat]?.universalLink
+                let universalLink = MonkeyKing.shared.accountSet[.weChat]?.universalLink,
+                let ulUrl = URL(string: commandUniversalLink)
             {
-                wxUrlStr = commandUniversalLink
                 weChatMessageInfo["universalLink"] = universalLink
                 weChatMessageInfo["isAutoResend"] = false
-                wxUrlOptions[.universalLinksOnly] = true
+
+                shared.openURL(ulUrl, options: [.universalLinksOnly: true]) { succeed in
+                    if succeed { return }
+                }
+            }
+
+            if let schemeUrl = URL(string: "weixin://app/\(appID)/sendreq/?") {
+                shared.openURL(schemeUrl) { succeed in
+                    if succeed {
+                        return
+                    }
+                }
             } else {
-                wxUrlStr = "weixin://app/\(appID)/sendreq/?"
-            }
-
-            shared.setPasteboard(of: appID, with: weChatMessageInfo)
-
-            guard let url = URL(string: wxUrlStr) else {
-                completionHandler(.failure(.sdk(.urlEncodeFailed)))
-                return
-            }
-
-            lastMessage = message
-
-            shared.openURL(url, options: wxUrlOptions) { flag in
-                if flag { return }
                 completionHandler(.failure(.sdk(.invalidURLScheme)))
             }
+
         case .qq(let type):
             let callbackName = appID.monkeyking_qqCallbackName
             var qqSchemeURLString = "mqqapi://share/to_fri?"
@@ -394,34 +391,40 @@ extension MonkeyKing {
                 }
             }
 
-            guard var comps = URLComponents(string: qqSchemeURLString) else {
-                return
-            }
-
-            if account.universalLink != nil {
-                comps.scheme = "https"
-                comps.host = "qm.qq.com"
-                comps.path = "/opensdkul/mqqapi/share/to_fri"
-
-                if let token = qqAppSignToken {
-                    comps.queryItems?.append(.init(name: "appsign_token", value: token))
-                }
-                if let txid = qqAppSignTxid {
-                    comps.queryItems?.append(.init(name: "appsign_txid", value: txid))
-                }
-            }
-
-            guard let url = comps.url else {
+            guard var comps = URLComponents(string: qqSchemeURLString), let url = comps.url else {
                 completionHandler(.failure(.sdk(.urlEncodeFailed)))
                 return
             }
 
             lastMessage = message
 
-            shared.openURL(url) { flag in
-                if flag { return }
+            if account.universalLink != nil, var ulComps = URLComponents(string: "https://qm.qq.com/opensdkul/mqqapi/share/to_fri") {
+                ulComps.path = comps.path
+                ulComps.query = comps.query
+
+                if let token = qqAppSignToken {
+                    ulComps.queryItems?.append(.init(name: "appsign_token", value: token))
+                }
+                if let txid = qqAppSignTxid {
+                    ulComps.queryItems?.append(.init(name: "appsign_txid", value: txid))
+                }
+                if let ulUrl = ulComps.url, #available(iOS 10.0, *) {
+                    shared.openURL(ulUrl, options: [.universalLinksOnly: true]) { succeed in
+                        if succeed {
+                            return
+                        }
+                    }
+                }
+            }
+
+            // failback to open url scheme
+            shared.openURL(url) { succeed in
+                if succeed {
+                    return
+                }
                 completionHandler(.failure(.sdk(.invalidURLScheme)))
             }
+
         case .weibo(let type):
             guard !shared.canOpenURL(URL(string: "weibosdk://request")!) else {
                 // App Share
