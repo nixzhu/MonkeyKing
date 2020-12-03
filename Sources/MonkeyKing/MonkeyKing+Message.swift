@@ -269,6 +269,8 @@ extension MonkeyKing {
             lastMessage = message
             shared.setPasteboard(of: appID, with: weChatMessageInfo)
 
+            var isUniversalLink = false
+
             if
                 let commandUniversalLink = shared.wechatUniversalLink(of: "sendreq"), #available(iOS 10.0, *),
                 let universalLink = MonkeyKing.shared.accountSet[.weChat]?.universalLink,
@@ -278,12 +280,13 @@ extension MonkeyKing {
                 weChatMessageInfo["isAutoResend"] = false
 
                 shared.openURL(ulUrl, options: [.universalLinksOnly: true]) { succeed in
-                    if succeed { return }
+                    isUniversalLink = succeed
                 }
             }
 
-            if let schemeUrl = URL(string: "weixin://app/\(appID)/sendreq/?") {
+            if !isUniversalLink, let schemeUrl = URL(string: "weixin://app/\(appID)/sendreq/?") {
                 shared.openURL(schemeUrl) { succeed in
+                    isUniversalLink = succeed
                     if succeed {
                         return
                     }
@@ -398,6 +401,8 @@ extension MonkeyKing {
 
             lastMessage = message
 
+            var isUniversalLinkSucceed = false
+
             if account.universalLink != nil, var ulComps = URLComponents(string: "https://qm.qq.com/opensdkul/mqqapi/share/to_fri") {
                 ulComps.path = comps.path
                 ulComps.query = comps.query
@@ -410,19 +415,19 @@ extension MonkeyKing {
                 }
                 if let ulUrl = ulComps.url, #available(iOS 10.0, *) {
                     shared.openURL(ulUrl, options: [.universalLinksOnly: true]) { succeed in
-                        if succeed {
-                            return
-                        }
+                        isUniversalLinkSucceed = succeed
                     }
                 }
             }
 
             // failback to open url scheme
-            shared.openURL(url) { succeed in
-                if succeed {
-                    return
+            if !isUniversalLinkSucceed {
+                shared.openURL(url) { succeed in
+                    if succeed {
+                        return
+                    }
+                    completionHandler(.failure(.sdk(.invalidURLScheme)))
                 }
-                completionHandler(.failure(.sdk(.invalidURLScheme)))
             }
 
         case .weibo(let type):
