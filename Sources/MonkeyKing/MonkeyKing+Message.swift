@@ -281,12 +281,12 @@ extension MonkeyKing {
             if
                 let commandUniversalLink = shared.wechatUniversalLink(of: "sendreq"), #available(iOS 10.0, *),
                 let universalLink = MonkeyKing.shared.accountSet[.weChat]?.universalLink,
-                let ulUrl = URL(string: commandUniversalLink)
+                let ulURL = URL(string: commandUniversalLink)
             {
                 weChatMessageInfo["universalLink"] = universalLink
                 weChatMessageInfo["isAutoResend"] = false
 
-                shared.openURL(ulUrl, options: [.universalLinksOnly: true]) { succeed in
+                shared.openURL(ulURL, options: [.universalLinksOnly: true]) { succeed in
                     if !succeed, let schemeUrl = URL(string: "weixin://app/\(appID)/sendreq/?") {
                         fallbackToScheme(url: schemeUrl, completionHandler: completionHandler)
                     }
@@ -402,7 +402,6 @@ extension MonkeyKing {
             lastMessage = message
 
             if account.universalLink != nil, var ulComps = URLComponents(string: "https://qm.qq.com/opensdkul/mqqapi/share/to_fri") {
-                ulComps.path = comps.path
                 ulComps.query = comps.query
 
                 if let token = qqAppSignToken {
@@ -411,8 +410,8 @@ extension MonkeyKing {
                 if let txid = qqAppSignTxid {
                     ulComps.queryItems?.append(.init(name: "appsign_txid", value: txid))
                 }
-                if let ulUrl = ulComps.url, #available(iOS 10.0, *) {
-                    shared.openURL(ulUrl, options: [.universalLinksOnly: true]) { succeed in
+                if let ulURL = ulComps.url, #available(iOS 10.0, *) {
+                    shared.openURL(ulURL, options: [.universalLinksOnly: true]) { succeed in
                         if !succeed {
                             fallbackToScheme(url: url, completionHandler: completionHandler)
                         }
