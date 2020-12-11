@@ -287,12 +287,12 @@ extension MonkeyKing {
                 weChatMessageInfo["isAutoResend"] = false
 
                 shared.openURL(ulURL, options: [.universalLinksOnly: true]) { succeed in
-                    if !succeed, let schemeUrl = URL(string: "weixin://app/\(appID)/sendreq/?") {
-                        fallbackToScheme(url: schemeUrl, completionHandler: completionHandler)
+                    if !succeed, let schemeURL = URL(string: "weixin://app/\(appID)/sendreq/?") {
+                        fallbackToScheme(url: schemeURL, completionHandler: completionHandler)
                     }
                 }
-            } else if let schemeUrl = URL(string: "weixin://app/\(appID)/sendreq/?") {
-                fallbackToScheme(url: schemeUrl, completionHandler: completionHandler)
+            } else if let schemeURL = URL(string: "weixin://app/\(appID)/sendreq/?") {
+                fallbackToScheme(url: schemeURL, completionHandler: completionHandler)
             }
 
         case .qq(let type):
