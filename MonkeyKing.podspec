@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name        = "MonkeyKing"
-  s.version     = "2.0.0"
+  s.version     = "2.0.1"
   s.summary     = "MonkeyKing helps you to post messages to Chinese Social Networks, or do OAuth and Payment."
 
   s.description = <<-DESC
