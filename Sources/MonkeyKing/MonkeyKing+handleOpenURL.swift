@@ -350,11 +350,7 @@ extension MonkeyKing {
 
             // OAuth
             if url.path.contains("mqzone") {
-                if let error = error {
-                    shared.oauthCompletionHandler?(.failure(error))
-                } else {
-                    shared.oauthCompletionHandler?(.success(nil))
-                }
+                handleQQCallbackResult(url: url, error: error)
             }
             // Share
             else {
