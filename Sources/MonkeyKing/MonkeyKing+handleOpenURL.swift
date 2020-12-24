@@ -343,7 +343,7 @@ extension MonkeyKing {
 
             var error: Error?
 
-            let success = (errorDescription == "0")
+            var success = (errorDescription == "0")
             if success {
                 error = nil
             } else {
@@ -354,7 +354,7 @@ extension MonkeyKing {
 
             // OAuth
             if url.path.contains("mqzone") {
-                handleQQCallbackResult(url: url, error: error)
+                success = handleQQCallbackResult(url: url, error: error)
             }
             // Share
             else {
