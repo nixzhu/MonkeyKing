@@ -205,6 +205,17 @@ extension MonkeyKing {
     private class func handleQQCallbackResult(url: URL, error: Error?) -> Bool {
         guard let account = shared.accountSet[.qq] else { return false }
 
+        // Share
+        // Pasteboard is empty
+        if
+            let ul = account.universalLink,
+            url.absoluteString.hasPrefix(ul),
+            url.path.contains("response_from_qq") {
+            let result = error.map(Result<ResponseJSON?, Error>.failure) ?? .success(nil)
+            shared.deliverCompletionHandler?(result)
+            return true
+        }
+
         // OpenApi.m:131 getDictionaryFromGeneralPasteBoard
         guard
             let data = UIPasteboard.general.data(forPasteboardType: "com.tencent.tencent\(account.appID)"),
@@ -252,13 +263,6 @@ extension MonkeyKing {
             // The dictionary also contains "appsign_retcode=25105" and "appsign_bundlenull=2"
             // We don't have to handle them yet.
 
-            return true
-        }
-
-
-        if let ul = account.universalLink, url.absoluteString.hasPrefix(ul) {
-            let result = error.map(Result<ResponseJSON?, Error>.failure) ?? .success(nil)
-            shared.deliverCompletionHandler?(result)
             return true
         }
 
@@ -339,7 +343,7 @@ extension MonkeyKing {
 
             var error: Error?
 
-            let success = (errorDescription == "0")
+            var success = (errorDescription == "0")
             if success {
                 error = nil
             } else {
@@ -350,11 +354,7 @@ extension MonkeyKing {
 
             // OAuth
             if url.path.contains("mqzone") {
-                if let error = error {
-                    shared.oauthCompletionHandler?(.failure(error))
-                } else {
-                    shared.oauthCompletionHandler?(.success(nil))
-                }
+                success = handleQQCallbackResult(url: url, error: error)
             }
             // Share
             else {
