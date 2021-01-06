@@ -25,6 +25,11 @@ extension MonkeyKing {
                 if let qqUL = qqUL, url.absoluteString.hasPrefix(qqUL) {
                     isHandled = handleQQUniversalLink(url)
                 }
+                
+            case .weibo(_, _, _, let wbUL):
+                if let wbURL = wbUL, url.absoluteString.hasPrefix(wbURL) {
+                    isHandled = handleWeiboUniversalLink(url)
+                }
 
             default:
                 ()
@@ -282,6 +287,66 @@ extension MonkeyKing {
         return true
     }
 
+    // MARK: - Weibo Universal Links
+
+    @discardableResult
+    private class func handleWeiboUniversalLink(_ url: URL) -> Bool {
+        guard let comps = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return false
+        }
+
+        if comps.path.hasSuffix("response") {
+            return handleWeiboCallbackResultViaPasteboard()
+        }
+
+        return false
+    }
+    
+    private class func handleWeiboCallbackResultViaPasteboard() -> Bool {
+        let items = UIPasteboard.general.items
+        var results = [String: Any]()
+        for item in items {
+            for (key, value) in item {
+                if let valueData = value as? Data, key == "transferObject" {
+                    results[key] = NSKeyedUnarchiver.unarchiveObject(with: valueData)
+                }
+            }
+        }
+        guard
+            let responseInfo = results["transferObject"] as? [String: Any],
+            let type = responseInfo["__class"] as? String else {
+            return false
+        }
+        guard let statusCode = responseInfo["statusCode"] as? Int else {
+            return false
+        }
+        switch type {
+        // OAuth
+        case "WBAuthorizeResponse":
+            if statusCode != 0 {
+                shared.oauthCompletionHandler?(.failure(.apiRequest(.unrecognizedError(response: responseInfo))))
+                return false
+            }
+
+            shared.oauthCompletionHandler?(.success(responseInfo))
+            return true
+        // Share
+        case "WBSendMessageToWeiboResponse":
+            let success = (statusCode == 0)
+            if success {
+                shared.deliverCompletionHandler?(.success(nil))
+            } else {
+                let error: Error = statusCode == -1
+                    ? .userCancelled
+                    : .sdk(.other(code: String(statusCode)))
+                shared.deliverCompletionHandler?(.failure(error))
+            }
+            return success
+        default:
+            return false
+        }
+    }
+
     // MARK: - OpenURL
 
     public class func handleOpenURL(_ url: URL) -> Bool {
@@ -369,48 +434,7 @@ extension MonkeyKing {
 
         // Weibo
         if urlScheme.hasPrefix("wb") {
-            let items = UIPasteboard.general.items
-            var results = [String: Any]()
-            for item in items {
-                for (key, value) in item {
-                    if let valueData = value as? Data, key == "transferObject" {
-                        results[key] = NSKeyedUnarchiver.unarchiveObject(with: valueData)
-                    }
-                }
-            }
-            guard
-                let responseInfo = results["transferObject"] as? [String: Any],
-                let type = responseInfo["__class"] as? String else {
-                return false
-            }
-            guard let statusCode = responseInfo["statusCode"] as? Int else {
-                return false
-            }
-            switch type {
-            // OAuth
-            case "WBAuthorizeResponse":
-                if statusCode != 0 {
-                    shared.oauthCompletionHandler?(.failure(.apiRequest(.unrecognizedError(response: responseInfo))))
-                    return false
-                }
-
-                shared.oauthCompletionHandler?(.success(responseInfo))
-                return true
-            // Share
-            case "WBSendMessageToWeiboResponse":
-                let success = (statusCode == 0)
-                if success {
-                    shared.deliverCompletionHandler?(.success(nil))
-                } else {
-                    let error: Error = statusCode == -1
-                        ? .userCancelled
-                        : .sdk(.other(code: String(statusCode)))
-                    shared.deliverCompletionHandler?(.failure(error))
-                }
-                return success
-            default:
-                break
-            }
+          return handleWeiboCallbackResultViaPasteboard()
         }
 
         // Pocket OAuth
