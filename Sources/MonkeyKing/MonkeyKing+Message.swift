@@ -502,9 +502,10 @@ extension MonkeyKing {
                 if account.universalLink != nil, var ulComps = URLComponents(string: "https://open.weibo.com/weibosdk/request") {
                     ulComps.query = urlComponents?.query
 
-                    ulComps.queryItems?.append(
-                        URLQueryItem(name: "objId", value: uuidString)
-                    )
+                    ulComps.queryItems?.append(contentsOf: [
+                        URLQueryItem(name: "objId", value: uuidString),
+                        URLQueryItem(name: "urltype", value: "link"),
+                    ])
 
                     if let ulURL = ulComps.url, #available(iOS 10.0, *) {
                         shared.openURL(ulURL, options: [.universalLinksOnly: true]) { succeed in
