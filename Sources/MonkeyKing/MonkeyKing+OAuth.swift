@@ -130,7 +130,7 @@ extension MonkeyKing {
             // Web OAuth
             let accessTokenAPI = "https://xui.ptlogin2.qq.com/cgi-bin/xlogin?appid=716027609&pt_3rd_aid=209656&style=35&s_url=http%3A%2F%2Fconnect.qq.com&refer_cgi=m_authorize&client_id=\(appID)&redirect_uri=auth%3A%2F%2Fwww.qq.com&response_type=token&scope=\(scope)"
             addWebView(withURLString: accessTokenAPI)
-        case .weibo(let appID, _, let redirectURL):
+        case .weibo(let appID, _, let redirectURL, _):
             let scope = scope ?? "all"
             guard !platform.isAppInstalled else {
                 let uuidString = UUID().uuidString

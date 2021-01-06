@@ -7,6 +7,7 @@ struct Configs {
         static let appID = "1772193724"
         static let appKey = "453283216b8c885dad2cdb430c74f62a"
         static let redirectURL = "http://www.limon.top"
+        static let universalLink = "YOUR_UNIVERSAL_LINK"
     }
 
     struct WeChat {

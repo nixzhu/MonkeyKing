@@ -94,7 +94,7 @@ extension MonkeyKing: WKNavigationDelegate {
             }
         } else {
             // Weibo OAuth
-            for case .weibo(_, _, let redirectURL) in accountSet {
+            for case .weibo(_, _, let redirectURL, _) in accountSet {
                 if url.absoluteString.hasPrefix(redirectURL) {
                     guard let code = url.monkeyking_queryDictionary["code"] else { return }
                     MonkeyKing.fetchWeiboOAuthInfoByCode(code: code) { [weak self] result in

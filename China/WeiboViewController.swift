@@ -9,7 +9,7 @@ class WeiboViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let account = MonkeyKing.Account.weibo(appID: Configs.Weibo.appID, appKey: Configs.Weibo.appKey, redirectURL: Configs.Weibo.redirectURL)
+        let account = MonkeyKing.Account.weibo(appID: Configs.Weibo.appID, appKey: Configs.Weibo.appKey, redirectURL: Configs.Weibo.redirectURL, universalLink: Configs.Weibo.universalLink)
         MonkeyKing.registerAccount(account)
     }
 
