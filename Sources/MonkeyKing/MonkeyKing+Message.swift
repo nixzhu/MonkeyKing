@@ -487,7 +487,10 @@ extension MonkeyKing {
                 var urlComponents = URLComponents(string: "weibosdk://request")
                 urlComponents?.queryItems = [
                     URLQueryItem(name: "id", value: uuidString),
-                    URLQueryItem(name: "sdkversion", value: "003013000"),
+                    URLQueryItem(name: "sdkversion", value: "003233000"),
+                    URLQueryItem(name: "luicode", value: "10000360"),
+                    URLQueryItem(name: "lfid", value: Bundle.main.monkeyking_bundleID ?? ""),
+                    URLQueryItem(name: "newVersion", value: "3.3"),
                 ]
 
                 guard let url = urlComponents?.url else {
