@@ -57,7 +57,9 @@ public class MonkeyKing: NSObject {
 
         public var universalLink: String? {
             switch self {
-            case .weChat(_, _, _, let universalLink), .qq(_, let universalLink):
+            case .weChat(_, _, _, let universalLink),
+                 .qq(_, let universalLink),
+                 .weibo(_, _, _, let universalLink):
                 return universalLink
             default:
                 return nil
