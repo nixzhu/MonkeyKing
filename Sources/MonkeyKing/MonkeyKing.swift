@@ -33,7 +33,7 @@ public class MonkeyKing: NSObject {
     public enum Account: Hashable {
         case weChat(appID: String, appKey: String?, miniAppID: String?, universalLink: String?)
         case qq(appID: String, universalLink: String?)
-        case weibo(appID: String, appKey: String, redirectURL: String, universalLink: String?)
+        case weibo(appID: String, appKey: String, redirectURL: String, universalLink: String? = nil)
         case pocket(appID: String)
         case alipay(appID: String)
         case twitter(appID: String, appKey: String, redirectURL: String)
