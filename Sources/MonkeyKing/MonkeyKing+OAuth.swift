@@ -153,6 +153,7 @@ extension MonkeyKing {
                         "appKey": appID,
                         "bundleID": Bundle.main.monkeyking_bundleID ?? "",
                         "name": Bundle.main.monkeyking_displayName ?? "",
+                        "universalLink": account.universalLink ?? "",
                     ]
                 )
                 let authItems: [[String: Any]] = [
