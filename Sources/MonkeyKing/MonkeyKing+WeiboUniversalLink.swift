@@ -23,4 +23,23 @@ extension MonkeyKing {
         
         return comps?.url
     }
+    
+    static func weiboUniversalLink(query: String?) -> URL? {
+        var ulComps = URLComponents(string: "https://open.weibo.com/weibosdk/request")
+        
+        ulComps?.query = query
+        
+        if let index = ulComps?.queryItems?.firstIndex(where: { $0.name == "id" }) {
+            ulComps?.queryItems?[index].name = "objId"
+        } else {
+            assertionFailure()
+            return nil
+        }
+        
+        ulComps?.queryItems?.append(contentsOf: [
+            URLQueryItem(name: "urltype", value: "link"),
+        ])
+        
+        return ulComps?.url
+    }
 }

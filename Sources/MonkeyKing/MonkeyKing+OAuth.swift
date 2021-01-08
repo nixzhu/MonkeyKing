@@ -168,21 +168,14 @@ extension MonkeyKing {
                     return
                 }
 
-                if account.universalLink != nil, var ulComps = URLComponents(string: "https://open.weibo.com/weibosdk/request") {
-                    ulComps.query = url.query
-
-                    ulComps.queryItems?.append(contentsOf: [
-                        URLQueryItem(name: "objId", value: uuidString),
-                        URLQueryItem(name: "urltype", value: "link"),
-                    ])
-
-                    if let ulURL = ulComps.url, #available(iOS 10.0, *) {
+                if account.universalLink != nil,
+                   #available(iOS 10.0, *),
+                   let ulURL = weiboUniversalLink(query: url.query) {
                         shared.openURL(ulURL, options: [.universalLinksOnly: true]) { succeed in
                             if !succeed {
                                 fallbackToScheme(url: url, completionHandler: completionHandler)
                             }
                         }
-                    }
                 } else {
                     fallbackToScheme(url: url, completionHandler: completionHandler)
                 }
