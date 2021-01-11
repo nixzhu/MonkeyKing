@@ -476,6 +476,7 @@ extension MonkeyKing {
                     withRootObject: [
                         "appKey": appID,
                         "bundleID": Bundle.main.monkeyking_bundleID ?? "",
+                        "universalLink": account.universalLink ?? ""
                     ]
                 )
                 let messageData: [[String: Any]] = [
@@ -484,21 +485,23 @@ extension MonkeyKing {
                 ]
                 UIPasteboard.general.items = messageData
 
-                var urlComponents = URLComponents(string: "weibosdk://request")
-                urlComponents?.queryItems = [
-                    URLQueryItem(name: "id", value: uuidString),
-                    URLQueryItem(name: "sdkversion", value: "003013000"),
-                ]
-
-                guard let url = urlComponents?.url else {
+                guard let url = weiboSchemeLink(uuidString: uuidString) else {
                     completionHandler(.failure(.sdk(.urlEncodeFailed)))
                     return
                 }
 
-                shared.openURL(url) { flag in
-                    if flag { return }
-                    completionHandler(.failure(.sdk(.invalidURLScheme)))
+                if account.universalLink != nil,
+                   #available(iOS 10.0, *),
+                   let ulURL = weiboUniversalLink(query: url.query) {
+                        shared.openURL(ulURL, options: [.universalLinksOnly: true]) { succeed in
+                            if !succeed {
+                                fallbackToScheme(url: url, completionHandler: completionHandler)
+                            }
+                        }
+                } else {
+                    fallbackToScheme(url: url, completionHandler: completionHandler)
                 }
+
                 return
             }
             // Weibo Web Share

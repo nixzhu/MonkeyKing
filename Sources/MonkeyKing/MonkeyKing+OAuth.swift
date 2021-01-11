@@ -130,7 +130,7 @@ extension MonkeyKing {
             // Web OAuth
             let accessTokenAPI = "https://xui.ptlogin2.qq.com/cgi-bin/xlogin?appid=716027609&pt_3rd_aid=209656&style=35&s_url=http%3A%2F%2Fconnect.qq.com&refer_cgi=m_authorize&client_id=\(appID)&redirect_uri=auth%3A%2F%2Fwww.qq.com&response_type=token&scope=\(scope)"
             addWebView(withURLString: accessTokenAPI)
-        case .weibo(let appID, _, let redirectURL):
+        case .weibo(let appID, _, let redirectURL, _):
             let scope = scope ?? "all"
             guard !platform.isAppInstalled else {
                 let uuidString = UUID().uuidString
@@ -153,6 +153,7 @@ extension MonkeyKing {
                         "appKey": appID,
                         "bundleID": Bundle.main.monkeyking_bundleID ?? "",
                         "name": Bundle.main.monkeyking_displayName ?? "",
+                        "universalLink": account.universalLink ?? "",
                     ]
                 )
                 let authItems: [[String: Any]] = [
@@ -162,21 +163,23 @@ extension MonkeyKing {
                 ]
                 UIPasteboard.general.items = authItems
 
-                var urlComponents = URLComponents(string: "weibosdk://request")
-                urlComponents?.queryItems = [
-                    URLQueryItem(name: "id", value: uuidString),
-                    URLQueryItem(name: "sdkversion", value: "003013000"),
-                ]
-
-                guard let url = urlComponents?.url else {
+                guard let url = weiboSchemeLink(uuidString: uuidString) else {
                     completionHandler(.failure(.sdk(.urlEncodeFailed)))
                     return
                 }
 
-                shared.openURL(url) { flag in
-                    if flag { return }
-                    completionHandler(.failure(.sdk(.invalidURLScheme)))
+                if account.universalLink != nil,
+                   #available(iOS 10.0, *),
+                   let ulURL = weiboUniversalLink(query: url.query) {
+                        shared.openURL(ulURL, options: [.universalLinksOnly: true]) { succeed in
+                            if !succeed {
+                                fallbackToScheme(url: url, completionHandler: completionHandler)
+                            }
+                        }
+                } else {
+                    fallbackToScheme(url: url, completionHandler: completionHandler)
                 }
+
                 return
             }
             // Web OAuth
@@ -213,6 +216,15 @@ extension MonkeyKing {
             }
         case .twitter(let appID, let appKey, let redirectURL):
             shared.twitterAuthenticate(appID: appID, appKey: appKey, redirectURL: redirectURL)
+        }
+    }
+
+    private class func fallbackToScheme(url: URL, completionHandler: @escaping OAuthCompletionHandler) {
+        shared.openURL(url) { succeed in
+            if succeed {
+                return
+            }
+            completionHandler(.failure(.sdk(.invalidURLScheme)))
         }
     }
 

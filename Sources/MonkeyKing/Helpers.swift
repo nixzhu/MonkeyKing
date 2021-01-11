@@ -45,7 +45,7 @@ extension MonkeyKing {
         var appKey = ""
         var redirectURL = ""
 
-        for case .weibo(let id, let key, let url) in shared.accountSet {
+        for case .weibo(let id, let key, let url, _) in shared.accountSet {
             appID = id
             appKey = key
             redirectURL = url
