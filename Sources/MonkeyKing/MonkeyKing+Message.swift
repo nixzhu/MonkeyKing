@@ -25,7 +25,7 @@ extension MonkeyKing {
          - miniprogramType: 小程序的类型，默认正式版，1.8.1及以上版本开发者工具包支持分享开发版和体验版小程序
          - userName: 小程序原始ID获取方法：登录小程序管理后台-设置-基本设置-帐号信息
          */
-        case miniApp(url: URL, path: String, withShareTicket: Bool, type: MiniAppType, user_name: String?)
+        case miniApp(url: URL, path: String, withShareTicket: Bool, type: MiniAppType, userName: String?)
     }
 
     public typealias Info = (title: String?, description: String?, thumbnail: UIImage?, media: Media?)
