@@ -8,7 +8,7 @@ extension MonkeyKing {
         case test = 1
         case preview = 2
     }
-
+    /// https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Share_and_Favorites/iOS.html
     public enum Media {
         case url(URL)
         case image(UIImage)
@@ -16,8 +16,16 @@ extension MonkeyKing {
         case gif(Data)
         case audio(audioURL: URL, linkURL: URL?)
         case video(URL)
-        case file(Data, fileExt: String?) /// file extension for wechat file share
-        case miniApp(url: URL, path: String, withShareTicket: Bool, type: MiniAppType)
+        /// file extension for wechat file share
+        case file(Data, fileExt: String?)
+        /**
+         - url :  含义[兼容低版本的网页链接]    备注[限制长度不超过10KB]
+         - path:    [小程序的页面路径]    [小程序页面路径；对于小游戏，可以只传入 query 部分，来实现传参效果，如：传入 "?foo=bar"]
+         - withShareTicket: 通常开发者希望分享出去的小程序被二次打开时可以获取到更多信息，例如群的标识。可以设置withShareTicket为true，当分享卡片在群聊中被其他用户打开时，可以获取到shareTicket，用于获取更多分享信息。详见小程序获取更多分享信息 ，最低客户端版本要求：6.5.13
+         - miniprogramType: 小程序的类型，默认正式版，1.8.1及以上版本开发者工具包支持分享开发版和体验版小程序
+         - userName: 小程序原始ID获取方法：登录小程序管理后台-设置-基本设置-帐号信息
+         */
+        case miniApp(url: URL, path: String, withShareTicket: Bool, type: MiniAppType, userName: String?)
     }
 
     public typealias Info = (title: String?, description: String?, thumbnail: UIImage?, media: Media?)
@@ -244,7 +252,7 @@ extension MonkeyKing {
                 case .video(let url):
                     weChatMessageInfo["objectType"] = "4"
                     weChatMessageInfo["mediaUrl"] = url.absoluteString
-                case .miniApp(let url, let path, let withShareTicket, let type):
+                case .miniApp(let url, let path, let withShareTicket, let type, let userName):
                     if case .weChat(_, _, let miniProgramID, let universalLink) = account {
                         weChatMessageInfo["objectType"] = "36"
                         if let hdThumbnailImage = info.thumbnail {
@@ -255,7 +263,9 @@ extension MonkeyKing {
                         weChatMessageInfo["withShareTicket"] = withShareTicket
                         weChatMessageInfo["miniprogramType"] = type.rawValue
                         weChatMessageInfo["universalLink"] = universalLink
-                        if let miniProgramID = miniProgramID {
+                        if let userName = userName {
+                            weChatMessageInfo["appBrandUserName"] = userName
+                        } else if let miniProgramID = miniProgramID {
                             weChatMessageInfo["appBrandUserName"] = miniProgramID
                         } else {
                             fatalError("Missing `miniProgramID`!")
