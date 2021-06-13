@@ -83,7 +83,13 @@ class WeChatViewController: UIViewController {
             title: "Mini App, \(UUID().uuidString)",
             description: nil,
             thumbnail: UIImage(named: "rabbit"),
-            media: .miniApp(url: URL(string: "http://soyep.com")!, path: "", withShareTicket: true, type: .release)
+            media: .miniApp(
+                url: URL(string: "http://soyep.com")!,
+                path: "",
+                withShareTicket: true,
+                type: .release,
+                userName: nil
+            )
         )
         shareInfo(info)
     }
