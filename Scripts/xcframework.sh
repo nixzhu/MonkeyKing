@@ -17,14 +17,14 @@ xcodebuild archive -project "China.xcodeproj" \
 xcodebuild -create-xcframework \
 	-framework build/MonkeyKing/Simulator.xcarchive/Products/Library/Frameworks/MonkeyKing.framework \
 	-framework build/MonkeyKing/iOS.xcarchive/Products/Library/Frameworks/MonkeyKing.framework \
-	-output build/MonkeyKing.xcframework
+	-output build/MonkeyKingBinary.xcframework
 
 cd Build && find . -name "*.swiftinterface" -exec sed -i -e 's/MonkeyKing\.MonkeyKing/MonkeyKing/g' {} \;
 
-zip -vry MonkeyKing.xcframework.zip MonkeyKing.xcframework/ -x "*.DS_Store"
+zip -vry MonkeyKingBinary.xcframework.zip MonkeyKingBinary.xcframework/ -x "*.DS_Store"
 
 echo "\n-----"
-swift package compute-checksum MonkeyKing.xcframework.zip
+swift package compute-checksum MonkeyKingBinary.xcframework.zip
 echo "-----"
 
 open .
