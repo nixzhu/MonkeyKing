@@ -88,13 +88,18 @@ extension MonkeyKing {
         let bundleId = Bundle.main.bundleIdentifier ?? ""
         let allowedCharacterSet = CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[] ^").inverted
 
+        var queryItems = [
+            URLQueryItem(name: "wechat_auth_context_id", value: contextId),
+            URLQueryItem(name: "wechat_app_bundleId", value: bundleId)
+        ]
+
         if  let authToken = MonkeyKing.wechatAuthToken,
-            let authTokenEncoded = NSString(string: authToken).addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)
-        {
-            return "https://help.wechat.com/app/\(appID)/\(command)/?wechat_auth_token=\(authTokenEncoded)&wechat_auth_context_id=\(contextId)&wechat_app_bundleId=\(bundleId)"
-        } else {
-            return "https://help.wechat.com/app/\(appID)/\(command)/?wechat_auth_context_id=\(contextId)&wechat_app_bundleId=\(bundleId)"
+            let authTokenEncoded = NSString(string: authToken).addingPercentEncoding(withAllowedCharacters: allowedCharacterSet) {
+            queryItems.append(URLQueryItem(name: "wechat_auth_token", value: authTokenEncoded))
         }
+        var urlComponents = URLComponents(string: "https://help.wechat.com/app/\(appID)/\(command)/")
+        urlComponents?.queryItems = queryItems
+        return urlComponents?.string
     }
 
     func setPasteboard(of appId: String, with content: [String: Any]) {
