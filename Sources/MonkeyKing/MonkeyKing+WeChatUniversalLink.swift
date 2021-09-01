@@ -94,7 +94,7 @@ extension MonkeyKing {
         ]
 
         if  let authToken = MonkeyKing.wechatAuthToken,
-            let authTokenEncoded = NSString(string: authToken).addingPercentEncoding(withAllowedCharacters: allowedCharacterSet) {
+            let authTokenEncoded = authToken.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet) {
             queryItems.append(URLQueryItem(name: "wechat_auth_token", value: authTokenEncoded))
         }
         var urlComponents = URLComponents(string: "https://help.wechat.com/app/\(appID)/\(command)/")
