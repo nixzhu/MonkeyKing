@@ -4,7 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "MonkeyKing",
-    platforms: [.iOS(.v9)],
+    platforms: [.iOS(.v11)],
     products: [
         .library(
             name: "MonkeyKing",

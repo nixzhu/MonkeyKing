@@ -257,7 +257,7 @@ extension MonkeyKing {
 
             // Try to open the redirect url provided above
             if let redirectUrl = redirectComps.url, UIApplication.shared.canOpenURL(redirectUrl) {
-                UIApplication.shared.openURL(redirectUrl)
+                UIApplication.shared.open(redirectUrl)
             }
 
             // Otherwise we just send last message again
@@ -357,7 +357,7 @@ extension MonkeyKing {
         if urlScheme.hasPrefix("wx") {
             let urlString = url.absoluteString
             // OAuth
-            if urlString.contains("state=Weixinauth") {
+            if urlString.contains("state=") {
                 let queryDictionary = url.monkeyking_queryDictionary
                 guard let code = queryDictionary["code"] else {
                     shared.oauthFromWeChatCodeCompletionHandler = nil
