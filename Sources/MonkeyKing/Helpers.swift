@@ -274,12 +274,8 @@ extension MonkeyKing {
             return
         }
 
-        if #available(iOS 10.0, *) {
-            UIApplication.shared.open(url, options: options) { flag in
-                completion?(flag)
-            }
-        } else {
-            completion?(UIApplication.shared.openURL(url))
+        UIApplication.shared.open(url, options: options) { flag in
+            completion?(flag)
         }
     }
 

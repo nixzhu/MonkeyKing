@@ -74,12 +74,9 @@ extension MonkeyKing {
         }
     }
 
-    func wechatUniversalLink(of command: String) -> String? {
-        guard
-            #available(iOS 10.0, *),
-            let account = MonkeyKing.shared.accountSet[.weChat],
-            account.universalLink != nil
-        else {
+    func wechatUniversalLink(of command: String, items: [URLQueryItem] = []) -> URL? {
+        guard let account = MonkeyKing.shared.accountSet[.weChat],
+              account.universalLink != nil else {
             return nil
         }
 
@@ -88,19 +85,25 @@ extension MonkeyKing {
         let bundleId = Bundle.main.bundleIdentifier ?? ""
         let allowedCharacterSet = CharacterSet(charactersIn: "!*'();:@&=+$,/?%#[] ^").inverted
 
+        var queryItems = [
+            URLQueryItem(name: "wechat_auth_context_id", value: contextId),
+            URLQueryItem(name: "wechat_app_bundleId", value: bundleId)
+        ]
+        queryItems.append(contentsOf: items)
+
         if  let authToken = MonkeyKing.wechatAuthToken,
-            let authTokenEncoded = NSString(string: authToken).addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)
-        {
-            return "https://help.wechat.com/app/\(appID)/\(command)/?wechat_auth_token=\(authTokenEncoded)&wechat_auth_context_id=\(contextId)&wechat_app_bundleId=\(bundleId)"
-        } else {
-            return "https://help.wechat.com/app/\(appID)/\(command)/?wechat_auth_context_id=\(contextId)&wechat_app_bundleId=\(bundleId)"
+            let authTokenEncoded = authToken.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet) {
+            queryItems.append(URLQueryItem(name: "wechat_auth_token", value: authTokenEncoded))
         }
+        var urlComponents = URLComponents(string: "https://help.wechat.com/app/\(appID)/\(command)/")
+        urlComponents?.queryItems = queryItems
+        return urlComponents?.url
     }
 
     func setPasteboard(of appId: String, with content: [String: Any]) {
         var weChatMessageInfo: [String: Any] = [
             "result": "1",
-            "sdkver": "1.8.7.1",
+            "sdkver": "1.9.2",
             "returnFromApp": "0",
         ]
 

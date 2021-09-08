@@ -16,15 +16,8 @@ extension MonkeyKing {
         }
 
         if let url = URL(string: scheme) {
-            if #available(iOS 10.0, *) {
-                UIApplication.shared.open(url, options: options) { flag in
-                    if !flag {
-                        handleErrorResult()
-                    }
-                }
-            } else {
-                let resutl = UIApplication.shared.openURL(url)
-                if !resutl {
+            UIApplication.shared.open(url, options: options) { flag in
+                if !flag {
                     handleErrorResult()
                 }
             }

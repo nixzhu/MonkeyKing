@@ -60,8 +60,9 @@ extension MonkeyKing {
                 var urlComponents: URLComponents?
                 var wxUrlOptions = [UIApplication.OpenExternalURLOptionsKey : Any]()
 
-                if let universalLink = universalLink, let authLink = shared.wechatUniversalLink(of: "auth"), #available(iOS 10.0, *) {
-                    urlComponents = URLComponents(string: authLink)
+                if let universalLink = universalLink,
+                   let authUrl = shared.wechatUniversalLink(of: "auth") {
+                    urlComponents = URLComponents(url: authUrl, resolvingAgainstBaseURL: true)
                     urlComponents?.queryItems?.append(contentsOf: [
                         URLQueryItem(name: "scope", value: scope),
                         URLQueryItem(name: "state", value: "Weixinauth"), // Weixinauth instead?
@@ -228,7 +229,9 @@ extension MonkeyKing {
         }
     }
 
-    public class func weChatOAuthForCode(scope: String? = nil, requestToken: String? = nil, completionHandler: @escaping OAuthFromWeChatCodeCompletionHandler) {
+    public class func weChatOAuthForCode(scope: String? = nil,
+                                         state: String? = nil,
+                                         completionHandler: @escaping OAuthFromWeChatCodeCompletionHandler) {
         let platform = SupportedPlatform.weChat
 
         guard platform.isAppInstalled || platform.canWebOAuth else {
@@ -242,27 +245,31 @@ extension MonkeyKing {
 
         shared.oauthFromWeChatCodeCompletionHandler = completionHandler
 
-        switch account {
-        case .weChat(let appID, _, _, _):
+        if case .weChat(let appID, _, _, let universalLink) = account {
             let scope = scope ?? "snsapi_userinfo"
+            let state = state ?? "Weixinauth"
 
-            var urlComponents = URLComponents(string: "weixin://app/\(appID)/auth/")
-            urlComponents?.queryItems = [
+            let items = [
                 URLQueryItem(name: "scope", value: scope),
-                URLQueryItem(name: "state", value: "Weixinauth"),
+                URLQueryItem(name: "state", value: state),
             ]
 
-            guard let url = urlComponents?.url else {
+            guard let url = shared.wechatUniversalLink(of: "auth", items: items),
+                  let universalLink = universalLink else {
                 completionHandler(.failure(.sdk(.urlEncodeFailed)))
                 return
             }
+
+            shared.setPasteboard(of: appID, with: [
+                "universalLink": universalLink,
+                "isAuthResend": false,
+                "command": "0"
+            ])
 
             shared.openURL(url) { flag in
                 if flag { return }
                 completionHandler(.failure(.sdk(.invalidURLScheme)))
             }
-        default:
-            break
         }
     }
 

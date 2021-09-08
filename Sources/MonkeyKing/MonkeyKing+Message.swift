@@ -289,9 +289,8 @@ extension MonkeyKing {
             shared.setPasteboard(of: appID, with: weChatMessageInfo)
 
             if
-                let commandUniversalLink = shared.wechatUniversalLink(of: "sendreq"), #available(iOS 10.0, *),
-                let universalLink = MonkeyKing.shared.accountSet[.weChat]?.universalLink,
-                let ulURL = URL(string: commandUniversalLink)
+                let ulURL = shared.wechatUniversalLink(of: "sendreq"),
+                let universalLink = MonkeyKing.shared.accountSet[.weChat]?.universalLink
             {
                 weChatMessageInfo["universalLink"] = universalLink
                 weChatMessageInfo["isAutoResend"] = false
@@ -420,7 +419,7 @@ extension MonkeyKing {
                 if let txid = qqAppSignTxid {
                     ulComps.queryItems?.append(.init(name: "appsign_txid", value: txid))
                 }
-                if let ulURL = ulComps.url, #available(iOS 10.0, *) {
+                if let ulURL = ulComps.url {
                     shared.openURL(ulURL, options: [.universalLinksOnly: true]) { succeed in
                         if !succeed {
                             fallbackToScheme(url: url, completionHandler: completionHandler)
@@ -501,7 +500,6 @@ extension MonkeyKing {
                 }
 
                 if account.universalLink != nil,
-                   #available(iOS 10.0, *),
                    let ulURL = weiboUniversalLink(query: url.query) {
                         shared.openURL(ulURL, options: [.universalLinksOnly: true]) { succeed in
                             if !succeed {
