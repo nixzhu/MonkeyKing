@@ -57,10 +57,7 @@ extension MonkeyKing {
                 let accessTokenAPI = "https://open.weixin.qq.com/connect/mobilecheck?appid=\(appID)&uid=1926559385"
                 addWebView(withURLString: accessTokenAPI)
             } else {
-                var urlComponents: URLComponents?
-                var wxUrlOptions = [UIApplication.OpenExternalURLOptionsKey : Any]()
-                
-                let schemeURLComponents: ()-> URLComponents? = {
+                let defaultURLComponents: ()-> URLComponents? = {
                     var urlComponents = URLComponents(string: "weixin://app/\(appID)/auth/")
                     urlComponents?.queryItems = [
                         URLQueryItem(name: "scope", value: scope),
@@ -69,6 +66,9 @@ extension MonkeyKing {
                     return urlComponents
                 }
 
+                var urlComponents = defaultURLComponents()
+                var wxUrlOptions = [UIApplication.OpenExternalURLOptionsKey : Any]()
+                
                 if let universalLink = universalLink,
                    let authUrl = shared.wechatUniversalLink(of: "auth") {
                     urlComponents = URLComponents(url: authUrl, resolvingAgainstBaseURL: true)
@@ -84,13 +84,11 @@ extension MonkeyKing {
                     ])
 
                     wxUrlOptions[.universalLinksOnly] = true
-                } else {
-                    urlComponents = schemeURLComponents()
                 }
-                
+
                 handleWeChatAuth(
                     urlComponents,
-                    schemeURLComponents(),
+                    defaultURLComponents(),
                     wxUrlOptions,
                     completionHandler: completionHandler)
             }
