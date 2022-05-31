@@ -57,9 +57,18 @@ extension MonkeyKing {
                 let accessTokenAPI = "https://open.weixin.qq.com/connect/mobilecheck?appid=\(appID)&uid=1926559385"
                 addWebView(withURLString: accessTokenAPI)
             } else {
-                var urlComponents: URLComponents?
-                var wxUrlOptions = [UIApplication.OpenExternalURLOptionsKey : Any]()
+                let defaultURLComponents: ()-> URLComponents? = {
+                    var urlComponents = URLComponents(string: "weixin://app/\(appID)/auth/")
+                    urlComponents?.queryItems = [
+                        URLQueryItem(name: "scope", value: scope),
+                        URLQueryItem(name: "state", value: "Weixinauth"),
+                    ]
+                    return urlComponents
+                }
 
+                var urlComponents = defaultURLComponents()
+                var wxUrlOptions = [UIApplication.OpenExternalURLOptionsKey : Any]()
+                
                 if let universalLink = universalLink,
                    let authUrl = shared.wechatUniversalLink(of: "auth") {
                     urlComponents = URLComponents(url: authUrl, resolvingAgainstBaseURL: true)
@@ -75,23 +84,13 @@ extension MonkeyKing {
                     ])
 
                     wxUrlOptions[.universalLinksOnly] = true
-                } else {
-                    urlComponents = URLComponents(string: "weixin://app/\(appID)/auth/")
-                    urlComponents?.queryItems = [
-                        URLQueryItem(name: "scope", value: scope),
-                        URLQueryItem(name: "state", value: "Weixinauth"),
-                    ]
                 }
 
-                guard let url = urlComponents?.url else {
-                    completionHandler(.failure(.sdk(.urlEncodeFailed)))
-                    return
-                }
-
-                shared.openURL(url, options: wxUrlOptions) { flag in
-                    if flag { return }
-                    completionHandler(.failure(.sdk(.invalidURLScheme)))
-                }
+                handleWeChatAuth(
+                    urlComponents,
+                    defaultURLComponents(),
+                    wxUrlOptions,
+                    completionHandler: completionHandler)
             }
         case .qq(let appID, _):
             let scope = scope ?? ""
@@ -217,6 +216,25 @@ extension MonkeyKing {
             }
         case .twitter(let appID, let appKey, let redirectURL):
             shared.twitterAuthenticate(appID: appID, appKey: appKey, redirectURL: redirectURL)
+        }
+    }
+    
+    private class func handleWeChatAuth(
+        _ urlComponents: URLComponents?,
+        _ default: URLComponents?,
+        _ wxUrlOptions: [UIApplication.OpenExternalURLOptionsKey : Any],
+        completionHandler: @escaping OAuthCompletionHandler) {
+        guard let url = urlComponents?.url else {
+            completionHandler(.failure(.sdk(.urlEncodeFailed)))
+            return
+        }
+        shared.openURL(url, options: wxUrlOptions) { flag in
+            if flag { return }
+            if wxUrlOptions.isEmpty {
+                completionHandler(.failure(.sdk(.invalidURLScheme)))
+                return
+            }
+            handleWeChatAuth(`default`, nil, [:], completionHandler: completionHandler)
         }
     }
 
