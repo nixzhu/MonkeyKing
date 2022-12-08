@@ -39,13 +39,11 @@ extension MonkeyKing {
         )
         guard let sdkiOS16AppAttachment = authItems["sdkiOS16AppAttachment"] as? [String: Any],
               let sdkiOS16attachment = authItems["sdkiOS16attachment"] as? [String: Any] else {
-            assertionFailure()
-            return nil
+            return components?.url
         }
         guard let data1 = try? PropertyListSerialization.data(fromPropertyList: sdkiOS16AppAttachment, format: .xml, options: 0),
               let data2 = try? PropertyListSerialization.data(fromPropertyList: sdkiOS16attachment, format: .xml, options: 0) else {
-            assertionFailure()
-            return nil
+            return components?.url
         }
         components?.queryItems?.append(
             .init(name: "sdkiOS16AppAttachment", value: data1.base64EncodedString())

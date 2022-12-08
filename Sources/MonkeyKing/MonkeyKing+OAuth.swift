@@ -12,7 +12,6 @@ extension MonkeyKing {
             completionHandler(.failure(.noAccount))
             return
         }
-        
         shared.oauthCompletionHandler = completionHandler
         shared.payCompletionHandler = nil
         shared.deliverCompletionHandler = nil
@@ -20,12 +19,10 @@ extension MonkeyKing {
         
         switch account {
         case .alipay(let appID):
-            
             guard let dataStr = dataString else {
                 completionHandler(.failure(.apiRequest(.missingParameter)))
                 return
             }
-            
             let appUrlScheme = "apoauth" + appID
             let resultDic: [String: String] = ["fromAppUrlScheme": appUrlScheme, "requestType": "SafePay", "dataString": dataStr]
             
@@ -33,7 +30,6 @@ extension MonkeyKing {
                 completionHandler(.failure(.sdk(.urlEncodeFailed)))
                 return
             }
-            
             resultStr = resultStr.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: " ", with: "")
             resultStr = resultStr.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? resultStr
             resultStr = "alipay://alipayclient/?" + resultStr
@@ -42,7 +38,6 @@ extension MonkeyKing {
                 completionHandler(.failure(.sdk(.urlEncodeFailed)))
                 return
             }
-            
             shared.openURL(url) { flag in
                 if flag { return }
                 completionHandler(.failure(.sdk(.invalidURLScheme)))
@@ -65,7 +60,6 @@ extension MonkeyKing {
                     ]
                     return urlComponents
                 }
-                
                 var urlComponents = defaultURLComponents()
                 var wxUrlOptions = [UIApplication.OpenExternalURLOptionsKey : Any]()
                 
@@ -76,13 +70,11 @@ extension MonkeyKing {
                         URLQueryItem(name: "scope", value: scope),
                         URLQueryItem(name: "state", value: "Weixinauth"), // Weixinauth instead?
                     ])
-                    
                     shared.setPasteboard(of: appID, with: [
                         "universalLink": universalLink,
                         "isAuthResend": false,
                         "command": "0"
                     ])
-                    
                     wxUrlOptions[.universalLinksOnly] = true
                 }
                 
@@ -115,12 +107,10 @@ extension MonkeyKing {
                 urlComponents?.queryItems = [
                     URLQueryItem(name: "generalpastboard", value: "1"),
                 ]
-                
                 guard let url = urlComponents?.url else {
                     completionHandler(.failure(.sdk(.urlEncodeFailed)))
                     return
                 }
-                
                 shared.openURL(url) { flag in
                     if flag { return }
                     completionHandler(.failure(.sdk(.invalidURLScheme)))
@@ -191,7 +181,6 @@ extension MonkeyKing {
                     fallbackToScheme(url: url, completionHandler: completionHandler)
                 }
             }
-            
         case .pocket(let appID):
             guard let startIndex = appID.range(of: "-")?.lowerBound else {
                 return
@@ -210,7 +199,6 @@ extension MonkeyKing {
                     completionHandler(.failure(.sdk(.urlEncodeFailed)))
                     return
                 }
-                
                 shared.openURL(url) { flag in
                     if flag { return }
                     completionHandler(.failure(.sdk(.invalidURLScheme)))
@@ -284,13 +272,11 @@ extension MonkeyKing {
                 completionHandler(.failure(.sdk(.urlEncodeFailed)))
                 return
             }
-            
             shared.setPasteboard(of: appID, with: [
                 "universalLink": universalLink,
                 "isAuthResend": false,
                 "command": "0"
             ])
-            
             shared.openURL(url) { flag in
                 if flag { return }
                 completionHandler(.failure(.sdk(.invalidURLScheme)))
