@@ -77,7 +77,6 @@ extension MonkeyKing {
                     ])
                     wxUrlOptions[.universalLinksOnly] = true
                 }
-                
                 handleWeChatAuth(
                     urlComponents,
                     defaultURLComponents(),
@@ -168,7 +167,6 @@ extension MonkeyKing {
                 return
             }
             UIPasteboard.general.items = pasteboardItems
-            
             guard #available(iOS 10.0, *), account.universalLink != nil,
                   let ulURL = weiboUniversalLink(query: url.query, authItems: authItems) else {
                 UIPasteboard.general.items = pasteboardItems
@@ -246,7 +244,6 @@ extension MonkeyKing {
                                          state: String? = nil,
                                          completionHandler: @escaping OAuthFromWeChatCodeCompletionHandler) {
         let platform = SupportedPlatform.weChat
-        
         guard platform.isAppInstalled || platform.canWebOAuth else {
             completionHandler(.failure(.noApp))
             return
@@ -255,9 +252,7 @@ extension MonkeyKing {
             completionHandler(.failure(.noAccount))
             return
         }
-        
         shared.oauthFromWeChatCodeCompletionHandler = completionHandler
-        
         if case .weChat(let appID, _, _, let universalLink) = account {
             let scope = scope ?? "snsapi_userinfo"
             let state = state ?? "Weixinauth"
@@ -266,7 +261,6 @@ extension MonkeyKing {
                 URLQueryItem(name: "scope", value: scope),
                 URLQueryItem(name: "state", value: state),
             ]
-            
             guard let url = shared.wechatUniversalLink(of: "auth", items: items),
                   let universalLink = universalLink else {
                 completionHandler(.failure(.sdk(.urlEncodeFailed)))

@@ -4,7 +4,6 @@ extension MonkeyKing {
     
     static func weiboSchemeLink(uuidString: String) -> URL? {
         var components = URLComponents(string: "weibosdk://request")
-        
         components?.queryItems = [
             .init(name: "id", value: uuidString),
             .init(name: "sdkversion", value: "003233000"),
@@ -12,7 +11,6 @@ extension MonkeyKing {
             .init(name: "lfid", value: Bundle.main.monkeyking_bundleID ?? ""),
             .init(name: "newVersion", value: "3.3"),
         ]
-        
         return components?.url
     }
     
@@ -33,7 +31,6 @@ extension MonkeyKing {
             assertionFailure()
             return nil
         }
-        
         components?.queryItems?.append(
             .init(name: "urltype", value: "link")
         )
@@ -51,7 +48,6 @@ extension MonkeyKing {
         components?.queryItems?.append(
             .init(name: "sdkiOS16attachment", value: data2.base64EncodedString())
         )
-        
         return components?.url
     }
 }
