@@ -1,7 +1,7 @@
 import Foundation
 
 extension MonkeyKing {
-    
+
     static func weiboSchemeLink(uuidString: String) -> URL? {
         var components = URLComponents(string: "weibosdk://request")
         components?.queryItems = [
@@ -13,12 +13,12 @@ extension MonkeyKing {
         ]
         return components?.url
     }
-    
+
     static func weiboUniversalLink(query: String?, authItems: [String: Any]) -> URL? {
         var components = URLComponents(string: "https://open.weibo.com/weibosdk/request")
-        
+
         components?.query = query
-        
+
         if let index = components?.queryItems?.firstIndex(where: { $0.name == "id" }) {
             components?.queryItems?[index].name = "objId"
         } else {
@@ -35,11 +35,13 @@ extension MonkeyKing {
             .init(name: "urltype", value: "link")
         )
         guard let sdkiOS16AppAttachment = authItems["sdkiOS16AppAttachment"] as? [String: Any],
-              let sdkiOS16attachment = authItems["sdkiOS16attachment"] as? [String: Any] else {
+              let sdkiOS16attachment = authItems["sdkiOS16attachment"] as? [String: Any]
+        else {
             return components?.url
         }
         guard let data1 = try? PropertyListSerialization.data(fromPropertyList: sdkiOS16AppAttachment, format: .xml, options: 0),
-              let data2 = try? PropertyListSerialization.data(fromPropertyList: sdkiOS16attachment, format: .xml, options: 0) else {
+              let data2 = try? PropertyListSerialization.data(fromPropertyList: sdkiOS16attachment, format: .xml, options: 0)
+        else {
             return components?.url
         }
         components?.queryItems?.append(
