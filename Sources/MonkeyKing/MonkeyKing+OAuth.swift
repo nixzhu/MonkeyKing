@@ -12,7 +12,6 @@ extension MonkeyKing {
             completionHandler(.failure(.noAccount))
             return
         }
-
         shared.oauthCompletionHandler = completionHandler
         shared.payCompletionHandler = nil
         shared.deliverCompletionHandler = nil
@@ -20,12 +19,10 @@ extension MonkeyKing {
 
         switch account {
         case .alipay(let appID):
-
             guard let dataStr = dataString else {
                 completionHandler(.failure(.apiRequest(.missingParameter)))
                 return
             }
-
             let appUrlScheme = "apoauth" + appID
             let resultDic: [String: String] = ["fromAppUrlScheme": appUrlScheme, "requestType": "SafePay", "dataString": dataStr]
 
@@ -33,7 +30,6 @@ extension MonkeyKing {
                 completionHandler(.failure(.sdk(.urlEncodeFailed)))
                 return
             }
-
             resultStr = resultStr.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: " ", with: "")
             resultStr = resultStr.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? resultStr
             resultStr = "alipay://alipayclient/?" + resultStr
@@ -42,7 +38,6 @@ extension MonkeyKing {
                 completionHandler(.failure(.sdk(.urlEncodeFailed)))
                 return
             }
-
             shared.openURL(url) { flag in
                 if flag { return }
                 completionHandler(.failure(.sdk(.invalidURLScheme)))
@@ -57,7 +52,7 @@ extension MonkeyKing {
                 let accessTokenAPI = "https://open.weixin.qq.com/connect/mobilecheck?appid=\(appID)&uid=1926559385"
                 addWebView(withURLString: accessTokenAPI)
             } else {
-                let defaultURLComponents: ()-> URLComponents? = {
+                let defaultURLComponents: () -> URLComponents? = {
                     var urlComponents = URLComponents(string: "weixin://app/\(appID)/auth/")
                     urlComponents?.queryItems = [
                         URLQueryItem(name: "scope", value: scope),
@@ -65,32 +60,30 @@ extension MonkeyKing {
                     ]
                     return urlComponents
                 }
-
                 var urlComponents = defaultURLComponents()
-                var wxUrlOptions = [UIApplication.OpenExternalURLOptionsKey : Any]()
-                
+                var wxUrlOptions = [UIApplication.OpenExternalURLOptionsKey: Any]()
+
                 if let universalLink = universalLink,
-                   let authUrl = shared.wechatUniversalLink(of: "auth") {
+                   let authUrl = shared.wechatUniversalLink(of: "auth")
+                {
                     urlComponents = URLComponents(url: authUrl, resolvingAgainstBaseURL: true)
                     urlComponents?.queryItems?.append(contentsOf: [
                         URLQueryItem(name: "scope", value: scope),
                         URLQueryItem(name: "state", value: "Weixinauth"), // Weixinauth instead?
                     ])
-
                     shared.setPasteboard(of: appID, with: [
                         "universalLink": universalLink,
                         "isAuthResend": false,
-                        "command": "0"
+                        "command": "0",
                     ])
-
                     wxUrlOptions[.universalLinksOnly] = true
                 }
-
                 handleWeChatAuth(
                     urlComponents,
                     defaultURLComponents(),
                     wxUrlOptions,
-                    completionHandler: completionHandler)
+                    completionHandler: completionHandler
+                )
             }
         case .qq(let appID, _):
             let scope = scope ?? ""
@@ -115,12 +108,10 @@ extension MonkeyKing {
                 urlComponents?.queryItems = [
                     URLQueryItem(name: "generalpastboard", value: "1"),
                 ]
-
                 guard let url = urlComponents?.url else {
                     completionHandler(.failure(.sdk(.urlEncodeFailed)))
                     return
                 }
-
                 shared.openURL(url) { flag in
                     if flag { return }
                     completionHandler(.failure(.sdk(.invalidURLScheme)))
@@ -132,59 +123,65 @@ extension MonkeyKing {
             addWebView(withURLString: accessTokenAPI)
         case .weibo(let appID, _, let redirectURL, _):
             let scope = scope ?? "all"
-            guard !platform.isAppInstalled else {
-                let uuidString = UUID().uuidString
-                let transferObjectData = NSKeyedArchiver.archivedData(
-                    withRootObject: [
-                        "__class": "WBAuthorizeRequest",
-                        "redirectURI": redirectURL,
-                        "requestID": uuidString,
-                        "scope": scope,
-                    ]
-                )
-                let userInfoData = NSKeyedArchiver.archivedData(
-                    withRootObject: [
-                        "mykey": "as you like",
-                        "SSO_From": "SendMessageToWeiboViewController",
-                    ]
-                )
-                let appData = NSKeyedArchiver.archivedData(
-                    withRootObject: [
-                        "appKey": appID,
-                        "bundleID": Bundle.main.monkeyking_bundleID ?? "",
-                        "name": Bundle.main.monkeyking_displayName ?? "",
-                        "universalLink": account.universalLink ?? "",
-                    ]
-                )
-                let authItems: [[String: Any]] = [
-                    ["transferObject": transferObjectData],
-                    ["userInfo": userInfoData],
-                    ["app": appData],
-                ]
-                UIPasteboard.general.items = authItems
-
-                guard let url = weiboSchemeLink(uuidString: uuidString) else {
-                    completionHandler(.failure(.sdk(.urlEncodeFailed)))
-                    return
-                }
-
-                if account.universalLink != nil,
-                   #available(iOS 10.0, *),
-                   let ulURL = weiboUniversalLink(query: url.query) {
-                        shared.openURL(ulURL, options: [.universalLinksOnly: true]) { succeed in
-                            if !succeed {
-                                fallbackToScheme(url: url, completionHandler: completionHandler)
-                            }
-                        }
-                } else {
-                    fallbackToScheme(url: url, completionHandler: completionHandler)
-                }
-
+            guard platform.isAppInstalled else {
+                // Web OAuth
+                let accessTokenAPI = "https://api.weibo.com/oauth2/authorize?client_id=\(appID)&response_type=code&redirect_uri=\(redirectURL)&scope=\(scope)"
+                addWebView(withURLString: accessTokenAPI)
                 return
             }
-            // Web OAuth
-            let accessTokenAPI = "https://api.weibo.com/oauth2/authorize?client_id=\(appID)&response_type=code&redirect_uri=\(redirectURL)&scope=\(scope)"
-            addWebView(withURLString: accessTokenAPI)
+            let uuidString = UUID().uuidString
+            let transferObject: [String: String] = [
+                "__class": "WBAuthorizeRequest",
+                "redirectURI": redirectURL,
+                "requestID": uuidString,
+                "scope": scope,
+            ]
+            let transferObjectData = NSKeyedArchiver.archivedData(withRootObject: transferObject)
+
+            let userInfo: [String: String] = [
+                "mykey": "as you like",
+                "SSO_From": "SendMessageToWeiboViewController",
+                "sdkVersion": "3.3.4",
+                "startTime": Date().description,
+            ]
+            let userInfoData = NSKeyedArchiver.archivedData(withRootObject: userInfo)
+
+            let app: [String: String] = [
+                "appKey": appID,
+                "requestID": uuidString,
+                "bundleID": Bundle.main.monkeyking_bundleID ?? "",
+                "name": Bundle.main.monkeyking_displayName ?? "",
+                "uLink": account.universalLink ?? "",
+            ]
+            let appData = NSKeyedArchiver.archivedData(withRootObject: app)
+
+            let pasteboardItems: [[String: Any]] = [
+                ["transferObject": transferObjectData],
+                ["userInfo": userInfoData],
+                ["app": appData],
+            ]
+            let authItems: [String: Any] = [
+                "sdkiOS16AppAttachment": app,
+                "sdkiOS16attachment": ["transferObject": transferObject, "userInfo": userInfo],
+            ]
+            guard let url = weiboSchemeLink(uuidString: uuidString) else {
+                completionHandler(.failure(.sdk(.urlEncodeFailed)))
+                return
+            }
+            UIPasteboard.general.items = pasteboardItems
+            guard #available(iOS 10.0, *), account.universalLink != nil,
+                  let ulURL = weiboUniversalLink(query: url.query, authItems: authItems)
+            else {
+                UIPasteboard.general.items = pasteboardItems
+                fallbackToScheme(url: url, completionHandler: completionHandler)
+                return
+            }
+            shared.openURL(ulURL, options: [.universalLinksOnly: true]) { succeed in
+                if !succeed {
+                    UIPasteboard.general.items = pasteboardItems
+                    fallbackToScheme(url: url, completionHandler: completionHandler)
+                }
+            }
         case .pocket(let appID):
             guard let startIndex = appID.range(of: "-")?.lowerBound else {
                 return
@@ -203,7 +200,6 @@ extension MonkeyKing {
                     completionHandler(.failure(.sdk(.urlEncodeFailed)))
                     return
                 }
-
                 shared.openURL(url) { flag in
                     if flag { return }
                     completionHandler(.failure(.sdk(.invalidURLScheme)))
@@ -218,12 +214,13 @@ extension MonkeyKing {
             shared.twitterAuthenticate(appID: appID, appKey: appKey, redirectURL: redirectURL)
         }
     }
-    
+
     private class func handleWeChatAuth(
         _ urlComponents: URLComponents?,
         _ default: URLComponents?,
-        _ wxUrlOptions: [UIApplication.OpenExternalURLOptionsKey : Any],
-        completionHandler: @escaping OAuthCompletionHandler) {
+        _ wxUrlOptions: [UIApplication.OpenExternalURLOptionsKey: Any],
+        completionHandler: @escaping OAuthCompletionHandler
+    ) {
         guard let url = urlComponents?.url else {
             completionHandler(.failure(.sdk(.urlEncodeFailed)))
             return
@@ -247,11 +244,12 @@ extension MonkeyKing {
         }
     }
 
-    public class func weChatOAuthForCode(scope: String? = nil,
-                                         state: String? = nil,
-                                         completionHandler: @escaping OAuthFromWeChatCodeCompletionHandler) {
+    public class func weChatOAuthForCode(
+        scope: String? = nil,
+        state: String? = nil,
+        completionHandler: @escaping OAuthFromWeChatCodeCompletionHandler
+    ) {
         let platform = SupportedPlatform.weChat
-
         guard platform.isAppInstalled || platform.canWebOAuth else {
             completionHandler(.failure(.noApp))
             return
@@ -260,9 +258,7 @@ extension MonkeyKing {
             completionHandler(.failure(.noAccount))
             return
         }
-
         shared.oauthFromWeChatCodeCompletionHandler = completionHandler
-
         if case .weChat(let appID, _, _, let universalLink) = account {
             let scope = scope ?? "snsapi_userinfo"
             let state = state ?? "Weixinauth"
@@ -271,19 +267,17 @@ extension MonkeyKing {
                 URLQueryItem(name: "scope", value: scope),
                 URLQueryItem(name: "state", value: state),
             ]
-
             guard let url = shared.wechatUniversalLink(of: "auth", items: items),
-                  let universalLink = universalLink else {
+                  let universalLink = universalLink
+            else {
                 completionHandler(.failure(.sdk(.urlEncodeFailed)))
                 return
             }
-
             shared.setPasteboard(of: appID, with: [
                 "universalLink": universalLink,
                 "isAuthResend": false,
-                "command": "0"
+                "command": "0",
             ])
-
             shared.openURL(url) { flag in
                 if flag { return }
                 completionHandler(.failure(.sdk(.invalidURLScheme)))
@@ -299,7 +293,8 @@ extension MonkeyKing {
         let oauthHeader = ["Authorization": oauthString]
         Networking.shared.request(requestTokenAPI, method: .post, parameters: nil, encoding: .url, headers: oauthHeader) { responseData, _, _ in
             if let responseData = responseData,
-                let requestToken = (responseData["oauth_token"] as? String) {
+               let requestToken = (responseData["oauth_token"] as? String)
+            {
                 let loginURL = "https://api.twitter.com/oauth/authenticate?oauth_token=\(requestToken)"
                 MonkeyKing.addWebView(withURLString: loginURL)
             }

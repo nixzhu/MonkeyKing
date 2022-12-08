@@ -492,15 +492,15 @@ extension MonkeyKing {
                     ["transferObject": NSKeyedArchiver.archivedData(withRootObject: dict)],
                     ["app": appData],
                 ]
-                UIPasteboard.general.items = messageData
-
+                
                 guard let url = weiboSchemeLink(uuidString: uuidString) else {
                     completionHandler(.failure(.sdk(.urlEncodeFailed)))
                     return
                 }
+                UIPasteboard.general.items = messageData
 
                 if account.universalLink != nil,
-                   let ulURL = weiboUniversalLink(query: url.query) {
+                   let ulURL = weiboUniversalLink(query: url.query, authItems: [:]) {
                         shared.openURL(ulURL, options: [.universalLinksOnly: true]) { succeed in
                             if !succeed {
                                 fallbackToScheme(url: url, completionHandler: completionHandler)
